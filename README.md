@@ -10,12 +10,12 @@ free to fork, free to improve.
 
 | # | Track | Tools |
 |---|-------|-------|
-| 00 | Foundations | tcpdump, openssl, python, bash |
-| 01 | Offensive Security | nmap, metasploit, burpsuite CE, sqlmap |
-| 02 | Defensive Operations | elastic, zeek, suricata, wazuh |
-| 03 | Digital Forensics | autopsy, volatility, wireshark, sleuthkit |
-| 04 | Malware Analysis | ghidra, cutter, cuckoo, remnux |
-| 05 | Cloud Security | prowler, pacu, cloudsploit, trivy |
+| 00 | [Foundations](tracks/00-foundations/) | tcpdump, openssl, python, bash |
+| 01 | [Offensive Security](tracks/01-offensive/) | nmap, metasploit, burpsuite CE, sqlmap |
+| 02 | [Defensive Operations](tracks/02-defensive/) | elastic, zeek, suricata, wazuh |
+| 03 | [Digital Forensics](tracks/03-forensics/) | autopsy, volatility, wireshark, sleuthkit |
+| 04 | [Malware Analysis](tracks/04-malware/) | ghidra, cutter, cuckoo, remnux |
+| 05 | [Cloud Security](tracks/05-cloud/) | prowler, pacu, cloudsploit, trivy |
 
 ## Structure
 

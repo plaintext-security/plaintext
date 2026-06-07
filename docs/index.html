@@ -311,10 +311,24 @@
     background: var(--bg);
     padding: 2rem;
     transition: background 0.2s;
-    cursor: default;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
 
   .track:hover { background: var(--surface); }
+
+  .track-more {
+    margin-top: 1.5rem;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .track:hover .track-more { color: var(--accent); }
 
   .track-num {
     font-size: 0.65rem;
@@ -551,11 +565,11 @@
     <div class="logo-tag">open security education</div>
   </div>
   <ul>
-    <li><a href="#">Tracks</a></li>
-    <li><a href="#">Labs</a></li>
-    <li><a href="#">Community</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#" class="nav-cta">Start Free</a></li>
+    <li><a href="#tracks">Tracks</a></li>
+    <li><a href="https://github.com/patrickdaj/plaintext/tree/main/tracks">Labs</a></li>
+    <li><a href="https://github.com/patrickdaj/plaintext/blob/main/CONTRIBUTING.md">Community</a></li>
+    <li><a href="#why">About</a></li>
+    <li><a href="#tracks" class="nav-cta">Start Free</a></li>
   </ul>
 </nav>
 
@@ -569,8 +583,8 @@
   </h1>
   <p class="hero-sub">Professional-grade cybersecurity training built on open source tools, community knowledge, and zero gatekeeping. Every course, every lab, forever free.</p>
   <div class="hero-actions">
-    <a href="#" class="btn-primary">Browse Tracks →</a>
-    <a href="#" class="btn-ghost">View on GitHub</a>
+    <a href="#tracks" class="btn-primary">Browse Tracks →</a>
+    <a href="https://github.com/patrickdaj/plaintext" class="btn-ghost">View on GitHub</a>
   </div>
 </section>
 
@@ -618,13 +632,13 @@
   </div>
 </div>
 
-<section>
+<section id="tracks">
   <div class="section-tag">Learning Tracks</div>
   <h2>Pick your path.<br>Own the domain.</h2>
   <p class="section-desc">Structured learning paths from zero to professional. Every track uses real tools you'll use on the job — all open source.</p>
   <div class="tracks">
-    <div class="track">
-      <div class="track-num">TRACK_01</div>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/01-offensive">
+      <div class="track-num">TRACK_01 · 9 modules</div>
       <span class="track-icon">🔴</span>
       <h3>Offensive Security</h3>
       <p>Recon, exploitation, post-exploitation, and reporting. Learn to think like an attacker.</p>
@@ -634,9 +648,10 @@
         <span class="tool-tag">burpsuite CE</span>
         <span class="tool-tag">sqlmap</span>
       </div>
-    </div>
-    <div class="track">
-      <div class="track-num">TRACK_02</div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/02-defensive">
+      <div class="track-num">TRACK_02 · 8 modules</div>
       <span class="track-icon">🔵</span>
       <h3>Defensive Operations</h3>
       <p>Detection engineering, SIEM, log analysis, and incident triage at scale.</p>
@@ -646,9 +661,10 @@
         <span class="tool-tag">suricata</span>
         <span class="tool-tag">wazuh</span>
       </div>
-    </div>
-    <div class="track">
-      <div class="track-num">TRACK_03</div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/03-forensics">
+      <div class="track-num">TRACK_03 · 7 modules</div>
       <span class="track-icon">🟣</span>
       <h3>Digital Forensics</h3>
       <p>Disk, memory, and network forensics. Reconstruct events from artifacts.</p>
@@ -658,9 +674,10 @@
         <span class="tool-tag">wireshark</span>
         <span class="tool-tag">sleuthkit</span>
       </div>
-    </div>
-    <div class="track">
-      <div class="track-num">TRACK_04</div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/04-malware">
+      <div class="track-num">TRACK_04 · 7 modules</div>
       <span class="track-icon">🟡</span>
       <h3>Malware Analysis</h3>
       <p>Static and dynamic analysis. Understand what malware does and how to stop it.</p>
@@ -670,9 +687,10 @@
         <span class="tool-tag">cuckoo</span>
         <span class="tool-tag">remnux</span>
       </div>
-    </div>
-    <div class="track">
-      <div class="track-num">TRACK_05</div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/05-cloud">
+      <div class="track-num">TRACK_05 · 7 modules</div>
       <span class="track-icon">🟠</span>
       <h3>Cloud Security</h3>
       <p>Attack and defend cloud-native environments. AWS, GCP, Azure misconfigurations.</p>
@@ -682,9 +700,10 @@
         <span class="tool-tag">cloudsploit</span>
         <span class="tool-tag">trivy</span>
       </div>
-    </div>
-    <div class="track">
-      <div class="track-num">TRACK_06</div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
+    <a class="track" href="https://github.com/patrickdaj/plaintext/tree/main/tracks/00-foundations">
+      <div class="track-num">TRACK_00 · 6 modules</div>
       <span class="track-icon">⚪</span>
       <h3>Foundations</h3>
       <p>Networking, Linux, scripting, and cryptography. The bedrock everything else is built on.</p>
@@ -694,11 +713,12 @@
         <span class="tool-tag">python</span>
         <span class="tool-tag">bash</span>
       </div>
-    </div>
+      <div class="track-more">Curriculum map →</div>
+    </a>
   </div>
 </section>
 
-<section class="manifesto">
+<section class="manifesto" id="why">
   <div class="manifesto-grid">
     <div>
       <div class="section-tag">Why Plaintext</div>
