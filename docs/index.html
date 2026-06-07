@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plaintext — Open Security Education</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --accent: #00ff88;
+    --accent2: #00aaff;
+    --text: #e8e8e8;
+    --muted: #666666;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .logo-tag {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #000 !important;
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.08em;
+    transition: opacity 0.2s !important;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes gridPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .hero-prompt {
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero-prompt::before { content: '> '; }
+
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .dim { color: var(--muted); }
+
+  .hero-sub {
+    font-family: var(--sans);
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.6s;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    padding: 0.85rem 2rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,255,136,0.3);
+  }
+
+  .btn-ghost {
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+  /* TICKER */
+  .ticker {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 3rem;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .ticker-item span { color: var(--accent); margin-right: 0.5rem; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat {
+    padding: 2.5rem 3rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SECTION */
+  section {
+    padding: 5rem 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-tag {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-tag::before { content: '// '; }
+
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    font-family: var(--sans);
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 520px;
+    font-weight: 300;
+    margin-bottom: 3rem;
+  }
+
+  /* TRACKS */
+  .tracks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .track {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .track:hover { background: var(--surface); }
+
+  .track-num {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .track-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .track h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .track p {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .track-tools {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tool-tag {
+    font-size: 0.6rem;
+    background: var(--border);
+    color: var(--muted);
+    padding: 0.2rem 0.5rem;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+  }
+
+  /* MANIFESTO */
+  .manifesto {
+    background: var(--surface);
+  }
+
+  .manifesto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .manifesto-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .manifesto-list li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .manifesto-list .check {
+    color: var(--accent);
+    font-size: 0.8rem;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .manifesto-list .item-text {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .manifesto-list .item-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .code-block {
+    background: #000;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--muted);
+    position: relative;
+  }
+
+  .code-block::before {
+    content: 'plaintext.config';
+    position: absolute;
+    top: -0.6rem;
+    left: 1rem;
+    background: #000;
+    padding: 0 0.5rem;
+    font-size: 0.6rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .code-block .k { color: var(--accent2); }
+  .code-block .s { color: var(--accent); }
+  .code-block .c { color: #444; }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 3rem;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: 'PLAINTEXT';
+    position: absolute;
+    font-size: 20vw;
+    font-weight: 700;
+    color: rgba(255,255,255,0.015);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+  }
+
+  .cta-section p {
+    font-family: var(--sans);
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+    font-weight: 300;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .email-form input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+  }
+
+  .email-form input::placeholder { color: var(--muted); }
+  .email-form input:focus { border-color: var(--accent); }
+
+  .email-form button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+
+  .email-form button:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer .logo-small {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  footer .logo-small span { color: var(--accent); }
+
+  footer p {
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { padding: 3rem 1.5rem; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat { padding: 1.5rem; }
+    section { padding: 3rem 1.5rem; }
+    .tracks { grid-template-columns: 1fr; }
+    .manifesto-grid { grid-template-columns: 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="logo">plain<span>text</span></div>
+    <div class="logo-tag">open security education</div>
+  </div>
+  <ul>
+    <li><a href="#">Tracks</a></li>
+    <li><a href="#">Labs</a></li>
+    <li><a href="#">Community</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#" class="nav-cta">Start Free</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-prompt">security education, no paywalls</div>
+  <h1>
+    Learn security<br>
+    <span class="accent">in the open.</span><br>
+    <span class="dim">All of it.</span>
+  </h1>
+  <p class="hero-sub">Professional-grade cybersecurity training built on open source tools, community knowledge, and zero gatekeeping. Every course, every lab, forever free.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-primary">Browse Tracks →</a>
+    <a href="#" class="btn-ghost">View on GitHub</a>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span>▸</span>Penetration Testing</span>
+    <span class="ticker-item"><span>▸</span>Digital Forensics</span>
+    <span class="ticker-item"><span>▸</span>Incident Response</span>
+    <span class="ticker-item"><span>▸</span>Threat Hunting</span>
+    <span class="ticker-item"><span>▸</span>Network Security</span>
+    <span class="ticker-item"><span>▸</span>Malware Analysis</span>
+    <span class="ticker-item"><span>▸</span>Web App Security</span>
+    <span class="ticker-item"><span>▸</span>Cloud Security</span>
+    <span class="ticker-item"><span>▸</span>Red Teaming</span>
+    <span class="ticker-item"><span>▸</span>Blue Teaming</span>
+    <span class="ticker-item"><span>▸</span>Penetration Testing</span>
+    <span class="ticker-item"><span>▸</span>Digital Forensics</span>
+    <span class="ticker-item"><span>▸</span>Incident Response</span>
+    <span class="ticker-item"><span>▸</span>Threat Hunting</span>
+    <span class="ticker-item"><span>▸</span>Network Security</span>
+    <span class="ticker-item"><span>▸</span>Malware Analysis</span>
+    <span class="ticker-item"><span>▸</span>Web App Security</span>
+    <span class="ticker-item"><span>▸</span>Cloud Security</span>
+    <span class="ticker-item"><span>▸</span>Red Teaming</span>
+    <span class="ticker-item"><span>▸</span>Blue Teaming</span>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Free forever</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">OSS</div>
+    <div class="stat-label">Tools only</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Paywalls</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Access</div>
+  </div>
+</div>
+
+<section>
+  <div class="section-tag">Learning Tracks</div>
+  <h2>Pick your path.<br>Own the domain.</h2>
+  <p class="section-desc">Structured learning paths from zero to professional. Every track uses real tools you'll use on the job — all open source.</p>
+  <div class="tracks">
+    <div class="track">
+      <div class="track-num">TRACK_01</div>
+      <span class="track-icon">🔴</span>
+      <h3>Offensive Security</h3>
+      <p>Recon, exploitation, post-exploitation, and reporting. Learn to think like an attacker.</p>
+      <div class="track-tools">
+        <span class="tool-tag">nmap</span>
+        <span class="tool-tag">metasploit</span>
+        <span class="tool-tag">burpsuite CE</span>
+        <span class="tool-tag">sqlmap</span>
+      </div>
+    </div>
+    <div class="track">
+      <div class="track-num">TRACK_02</div>
+      <span class="track-icon">🔵</span>
+      <h3>Defensive Operations</h3>
+      <p>Detection engineering, SIEM, log analysis, and incident triage at scale.</p>
+      <div class="track-tools">
+        <span class="tool-tag">elastic</span>
+        <span class="tool-tag">zeek</span>
+        <span class="tool-tag">suricata</span>
+        <span class="tool-tag">wazuh</span>
+      </div>
+    </div>
+    <div class="track">
+      <div class="track-num">TRACK_03</div>
+      <span class="track-icon">🟣</span>
+      <h3>Digital Forensics</h3>
+      <p>Disk, memory, and network forensics. Reconstruct events from artifacts.</p>
+      <div class="track-tools">
+        <span class="tool-tag">autopsy</span>
+        <span class="tool-tag">volatility</span>
+        <span class="tool-tag">wireshark</span>
+        <span class="tool-tag">sleuthkit</span>
+      </div>
+    </div>
+    <div class="track">
+      <div class="track-num">TRACK_04</div>
+      <span class="track-icon">🟡</span>
+      <h3>Malware Analysis</h3>
+      <p>Static and dynamic analysis. Understand what malware does and how to stop it.</p>
+      <div class="track-tools">
+        <span class="tool-tag">ghidra</span>
+        <span class="tool-tag">cutter</span>
+        <span class="tool-tag">cuckoo</span>
+        <span class="tool-tag">remnux</span>
+      </div>
+    </div>
+    <div class="track">
+      <div class="track-num">TRACK_05</div>
+      <span class="track-icon">🟠</span>
+      <h3>Cloud Security</h3>
+      <p>Attack and defend cloud-native environments. AWS, GCP, Azure misconfigurations.</p>
+      <div class="track-tools">
+        <span class="tool-tag">prowler</span>
+        <span class="tool-tag">pacu</span>
+        <span class="tool-tag">cloudsploit</span>
+        <span class="tool-tag">trivy</span>
+      </div>
+    </div>
+    <div class="track">
+      <div class="track-num">TRACK_06</div>
+      <span class="track-icon">⚪</span>
+      <h3>Foundations</h3>
+      <p>Networking, Linux, scripting, and cryptography. The bedrock everything else is built on.</p>
+      <div class="track-tools">
+        <span class="tool-tag">tcpdump</span>
+        <span class="tool-tag">openssl</span>
+        <span class="tool-tag">python</span>
+        <span class="tool-tag">bash</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="manifesto">
+  <div class="manifesto-grid">
+    <div>
+      <div class="section-tag">Why Plaintext</div>
+      <h2>Knowledge shouldn't<br>cost $8,000.</h2>
+      <p class="section-desc">The best security professionals share what they know. We're just building the infrastructure for that to happen at scale.</p>
+      <ul class="manifesto-list">
+        <li>
+          <span class="check">▸</span>
+          <div>
+            <div class="item-text">Community-written curriculum</div>
+            <div class="item-sub">Every module reviewed and contributed by practitioners</div>
+          </div>
+        </li>
+        <li>
+          <span class="check">▸</span>
+          <div>
+            <div class="item-text">Real tools, real environments</div>
+            <div class="item-sub">No vendor lock-in. Everything you learn transfers directly to the job</div>
+          </div>
+        </li>
+        <li>
+          <span class="check">▸</span>
+          <div>
+            <div class="item-text">Open source everything</div>
+            <div class="item-sub">Curriculum on GitHub. Fork it, improve it, translate it</div>
+          </div>
+        </li>
+        <li>
+          <span class="check">▸</span>
+          <div>
+            <div class="item-text">No credentials required</div>
+            <div class="item-sub">We don't care where you went to school or where you work</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="code-block">
+      <span class="c"># Who this is for</span><br><br>
+      <span class="k">audience</span> = [<br>
+      &nbsp;&nbsp;<span class="s">"career changers"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"students priced out of certs"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"practitioners upskilling"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"the curious"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"anyone, really"</span><br>
+      ]<br><br>
+      <span class="k">cost</span> = <span class="s">0</span><br>
+      <span class="k">prerequisites</span> = <span class="s">None</span><br>
+      <span class="k">waitlist</span> = <span class="s">False</span><br><br>
+      <span class="c"># What we ask in return</span><br><br>
+      <span class="k">ask</span> = [<br>
+      &nbsp;&nbsp;<span class="s">"contribute back if you can"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"help someone else learn"</span>,<br>
+      &nbsp;&nbsp;<span class="s">"keep it open"</span><br>
+      ]
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="section-tag">Early Access</div>
+  <h2>Be first in.<br><span style="color:var(--accent)">No cost. Ever.</span></h2>
+  <p>We're building in public. Get notified when tracks go live.</p>
+  <div class="email-form">
+    <input type="email" placeholder="your@email.com">
+    <button>Notify me</button>
+  </div>
+</section>
+
+<footer>
+  <div class="logo-small">plain<span>text</span></div>
+  <p>Open security education for everyone. Built in public.</p>
+  <p style="color: #333; font-size: 0.65rem;">© 2026 Plaintext. CC BY 4.0</p>
+</footer>
+
+</body>
+</html>
