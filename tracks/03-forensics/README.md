@@ -38,6 +38,14 @@ Complete Track 00 — Foundations first.
 > training (e.g. DFIR images, the Volatility sample set). Never examine evidence you are
 > not authorised to handle.
 
+## AI & automation
+
+AI summarises timelines, correlates artifacts, and drafts the incident narrative far
+faster than you can by hand. Forensic soundness sets the limit: an AI summary is a lead,
+never evidence — every conclusion is traced back to the underlying artifact, and chain of
+custody is non-negotiable. Automate the collection and the parsing; never automate the
+judgment about what actually happened.
+
 ## Standards & further reading
 
 - NIST SP 800-86 (Guide to Integrating Forensic Techniques into Incident Response)

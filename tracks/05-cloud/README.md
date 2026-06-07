@@ -39,6 +39,14 @@ Complete Track 00 — Foundations first.
 > environments (e.g. CloudGoat, flaws.cloud). Never test against accounts or tenants you
 > don't own or aren't authorised to assess, and tear down billable resources when done.
 
+## AI & automation
+
+In the cloud the infrastructure *is* code — and increasingly that code is AI-written,
+which is exactly where misconfigurations hide (over-broad IAM, `0.0.0.0/0`, privileged
+containers, wildcard policies). The posture this track drills: **AI authors → you review
+→ scanners gate → you own it.** The marketable skill is not typing HCL or YAML; it is
+directing the model to generate it and rigorously reviewing what came back.
+
 ## Standards & further reading
 
 - CIS Benchmarks for AWS/GCP/Azure and Kubernetes

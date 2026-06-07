@@ -40,6 +40,15 @@ Complete Track 00 — Foundations first.
 > (e.g. Malware-Traffic-Analysis.net, public PCAP repositories, EVTX-ATTACK-SAMPLES).
 > Only analyse data you are authorised to handle.
 
+## AI & automation
+
+This is where automation earns its keep — and where it is most dangerous. A small local
+model can triage and classify log lines cheaply at volume; a frontier model can draft an
+incident narrative or a Sigma rule. The skill is reviewing what they produce: a generated
+detection with broken logic ships false confidence, and automation that buries a real
+signal under auto-closed alerts is worse than none. AI authors the rule — you map it to
+ATT&CK, test it, and own the alert.
+
 ## Standards & further reading
 
 - MITRE ATT&CK and the ATT&CK Navigator for coverage mapping

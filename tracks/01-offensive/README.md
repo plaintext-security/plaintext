@@ -45,6 +45,15 @@ Complete Track 00 — Foundations first.
 > VMs, free CTF rooms such as TryHackMe/HackTheBox free tiers). Never point these
 > techniques at anything else.
 
+## AI & automation
+
+AI drafts; you verify and own it. Models accelerate recon synthesis, wordlist and
+payload generation, and turning raw findings into a readable report — but they do
+**not** get to decide what is true. Every vulnerability is validated by hand (no
+hallucinated findings), every action stays inside scope and authorization, and generated
+exploit code is read before it is ever run. Anyone can point a scanner at a host; the
+value is the operator who confirms, contextualises, and reports.
+
 ## Standards & further reading
 
 - OWASP Top 10 and the OWASP Testing Guide

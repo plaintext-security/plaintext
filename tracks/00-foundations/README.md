@@ -29,6 +29,15 @@ underpins trust. Build this floor solid and everything above it gets easier.
 Complete beginners and anyone wanting to solidify fundamentals before moving to a
 specialisation track. No prior security experience assumed.
 
+## AI & automation
+
+Automation and AI are assumed from day one — but as accelerators, not substitutes for
+understanding. Use a model to explain a packet capture, generate a parsing script, or
+quiz you on subnetting; then verify it against the primary source (the RFC, the man
+page). The skill this track starts building is the judgment to know when the tool — or
+the model — is wrong. Anyone can run the command now; the value is understanding the
+output.
+
 ## Standards & further reading
 
 - TCP/IP and protocol RFCs (e.g. RFC 791, RFC 793, RFC 8446 for TLS 1.3)
