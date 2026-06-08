@@ -1,13 +1,27 @@
 # Lab 05 — Alert on Real Malicious Traffic
 
 ## Setup
-Docker-first — Suricata with the Emerging Threats ruleset:
+
 ```bash
-docker run --rm -it -v "$PWD":/data -w /data jasonish/suricata -r capture.pcap
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/05-intrusion-detection
+make up
 ```
-Real data: a real malicious PCAP from
-[Malware-Traffic-Analysis.net](https://www.malware-traffic-analysis.net/) — the same self-contained
-source as module 04.
+
+Run `make demo` to parse a bundled `data/eve.json` — 9 realistic Suricata
+alerts covering Cobalt Strike beaconing, AsyncRAT C2 checkin, a PowerShell
+dropper download, DGA DNS queries, and a large outbound data transfer. The
+demo outputs a severity summary, top signatures, involved hosts, and a
+custom rule template.
+
+For a real malicious PCAP from
+[Malware-Traffic-Analysis.net](https://www.malware-traffic-analysis.net/):
+
+```bash
+# Generates eve.json in this directory using the ET Open ruleset
+PCAP=your-capture.pcap make suricata
+python3 parse_alerts.py eve.json
+```
 
 ## Scenario
 Run an IDS over a real malicious capture, read the alerts, and confirm them against the known-bad
