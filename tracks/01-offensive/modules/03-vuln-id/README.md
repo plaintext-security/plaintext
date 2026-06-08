@@ -13,6 +13,27 @@ just collecting CVSS scores.
 Map a service/version to its known vulnerabilities, and assess real-world exploitability and
 urgency using authoritative sources.
 
+## The core idea
+A service version is trivia until you connect it to its weaknesses — and the real skill isn't *finding*
+CVEs (a search box does that), it's judging which ones actually matter. Get the vocabulary straight,
+because people blur it constantly: a **CVE** is a specific named vulnerability; a **CWE** is the
+weakness *type* behind it (CVE-2021-44228 is an instance of CWE-502); **CVSS** scores how bad it is
+*if* exploited. The classic mistake is treating CVSS as a to-do list, worst-first — a 9.8 that nobody
+exploits is less urgent than a 7.5 that's in every breach report this month.
+
+That gap is exactly what **KEV** and **EPSS** close. CISA's Known Exploited Vulnerabilities catalog is
+"confirmed exploited in the wild — this is real, fix it"; EPSS estimates the *probability* something
+will be exploited. Together they turn a wall of CVSS numbers into actual prioritisation. This is the
+same triage a defender does in vulnerability management — the other side of this exact coin — so
+learning to read NVD/KEV/EPSS makes you bilingual: you can tell a defender not just "you run CVE-X"
+but "it's in KEV, here's the urgency."
+
+The judgment: a public PoC on Exploit-DB is a *lead*, not a guarantee — it may target a different
+build, be deliberately defanged, or be malware aimed at lazy attackers. Read it before you run it. And
+models are dangerously fluent here: they will state a wrong affected-version range or invent a
+plausible-looking CVE ID with complete confidence. In vulnerability work a hallucinated "fact" costs
+you hours or sends you down a dead end — confirm against NVD/KEV directly, every time.
+
 ## Learn (~3 hrs)
 
 **The vulnerability ecosystem**

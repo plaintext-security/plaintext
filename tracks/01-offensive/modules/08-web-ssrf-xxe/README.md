@@ -13,6 +13,29 @@ their frequency suggests.
 Identify and exploit SSRF, XXE, and insecure deserialization against deliberately vulnerable
 apps, and explain each root cause and fix.
 
+## The core idea
+The earlier web modules abused the *client→server* trust; these three abuse the **server's own
+position and privileges**. SSRF, XXE, and insecure deserialization share one shape: you trick the
+server into acting on your behalf using *its* network access, *its* filesystem, *its* identity — which
+is why they punch far above their frequency, because the server can reach what you can't. The headline
+case is SSRF against the cloud metadata endpoint (`169.254.169.254`): the server fetches a URL you
+control, you aim it at the metadata service, and you walk off with the host's IAM credentials. That is
+precisely the 2019 Capital One breach — 100M+ records — from one SSRF.
+
+The unifying mental model is the **confused deputy**: a powerful component — the HTTP fetcher, the XML
+parser, the deserializer — acting on attacker input without realising it's been redirected. XXE is
+SSRF-plus-file-read through an XML parser that resolves external entities; insecure deserialization is
+"rebuild this object from bytes I control," which becomes code execution. Once your question is "where
+does the server act on *my* input using *its own* privileges?", you find all three.
+
+The judgment, and the reason this module matters disproportionately: **this is where a web bug becomes
+infrastructure compromise** — the pivot from app to cloud account, which is exactly what the cloud
+track's IAM and metadata hardening defends. The fixes all amount to "stop the deputy trusting input":
+allow-list outbound destinations, disable external entities, sign or avoid deserialization. A model
+explains these abstract classes well, but reliable exploitation needs the target's parser, network
+position, and trust relationships — which it can't see. Learn the class from it; verify the exploit
+against the real app.
+
 ## Learn (~4 hrs)
 
 **Hands-on labs**

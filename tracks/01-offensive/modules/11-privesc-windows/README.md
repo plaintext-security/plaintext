@@ -12,6 +12,26 @@ hardens and Track 06 chains into Active Directory attacks.
 Enumerate a Windows host for privilege-escalation vectors and exploit one to reach SYSTEM in
 your lab.
 
+## The core idea
+Same goal as the Linux module — low-privilege user → SYSTEM — and the same root cause, misconfiguration,
+but Windows has its own idioms worth knowing, because this is the step that turns a phishing foothold
+into domain compromise. The vectors cluster differently: **service misconfigurations** (an unquoted
+service path, or a service whose binary or ACL you can overwrite, running as SYSTEM), **excessive token
+privileges** (the `SeImpersonate` right the "potato" attacks abuse to become SYSTEM), unpatched kernels,
+and scheduled-task or registry abuse. The method is identical to Linux — enumerate the misconfigurations
+first (`winPEAS`/`PrivescCheck`), exploit second — only the catalog of where admins slip is different.
+
+The bridge worth drawing: **Windows privesc runs straight into Active Directory.** The same token,
+service, and privilege misconfigurations you abuse on one host are what the AD track chains across a
+domain, and what the endpoint-hardening track locks down. Local SYSTEM is rarely the goal on Windows —
+it's the springboard to the domain, which is why this module matters beyond the single box.
+
+The judgment: Windows privesc is a minefield of **preconditions** — a specific service ACL, a token
+right, a patch level — that decide whether a vector actually works, and a model can't see them on your
+target. It will explain a vector cleanly and then confidently propose one whose preconditions your box
+doesn't meet, wasting your time or alerting the defender. Confirm each precondition yourself before
+exploiting.
+
 ## Learn (~4 hrs)
 
 **The vectors**

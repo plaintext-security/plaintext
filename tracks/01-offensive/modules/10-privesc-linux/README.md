@@ -13,6 +13,27 @@ hardening.
 Enumerate a Linux host for privilege-escalation vectors and exploit one to gain root in your
 lab.
 
+## The core idea
+Initial access almost never lands you as root — it lands you as `www-data` or some service account,
+and privilege escalation is turning that into root, which is what makes an intrusion genuinely serious.
+The crucial mental shift: Linux privesc is overwhelmingly about **misconfiguration, not exploits.** The
+system *hands* you root when you find the one thing an admin set up wrong — a SUID binary that runs as
+root but will spawn a shell, a too-generous `sudo` rule, a cron job running a script you can write, a
+writable `PATH` entry. So the workflow is **enumerate first, exploit second**: inventory the
+misconfigurations before you try anything.
+
+GTFOBins makes this concrete — it's the catalog of how ordinary Unix binaries (`find`, `vim`, `tar`)
+become a root shell when they run with privilege in the wrong config. Tools like `linpeas` and `pspy`
+automate the enumeration so you're not checking every vector by hand, but they only *gather* — you
+still read the output and judge which lead is real.
+
+The judgment, and the hardening bridge: every vector here is something the defensive side *removes* —
+this is the same list a CIS benchmark or a hardening script audits, read from the attacker's end (do
+this consciously and you can hand a defender the exact fix). A model reads `linpeas` output and proposes
+the likely vector fast, but it will also point confidently at a dead end, or at a kernel exploit that
+crashes the box — kernel exploits are the last resort precisely because they're unstable. Verify the
+vector against GTFOBins by hand before you pull the trigger.
+
 ## Learn (~4 hrs)
 
 **The vectors**

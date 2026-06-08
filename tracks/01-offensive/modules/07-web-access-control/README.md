@@ -12,6 +12,26 @@ everywhere and trivially exploited. Finding it is mostly discipline, not clevern
 Identify and exploit authentication and access-control flaws — including IDOR and privilege
 escalation — and explain the fix.
 
+## The core idea
+Authentication is "who are you"; **authorization** is "what are you allowed to do" — and broken access
+control (the authorization failure) tops the OWASP Top 10 because it's everywhere and trivially
+exploited. The mechanism is almost embarrassing: most apps enforce access at the *UI* (hide the button)
+but not at the *API* (the server still answers if you ask directly). So the attack is just *asking* —
+change `id=123` to `124` and read someone else's record (IDOR), call the admin endpoint as a normal
+user (vertical escalation), or reach a peer's data (horizontal). No payload, no cleverness.
+
+Seen through the lens of the injection module, this is the same disease in a new organ: **the server
+trusting the client.** Injection is the server trusting client *input*; broken access control is the
+server trusting the client to *only ask for what it should*. Both fixes are therefore structural and
+identical in spirit — never trust the client: enforce authorization server-side, deny-by-default, on
+*every* request, not by hiding options the user can still call.
+
+The judgment: this finding is won by **discipline, not brilliance.** You check every action as every
+role — admin, normal user, other user, no auth — and diff what comes back. It's tedious, which is
+exactly why it's the #1 risk: the boring enumeration gets skipped by developers and testers alike. A
+model helps brainstorm which IDs or roles to try, but it won't methodically walk every endpoint × every
+role for you — that disciplined sweep is the job.
+
 ## Learn (~4 hrs)
 
 **Hands-on labs**

@@ -13,6 +13,27 @@ act on.
 Write a professional penetration-test report — executive summary, technical findings with risk
 ratings and evidence, and prioritised remediation — modeled on real public reports.
 
+## The core idea
+The uncomfortable truth that separates a professional from a tool-runner: **nobody buys shells — they
+buy the report.** A client or a defender pays for a clear, prioritised, reproducible account of what's
+wrong and how to fix it. A brilliant exploit that produces a finding the defender can't understand,
+reproduce, or act on is worth nothing. This is the single most career-defining offensive skill and the
+deliverable that gets you re-hired — which is why the track *ends* here, turning everything you found
+into something actionable.
+
+The mental model is audience-driven: the same engagement is told twice. The **executive summary**
+answers "how exposed are we, in business terms, and what do we do Monday?" — no jargon, just risk and
+money. The **technical findings** answer "exactly what, where, proven how, fixed how?" — each with a
+clear title, evidence, reproduction steps, impact, and a risk rating that blends CVSS with *business*
+context (the KEV/EPSS prioritisation from module 03, applied to *this* client's reality). A finding you
+can't reproduce is not a finding.
+
+The judgment, and the sharpest AI line in the whole track: reporting is where AI shines *and* is most
+dangerous. A model drafts clean report prose from your notes in seconds — a real time-saver — but it
+will smooth over a finding you can't actually reproduce, or invent an impact that merely sounds right.
+AI authors the prose; you verify every finding, every number, every CVE. **You sign it; you own it** —
+your name is on a document the client makes real decisions from.
+
 ## Learn (~4 hrs)
 
 **The standard & real examples**
