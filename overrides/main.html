@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
-<!-- Append a per-page comment system (giscus / GitHub Discussions) after the
-     article content. The home page (home.html) overrides this block, so no
-     comments render there. The partial self-guards: nothing renders until the
-     giscus IDs are configured in mkdocs.yml (extra.giscus). -->
+<!-- The per-page comment system (giscus / GitHub Discussions) lives in
+     overrides/partials/comments.html, which Material automatically renders at
+     the end of the article content — so it needs no explicit include here
+     (adding one renders the widget twice). The home page (home.html) empties
+     the content block, so no comments render there. The partial self-guards:
+     nothing renders until the giscus IDs are configured in mkdocs.yml. -->
 
-{% block content %}
-  {{ super() }}
-  {% include "partials/comments.html" %}
-{% endblock %}
