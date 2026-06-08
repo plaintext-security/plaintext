@@ -8,39 +8,44 @@ apt update && apt install -y procps   # provides ps
 ```
 
 ## Scenario
-You've been handed shell access to a server and need to answer basic triage questions:
-who can do what, what's running, and what do the logs say?
+You've been handed shell access to a server and need to answer basic triage questions: who
+can do what, what's running, and what do the logs say?
 
 > Only run this against systems you own or this throwaway container.
 
-## Steps
-1. Map users and privileged accounts:
-   ```bash
-   cut -d: -f1,3 /etc/passwd     # users and UIDs (UID 0 = root)
-   getent group sudo             # who can escalate via sudo
-   ```
-2. Find files that run with their owner's privileges (an escalation surface):
-   ```bash
-   find / -perm -4000 -type f 2>/dev/null   # SUID binaries
-   ```
-3. Inspect running processes:
-   ```bash
-   ps aux --sort=-%cpu | head
-   ```
-4. Parse a log for failed logins (sample one if the container has none):
+## Do
+1. [ ] Map users and privileged accounts:
+   `cut -d: -f1,3 /etc/passwd` (UID 0 = root) and `getent group sudo`
+2. [ ] Find files that run with their owner's privileges (an escalation surface):
+   `find / -perm -4000 -type f 2>/dev/null`
+3. [ ] Inspect the running processes: `ps aux --sort=-%cpu | head`
+4. [ ] Triage failed logins from a sample:
    ```bash
    printf 'Failed password for root from 10.0.0.9 port 22\nFailed password for invalid user admin from 10.0.0.5 port 22\n' > auth.sample
    grep 'Failed password' auth.sample | awk '{print $(NF-1)}' | sort | uniq -c
    ```
 
-## Expected output
-The UID-0 accounts, the default SUID binaries, the top processes by CPU, and a per-IP
-count of failed logins.
+## Success criteria — you're done when
+- [ ] You can list every UID-0 account and everyone who can `sudo`.
+- [ ] You can name the default SUID-root binaries and say why each matters if modified.
+- [ ] Your one-liner prints a per-IP failed-login count.
+
+## Deliverables
+A short `linux-triage.md`: the privileged accounts, the SUID list, and the top failed-login
+IPs — the notes you'd paste into an incident ticket.
 
 ## AI acceleration
-Ask a model to explain any SUID binary it considers unusual — then confirm with `man` and
-your own judgment before acting on it.
+Ask a model to explain any SUID binary it flags as unusual — then confirm with `man` and
+your own judgment before acting.
 
-## Questions
-1. Which binaries are SUID-root by default, and why is each a risk if it were modified?
-2. How would you turn the failed-login one-liner into a ranked "top 5 attackers" list?
+## Connects forward
+This is the host fluency Track 01 (privilege escalation) and Track 07 (host hardening)
+assume, and the artifact-reading habit Track 03 (forensics) builds on.
+
+## Marketable proof
+> "Drop me on an unfamiliar Linux box and I can profile its users, privileged binaries,
+> processes, and auth logs in minutes — by hand or scripted."
+
+## Stretch
+- Turn the failed-login one-liner into a ranked top-5 with a threshold, then rewrite it in
+  Python (a preview of Track 09).
