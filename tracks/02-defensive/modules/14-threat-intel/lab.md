@@ -1,9 +1,18 @@
 # Lab 14 — Work Real Threat Intel
 
 ## Setup
-Docker-first — [MISP](https://www.misp-project.org/) (its docker image), or use the feeds directly.
-Real data: a real free feed from [abuse.ch](https://abuse.ch/) (ThreatFox / URLhaus), plus the
-indicators you extracted in modules 04/05/12.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/14-threat-intel
+make up
+```
+
+This drops you into a Python container pre-loaded with `enrich.py` and a bundled
+ThreatFox-format seed feed (`data/threatfox_sample.csv`). Run `make demo` to see
+a full triage walkthrough. The feed uses the same CSV schema as the real
+[ThreatFox bulk export](https://threatfox.abuse.ch/export/) — swap in the live
+feed once you're ready to enrich against current intel.
 
 ## Scenario
 Bring real threat intelligence to bear: ingest a feed, and use it to enrich an indicator and sharpen
