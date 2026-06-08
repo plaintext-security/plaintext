@@ -1,52 +1,107 @@
-# Lab 07 — Break Access Control (IDOR)
+# Lab 07 — Break Access Control (IDOR + Privilege Escalation)
 
 ## Setup
-Docker-first — OWASP Juice Shop (or DVWA):
+
 ```bash
-docker run --rm -d -p 3000:3000 bkimminich/juice-shop
+git clone https://github.com/plaintext-security/plaintext-labs.git
+cd plaintext-labs/offensive/07-web-access-control
+make up
 ```
-(Or the PortSwigger access-control labs in the browser.)
+
+The container runs a minimal Flask app (`app/app.py`) — Meridian Financial's
+internal order portal — with two deliberate access-control bugs. No live
+network required; the audit script uses Flask's test client.
 
 ## Scenario
-Find a place where the app trusts a client-supplied identifier or role, and access something
-that isn't yours.
 
-> Only attack Juice Shop / DVWA / PortSwigger labs / targets you own.
+Meridian's dev team shipped the internal portal quickly and tested it
+"visually" — the UI hides the admin button from normal users, so it looks
+right. But the server-side checks are broken in two ways. Find them, exploit
+them, and state the fix.
+
+> **Authorization note:** Only attack Juice Shop, DVWA, PortSwigger labs,
+> or other intentionally vulnerable targets. Never test systems you don't own
+> or have explicit written authorisation to test.
 
 ## Do
-1. [ ] Log in as a normal user and find a request that references an object by ID (an order, a
-   profile, a document).
-2. [ ] Change the ID to one belonging to another user — does the server check *who's asking*?
-   (That's IDOR.)
-3. [ ] Find an action or page that should require higher privilege and try to reach it
-   directly.
-4. [ ] State the root cause and the server-side fix.
+
+1. [ ] Run the demo to see both vulnerabilities:
+   ```bash
+   make demo
+   ```
+   Note which HTTP status codes confirm the exploit.
+
+2. [ ] Read `app/app.py`. Find the two vulnerable functions. For each:
+   - Which line is the bug?
+   - What trust assumption is wrong?
+   - What does the server need to check instead?
+
+3. [ ] Trace the IDOR (Bug 1):
+   - `jsmith` is authenticated (owns orders 101, 103). He requests `/api/orders/102`.
+   - What should the server check before returning the order?
+   - The exploit is just changing `101` → `102` in the URL. Why does it work?
+
+4. [ ] Trace the vertical escalation (Bug 2):
+   - `jsmith` hits `/api/admin/users` — gets HTTP 403.
+   - Same request, adds `X-Role: admin` header — gets HTTP 200.
+   - Why does a client-supplied header have any effect on server-side authorization?
+
+5. [ ] Read the access-control matrix in Step 5. Note: bmartin (user role)
+   can also read jsmith's high-value order (id=103, $880k). Why does that cell
+   appear in the matrix, and what does it tell you about how to scope an audit?
+
+6. [ ] Fix Bug 1: edit `app/app.py` and add the ownership check. Re-run
+   `make demo` and confirm the IDOR returns HTTP 403 now.
+
+7. [ ] Fix Bug 2: remove the `X-Role` header trust. Re-run and confirm the
+   escalation returns HTTP 403 with the spoof header.
 
 ## Success criteria — you're done when
-- [ ] You accessed another user's data or a privileged function you shouldn't reach.
-- [ ] You can explain why the server allowed it (missing server-side authorization).
-- [ ] You can state the fix: enforce access control server-side, deny by default.
+
+- [ ] You identified both vulnerable lines in `app/app.py` and can explain the root cause.
+- [ ] You exploited IDOR to read another user's financial data (HTTP 200 on order 102).
+- [ ] You bypassed the admin check via `X-Role: admin` (HTTP 200 on `/api/admin/users`).
+- [ ] You applied both fixes and re-ran `make demo` to confirm both return 403.
+- [ ] You can state the two-part principle: server-side enforcement + deny-by-default.
 
 ## Deliverables
-`access-control.md`: the vulnerable request, the change that worked, what you accessed
-(redacted), and the fix.
 
-## AI acceleration
-Have a model help enumerate which roles/objects to test — but you walk every action as every
-role; that discipline is the actual skill.
-
-## Connects forward
-With injection (06) and these access-control flaws, you've covered the bulk of real-world web
-findings; module 08 adds the server-side classes.
-
-## Marketable proof
-> "I find and exploit broken access control and IDOR — the OWASP #1 risk — and explain the
-> server-side authorization fix."
+`access-control.md`: for each bug — the vulnerable code snippet, the exploit
+request, the HTTP response that proved it, and the fixed code. Include a
+one-line risk statement per bug.
 
 ## Automate & own it
-**Required.** Script the role × object enumeration to test IDOR systematically across IDs; AI
-drafts it, you review; commit the script and the access-control matrix.
+
+**Required.** Write `enumerate.py` that:
+- Logs in as each user in a configurable list
+- Tests every `GET /api/orders/<id>` from 100–110
+- Outputs a table: which IDs each user can access vs. should be allowed to
+- AI drafts the script; you review the authorization logic; commit it
+
+## AI acceleration
+
+Ask a model to generate a list of IDOR test IDs and role-escalation headers
+to try for this app type. Then check each hypothesis in the running lab — the
+model brainstorms, you confirm with real requests. Use a model to annotate
+the `app.py` diff between vulnerable and fixed so you can explain each change.
+
+## Connects forward
+
+IDOR and privilege escalation are the top findings in web app pentests and
+bug-bounty reports. Module 08 adds server-side request forgery (SSRF) and XXE
+— a different attack surface on the same trust-the-server principle.
+
+## Marketable proof
+
+> "I find and exploit broken access control — IDOR and vertical privilege
+> escalation — and explain the server-side ownership and deny-by-default fixes
+> that close them."
 
 ## Stretch
-- Build a role × action matrix for the app and test every cell — the way a real access-control
-  audit is done.
+
+- Build a full role × action matrix for the app: test every endpoint as
+  every role (unauthenticated / user / admin). Record expected vs. actual
+  status codes — this is how a real access-control audit is done.
+- Add a JWT-based authentication variant to `app.py` where the role is encoded
+  in the token claim. Demonstrate that tampering with an unsigned JWT bypasses
+  the check the same way `X-Role` does.
