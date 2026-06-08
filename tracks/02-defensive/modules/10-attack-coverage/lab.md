@@ -1,8 +1,17 @@
 # Lab 10 — Map Your Coverage
 
 ## Setup
-The [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) (in the browser), and your
-detections from modules 08–09.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/10-attack-coverage
+make up
+```
+
+This builds a Python 3.12 container with the sample Sigma rule set (`rules/`) and
+`coverage.py` already loaded. Run `make demo` to see the coverage report and
+`navigator_layer.json` written — then upload that file to the hosted
+[ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) to visualise it.
 
 ## Scenario
 Turn your detections into an honest coverage map and a prioritised gap list.
@@ -21,7 +30,7 @@ Turn your detections into an honest coverage map and a prioritised gap list.
 - [ ] You have a prioritised, justified list of gaps to close.
 
 ## Deliverables
-`coverage.json` (the Navigator layer) + `coverage.md`: your gaps and the prioritised next detections.
+`navigator_layer.json` (the ATT&CK Navigator layer) + `coverage.md`: your gaps and the prioritised next detections.
 
 ## AI acceleration
 Have a model help map detections to techniques and draft the layer — then verify each mapping against
