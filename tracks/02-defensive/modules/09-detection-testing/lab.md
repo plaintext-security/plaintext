@@ -1,8 +1,23 @@
 # Lab 09 — Purple-Team a Detection
 
 ## Setup
-A lab host you own with [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)
-(`Invoke-AtomicRedTeam`), your telemetry/SIEM from Phase 1, and the Sigma detection from module 08.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/09-detection-testing
+make up
+```
+
+Run `make demo` to execute the full purple-team loop: four atomics
+(T1059.001 encoded command, T1547.001 run-key persistence, T1003.001 LSASS
+access, plus a benign FP test) fire against three Sigma rules using an
+in-process matcher — no SIEM required. Each atomic produces an event record
+that mirrors what Sysmon would capture on a real Windows endpoint; you see
+FIRED / MISSED / FALSE-POSITIVE results and the coverage summary.
+
+For real host testing: install
+[Invoke-AtomicRedTeam](https://github.com/redcanaryco/atomic-red-team/wiki/Installing-Invoke-AtomicRedTeam)
+on your own Windows lab VM and wire it to your SIEM from module 06.
 
 ## Scenario
 Fire a real attacker technique and find out whether your detection actually catches it — then tune it.
