@@ -52,6 +52,17 @@ markdown_extensions:
 plugins:
   - search
 
+# Comments via giscus (GitHub Discussions). OFF until the IDs below are filled.
+# Get them from https://giscus.app after: (1) enabling Discussions on the repo,
+# (2) installing the giscus GitHub App, (3) creating the 3 Discussion categories.
+extra:
+  giscus:
+    repo: patrickdaj/plaintext
+    repo_id: ""            # giscus.app → Repository
+    category_feedback: ""  # category ID for "Feedback"
+    category_hints: ""     # category ID for "Hints"
+    category_general: ""   # category ID for "General"
+
 nav:
   - Home: index.md
   - Foundations:

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+<!-- Append a per-page comment system (giscus / GitHub Discussions) after the
+     article content. The home page (home.html) overrides this block, so no
+     comments render there. The partial self-guards: nothing renders until the
+     giscus IDs are configured in mkdocs.yml (extra.giscus). -->
+
+{% block content %}
+  {{ super() }}
+  {% include "partials/comments.html" %}
+{% endblock %}

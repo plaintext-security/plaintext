@@ -1,0 +1,76 @@
+{% if config.extra.giscus and config.extra.giscus.repo_id and page and page.meta.comments != false %}
+<style>
+  .px-comments { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--md-default-fg-color--lightest); }
+  .px-comments h2 { margin-top: 0; }
+  .px-comments .note { color: var(--md-default-fg-color--light); font-size: .8rem; }
+  .px-comment-tabs { display: flex; gap: .5rem; margin: 1rem 0; flex-wrap: wrap; }
+  .px-comment-tabs button {
+    font: inherit; cursor: pointer; padding: .4rem .9rem; border-radius: 4px;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    background: transparent; color: var(--md-default-fg-color--light);
+  }
+  .px-comment-tabs button.active { color: #00ff88; border-color: #00ff88; }
+  .px-comment-panel[hidden] { display: none; }
+</style>
+<div class="px-comments">
+  <h2 id="comments">Comments</h2>
+  <p class="note">Sign in with GitHub to comment. Choose the type:
+    <strong>Feedback</strong> (errors or suggestions on this page) ·
+    <strong>Hints</strong> (help for fellow learners — no spoilers) ·
+    <strong>General</strong> (anything else).</p>
+  <div class="px-comment-tabs">
+    <button class="active" data-cat="feedback">💬 Feedback</button>
+    <button data-cat="hints">💡 Hints</button>
+    <button data-cat="general">🗨️ General</button>
+  </div>
+  <div class="px-comment-panel" data-cat="feedback"></div>
+  <div class="px-comment-panel" data-cat="hints" hidden></div>
+  <div class="px-comment-panel" data-cat="general" hidden></div>
+</div>
+<script>
+(function () {
+  var G = {
+    repo: "{{ config.extra.giscus.repo }}",
+    repoId: "{{ config.extra.giscus.repo_id }}",
+    cat: {
+      feedback: { name: "Feedback", id: "{{ config.extra.giscus.category_feedback }}" },
+      hints:    { name: "Hints",    id: "{{ config.extra.giscus.category_hints }}" },
+      general:  { name: "General",  id: "{{ config.extra.giscus.category_general }}" }
+    }
+  };
+  function load(panel) {
+    if (!panel || panel.dataset.loaded) return;
+    var c = G.cat[panel.dataset.cat];
+    var s = document.createElement("script");
+    s.src = "https://giscus.app/client.js";
+    s.async = true; s.crossOrigin = "anonymous";
+    s.setAttribute("data-repo", G.repo);
+    s.setAttribute("data-repo-id", G.repoId);
+    s.setAttribute("data-category", c.name);
+    s.setAttribute("data-category-id", c.id);
+    s.setAttribute("data-mapping", "pathname");
+    s.setAttribute("data-strict", "1");
+    s.setAttribute("data-reactions-enabled", "1");
+    s.setAttribute("data-input-position", "top");
+    s.setAttribute("data-theme", "dark");
+    s.setAttribute("data-lang", "en");
+    panel.appendChild(s);
+    panel.dataset.loaded = "1";
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    var panels = document.querySelectorAll(".px-comment-panel");
+    var tabs = document.querySelectorAll(".px-comment-tabs button");
+    load(document.querySelector('.px-comment-panel[data-cat="feedback"]'));
+    tabs.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tabs.forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+        var cat = btn.dataset.cat;
+        panels.forEach(function (p) { p.hidden = (p.dataset.cat !== cat); });
+        load(document.querySelector('.px-comment-panel[data-cat="' + cat + '"]'));
+      });
+    });
+  });
+})();
+</script>
+{% endif %}
