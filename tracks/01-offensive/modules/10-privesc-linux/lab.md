@@ -38,6 +38,10 @@ hardening).
 > "I enumerate and escalate privilege on Linux — SUID, sudo, and cron misconfigurations via
 > GTFOBins — and can explain the fix for each."
 
+## Automate & own it
+**Required.** Wrap `linpeas` triage + a GTFOBins lookup into a notes/script that shortlists the
+viable vectors; AI drafts it, you confirm each against GTFOBins; commit it.
+
 ## Stretch
 - Exploit a real local-privesc CVE such as **PwnKit (CVE-2021-4034)** in a lab container, and
   explain why it was so widespread.

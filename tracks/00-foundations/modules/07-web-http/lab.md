@@ -42,6 +42,10 @@ telemetry assume.
 > "I can read and craft raw HTTP with curl — methods, headers, status codes, redirects, and
 > cookies — which is the basis of every web attack and defense."
 
+## Automate & own it
+**Required.** Write a small `curl` or Python script that issues the requests and extracts the
+security-relevant response headers (Set-Cookie, Location, CSP); AI drafts, you review; commit it.
+
 ## Stretch
 - Capture an HTTPS request with `curl -v https://example.com`: you'll see the TLS
   negotiation but not the payload. Tie it back to module 09.

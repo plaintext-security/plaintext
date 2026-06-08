@@ -44,6 +44,10 @@ Directory attacks like Kerberoasting.
 > "I crack real password hashes with hashcat — identifying hash types and choosing attack
 > modes — and can argue the hashing/MFA defenses that defeat it."
 
+## Automate & own it
+**Required.** Script the workflow — identify hash type → pick the hashcat mode → time the run →
+record results; AI drafts it, you verify the mode; commit `cracking.md` and the script.
+
 ## Stretch
 - Crack a captured NTLMv2 hash, then explain why Kerberoasting (Track 06) hands you crackable
   hashes legitimately.

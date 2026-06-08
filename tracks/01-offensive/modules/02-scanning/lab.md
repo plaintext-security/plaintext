@@ -41,6 +41,10 @@ The service versions you find here are the input to module 03 (vulnerability ide
 > "I scan and enumerate a target with Nmap — host discovery, version detection, NSE — and
 > read the output to find the next step."
 
+## Automate & own it
+**Required.** Wrap scan → parse into a script that emits the open services as JSON for the next
+phase; AI drafts it, you check it against the raw scan output; commit it.
+
 ## Stretch
 - Capture your scan with `tcpdump` (Foundations module 06) and watch a SYN scan's half-open
   handshakes on the wire.

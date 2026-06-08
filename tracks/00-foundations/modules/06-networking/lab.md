@@ -47,6 +47,10 @@ Reading the wire underpins Offensive recon/scanning, Defensive network monitorin
 > "I can take a packet capture cold and walk the DNS lookup and the TCP handshake — and
 > script the triage."
 
+## Automate & own it
+**Required.** Script the capture-and-parse — pull the DNS query and the SYN/SYN-ACK/ACK from a
+capture file — into a repeatable tool. AI drafts; you verify it against the packets; commit it.
+
 ## Stretch
 - Capture an HTTPS request (`curl https://example.com`): you'll see the TLS ClientHello but
   not the payload. Explain why — and what a defender can still learn from the metadata.

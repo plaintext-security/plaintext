@@ -32,6 +32,20 @@ collect exploits; it's to understand *why* systems fall so you can explain and f
 | 15 | Cloud & Container Attack Primer | Where on-prem skills meet cloud (handoff to T05) | `pacu`, `peirates` |
 | 16 | Reporting & Remediation | Prioritised, reproducible, defender-ready reports | `ghostwriter` |
 
+## Phases & projects
+
+The sixteen modules run in four phases; each ends in a **project** that chains its modules into
+a portfolio-worthy artifact.
+
+- **Phase 1 · Recon & mapping** (01–03) — **Project:** a full attack-surface map of an authorised
+  target → scan → prioritised vulnerability list, scripted and reproducible.
+- **Phase 2 · Finding the way in** (04–08) — **Project:** gain access to a real-CVE Vulhub target and
+  exploit one web class on a deliberately vulnerable app, captured as a replayable PoC + writeup.
+- **Phase 3 · After access** (09–15) — **Project:** from a foothold, crack credentials, escalate to
+  root/SYSTEM, and pivot — documented as a single attack chain with the artifacts each step leaves.
+- **Phase 4 · Closing the loop** (16) — **Project:** the track capstone — the professional
+  engagement report.
+
 ## Prerequisites
 Complete Track 00 — Foundations first.
 

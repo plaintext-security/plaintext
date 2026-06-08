@@ -44,6 +44,10 @@ depth), and any HTTPS you inspect in Track 01.
 > "I can exercise and audit the core crypto primitives with openssl — hashing, AES, RSA,
 > and a live certificate chain — and explain what each does and doesn't guarantee."
 
+## Automate & own it
+**Required.** Script the primitives into a tiny verify-an-artifact tool (hash a file, then check a
+host's certificate expiry). AI drafts; you confirm the flags against the OpenSSL Cookbook; commit it.
+
 ## Stretch
 - Redo the symmetric step with `-aes-256-gcm` (AEAD) and explain what the authentication
   tag changes.

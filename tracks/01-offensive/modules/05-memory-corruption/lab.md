@@ -44,6 +44,10 @@ reference; deeper exploit development is its own advanced path.
 > "I can explain and demonstrate a stack buffer overflow — from crash to controlled
 > instruction pointer — so memory-corruption CVEs aren't a black box to me."
 
+## Automate & own it
+**Required.** Script the offset discovery and exploit-input generation (a few lines of
+Python/pwntools); AI drafts it, you confirm it in the debugger; commit it (not the binary).
+
 ## Stretch
 - Turn ASLR, then the stack canary, back on one at a time and see what breaks — and why those
   mitigations exist.

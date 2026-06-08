@@ -83,7 +83,10 @@ A module is **not** a summary page. It is a self-contained unit that takes a lea
 - **Do** — an ordered checklist of *objectives*, not transcribed commands: state the goal (plus a hint) and let the learner derive the *how* from the Learn path and `man`. Show a command only when the syntax itself is the lesson. Scale the hand-holding to the track — **Foundations:** objective + a hint; **specialization tracks:** the objective; **advanced:** just the scenario and the outcome. Each step feeds the next.
 - **Success criteria** — measurable "you're done when…" checkboxes.
 - **Deliverables** — exactly what gets committed (the portfolio artifact); lab *artifacts* (captures, keys, dumps) stay out of commits.
+- **Automate & own it** — a *required* step: turn the lab's manual work into a small reusable script/tool (or an AI/MCP/RAG build where the topic fits), with **AI drafting and the learner reviewing every line**, committed alongside the deliverable. This is where the AI/automation thread becomes hands-on rather than advisory.
 - **AI acceleration**, **Connects forward**, **Marketable proof**, and an optional **Stretch**.
+
+**Tracks group their modules into phases, and every phase ends in a phase project** — a larger, portfolio-worthy build that integrates and automates the phase's modules (a *phase* is the substantial, standalone unit; a single module is a few hours). The per-track **capstone** then integrates the phases. Keep individual modules digestible; concentrate the bigger builds in the phase projects and the capstone.
 
 The canonical fill-in templates for both files live in `CONTRIBUTING.md`.
 

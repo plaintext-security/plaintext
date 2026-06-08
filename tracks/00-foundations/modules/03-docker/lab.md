@@ -38,6 +38,10 @@ This is the substrate for every lab in the curriculum, and the groundwork for Tr
 > "I'm fluent with containers — run, build, inspect, and reason about their isolation model
 > — which is how every modern security lab and pipeline runs."
 
+## Automate & own it
+**Required.** Commit a small `Dockerfile` you wrote — AI may draft it, but you review it for a
+non-root user, a pinned base image, and no baked-in secrets before committing.
+
 ## Stretch
 - Run a container as a non-root user with a read-only filesystem; note what breaks and what
   that buys you.

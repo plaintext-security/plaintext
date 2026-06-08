@@ -38,6 +38,10 @@ This is the analytical frame for every track's threat model and the Threat Model
 > "I analyse incidents through first principles — CIA, least privilege, defense in depth —
 > not just tool output."
 
+## Automate & own it
+**Required.** Have a model produce its *own* CIA/principle mapping of your breach, then correct
+and annotate it — and commit *your* reconciled version. Owning the disagreement is the point.
+
 ## Stretch
 - Re-frame the breach from the attacker's side: which principle did they exploit, and what
   was the cheapest control that would have stopped them?

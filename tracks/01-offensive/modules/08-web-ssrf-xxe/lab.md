@@ -39,6 +39,10 @@ the bridge.
 > "I exploit SSRF, XXE, and insecure deserialization — the server-side classes behind real
 > breaches like Capital One — and explain each fix."
 
+## Automate & own it
+**Required.** Script an SSRF probe that walks a list of internal targets through the vulnerable
+parameter; AI drafts it, you reason about the server's network position; commit it.
+
 ## Stretch
 - Research exactly how the Capital One SSRF reached the AWS metadata service, and what
   IMDSv2 changed to mitigate it.

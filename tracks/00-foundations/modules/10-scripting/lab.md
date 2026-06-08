@@ -43,5 +43,9 @@ This is the on-ramp to Track 09 (Python for Security) and the parsing habit Trac
 > "I automate triage in Python — log parsing, enrichment, ranked output — and I can review
 > and harden AI-generated tooling instead of pasting it blind."
 
+## Automate & own it
+**Required.** `topips.py` *is* your artifact — commit it with a short README. Then have AI add the
+`--json` and `--threshold` flags and review the diff line by line before you keep it.
+
 ## Stretch
 - Add `--json` and `--threshold N` flags with `argparse`, and let it read from stdin too.

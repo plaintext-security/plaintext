@@ -40,6 +40,10 @@ movement (module 12).
 > "I enumerate and escalate privilege on Windows — service and token misconfigurations via
 > winPEAS/LOLBAS — to SYSTEM, and can explain each fix."
 
+## Automate & own it
+**Required.** Script the `winPEAS`-output triage to shortlist vectors and their preconditions; AI
+drafts it, you verify the preconditions on the target; commit it.
+
 ## Stretch
 - Research a real Windows privesc CVE such as **PrintNightmare (CVE-2021-34527)** and explain
   how it reached SYSTEM.

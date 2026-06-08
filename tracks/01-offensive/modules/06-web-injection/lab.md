@@ -41,6 +41,10 @@ Injection is one of three web classes here; module 07 (auth & access control) an
 > "I find, exploit, and explain SQL and command injection — from detection to data extraction
 > to the correct parameterised-query fix."
 
+## Automate & own it
+**Required.** After exploiting by hand, script the extraction (or run `sqlmap`) and document exactly
+what it automated versus what you did manually; commit the writeup and the script.
+
 ## Stretch
 - Re-run the same finding with `sqlmap`, then explain everything sqlmap did that you'd done by
   hand.

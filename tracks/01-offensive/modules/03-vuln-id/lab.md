@@ -39,6 +39,10 @@ A confirmed, exploitable vulnerability is the input to module 04 (exploitation f
 > "I turn an enumerated service into a real risk assessment — CVE, CWE, CVSS, KEV, and PoC
 > availability — and prioritise by what's actually exploited, not raw scores."
 
+## Automate & own it
+**Required.** Pull the CVE data from the NVD API in Python and flag any of your findings that
+appear in CISA KEV; AI drafts it, you verify against NVD; commit it.
+
 ## Stretch
 - Pull the same CVE data from the NVD API in Python and flag any of your findings that appear
   in KEV (a preview of Track 09).

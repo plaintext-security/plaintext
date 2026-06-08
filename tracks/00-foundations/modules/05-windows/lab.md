@@ -48,6 +48,10 @@ Track 03 (forensics) assume — and reading a real EVTX previews Track 02 detect
 > "I can profile a Windows host and find an attacker's logon and persistence in a real
 > event-log sample — not just Linux."
 
+## Automate & own it
+**Required.** Write a PowerShell script that collects the local admins, auto-start services, and
+recent logon events into a single report (AI-assisted, reviewed before you run it as admin); commit it.
+
 ## Stretch
 - Map the suspicious activity you found to its MITRE ATT&CK technique, and note which Event
   ID(s) would detect it.

@@ -42,5 +42,9 @@ The assets you map here are the input to module 02 (scanning & enumeration).
 > "I map an external attack surface from OSINT — subdomains, tech stack, exposed services —
 > methodically and in-scope, the way bug-bounty and red-team recon actually works."
 
+## Automate & own it
+**Required.** Script your passive recon into a repeatable tool that outputs the asset inventory;
+AI drafts it, you verify every asset actually resolves; commit it.
+
 ## Stretch
 - Script the passive subdomain enumeration into a repeatable tool (a preview of Track 09).

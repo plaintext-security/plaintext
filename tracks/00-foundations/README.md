@@ -29,6 +29,21 @@ work in the open with git. Build this floor solid and everything above it gets e
 | 11 | Version Control & Working in the Open | git, pull requests, and keeping secrets out of history | `git` |
 | 12 | Threat Modeling | Trust boundaries and STRIDE — model before you test | — |
 
+## Phases & projects
+
+The twelve modules group into three phases; each phase ends in a **project** that integrates
+and automates its modules (a phase is the substantial, standalone unit — a single module is a
+few hours).
+
+- **Phase 1 · Lab & first principles** (01–03) — **Project:** stand up your isolated,
+  reproducible lab (VM + containers), captured as a rebuild-from-zero script, and threat-model it.
+- **Phase 2 · Hosts & networks** (04–07) — **Project:** a scripted triage toolkit that profiles a
+  Linux *and* a Windows host (users, SUID/services, logon events) and pulls the DNS + handshake from
+  a capture.
+- **Phase 3 · Data, crypto, automation & git** (08–12) — **Project:** the track capstone — a Python
+  "foundations toolkit" repo that decodes real artifacts, checks crypto, and parses a real log,
+  committed with secret hygiene and a STRIDE model.
+
 ## Who this is for
 
 Complete beginners and anyone wanting to solidify fundamentals before moving to a

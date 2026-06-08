@@ -40,6 +40,10 @@ safe.
 > "I run an isolated, reproducible lab — snapshot-and-revert VMs plus containers — so I can
 > detonate and break things safely."
 
+## Automate & own it
+**Required.** Capture your lab build as a rebuild-from-zero script or checklist (have AI draft it
+from your notes); prove it reproduces the lab, and commit it.
+
 ## Stretch
 - Add a second VM and put both on a private lab-only network so they can talk to each other
   but nothing else.

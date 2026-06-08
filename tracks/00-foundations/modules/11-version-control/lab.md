@@ -36,6 +36,10 @@ Track 10 (CI/CD) build on.
 > "I work in the open with git — branches, pull requests, clean history — and I keep secrets
 > out of repos, exactly how detection-as-code and IaC teams operate."
 
+## Automate & own it
+**Required.** Add a pre-commit hook (or `gitleaks`) that blocks a commit containing a key — AI may
+draft the config, but you verify it actually blocks a test secret, then commit it.
+
 ## Stretch
 - Add a pre-commit hook (or try `gitleaks`) that blocks a commit containing a key — a preview
   of Tracks 08 and 10.

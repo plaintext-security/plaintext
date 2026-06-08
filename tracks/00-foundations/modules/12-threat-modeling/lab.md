@@ -43,6 +43,10 @@ a threat modeled and then proven.
 > "I threat-model a system with STRIDE — assets, trust boundaries, threats, and mitigations
 > — before reaching for a single tool."
 
+## Automate & own it
+**Required.** Have a model generate a STRIDE pass from your data-flow description, then prune and
+correct it to what's real for *this* app — commit *your* owned model, noting what you cut and why.
+
 ## Stretch
 - Re-model the same app as an attacker (an attack tree): pick one STRIDE threat and
   decompose how you'd actually achieve it.

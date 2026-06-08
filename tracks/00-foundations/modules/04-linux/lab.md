@@ -48,6 +48,10 @@ assume, and the artifact-reading habit Track 03 (forensics) builds on.
 > "Drop me on an unfamiliar Linux box and I can profile its users, privileged binaries,
 > processes, and auth logs in minutes — by hand or scripted."
 
+## Automate & own it
+**Required.** Turn your by-hand triage into one reusable script (users + SUID + ranked
+failed-logins). Have AI draft it, review every line, and commit it as `linux-triage.sh`.
+
 ## Stretch
 - Turn the failed-login one-liner into a ranked top-5 with a threshold, then rewrite it in
   Python (a preview of Track 09).

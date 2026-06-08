@@ -43,6 +43,10 @@ findings; module 08 adds the server-side classes.
 > "I find and exploit broken access control and IDOR — the OWASP #1 risk — and explain the
 > server-side authorization fix."
 
+## Automate & own it
+**Required.** Script the role × object enumeration to test IDOR systematically across IDs; AI
+drafts it, you review; commit the script and the access-control matrix.
+
 ## Stretch
 - Build a role × action matrix for the app and test every cell — the way a real access-control
   audit is done.

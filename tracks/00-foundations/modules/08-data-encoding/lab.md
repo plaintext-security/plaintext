@@ -49,6 +49,10 @@ Track 01 (web attacks); `jq` over feeds like KEV feeds Track 02 and Track 09.
 > dump, a live threat-intel JSON feed — with CyberChef and jq, without confusing encoding for
 > encryption."
 
+## Automate & own it
+**Required.** Write a script that pulls the live CISA KEV feed and answers your `jq` questions
+programmatically (AI-drafted, you review the logic); commit it.
+
 ## Stretch
 - Decode a multiply-encoded real web-attack payload (URL- then base64-encoded) from a public
   web-server log or dataset, and identify the attack.
