@@ -1,4 +1,4 @@
-# Lab 06 — Threat-Modeling a Small Application
+# Lab 12 — Threat-Modeling a Small Application
 
 ## Setup
 No attack tooling — you need only a diagram and a list. Optionally model a real vulnerable

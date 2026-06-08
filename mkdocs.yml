@@ -58,24 +58,42 @@ nav:
   - Home: index.md
   - Foundations:
       - Overview: 00-foundations/README.md
-      - "01 · Networking Fundamentals":
-          - Concept: 00-foundations/modules/01-networking/README.md
-          - Lab: 00-foundations/modules/01-networking/lab.md
-      - "02 · Linux for Security":
-          - Concept: 00-foundations/modules/02-linux/README.md
-          - Lab: 00-foundations/modules/02-linux/lab.md
-      - "03 · Scripting & Automation":
-          - Concept: 00-foundations/modules/03-scripting/README.md
-          - Lab: 00-foundations/modules/03-scripting/lab.md
-      - "04 · Cryptography Basics":
-          - Concept: 00-foundations/modules/04-cryptography/README.md
-          - Lab: 00-foundations/modules/04-cryptography/lab.md
-      - "05 · Web & HTTP Fundamentals":
-          - Concept: 00-foundations/modules/05-web-http/README.md
-          - Lab: 00-foundations/modules/05-web-http/lab.md
-      - "06 · Security Fundamentals & Threat Modeling":
-          - Concept: 00-foundations/modules/06-threat-modeling/README.md
-          - Lab: 00-foundations/modules/06-threat-modeling/lab.md
+      - "01 · Security First Principles":
+          - Concept: 00-foundations/modules/01-security-principles/README.md
+          - Lab: 00-foundations/modules/01-security-principles/lab.md
+      - "02 · Building a Safe Lab":
+          - Concept: 00-foundations/modules/02-lab-setup/README.md
+          - Lab: 00-foundations/modules/02-lab-setup/lab.md
+      - "03 · Docker & Containers":
+          - Concept: 00-foundations/modules/03-docker/README.md
+          - Lab: 00-foundations/modules/03-docker/lab.md
+      - "04 · Linux for Security":
+          - Concept: 00-foundations/modules/04-linux/README.md
+          - Lab: 00-foundations/modules/04-linux/lab.md
+      - "05 · Windows for Security":
+          - Concept: 00-foundations/modules/05-windows/README.md
+          - Lab: 00-foundations/modules/05-windows/lab.md
+      - "06 · Networking Fundamentals":
+          - Concept: 00-foundations/modules/06-networking/README.md
+          - Lab: 00-foundations/modules/06-networking/lab.md
+      - "07 · Web & HTTP Fundamentals":
+          - Concept: 00-foundations/modules/07-web-http/README.md
+          - Lab: 00-foundations/modules/07-web-http/lab.md
+      - "08 · Data & Encoding":
+          - Concept: 00-foundations/modules/08-data-encoding/README.md
+          - Lab: 00-foundations/modules/08-data-encoding/lab.md
+      - "09 · Cryptography Basics":
+          - Concept: 00-foundations/modules/09-cryptography/README.md
+          - Lab: 00-foundations/modules/09-cryptography/lab.md
+      - "10 · Scripting & Automation":
+          - Concept: 00-foundations/modules/10-scripting/README.md
+          - Lab: 00-foundations/modules/10-scripting/lab.md
+      - "11 · Version Control & Working in the Open":
+          - Concept: 00-foundations/modules/11-version-control/README.md
+          - Lab: 00-foundations/modules/11-version-control/lab.md
+      - "12 · Threat Modeling":
+          - Concept: 00-foundations/modules/12-threat-modeling/README.md
+          - Lab: 00-foundations/modules/12-threat-modeling/lab.md
   - Offensive Security: 01-offensive/README.md
   - Defensive Operations: 02-defensive/README.md
   - Digital Forensics & IR: 03-forensics/README.md

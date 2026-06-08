@@ -1,4 +1,4 @@
-# Lab 04 — Hashing, Encryption, and Certificates with openssl
+# Lab 09 — Hashing, Encryption, and Certificates with openssl
 
 ## Setup
 Docker-first:
@@ -11,29 +11,17 @@ apk add openssl
 Exercise each primitive once so its guarantee becomes concrete rather than abstract.
 
 ## Do
-1. [ ] Hash for integrity:
-   ```bash
-   echo "transfer 100 to alice" > msg.txt
-   openssl dgst -sha256 msg.txt
-   ```
-2. [ ] Symmetric round-trip (AES):
-   ```bash
-   openssl enc -aes-256-cbc -pbkdf2 -in msg.txt -out msg.enc
-   openssl enc -d -aes-256-cbc -pbkdf2 -in msg.enc
-   ```
-3. [ ] Asymmetric (RSA):
-   ```bash
-   openssl genrsa -out priv.pem 2048
-   openssl rsa -in priv.pem -pubout -out pub.pem
-   openssl pkeyutl -encrypt -pubin -inkey pub.pem -in msg.txt -out msg.rsa
-   openssl pkeyutl -decrypt -inkey priv.pem -in msg.rsa
-   ```
-4. [ ] Inspect a real certificate (needs outbound network):
-   ```bash
-   echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/null \
-     | openssl x509 -noout -issuer -subject -dates
-   ```
-5. [ ] Flip one byte of `msg.enc` and try to decrypt it — observe.
+Look the exact invocations up in the OpenSSL Cookbook — choosing the right subcommand and
+flags is the lesson.
+
+1. [ ] Produce a SHA-256 digest of a short message, and say why a hash proves integrity but
+   not secrecy.
+2. [ ] Encrypt that message with AES and decrypt it back — a full round-trip. (Use a
+   key-derivation flag so a passphrase works.)
+3. [ ] Generate an RSA keypair, encrypt with the public key, and decrypt with the private
+   key.
+4. [ ] Pull a real website's certificate and read its issuer, subject, and validity dates.
+5. [ ] Flip a single byte of the AES ciphertext and try to decrypt — observe what happens.
 
 ## Success criteria — you're done when
 - [ ] You produce a SHA-256 digest and can say why it proves integrity, not secrecy.

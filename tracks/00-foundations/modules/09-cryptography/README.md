@@ -1,4 +1,4 @@
-# Module 04 — Cryptography Basics
+# Module 09 — Cryptography Basics
 
 **Foundations** — *the trust layer under every secure system.*
 

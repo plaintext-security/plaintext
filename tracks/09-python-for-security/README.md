@@ -26,7 +26,7 @@ direct and review the ones AI writes.
 | 10 | Packaging, Testing & Owning AI Code | Reviewing, testing, and shipping | `pytest`, `ruff` |
 
 ## Prerequisites
-Complete Track 00 — Foundations (module 03 — Scripting & Automation).
+Complete Track 00 — Foundations (module 10 — Scripting & Automation).
 
 ## Capstone
 Build a small but genuinely useful security tool — for example, an IOC enrichment CLI or an

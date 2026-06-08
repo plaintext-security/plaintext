@@ -1,4 +1,4 @@
-# Module 05 — Web & HTTP Fundamentals
+# Module 07 — Web & HTTP Fundamentals
 
 **Foundations** — *almost every web attack and defense is just manipulating these fields.*
 

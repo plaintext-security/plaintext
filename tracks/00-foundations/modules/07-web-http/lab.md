@@ -1,4 +1,4 @@
-# Lab 05 — Dissecting HTTP with curl
+# Lab 07 — Dissecting HTTP with curl
 
 ## Setup
 Docker-first — run a local echo server so you can see exactly what you send:
@@ -11,15 +11,15 @@ Then use your host's `curl` against `http://localhost:8080`.
 Send requests to a local httpbin instance and read every part of the exchange.
 
 ## Do
-1. [ ] `curl -v http://localhost:8080/get` — read the full request and response headers.
-2. [ ] `curl -X POST http://localhost:8080/post -d 'user=alice&role=admin'` — watch the body echoed back.
-3. [ ] `curl -i http://localhost:8080/redirect/1` then `curl -iL http://localhost:8080/redirect/1` — observe a 302, then follow it.
-4. [ ] Set a cookie and resend it:
-   ```bash
-   curl -i 'http://localhost:8080/cookies/set?session=abc123'
-   curl --cookie 'session=abc123' http://localhost:8080/cookies
-   ```
-5. [ ] Clean up: `docker rm -f httpbin`
+Figure out the `curl` flags from its manual — knowing which flag does what is half the lab.
+
+1. [ ] Make a plain GET request and read the full request *and* response headers.
+2. [ ] Send a POST with form data and watch the server echo your body back.
+3. [ ] Trigger a redirect: observe the 3xx status and its `Location` header, then make curl
+   follow it.
+4. [ ] Set a cookie via one request, then send it back on the next — proving you carried
+   state across two otherwise stateless requests.
+5. [ ] Tear down the container when done.
 
 ## Success criteria — you're done when
 - [ ] You can identify the method, status code, and key headers in an exchange.
@@ -44,4 +44,4 @@ telemetry assume.
 
 ## Stretch
 - Capture an HTTPS request with `curl -v https://example.com`: you'll see the TLS
-  negotiation but not the payload. Tie it back to module 04.
+  negotiation but not the payload. Tie it back to module 09.

@@ -78,7 +78,7 @@ A module is **not** a summary page. It is a self-contained unit that takes a lea
 
 **`lab.md` — the project**
 - **Setup** (Docker-first) and **Scenario** (with the authorization note where it attacks a target).
-- **Do** — an ordered checklist; each step feeds the next.
+- **Do** — an ordered checklist of *objectives*, not transcribed commands: state the goal (plus a hint) and let the learner derive the *how* from the Learn path and `man`. Show a command only when the syntax itself is the lesson. Scale the hand-holding to the track — **Foundations:** objective + a hint; **specialization tracks:** the objective; **advanced:** just the scenario and the outcome. Each step feeds the next.
 - **Success criteria** — measurable "you're done when…" checkboxes.
 - **Deliverables** — exactly what gets committed (the portfolio artifact); lab *artifacts* (captures, keys, dumps) stay out of commits.
 - **AI acceleration**, **Connects forward**, **Marketable proof**, and an optional **Stretch**.

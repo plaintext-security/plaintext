@@ -1,4 +1,4 @@
-# Lab 02 — Investigating a Linux Host with Core Tools
+# Lab 04 — Investigating a Linux Host with Core Tools
 
 ## Setup
 Docker-first — work inside a disposable container so nothing touches your host:
@@ -14,16 +14,17 @@ can do what, what's running, and what do the logs say?
 > Only run this against systems you own or this throwaway container.
 
 ## Do
-1. [ ] Map users and privileged accounts:
-   `cut -d: -f1,3 /etc/passwd` (UID 0 = root) and `getent group sudo`
-2. [ ] Find files that run with their owner's privileges (an escalation surface):
-   `find / -perm -4000 -type f 2>/dev/null`
-3. [ ] Inspect the running processes: `ps aux --sort=-%cpu | head`
-4. [ ] Triage failed logins from a sample:
-   ```bash
-   printf 'Failed password for root from 10.0.0.9 port 22\nFailed password for invalid user admin from 10.0.0.5 port 22\n' > auth.sample
-   grep 'Failed password' auth.sample | awk '{print $(NF-1)}' | sort | uniq -c
-   ```
+Derive the commands yourself — the Learn resources and `man` pages are how. The goal, not
+the keystrokes, is the point.
+
+1. [ ] List every local account and work out which can become root. (Where do local users
+   live? Which group grants `sudo`?)
+2. [ ] Find every file that runs with its owner's privileges — the SUID set. (What
+   permission bit is that, and how do you search the whole filesystem for it?)
+3. [ ] Show the running processes, sorted by CPU usage.
+4. [ ] Given a log of failed SSH logins, produce a ranked per-source-IP count. (No log
+   handy? Make a few `Failed password ... from <ip>` lines. Reach for `grep`, `awk`,
+   `sort`, `uniq` — the pipeline *is* the skill.)
 
 ## Success criteria — you're done when
 - [ ] You can list every UID-0 account and everyone who can `sudo`.

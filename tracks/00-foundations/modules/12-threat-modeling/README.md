@@ -1,4 +1,4 @@
-# Module 06 — Security Fundamentals & Threat Modeling
+# Module 12 — Threat Modeling
 
 **Foundations** — *judgment before tools: what are we protecting, from whom, and where can it go wrong?*
 

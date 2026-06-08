@@ -1,4 +1,4 @@
-# Lab 01 — Capture and Dissect a Live Exchange
+# Lab 06 — Capture and Dissect a Live Exchange
 
 ## Setup
 Docker-first — `netshoot` ships every tool you need (`tcpdump`, `curl`, `dig`):
@@ -13,12 +13,17 @@ you and read by you.
 > Capture only on systems/networks you own, or inside this throwaway container.
 
 ## Do
-1. [ ] Start a capture in the background: `tcpdump -i any -w cap.pcap &`
-2. [ ] Generate traffic: `dig example.com` then `curl http://example.com`
-3. [ ] Stop the capture: `kill %1`
-4. [ ] Read the DNS exchange: `tcpdump -r cap.pcap -n port 53`
-5. [ ] Isolate the handshake: `tcpdump -r cap.pcap -n 'tcp[tcpflags] & (tcp-syn|tcp-ack) != 0'`
-6. [ ] (Optional) Copy `cap.pcap` to your host, open it in Wireshark, and "Follow TCP Stream."
+Work out the commands from the Learn resources and `man tcpdump` — that derivation *is* the
+lab.
+
+1. [ ] Start a packet capture on all interfaces, writing to a file, in the background.
+   (Which flags write to a file rather than print? How do you background a command?)
+2. [ ] In another shell, generate exactly one DNS lookup and one HTTP request.
+3. [ ] Stop the capture cleanly.
+4. [ ] From the saved file, isolate just the DNS traffic and find the query and its answer.
+5. [ ] Isolate the TCP handshake — the SYN, SYN-ACK, and ACK. (Hint: `tcpdump` can filter on
+   TCP flags.)
+6. [ ] Open the capture in Wireshark and "Follow TCP Stream" to read the whole exchange.
 
 ## Success criteria — you're done when
 - [ ] You can point to the DNS query and the A record it returned.

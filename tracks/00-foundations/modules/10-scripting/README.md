@@ -1,4 +1,4 @@
-# Module 03 — Scripting & Automation
+# Module 10 — Scripting & Automation
 
 **Foundations** — *stop doing by hand what a 20-line script does reliably.*
 

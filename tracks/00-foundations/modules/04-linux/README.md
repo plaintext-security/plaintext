@@ -1,4 +1,4 @@
-# Module 02 — Linux for Security
+# Module 04 — Linux for Security
 
 **Foundations** — *most of what you'll defend, attack, or investigate runs on Linux.*
 

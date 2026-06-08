@@ -1,4 +1,4 @@
-# Module 01 — Networking Fundamentals
+# Module 06 — Networking Fundamentals
 
 **Foundations** — *you can't attack, defend, or investigate what you can't read on the wire.*
 

@@ -1,4 +1,4 @@
-# Lab 03 — A Failed-Login Parser in Python
+# Lab 10 — A Failed-Login Parser in Python
 
 ## Setup
 Docker-first (mounts the current directory so your script persists):
@@ -11,34 +11,16 @@ Build a tool that reads an auth log and reports the top source IPs by failed-log
 the triage script you'll write a hundred variations of.
 
 ## Do
-1. [ ] Create a sample `auth.log`:
-   ```
-   Jan 1 10:00:01 host sshd[1]: Failed password for root from 10.0.0.9 port 22 ssh2
-   Jan 1 10:00:02 host sshd[2]: Failed password for invalid user admin from 10.0.0.5 port 22 ssh2
-   Jan 1 10:00:03 host sshd[3]: Failed password for root from 10.0.0.9 port 22 ssh2
-   ```
-2. [ ] Write `topips.py`:
-   ```python
-   import re, sys
-   from collections import Counter
+Write the script yourself — or have AI draft it and then review every line. Don't paste
+without reading.
 
-   PATTERN = re.compile(r"Failed password .* from (\d+\.\d+\.\d+\.\d+)")
-
-   def top_ips(path, n=5):
-       counts = Counter()
-       with open(path) as f:
-           for line in f:
-               m = PATTERN.search(line)
-               if m:
-                   counts[m.group(1)] += 1
-       return counts.most_common(n)
-
-   if __name__ == "__main__":
-       for ip, count in top_ips(sys.argv[1]):
-           print(f"{count:>4}  {ip}")
-   ```
-3. [ ] Run it: `python3 topips.py auth.log`
-4. [ ] Break it on purpose: feed it a malformed line and see how it behaves.
+1. [ ] Get a sample auth log with several `Failed password ... from <ip>` lines (make one if
+   needed).
+2. [ ] Write `topips.py` that reads the log, extracts each source IP with a regex, and
+   tallies them. (Building blocks: `re` for the pattern, `collections.Counter` for the
+   count.)
+3. [ ] Print the top IPs ranked by count.
+4. [ ] Feed it a malformed line, decide what it *should* do, and make it do that.
 
 ## Success criteria — you're done when
 - [ ] The script prints a ranked count of source IPs from the sample.

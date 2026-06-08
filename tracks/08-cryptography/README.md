@@ -25,7 +25,7 @@ cryptography, PKI, secrets management, and email authentication — and how to a
 | 10 | Auditing Applied-Crypto Failures | Spotting the real-world mistakes | `testssl.sh` |
 
 ## Prerequisites
-Complete Track 00 — Foundations (module 04 — Cryptography Basics).
+Complete Track 00 — Foundations (module 09 — Cryptography Basics).
 
 ## Capstone
 Audit a small system's crypto posture: TLS configuration, certificate hygiene, secrets
