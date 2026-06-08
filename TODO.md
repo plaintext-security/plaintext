@@ -96,10 +96,10 @@ fits; don't claim a lab works unless you ran it.
 - [x] 10-privesc-linux — *container/VM with a SUID/sudo/cron misconfig; linpeas → root*
 - [x] 11-privesc-windows — *(needs Windows — likely a documented VM, not a container; validate the path)*
 - [x] 12-pivoting — *compose: attacker + dual-homed pivot host + hidden internal target; ligolo/chisel*
-- [ ] 13-c2-postex — *Sliver C2 server + a target implant in compose; managed session + post-ex*
-- [ ] 14-lolbins-evasion — *Linux LOLBin demo container (GTFOBins); Windows portion via VM/notes*
-- [ ] 15-cloud-primer — **wrap CloudGoat / flaws.cloud** (external, validate it resolves) + Pacu
-- [ ] 16-reporting — *no container: validate the template + a real public-report example is sound*
+- [x] 13-c2-postex — *custom Flask C2 server + implant + operator in compose; task/result/beacon cycle*
+- [x] 14-lolbins-evasion — *Linux LOLBin demo container (download/exec/persist via native binaries)*
+- [x] 15-cloud-primer — *flaws.cloud (external, validated) + CloudGoat setup + Pacu quick ref*
+- [x] 16-reporting — *no container: validate.py checks 11/11 structural elements + public report refs*
 
 ### Foundations (`00-foundations`) — 0/12 done
 - [ ] 02-lab-setup — *the lab harness itself; validate VM/container isolation guidance + a compose*
