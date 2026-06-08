@@ -31,21 +31,31 @@ When you add a module, also add its pages to the `nav:` tree in `mkdocs.yml`
 Each module lives at `tracks/<track>/modules/<NN>-<name>/` and contains:
 
 - `README.md` — the concept **and the guided study path** (the *Learn* section)
-- `lab.md` — the hands-on, Docker-first **project**
+- `lab.md` — the hands-on **project** instructions
+
+The lab's *runnable* environment (Dockerfiles, `docker-compose`, seed data, harnesses) does **not**
+live here — it lives in the companion repo **[`plaintext-labs`](https://github.com/plaintext-security/plaintext-labs)**
+at `<track>/<NN-module-name>/`, and `lab.md` links to it. Prose here, runnable there.
 
 Each **track** (`tracks/<NN>-<name>/README.md`) is a content map that ends in a
-**capstone** — a portfolio-worthy artifact that proves the track.
+**capstone** — a portfolio-worthy artifact (its starter lives in `plaintext-labs`) that proves the track.
 
-**A module is a guided learning unit, not a summary page.** The most important — and most
-commonly skipped — part is **Learn**: a curated, time-boxed, opinionated study path with
-real links. A concept paragraph plus three bare links is *not* a finished module. See
-"Module anatomy" in `CLAUDE.md`.
+**A module is a guided learning unit, not a summary page — and not a bare link list.** Plaintext
+follows a **hybrid model**: *curate the raw explanation, write original prose for the bridge.*
+The step-by-step "how it works" is covered well elsewhere — **link** to it in the **Learn** path.
+Your original writing goes into **The core idea**: the mental model, the practitioner translation
+("X is really the Y you already know"), the synthesis and judgment no single linked source gives.
+A concept paragraph plus three bare links is *not* a finished module; neither is re-explaining at
+length what a Learn link already nails. See "The hybrid model" and "Module anatomy" in `CLAUDE.md`,
+and copy the reference exemplar at `tracks/02-defensive/modules/08-detection-as-code/`.
 
 ## Content rules
 
-- **Write everything in your own words from primary sources.** No copying from SANS,
-  Offensive Security, or other proprietary course material. Topic coverage may be
-  informed by such courses; the prose must be original.
+- **Write the bridge in your own words; curate the basics.** No copying from SANS,
+  Offensive Security, or other proprietary course material — prose must be original. But
+  originality goes where Plaintext adds value (the mental model, the practitioner translation,
+  the synthesis); don't rewrite the step-by-step explanation a free resource already covers well
+  — link to it in *Learn* instead.
 - **Open-source first, not open-source only.** Prefer OSS tools; free/community editions
   and the genuine real-world tool are fine where that is what the job uses. Labs must
   stay reproducible at zero cost.
@@ -72,15 +82,23 @@ The 90-second "so what" — and where this gets reused in later tracks.
 ## Objective
 What the learner will be able to do after this module (measurable, job-relevant).
 
+## The core idea
+2–5 short paragraphs of **original prose** — the bridge, and the heart of the module. The mental
+model, the practitioner translation ("X is really the Y you already know"), the synthesis across
+your Learn sources, and the judgment/gotchas no single link states. Frame and connect; do **not**
+re-derive what a Learn link explains step-by-step.
+
 ## Learn (~N hrs)
-A curated, time-boxed, opinionated study path — the core of the module. Group it, lead
-with video where it helps, and say why each resource earns the time.
+A curated, time-boxed, opinionated study path — this carries the raw explanation, so "The core
+idea" doesn't have to. Group it, lead with video where it helps, and say why each resource earns
+the time.
 
 **<Sub-topic>**
 - [Resource title](https://…) — one line on what it gives you and why it's here.
 - [Resource title](https://…) — …
 
 ## Key concepts
+A short recap checklist of "The core idea" — not the teaching itself.
 - Concept 1
 - Concept 2
 
@@ -94,8 +112,18 @@ The specific way AI/automation speeds this up — and what you must review and o
 # Lab NN — Title
 
 ## Setup
-Docker-first: the container(s)/image(s) to run, and how. (VM or cloud free-tier only if
-the domain requires it.) Reproducible at zero cost.
+A *reference* lab ships its one-command environment in the **`plaintext-labs`** companion repo at
+`plaintext-labs/<track>/<NN-module-name>/` (`docker-compose.yml` + a small bundled `data/` + a
+`Makefile` with `up`/`down`/`reset`/`demo`). The `lab.md` here links to it:
+`git clone …/plaintext-labs && cd <track>/<module> && make up`. (VM or cloud free-tier only if the
+domain requires it.) Reproducible at zero cost.
+
+**Choosing a lab target, in order of preference:** (1) **wrap a known vulnerable image** when a mature
+one exists — Vulhub (per-CVE), OWASP Juice Shop, DVWA, CloudGoat — in your `docker-compose.yml`, with
+our `Makefile`/demo on top (the default; if Vulhub has it, prefer Vulhub); (2) **point at an external
+target** (PortSwigger Academy, a TryHackMe room) when hosting adds nothing; (3) **build a custom minimal
+target** only when it teaches the mechanism better — legible/deterministic demo, attacker→fixer on the
+source, or Meridian narrative. Never a toy standing in for a real CVE that already exists.
 
 ## Scenario
 What you're doing and why — against an intentionally vulnerable target.

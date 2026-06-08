@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Plaintext is an open security-education curriculum (CC BY 4.0). The curriculum is authored in **Markdown under `tracks/`** and published as a **[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) static site**. There is no application code or test suite — work here is almost entirely Markdown authoring, plus the MkDocs config and one hand-authored landing-page template. The one build step is `mkdocs build` (see Deployment).
 
+**Two repos.** Plaintext is split so that prose and runnable code don't tangle:
+- **`plaintext`** (this repo) — the curriculum you *read*: module concepts, the *Learn* path, lab instructions. Pure Markdown; nothing here needs to be built or run.
+- **[`plaintext-labs`](https://github.com/plaintext-security/plaintext-labs)** — the companion repo you *clone & build*: every lab's `docker-compose`, Dockerfiles, seed data, harnesses, and per-track capstone starters, laid out `<track>/<NN-module-name>/`. A lab's *instructions* live here; its *environment* lives there.
+
+So: when a task involves editing lab **prose**, it's this repo. When it involves the lab **environment** (a container, seed data, a helper script, a capstone scaffold), that's `plaintext-labs` — typically a sibling clone at `../plaintext-labs`.
+
 ## Repo map
 
 ```
@@ -54,12 +60,16 @@ A failed build does **not** take down the live site — Pages keeps the last goo
 
 Track and module directories are zero-padded and numbered (`00-foundations`, `modules/01-networking`); see the [Repo map](#repo-map). The canonical templates for a module `README.md` and `lab.md` live in `CONTRIBUTING.md` — follow them when adding or editing modules. The binding rules:
 
-- **Original writing from primary sources.** Do not copy from SANS, Offensive Security, or other proprietary course material. Topic *coverage* may be informed by such courses; prose and structure must be original.
+- **Original writing from primary sources — for the bridge, not the basics.** Do not copy from SANS, Offensive Security, or other proprietary course material. Topic *coverage* may be informed by such courses; prose and structure must be original. And per [the hybrid model](#the-hybrid-model--what-a-plaintext-module-is): write original prose where Plaintext adds value (the bridge, synthesis, judgment) — *curate*, don't rewrite, the step-by-step explanation that free resources already cover well.
 - **Open-source first, not open-source only.** Prefer OSS tools; free/community editions (e.g. Burp CE) and the genuine real-world tool are acceptable where that is what the job actually uses. Labs must still be reproducible at zero cost.
 - **Hands-on and job-ready.** "In the dirt," not certification theory — every module ends in something the learner *does*, and every track ends in a **capstone** (a portfolio-worthy artifact).
 - **Tie it to the real world.** Wherever you can, ground modules and labs in genuine artifacts, not invented toy examples: real CVEs (by ID, via NVD / CISA KEV), real public datasets (Kaggle, Malware-Traffic-Analysis.net, public PCAP/EVTX repos, MalwareBazaar), real MITRE ATT&CK techniques, and actual tool output. The closer a lab is to what a practitioner truly sees, the more it transfers to the job.
 - **Tracks are standalone; cross-references enrich, they don't gate.** A specialization track depends only on Foundations, never on a sibling track. Lean into the offense↔defense interplay as *connective tissue* (callbacks and "Connects forward" notes), but whenever a lab would use an artifact from another track — e.g. detecting the attack from Track 01 — give a self-contained way to get it (a real public dataset, or a generate-it-here step) so the learner can complete the track without having done the other.
-- **Docker-first labs.** Default to containers for reproducibility; use VMs or cloud free-tier accounts only where the domain demands it (Active Directory, cloud).
+- **Containers for reference labs; external targets allowed elsewhere (for now).** A *reference* lab ships a one-command environment **in `plaintext-labs`** — a `docker-compose.yml`, a small bundled `data/` set, and a `Makefile` (`up`/`down`/`reset`/`demo`) under `plaintext-labs/<track>/<NN-module-name>/` — so `git clone` + `make up` and the lab is live. The lab's `lab.md` (here) carries the instructions and links to that directory. Use VMs or cloud free-tier accounts only where the domain demands it (Active Directory, cloud). The reference exemplars are [`02-defensive/.../08-detection-as-code`](tracks/02-defensive/modules/08-detection-as-code/) (run a tool over bundled data) and [`01-offensive/.../06-web-injection`](tracks/01-offensive/modules/06-web-injection/) (attack a shipped vulnerable app), with environments in `plaintext-labs/` — copy those shapes.
+- **Choosing a lab target (decide per lab, in this order):**
+  1. **Wrap a known vulnerable image** when a mature one exists for the topic — Vulhub (per-CVE `docker-compose`), OWASP Juice Shop, DVWA, CloudGoat, flaws.cloud. Pull it in the lab's `docker-compose.yml` and add our `Makefile`/demo on top. This is the **default** for breadth and realism, and it satisfies "tie it to real artifacts." Real CVEs/datasets beat invented ones — **if Vulhub has it, prefer Vulhub.**
+  2. **Point at an external target** (PortSwigger Web Security Academy, a TryHackMe free room) when there is no value in us hosting it — browser-based or already frictionless.
+  3. **Build a custom minimal target** *only* when it teaches the mechanism better than a black box: when the demo must be legible and deterministic, when the learner edits the source to apply the fix (attacker→fixer), or when it anchors the Meridian narrative. Keep it tiny and honest — never a toy standing in for a real CVE that already exists (e.g. exploitation labs should use Vulhub, not a hand-rolled stand-in).
 - **AI is core.** Every track carries an `## AI & automation` section, and modules should weave in the AI-acceleration move for that topic. The standing posture: **AI authors → you review → you own it** — automation is assumed; the differentiating skill is directing and rigorously reviewing it.
 - **Cite multiple primary sources** (CVEs, RFCs, tool docs, papers, MITRE ATT&CK) in "Further reading".
 - **Keep resources fresh.** Vary the sources cited in *Learn* across modules — don't send learners to the same site or author every time. Reuse a resource only when it is genuinely the best fit for that topic; otherwise prefer a different high-quality source so the curriculum has breadth.
@@ -68,16 +78,52 @@ Track and module directories are zero-padded and numbered (`00-foundations`, `mo
 
 New modules are proposed via the `.github/ISSUE_TEMPLATE/new-module.md` issue template (which doubles as the per-module intake form: track, title, objective, tools, time, background).
 
+## The hybrid model — what a Plaintext module IS
+
+This is the editorial identity. Get it wrong and you either rewrite what the internet already
+explains better (waste) or ship a link list that doesn't teach (thin). The resolution:
+
+> **Curate the raw explanation; write original prose for the bridge.**
+> The step-by-step "how TCP works / how Kerberos works" is covered well by people who did it
+> better — *link* to it (the **Learn** path). Plaintext's original value is the **bridge**: the
+> mental model, the practitioner translation ("a cloud Security Group *is* the stateful firewall
+> rule you've written for years"), the synthesis across sources, the gotchas and judgment no
+> single linked resource states, and the "why this matters to a defender." **Write the bridge;
+> don't re-teach the basics.**
+
+This reconciles the two rules that otherwise pull apart — "original writing from primary sources"
+and "don't regurgitate what's well-covered." We write originally, but only where we add something.
+
+The depth that makes this "professional-grade" comes from **the bridge + the lab + the
+automation build**, not from re-explaining fundamentals. SANS hands you a book; we hand you a
+sharp mental model, a curated path to the details, and a real thing you build and own.
+
 ## Module anatomy — every module is a guided learning unit
 
-A module is **not** a summary page. It is a self-contained unit that takes a learner from *why* all the way to a committed artifact — a full study unit, not a blurb. The failure mode to avoid is the thin module: a paragraph of concept plus three bare links. In particular the **Learn** path is mandatory — it is the actual studying (curated, time-boxed, opinionated), not an afterthought tacked on as "Further reading." The anatomy spreads across the module's two files:
+A module is **not** a summary page, and **not** a bare link list. It is a self-contained unit that
+takes a learner from *why* all the way to a committed artifact. Two failure modes to avoid: the
+**thin module** (a sentence of concept plus three bare links) and the **regurgitation module**
+(re-explaining at length what a linked resource already nails). The anatomy spreads across the
+module's two files:
 
-**`README.md` — concept + study path**
+**`README.md` — the bridge + the study path**
 - **Why this matters** — the 90-second "so what," and where it gets reused in later tracks.
 - **Objective** — measurable and job-relevant.
-- **Learn (~N hrs)** — a curated, time-boxed, *opinionated* path: grouped resources (video-first where that helps) with real links and a line on why each earns the time. **This is the core of the module** and the thing thin modules lack. Keep the sources fresh across modules — don't lean on the same few sites or authors.
-- **Key concepts** — the original-prose explanation.
+- **The core idea** — **the original-prose teaching section: 2–5 short paragraphs of the bridge**
+  (mental model, practitioner translation, cross-source synthesis, the judgment/gotchas). This is
+  Plaintext's original value and the thing the current modules are missing. It frames and connects;
+  it does **not** re-derive what a Learn link explains step-by-step.
+- **Learn (~N hrs)** — a curated, time-boxed, *opinionated* path: grouped resources (video-first
+  where that helps) with real links and a line on why each earns the time. **This carries the raw
+  explanation** — so "The core idea" doesn't have to. Keep the sources fresh across modules; don't
+  lean on the same few sites or authors.
+- **Key concepts** — a short bulleted **recap/checklist** of "The core idea" (not the teaching itself).
 - **AI acceleration** — the AI/automation move for this topic, and what the learner must review and own.
+
+**Definition of done (a module is finished when):** "The core idea" is substantive original prose,
+not a list; **Learn** is grouped, time-boxed, and every link has a why-line; the lab follows the
+full template below including the required **Automate & own it** build; and any lab that attacks a
+target carries the authorization note.
 
 **`lab.md` — the project**
 - **Setup** (Docker-first) and **Scenario** (with the authorization note where it attacks a target).
@@ -93,4 +139,4 @@ The canonical fill-in templates for both files live in `CONTRIBUTING.md`.
 
 ## Secret & artifact hygiene
 
-The labs drive tools (tcpdump, openssl, metasploit, volatility, prowler, …) that emit exactly the kind of files you must never commit: packet captures (`*.pcap`), keys and credentials (`*.pem`, `*.key`, `*_rsa`), memory/disk images, tokens, and verbose logs. The repo's `.gitignore` covers these plus malware sample dirs and the `site/` build output — keep it current, reference lab artifacts in the prose rather than committing them, and never commit real secrets or capture data into curriculum content.
+The labs drive tools (tcpdump, openssl, metasploit, volatility, prowler, …) that emit exactly the kind of files you must never commit: packet captures (`*.pcap`), keys and credentials (`*.pem`, `*.key`, `*_rsa`), memory/disk images, tokens, and verbose logs. This repo's `.gitignore` covers these plus the `site/` build output; the **`plaintext-labs`** repo (where the runnable labs actually live and generate these files) carries its own matching `.gitignore`. In both: small *curated* seed data is committed on purpose, but generated/heavy artifacts, malware samples, and real secrets never are — reference them in the prose, or have the lab download/generate them.
