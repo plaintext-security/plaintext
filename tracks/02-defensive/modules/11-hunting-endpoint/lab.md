@@ -1,43 +1,91 @@
 # Lab 11 — Hunt the Endpoint
 
 ## Setup
-[Velociraptor](https://docs.velociraptor.app/) (a single binary, runs locally), with real endpoint
-data: [EVTX-ATTACK-SAMPLES](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES), or generate your own
-with Atomic Red Team on a lab host.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/11-hunting-endpoint
+make up      # builds the Python hunt harness
+make demo    # runs hypothesis-driven hunt over bundled Sysmon events
+make down
+```
+
+Bundled data: `data/sysmon_events.json` — 21 synthetic Sysmon events
+from jsmith's workstation: a complete phishing-to-persistence attack
+chain (Office macro → PowerShell → certutil dropper → scheduled task +
+Run key) mixed with normal baseline activity. The hunt harness
+`hunt.py` loads events into in-memory SQLite so you write real SQL
+queries — the same skill as Velociraptor VQL or osquery, without the
+infrastructure.
+
+> **Authorization:** this lab queries bundled endpoint telemetry only —
+> no live system access required.
 
 ## Scenario
-Form a hypothesis about attacker activity and hunt for it in real endpoint data.
+The Meridian Financial threat-intel team flagged jsmith's workstation:
+she downloaded an unusual `.docm` file on March 15. Form a
+hypothesis, hunt the Sysmon telemetry, and confirm or refute it.
 
 ## Do
-1. [ ] Form a testable hypothesis (e.g. "an attacker established persistence via a registry Run key" —
-   ATT&CK T1547.001).
-2. [ ] Hunt: query the real endpoint data for evidence for or against it.
-3. [ ] Follow the lead — if you find something, pivot (process ancestry, timing) to confirm; if not,
-   refine the hypothesis.
-4. [ ] Turn the result into a detection idea (or a Sigma rule) so the hunt becomes durable.
+
+1. [ ] Run `make demo` and follow the hunt. Which ATT&CK technique is
+   confirmed, and what is the evidence chain?
+
+2. [ ] Open `hunt.py` and find Step 4 (Run key hunt). It returns two
+   results — one malicious, one benign (OneDrive). Explain which field
+   distinguishes them, and extend the `WHERE` clause to filter out the
+   known-legitimate OneDrive path.
+
+3. [ ] The base64 payload in Step 2 is truncated — only `$c=New-Object`
+   is recovered. Add a real decoded payload to the event in
+   `data/sysmon_events.json` (`iex (New-Object Net.WebClient).DownloadString(...)`)
+   re-run the demo and confirm Step 2 shows the full decoded string.
+
+4. [ ] Write a new hunt step (Step 8) that queries for *all* network
+   connections (EventID 3) made by any child process of WINWORD.EXE
+   (by following PID → ParentProcessId). Add it to `hunt.py` and
+   run it. What IP:port appears?
+
+5. [ ] Extend `hunt.py` with a `--sigma` flag that prints a complete
+   Sigma rule (YAML) covering the Office-macro-spawns-encoded-PS
+   pattern from Step 1/2.
 
 ## Success criteria — you're done when
-- [ ] You ran a hypothesis-driven hunt against real data.
-- [ ] You confirmed or rejected it with evidence, not a guess.
-- [ ] You produced a detection idea from the hunt.
+- [ ] You can trace the full kill chain from document open to payload
+  execution using only the SQL queries in `hunt.py`.
+- [ ] Step 4 correctly distinguishes the malicious Run key from the
+  OneDrive baseline entry.
+- [ ] `--sigma` emits a valid Sigma rule that would fire on this chain.
 
 ## Deliverables
-`hunt-endpoint.md`: the hypothesis, the queries, the evidence, and the detection it produced.
+`hunt-endpoint.md`: the hypothesis, the seven-step evidence chain,
+the SQL query you added for Step 8, and the Sigma rule from `--sigma`.
+**This, with module 12, forms Phase 2's hunt.**
 
 ## AI acceleration
-Have a model brainstorm hypotheses and draft VQL — then test each against the data yourself. A
-"confirmed" pattern that's actually baseline noise is the classic hunting trap.
-
-## Connects forward
-Hunts that pay off become detections (module 08); the same method goes to the network in module 12.
-
-## Marketable proof
-> "I run hypothesis-driven endpoint hunts with Velociraptor against real data, confirm with evidence,
-> and turn findings into detections."
+Have a model draft the `--sigma` YAML output — then validate every
+field name against the [Sigma spec](https://github.com/SigmaHQ/sigma/wiki/Rule-Creation-Guide)
+and test it against the actual event data. Models commonly invent
+field names; the Sysmon schema is the ground truth.
 
 ## Automate & own it
-**Required.** Package your hunt as a reusable Velociraptor artifact / osquery pack (AI drafts, you
-validate it returns the right evidence); commit it so the hunt is repeatable.
+**Required.** With AI drafting and you reviewing every line: refactor
+`hunt.py` so each hunt step is a named function decorated with
+`@step("Step N — description")`, and add a `--json` flag that emits
+findings as a JSON array. Commit the refactored script.
+
+## Connects forward
+The C2 IP (185.220.101.47) and the persistence artifacts feed directly
+into module 14 (threat-intel enrichment) and the Sigma rule from
+Step 5 can be tested against module 09's detection-testing harness.
+Network and endpoint hunts (11–12) together complete Phase 2.
+
+## Marketable proof
+> "I run hypothesis-driven endpoint hunts with SQL over Sysmon
+> telemetry — process-tree pivots, LOLBin detection, and automated
+> Sigma-rule generation from hunt findings."
 
 ## Stretch
-- Take a hunt that found nothing and turn it into a *scheduled* query so it runs continuously.
+- Add a parent-process-tree visualiser: given any PID, walk
+  ParentProcessId links and print the ancestry chain as an indented
+  tree. Run it on PID 9780 (certutil) and PID 10400 (updater.exe).

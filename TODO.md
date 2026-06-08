@@ -70,15 +70,15 @@ fits; don't claim a lab works unless you ran it.
 - [x] 07-log-parsing — *stdlib parse-rate harness over a messy sshd sample*
 - [x] 08-detection-as-code — *sigma-cli + teaching matcher*
 - [x] 01-telemetry — *suggest: ship a small log set + a shipper (fluent-bit/vector) to a file/stdout*
-- [ ] 02-endpoint-telemetry — *bundle Sysmon-shaped EVTX/JSON; read key Event IDs*
+- [x] 02-endpoint-telemetry — *bundle Sysmon-shaped EVTX/JSON; read key Event IDs*
 - [x] 03-linux-telemetry — *osquery querying the container; auditd rules (deterministic query demo)*
 - [x] 04-network-monitoring — *Zeek over a bundled/generated small pcap → read conn/dns/http logs*
 - [x] 05-intrusion-detection — *Suricata + ET open rules over a sample pcap → alerts*
 - [ ] 06-siem — *wrap the Wazuh image (heavy — verify it comes up) or a lighter OpenSearch+sample*
 - [x] 09-detection-testing — *Atomic Red Team test + confirm the module-08 Sigma rule fires*
 - [x] 10-attack-coverage — *ATT&CK Navigator layer from a rule set (likely a script + sample rules)*
-- [ ] 11-hunting-endpoint — *Velociraptor/osquery hunt over bundled endpoint data*
-- [ ] 12-hunting-network — *RITA over Zeek logs from a beaconing sample → find the beacon*
+- [x] 11-hunting-endpoint — *Velociraptor/osquery hunt over bundled endpoint data*
+- [x] 12-hunting-network — *RITA over Zeek logs from a beaconing sample → find the beacon*
 - [ ] 13-triage-ir — *TheHive (wrap image) or a guided triage over a bundled alert + observables*
 - [x] 14-threat-intel — *MISP (wrap image) or a script ingesting a sample abuse.ch feed*
 - [ ] 15-soar — *Shuffle (wrap image) or a small playbook: trigger→enrich→decide with a human gate*
