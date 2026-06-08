@@ -120,6 +120,15 @@ nav:
       - "08 · Web — SSRF, XXE & Deserialization":
           - Concept: 01-offensive/modules/08-web-ssrf-xxe/README.md
           - Lab: 01-offensive/modules/08-web-ssrf-xxe/lab.md
+      - "09 · Password & Credential Attacks":
+          - Concept: 01-offensive/modules/09-password-attacks/README.md
+          - Lab: 01-offensive/modules/09-password-attacks/lab.md
+      - "10 · Privilege Escalation — Linux":
+          - Concept: 01-offensive/modules/10-privesc-linux/README.md
+          - Lab: 01-offensive/modules/10-privesc-linux/lab.md
+      - "11 · Privilege Escalation — Windows":
+          - Concept: 01-offensive/modules/11-privesc-windows/README.md
+          - Lab: 01-offensive/modules/11-privesc-windows/lab.md
   - Defensive Operations: 02-defensive/README.md
   - Digital Forensics & IR: 03-forensics/README.md
   - Malware Analysis: 04-malware/README.md
