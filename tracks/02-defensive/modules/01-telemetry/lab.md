@@ -1,17 +1,24 @@
 # Lab 01 — Stand Up a Log Pipeline
 
 ## Setup
-Docker-first — a single-node Elasticsearch + Kibana (dev mode):
+
 ```bash
-docker network create elk
-docker run --rm -d --name es --network elk -p 9200:9200 \
-  -e discovery.type=single-node -e xpack.security.enabled=false \
-  docker.elastic.co/elasticsearch/elasticsearch:8.13.0
-docker run --rm -d --name kib --network elk -p 5601:5601 \
-  -e ELASTICSEARCH_HOSTS=http://es:9200 docker.elastic.co/kibana/kibana:8.13.0
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/01-telemetry
+make up
 ```
-Real data: a real log set from [loghub](https://github.com/logpai/loghub) (e.g. the OpenSSH or
-Apache logs), or your own host's syslog/auth log.
+
+This drops you into a Python container with `pipeline.py` and a bundled
+sshd log sample (`data/ssh_auth.txt`, loghub-format). Run `make demo` to
+walk all three pipeline stages: raw ingest → structured records (NL-JSON)
+→ four analyst queries → gap analysis. The lab's `pipeline.py` is the
+starting point for your own ingest script.
+
+For the full Elasticsearch + Kibana path described in step 3, spin those
+up separately and point them at the NL-JSON the script writes to
+`/tmp/pipeline_output.ndjson`; or swap in a Fluent Bit config to forward
+to your chosen backend. The pipeline concepts are the same regardless of
+backend.
 
 ## Scenario
 Build the searchable log store the rest of the track depends on, and load real logs into it.
