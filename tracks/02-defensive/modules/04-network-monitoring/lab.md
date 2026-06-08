@@ -1,13 +1,27 @@
 # Lab 04 — Find Malware on the Wire with Zeek
 
 ## Setup
-Docker-first — Zeek:
+
 ```bash
-docker run --rm -it -v "$PWD":/pcaps -w /pcaps zeek/zeek bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/04-network-monitoring
+make up
 ```
-Real data: download a real malicious capture from
-[Malware-Traffic-Analysis.net](https://www.malware-traffic-analysis.net/) — each post includes a
-PCAP plus a write-up of exactly what happened.
+
+Run `make demo` to analyze a bundled set of synthetic Zeek logs
+(`data/zeek/conn.log`, `dns.log`, `http.log`) that model a real C2
+compromise — beaconing at ~300 s intervals, DGA queries, a PowerShell
+dropper download, and 8 MB of outbound exfil.
+
+For the full real-traffic exercise: download a malicious capture from
+[Malware-Traffic-Analysis.net](https://www.malware-traffic-analysis.net/)
+(each post has a PCAP + write-up), drop it in this directory, and run:
+
+```bash
+# generates conn.log, dns.log, http.log etc. in this directory
+PCAP=your-capture.pcap make zeek
+python3 analyze.py .   # analyze the generated logs
+```
 
 ## Scenario
 Run Zeek over a real malicious PCAP and find the attack in its logs — fully self-contained, no prior
