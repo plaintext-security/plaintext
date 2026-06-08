@@ -57,9 +57,25 @@ plugins:
 nav:
   - Home: index.md
   - Foundations:
-      - 00-foundations/README.md
-      - Networking Fundamentals: 00-foundations/modules/01-networking/README.md
-      - "Networking — Lab": 00-foundations/modules/01-networking/lab.md
+      - Overview: 00-foundations/README.md
+      - "01 · Networking Fundamentals":
+          - Concept: 00-foundations/modules/01-networking/README.md
+          - Lab: 00-foundations/modules/01-networking/lab.md
+      - "02 · Linux for Security":
+          - Concept: 00-foundations/modules/02-linux/README.md
+          - Lab: 00-foundations/modules/02-linux/lab.md
+      - "03 · Scripting & Automation":
+          - Concept: 00-foundations/modules/03-scripting/README.md
+          - Lab: 00-foundations/modules/03-scripting/lab.md
+      - "04 · Cryptography Basics":
+          - Concept: 00-foundations/modules/04-cryptography/README.md
+          - Lab: 00-foundations/modules/04-cryptography/lab.md
+      - "05 · Web & HTTP Fundamentals":
+          - Concept: 00-foundations/modules/05-web-http/README.md
+          - Lab: 00-foundations/modules/05-web-http/lab.md
+      - "06 · Security Fundamentals & Threat Modeling":
+          - Concept: 00-foundations/modules/06-threat-modeling/README.md
+          - Lab: 00-foundations/modules/06-threat-modeling/lab.md
   - Offensive Security: 01-offensive/README.md
   - Defensive Operations: 02-defensive/README.md
   - Digital Forensics: 03-forensics/README.md

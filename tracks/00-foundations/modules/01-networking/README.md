@@ -17,6 +17,11 @@ Transport, and Application.
 - DNS resolution chain
 - Common ports and protocols (HTTP/S, SSH, FTP, SMTP)
 
+## AI acceleration
+AI can decode a capture faster than you can — paste a confusing `tcpdump` filter and it
+will explain the flags and the handshake. Verify against the RFC and the man page; models
+occasionally invent fields. Reading the packets yourself is still the skill.
+
 ## Further reading
 - RFC 791 (IP): https://datatracker.ietf.org/doc/html/rfc791
 - RFC 793 (TCP): https://datatracker.ietf.org/doc/html/rfc793
