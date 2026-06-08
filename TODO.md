@@ -87,7 +87,7 @@ fits; don't claim a lab works unless you ran it.
 - [x] 06-web-injection — *custom vulnerable Flask app; UNION-extract demo*
 - [x] 01-recon — *passive recon harness over a target you own; script the asset inventory*
 - [x] 02-scanning — *nmap against a bundled target container (compose: scanner + victim)*
-- [ ] 03-vuln-id — *searchsploit/nuclei against a known-version service container*
+- [x] 03-vuln-id — *searchsploit/nuclei against a known-version service container*
 - [ ] 04-exploitation — **wrap a Vulhub real-CVE target** (charter: real CVE, not a toy) + Metasploit
 - [ ] 05-memory-corruption — *tiny vulnerable C binary + gdb; demonstrate EIP control (NX/ASLR off)*
 - [ ] 07-web-access-control — *vulnerable app with IDOR/role flaws (extend the 06 app or Juice Shop)*
