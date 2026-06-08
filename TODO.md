@@ -54,9 +54,9 @@ fits; don't claim a lab works unless you ran it.
 
 - **Prose:** all 43 existing modules have the `## The core idea` bridge (foundations 12, offensive 16,
   defensive 15). Merged to `main` (PRs #4, #6, #7, #8).
-- **Labs built & validated: 3 / 43** — `defensive/08-detection-as-code`, `offensive/06-web-injection`,
-  `defensive/07-log-parsing`.
-- **Open PR:** #9 (charter "labs-validated = done" + the 07-log-parsing backfill).
+- **Labs built & validated: 31 / 43** — all 16 offensive + all 15 defensive labs validated with `make demo`.
+  Open PRs: #11 (offensive-labs), #10 (defensive-labs, if open).
+- **Foundations (0/12):** not yet started.
 - **Empty stub tracks (no modules yet):** 03-forensics, 04-malware, 05-cloud, 06-active-directory,
   07-endpoint-hardening, 08-cryptography, 09-python-for-security, 10-automation, 11-ztna,
   12-ai-augmented-ops — these need modules **authored from scratch** (prose + labs together), a separate
@@ -66,7 +66,7 @@ fits; don't claim a lab works unless you ran it.
 
 ## Lab backfill checklist (build + validate)
 
-### Defensive (`02-defensive`) — 2/15 done
+### Defensive (`02-defensive`) — 15/15 done
 - [x] 07-log-parsing — *stdlib parse-rate harness over a messy sshd sample*
 - [x] 08-detection-as-code — *sigma-cli + teaching matcher*
 - [x] 01-telemetry — *suggest: ship a small log set + a shipper (fluent-bit/vector) to a file/stdout*
@@ -83,7 +83,7 @@ fits; don't claim a lab works unless you ran it.
 - [x] 14-threat-intel — *MISP (wrap image) or a script ingesting a sample abuse.ch feed*
 - [x] 15-soar — *Shuffle (wrap image) or a small playbook: trigger→enrich→decide with a human gate*
 
-### Offensive (`01-offensive`) — 1/16 done
+### Offensive (`01-offensive`) — 16/16 done
 - [x] 06-web-injection — *custom vulnerable Flask app; UNION-extract demo*
 - [x] 01-recon — *passive recon harness over a target you own; script the asset inventory*
 - [x] 02-scanning — *nmap against a bundled target container (compose: scanner + victim)*
