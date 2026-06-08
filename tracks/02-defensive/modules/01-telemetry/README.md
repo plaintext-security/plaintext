@@ -12,6 +12,28 @@ see an attacker at all. This module builds that pipeline.
 Stand up a central log store, ship real log data into it, and reason about what telemetry actually
 matters for detection.
 
+## The core idea
+Detection is a data problem before it's a logic problem. Every detection, every hunt, every
+investigation is ultimately a *query* — and a query can only return what you collected. So the
+first question of a SOC isn't "what rules do we have," it's "what can we actually see?" — and the
+honest answer is almost always *less than you think*. Anyone who has run firewalls knows the shape
+of this: logging "permit/deny" is not the same as logging the session, and you cannot investigate
+what you never recorded — telemetry can't be turned on retroactively after the incident starts.
+
+The architecture is the same three moves regardless of vendor: a shipper/agent on the source
+(fluent-bit, Vector, Beats) → a transport → a central, indexed store you can search
+(Elasticsearch/OpenSearch, Splunk, Loki). The product is interchangeable; the actual skill is
+deciding *what is worth shipping*. This is where ATT&CK Data Sources earns its keep: rather than
+"collect everything" — which bankrupts you on storage and buries the signal — you work backward
+from the techniques you care about to the minimum telemetry that reveals them.
+
+The gotcha that bites everyone: a pipeline that *runs* is not a pipeline that *works*. Configs
+silently drop fields, mangle timestamps (so events sort wrong and correlation quietly breaks), or
+parse the wrong format — and you discover it mid-incident, when the field you need is null. Treat
+timestamps and field mappings as first-class, verify what actually lands in the index against what
+the source emitted, and accept that retention vs. volume vs. cost is a *security* decision, not just
+an ops one.
+
 ## Learn (~4 hrs)
 
 **The data plane**

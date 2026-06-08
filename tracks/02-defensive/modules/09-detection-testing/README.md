@@ -12,6 +12,27 @@ closes the loop: attack → detect → tune, the daily reality of detection engi
 Run a real ATT&CK technique with Atomic Red Team, validate your detection catches it, and tune for
 false positives.
 
+## The core idea
+A detection you haven't fired the technique against is a hope, not a control. Detections rot
+constantly — a Windows update renames a field, a log source quietly drops, an attacker shifts to a
+variant — and the only way to know yours still works is to *execute the behaviour and watch*. That's
+purple teaming, and **Atomic Red Team** makes it cheap: a library of small, ATT&CK-mapped tests that
+run a real technique safely and repeatably, so you can prove a detection catches it — or discover it
+doesn't — on demand rather than during the breach.
+
+The mental model is the confusion matrix made operational: a **true positive** fires on the real
+thing (good), a **false positive** fires on benign activity (the fatigue-maker from module 06), and a
+**false negative** is the technique running while you're blind (the one that ends careers). Detection
+engineering is the loop of *attack → detect → tune*, pushing false negatives and false positives down
+together while knowing they trade against each other. This is also where module 08's Sigma rule
+finally gets tested under fire: write the rule, run the atomic, confirm it fires.
+
+The judgment: **coverage is a moving target, not a milestone.** "We detect T1059" is true only until
+the next variant or config change, so testing is a continuous practice, not a one-time audit. A model
+can help interpret *why* a detection didn't fire and suggest a tweak — but it can't run the atomic or
+see your environment's real noise, and a threshold it proposes may look clean while silently dropping
+real detections. You run the test, read the result, and own the tuning.
+
 ## Learn (~4 hrs)
 
 **Adversary emulation**
