@@ -12,6 +12,28 @@ visual; it's a standard SOC artifact.
 Map your detections to MITRE ATT&CK, visualise coverage and gaps in the Navigator, and prioritise what
 to build next.
 
+## The core idea
+A pile of detections isn't a strategy — it's inventory. **MITRE ATT&CK** is the shared map that turns
+"we have 200 rules" into "we cover *these* techniques and we're blind to *those*." The mental model:
+ATT&CK is a coordinate system for attacker behaviour — tactics are the goal (*why*: persistence,
+exfiltration), techniques are the method (*how*), sub-techniques the specific variant. Plot each
+detection and data source onto that grid with the Navigator and your coverage — and your gaps —
+become *visible*, which is how you prioritise what to build next and how you state posture to
+leadership in language they can act on.
+
+The trap, and why this module has teeth: coverage maps are seductive because they're trivial to
+inflate. A green Navigator is **not** the same as being defended. A detection mapped to T1059 that
+only catches one variant — or that doesn't actually fire (module 09) — still shows green. So
+**coverage ≠ effectiveness**, and "do we have a rule" is not "would we catch it." The honest version
+weights by *threat relevance* — what actually targets you (intel, module 14) — rather than raw
+technique count; total coverage of techniques nobody uses against you is wasted effort dressed up as
+progress.
+
+The judgment: a model speeds mapping and drafting Navigator layers, but it will confidently map a
+rule to the wrong technique or overstate what a detection really catches — and an inflated coverage
+map is *worse* than none, because it manufactures false confidence. Verify every mapping against what
+the detection actually matches.
+
 ## Learn (~4 hrs)
 
 **The framework & tooling**

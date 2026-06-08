@@ -12,6 +12,27 @@ long-connection analysis, and you can hunt real C2 in real malware traffic for f
 Hunt for C2 beaconing and other anomalies in Zeek logs from real malicious traffic, using RITA and
 your own analysis.
 
+## The core idea
+This is the network-side counterpart to endpoint hunting, and it rests on one beautiful fact:
+**machines are rhythmic and humans aren't.** An attacker can blend C2 *content* into normal-looking
+web traffic, but the implant still calls home on a schedule — beaconing — producing regular, repeated
+connections with a tell-tale interval (even with jitter) that no human browsing ever generates. So
+network hunting looks for statistical *tells* across connection logs rather than matching signatures.
+RITA, running over Zeek's `conn.log`, automates the beacon, long-connection, and rare-destination
+maths.
+
+For the network engineer this is the familiar habit of reading flow data for "who talks to whom,"
+sharpened into "*how regularly* does this internal host talk to that external one — and is that
+rhythm human or mechanical?" Beaconing, abnormally long-lived connections, and rare destinations are
+the three classic shapes; DNS gets its own attention because it's so often allowed straight out, which
+makes it a favourite tunnelling and exfil channel.
+
+The judgment: this is statistical, not signature — and statistics without a baseline lie. The
+textbook false positive is a CDN, NTP source, or telemetry agent that *also* polls on a fixed
+interval; RITA will surface it and a model will gladly label it "C2." The actual skill is separating
+mechanical-benign from mechanical-malicious, which needs your environment's context — verify every
+candidate against the data and the known-bad write-up.
+
 ## Learn (~4 hrs)
 
 **The method & tool**

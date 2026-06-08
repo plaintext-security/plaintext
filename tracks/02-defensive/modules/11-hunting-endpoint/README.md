@@ -12,6 +12,27 @@ Velociraptor makes enterprise-scale endpoint hunting free.
 Run a hypothesis-driven hunt across real endpoint data with Velociraptor/osquery, and either find the
 activity or rule it out.
 
+## The core idea
+Detection and hunting are opposite stances. Detection *waits* — it encodes known-bad and fires when
+it appears. Hunting *goes looking* — it assumes a breach already happened and asks, "if an attacker
+were here, what would I see, and is it there?" That flip from reactive to proactive is the whole
+discipline: you're hunting precisely the thing your rules didn't have a signature for. And it's
+*hypothesis-driven* — you form a specific, testable idea ("an attacker would persist via a Run key,"
+"they'd do discovery with built-in tools") and then interrogate your endpoint data to confirm or
+refute it. A hunt that ends in "ruled out" is a result, not a failure.
+
+The organising principle is the **Pyramid of Pain**: hunt *behaviours*, not atomic indicators. A hash
+or IP is trivial for an attacker to change (bottom of the pyramid); their techniques cost real effort
+to alter (top). So "any Office app spawning a script interpreter" outlives any single hash —
+hunt the TTP, not the IOC. Velociraptor and osquery let you ask that question across thousands of
+endpoints at once (host-as-database, VQL/SQL), which is what makes hunting an enterprise activity
+rather than a one-box exercise.
+
+The judgment, and the payoff loop: hunting is judgment under ambiguity, and a model will happily
+"confirm" a pattern that's just normal-for-you — treat its hypotheses and draft VQL as leads to test
+against the data, never as conclusions. And the move that makes hunting *compound*: a successful hunt
+becomes a new detection (module 08), so you only ever have to hunt that thing by hand once.
+
 ## Learn (~4 hrs)
 
 **The method & the tool**

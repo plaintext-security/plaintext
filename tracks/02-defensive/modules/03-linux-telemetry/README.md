@@ -12,6 +12,27 @@ Without it, a compromised Linux host is a blind spot.
 Configure Linux audit logging, query host state with osquery, and capture the execution telemetry
 detections rely on.
 
+## The core idea
+The cloud runs on Linux — your web servers, your containers, your Kubernetes nodes — and Linux's
+default logs tell you almost nothing about *what executed*. `/var/log` has auth and syslog, but not
+"this binary ran with these arguments and opened this socket." Two tools fill that gap from opposite
+directions. **auditd** is the kernel's audit framework: it taps syscalls and streams events as they
+happen (`execve`, file access, network) — an always-on firehose. **osquery** flips the model and
+exposes the host as a SQL database you *query* (`SELECT … FROM processes`), live or on a schedule.
+auditd is the event stream; osquery is the question you ask on demand. You usually want both.
+
+For anyone trained on Windows, the translation is clean: **auditd is your Linux Sysmon** (the
+streaming execution sensor) and **osquery is your Linux live-response tool**. The detection lens is
+identical to the endpoint module — collect process execution, file, and network activity with the
+techniques you care about in mind — only the plumbing differs.
+
+Two gotchas worth front-loading. First, auditd rules are easy to write far too broadly: an
+over-eager rule floods you *and* adds real syscall overhead on a busy host, so you scope tightly.
+Second, **containers are the modern blind spot** — a process inside a container is just a process on
+the host kernel, so host-level auditd/eBPF *can* see it, but only if you've accounted for namespaces
+and where the container's own logs go. eBPF-based tooling (Falco, Tetragon) is where this is heading,
+and the cloud track builds directly on it.
+
 ## Learn (~4 hrs)
 
 **The Linux sensor**

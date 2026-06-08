@@ -12,6 +12,26 @@ a complete open-source SIEM/XDR to learn on for free.
 Stand up an open-source SIEM, ingest real security telemetry, and build a correlation rule and a
 dashboard that surface an attack.
 
+## The core idea
+Every prior module produced a stream of telemetry sitting in its own silo. The **SIEM** is where they
+converge into one searchable, correlatable place — and, more than a store, it's the analyst's
+*workbench* and the engine of the SOC workflow: ingest → parse → index → search → alert → triage. The
+leap beyond a log store is **correlation**: turning many low-value events into one high-value alert.
+Fifty failed logons across the fleet from one source, then a success, is an alert; each individual
+logon is noise. The SIEM is where "events" become "a story."
+
+The practitioner reality is that a SIEM is less a product than a workflow. The query language differs
+by vendor (SPL, KQL, Lucene) and you learn whichever your shop runs — but the durable skill is
+knowing *what behaviour is worth alerting on* and expressing it so it fires on the real thing without
+burying the analyst. Wazuh gives you a complete open-source SIEM/XDR — decoders, rules, dashboards,
+alerting — to learn the whole loop for free, no licence.
+
+The defining failure mode, and the thing that separates a working SOC from a dashboard nobody reads:
+**alert fatigue.** A SIEM that fires 500 alerts a day is functionally *off* — analysts triage it by
+ignoring it. Every rule you add is a claim on someone's finite attention, so tuning and
+prioritisation aren't housekeeping, they're the job. Test every correlation rule against data where
+you already know the answer before it earns a place in the pipeline.
+
 ## Learn (~4 hrs)
 
 **The platform**
