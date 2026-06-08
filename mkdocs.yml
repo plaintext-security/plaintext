@@ -94,7 +94,17 @@ nav:
       - "12 · Threat Modeling":
           - Concept: 00-foundations/modules/12-threat-modeling/README.md
           - Lab: 00-foundations/modules/12-threat-modeling/lab.md
-  - Offensive Security: 01-offensive/README.md
+  - Offensive Security:
+      - Overview: 01-offensive/README.md
+      - "01 · Reconnaissance & OSINT":
+          - Concept: 01-offensive/modules/01-recon/README.md
+          - Lab: 01-offensive/modules/01-recon/lab.md
+      - "02 · Scanning & Enumeration":
+          - Concept: 01-offensive/modules/02-scanning/README.md
+          - Lab: 01-offensive/modules/02-scanning/lab.md
+      - "03 · Vulnerability Identification":
+          - Concept: 01-offensive/modules/03-vuln-id/README.md
+          - Lab: 01-offensive/modules/03-vuln-id/lab.md
   - Defensive Operations: 02-defensive/README.md
   - Digital Forensics & IR: 03-forensics/README.md
   - Malware Analysis: 04-malware/README.md
