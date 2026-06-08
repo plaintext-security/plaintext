@@ -52,16 +52,16 @@ markdown_extensions:
 plugins:
   - search
 
-# Comments via giscus (GitHub Discussions). OFF until the IDs below are filled.
-# Get them from https://giscus.app after: (1) enabling Discussions on the repo,
-# (2) installing the giscus GitHub App, (3) creating the 3 Discussion categories.
+# Comments via giscus (GitHub Discussions). Live: IDs below are filled in.
+# Regenerate via https://giscus.app (or the GraphQL discussionCategories query)
+# if categories are renamed or the repo moves.
 extra:
   giscus:
     repo: plaintext-security/plaintext
     repo_id: "R_kgDOSzzNhw"  # GraphQL node ID of plaintext-security/plaintext
-    category_feedback: ""  # category ID for "Feedback"
-    category_hints: ""     # category ID for "Hints"
-    category_general: ""   # category ID for "General"
+    category_feedback: "DIC_kwDOSzzNh84C-xCe"  # category ID for "Feedback"
+    category_hints: "DIC_kwDOSzzNh84C-xCl"     # category ID for "Hints"
+    category_general: "DIC_kwDOSzzNh84C-w3p"   # category ID for "General"
 
 nav:
   - Home: index.md
