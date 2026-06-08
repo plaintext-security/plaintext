@@ -1,9 +1,19 @@
 # Lab 03 — Make a Linux Host Talk
 
 ## Setup
-A Linux VM (or privileged container) you own, with `auditd` and `osquery`. Generate real activity
-with [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) (Linux tests), so you have
-genuine attacker behaviour to capture.
+
+```bash
+git clone https://github.com/plaintext-security/plaintext-labs
+cd plaintext-labs/defensive/03-linux-telemetry
+make up
+```
+
+This builds a Ubuntu 22.04 container with osquery 5.12.1 installed. A bundled
+`data/audit.log` (realistic synthetic events including a privilege-escalation
+sequence) and `data/audit.rules` are pre-loaded. Run `make demo` to see the
+audit-log parser flag suspicious executions and osquery answer live host-state
+questions from inside the container. Use `make shell` to drop into a shell and
+run your own `osqueryi` queries.
 
 ## Scenario
 Turn a Linux host into a sensor and capture the telemetry from a real (simulated) attacker action.
