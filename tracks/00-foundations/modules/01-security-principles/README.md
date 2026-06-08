@@ -15,7 +15,7 @@ them to reason about a real system's risks.
 ## Learn (~2 hrs)
 
 **The concepts**
-- [Professor Messer — Security+ training course (YouTube)](https://www.youtube.com/c/professormesser) — work the "General Security Concepts" section: CIA, AAA, zero trust, defense in depth — explained cleanly and free.
+- [Professor Messer — The CIA Triad (Security+ SY0-701, ~8 min)](https://www.youtube.com/watch?v=SBcDGb9l6yo) — a crisp, free explainer of the core triad; follow it with his adjacent 1.2 videos on AAA and security controls.
 - [NIST SP 800-12 Rev. 1 — An Introduction to Information Security](https://csrc.nist.gov/pubs/sp/800/12/r1/final) — the authoritative grounding; skim chapters 1–3.
 
 **The practical baseline**

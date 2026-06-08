@@ -17,7 +17,7 @@ Turn a repetitive analysis task into a small, repeatable, reviewable Python tool
 
 **Python, fast**
 - [Automate the Boring Stuff with Python (free online)](https://automatetheboringstuff.com/) — Al Sweigart's classic; the files, regex, and command-line chapters are the security-automation core. Type along.
-- [Corey Schafer — Python tutorials (YouTube)](https://www.youtube.com/playlist?list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7) — clear, practical walkthroughs for when a written page doesn't click.
+- [Corey Schafer — Python for Beginners #1: Install & Setup (~10 min)](https://www.youtube.com/watch?v=YYXdXT2l-Gg) — new to Python? start here, then continue his numbered beginner series as far as you need.
 
 **Regex — the analyst's scalpel**
 - [Real Python — Regular Expressions](https://realpython.com/regex-python-part-1/) — the `re` module done properly; you'll reach for this on every log-parsing task.

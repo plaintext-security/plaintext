@@ -16,7 +16,7 @@ safely.
 
 **Hands-on basics**
 - [Docker — Get Started](https://docs.docker.com/get-started/) — the official, hands-on intro: images, containers, volumes, ports.
-- [TechWorld with Nana — Docker crash course (YouTube)](https://www.youtube.com/@TechWorldwithNana) — the clearest beginner-to-working walkthrough out there.
+- [TechWorld with Nana — Docker Tutorial for Beginners (full course, ~3 hrs)](https://www.youtube.com/watch?v=3c-iBn73dDE) — the clearest beginner-to-working walkthrough; the first hour (images, containers, ports, volumes) is enough for the lab.
 - [Play with Docker](https://labs.play-with-docker.com/) — a free in-browser Docker host if you can't install locally.
 
 **The security angle**

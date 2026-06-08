@@ -15,8 +15,7 @@ faked with cookies.
 ## Learn (~3 hrs)
 
 **The protocol**
-- [MDN — An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview) — the canonical, readable reference for messages, methods, and status codes.
-- [Hussein Nasser — HTTP & backend engineering (YouTube)](https://www.youtube.com/@hnasr) — a backend engineer's clear take on what's actually happening on the wire.
+- [MDN — An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview) — the canonical, readable reference for messages, methods, and status codes; read this page top to bottom.
 
 **Web security on-ramp**
 - [PortSwigger Web Security Academy — learning paths](https://portswigger.net/web-security/learning-paths) — free, hands-on, and the bridge straight into Track 01; start with the HTTP material.

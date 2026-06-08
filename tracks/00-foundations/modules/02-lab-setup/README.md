@@ -14,9 +14,8 @@ state, and understand when to use a VM versus a container.
 
 ## Learn (~2 hrs)
 
-**Virtualization**
-- [VirtualBox Manual — snapshots & networking](https://www.virtualbox.org/manual/) — the free hypervisor; focus on snapshots and host-only/NAT networking (how you wall a lab off from your home network).
-- [TCM Security — building a virtual hacking lab (YouTube)](https://www.youtube.com/@TCMSecurityAcademy) — a practical, current walkthrough of a safe build.
+**Virtualization & isolation**
+- [VirtualBox Manual](https://www.virtualbox.org/manual/) — the free hypervisor. Read specifically the **"Snapshots"** and **"Virtual Networking"** chapters: snapshots are your undo button, and host-only/NAT networking is how you wall the lab off from your home network.
 
 **What to put in it**
 - [VulnHub — getting started](https://www.vulnhub.com/) — free intentionally-vulnerable VMs, and the standing rule: only attack targets you own or are explicitly authorised to test.

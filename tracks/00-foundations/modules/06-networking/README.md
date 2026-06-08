@@ -21,7 +21,7 @@ names resolve, then capture and dissect a real exchange yourself.
 - [How DNS Works (comic)](https://howdns.works/) — the resolution chain you'll watch in the lab, told as a friendly comic.
 
 **Reading packets (video first, then hands-on)**
-- [Chris Greer — TCP handshake & packet analysis (YouTube)](https://www.youtube.com/@ChrisGreer) — watch the 3-way-handshake walkthrough; he reads real captures the way you will.
+- [Chris Greer — TCP and the Three-Way Handshake (follow-along lab, ~15 min)](https://www.youtube.com/watch?v=wMc0H22nyA4) — he reads a real capture the way you will in the lab.
 - [Julia Evans — "tcpdump is amazing"](https://jvns.ca/blog/2016/03/16/tcpdump-is-amazing/) — a short, practical on-ramp to the exact tool the lab uses.
 - [Wireshark — Sample Captures](https://wiki.wireshark.org/SampleCaptures) — open a few and practice "Follow TCP Stream" before you make your own.
 

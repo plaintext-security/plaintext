@@ -17,7 +17,7 @@ and certificates — with `openssl`, and recognise when one is misused.
 
 **Concepts**
 - [Crypto 101 (free book)](https://www.crypto101.io/) — a no-math, practical intro to the primitives and how they fail; the best free starting point.
-- [Computerphile — cryptography playlist (YouTube)](https://www.youtube.com/playlist?list=PLzH6n4zXuckpoaxDKOOV26yhgoY2S-xYg) — short, vivid explainers (AES, Diffie-Hellman, hashing) for when a concept won't stick.
+- [Computerphile — AES Explained (~14 min)](https://www.youtube.com/watch?v=O4xNJsjtN6E) — Dr Mike Pound makes the core symmetric cipher click; his "Diffie Hellman" and "Hashing Algorithms" videos are the natural follow-ons.
 
 **Hands-on with openssl & TLS**
 - [OpenSSL Cookbook (free, Ivan Ristić)](https://www.feistyduck.com/library/openssl-cookbook/) — the canonical reference for the exact commands in the lab.

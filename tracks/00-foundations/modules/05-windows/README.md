@@ -17,7 +17,7 @@ event logs, and basic PowerShell.
 
 **Fundamentals, hands-on**
 - [TryHackMe — Windows Fundamentals (free rooms)](https://tryhackme.com/) — click-through coverage of the filesystem, users, the registry, and built-in tooling.
-- [13Cubed — Windows internals & investigation (YouTube)](https://www.youtube.com/@13cubed) — how a defender actually reads a Windows system; artifact-focused.
+- [13Cubed — Introduction to Windows Forensics (~20 min)](https://www.youtube.com/watch?v=VYROU-ZwZX8) — a defender's tour of the Windows artifacts (registry, event logs, execution) you'll be inspecting.
 
 **The native automation language**
 - [Microsoft Learn — PowerShell 101](https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/00-introduction) — enough PowerShell to inspect a system and automate the boring parts.
