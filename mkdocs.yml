@@ -167,6 +167,21 @@ nav:
       - "07 · Log Parsing & Normalisation":
           - Concept: 02-defensive/modules/07-log-parsing/README.md
           - Lab: 02-defensive/modules/07-log-parsing/lab.md
+      - "08 · Detection-as-Code":
+          - Concept: 02-defensive/modules/08-detection-as-code/README.md
+          - Lab: 02-defensive/modules/08-detection-as-code/lab.md
+      - "09 · Detection Testing & Tuning":
+          - Concept: 02-defensive/modules/09-detection-testing/README.md
+          - Lab: 02-defensive/modules/09-detection-testing/lab.md
+      - "10 · ATT&CK Mapping & Coverage":
+          - Concept: 02-defensive/modules/10-attack-coverage/README.md
+          - Lab: 02-defensive/modules/10-attack-coverage/lab.md
+      - "11 · Threat Hunting — Endpoint":
+          - Concept: 02-defensive/modules/11-hunting-endpoint/README.md
+          - Lab: 02-defensive/modules/11-hunting-endpoint/lab.md
+      - "12 · Threat Hunting — Network":
+          - Concept: 02-defensive/modules/12-hunting-network/README.md
+          - Lab: 02-defensive/modules/12-hunting-network/lab.md
   - Digital Forensics & IR: 03-forensics/README.md
   - Malware Analysis: 04-malware/README.md
   - Cloud & Container Security: 05-cloud/README.md
