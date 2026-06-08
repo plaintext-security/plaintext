@@ -13,6 +13,25 @@ for network segmentation.
 Pivot through a compromised host to reach an internal network you can't reach directly, and
 move laterally to a second target in your lab.
 
+## The core idea
+One foothold is a beachhead, not the objective. Real networks are segmented: the box you popped can
+reach internal systems you can't touch from outside. **Pivoting** is routing *your* traffic *through*
+that foothold so the internal network treats you as if you were sitting inside it. The mental model is
+a ladder of increasing reach: a single **port-forward** (reach one internal service), a **SOCKS proxy**
+(reach many, via proxychains), or a full **tunnel interface** (ligolo-ng gives your machine an actual
+route into the internal subnet). You climb that ladder as you need more.
+
+For the network engineer this is the offensive mirror of segmentation: every pivot defeats a boundary
+someone deliberately drew — and understanding the tunnel is exactly how you argue for the segmentation
+that *would* have contained you. A double pivot (through segment A to reach segment B) is just the same
+move stacked, and it's how a single foothold becomes domain-wide compromise.
+
+The judgment: pivoting is unforgiving. A wrong route, a mistyped subnet, or a routing loop can sever the
+very foothold you're tunnelling through and end the engagement. So you **map the network first** — which
+subnets exist, which host can reach what — *before* you build the tunnel. A model will generate the
+tunnel commands, but it can't see your topology; understand each hop yourself, because losing the
+foothold is expensive to recover.
+
 ## Learn (~4 hrs)
 
 **Tunneling & pivoting**

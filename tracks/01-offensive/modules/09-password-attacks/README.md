@@ -12,6 +12,27 @@ defenses (strong hashing, length, MFA) that stop it.
 Crack real password hashes, understand hash types and attack modes, and explain credential
 attacks like spraying and reuse — plus the defenses that defeat them.
 
+## The core idea
+"Most breaches don't hack in — they log in." Credentials are the universal skeleton key, and this
+module turns on one asymmetry: a **hash** is a one-way fingerprint of a password, so cracking is simply
+*guess → hash the guess → compare*. That means the entire security of a stolen hash database comes down
+to **how expensive each guess is.** Fast hashes (MD5, NTLM) fall at billions of guesses per second on a
+GPU — a dumped database is effectively plaintext within hours. Slow KDFs (bcrypt, argon2) are *designed*
+to make each guess thousands of times costlier, so the same dump is infeasible. That single fact is why
+one leaked database is a shrug and an identical one elsewhere is a catastrophe.
+
+The "attack modes" are just progressively smarter guessing: dictionary (known passwords) → rules
+(mutate them — `Password` → `P@ssw0rd!`) → mask (known structure) → brute force (last resort). And the
+dominant real-world entry vector isn't cracking at all — it's **reuse**: credentials from one breach
+sprayed across everything else, because humans recycle passwords. (This is the Foundations crypto
+lesson cashed in: hashing is not encryption — there's no "decrypt," only guess-and-check.)
+
+The judgment, and the defensive payoff: understanding crack *speed* is the only way to argue the
+defenses convincingly — demonstrating that a 9-character fast-hashed password dies in minutes makes the
+case for length + a strong KDF + MFA far better than any policy memo. A model identifies a hash type and
+suggests modes instantly, but it also misidentifies hashes and sends you burning GPU-hours on the wrong
+attack. Confirm the hash type and mode yourself; cracking is expensive to get wrong.
+
 ## Learn (~4 hrs)
 
 **Cracking**

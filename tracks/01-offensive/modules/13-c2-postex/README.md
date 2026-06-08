@@ -12,6 +12,26 @@ doing useful work without getting caught. Open-source C2 like Sliver is used by 
 Stand up an open-source C2, get a managed session on a lab host, and perform post-exploitation
 (enumeration, persistence) while understanding the telemetry it generates.
 
+## The core idea
+The shell you got from exploitation is fragile and loud: one dropped connection and you're out, and
+every command crosses the wire in the clear. A **C2 framework** is the upgrade — a managed, encrypted,
+resilient session, where an implant beacons back on a schedule, reconnects, and survives a reboot.
+**Post-exploitation** is the tradecraft of doing useful work through that channel — enumerate, collect,
+persist, move — *without getting caught*. Open-source C2 like Sliver is used by real red teams and real
+threat actors alike, which is exactly why understanding it serves attack and detection equally.
+
+The mental model is a constant tradeoff between **control and noise.** Everything you do leaves
+telemetry: the beacon has a timing signature (the entire premise of the defensive network-hunting
+module), commands spawn child processes the endpoint records, collection touches files. The craft of
+post-ex is minimising that footprint — which is why "beaconing" here is the same word the defenders are
+hunting on. You are, deliberately, the thing the blue team is looking for.
+
+The judgment, and why this is tradecraft rather than tooling: C2 is largely about *what not to do* — the
+noisy command that burns your access, the persistence mechanism that trips an alert. A model accelerates
+building post-ex commands and parsing what you collect, but it won't weigh operational risk for you;
+that judgment is yours. And studying C2 closely is the only way to detect it well, which is why this
+sits directly opposite the defensive track's C2-detection content.
+
 ## Learn (~4 hrs)
 
 **The framework**
