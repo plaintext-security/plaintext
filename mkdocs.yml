@@ -158,6 +158,15 @@ nav:
       - "04 · Network Security Monitoring":
           - Concept: 02-defensive/modules/04-network-monitoring/README.md
           - Lab: 02-defensive/modules/04-network-monitoring/lab.md
+      - "05 · Intrusion Detection":
+          - Concept: 02-defensive/modules/05-intrusion-detection/README.md
+          - Lab: 02-defensive/modules/05-intrusion-detection/lab.md
+      - "06 · SIEM Fundamentals":
+          - Concept: 02-defensive/modules/06-siem/README.md
+          - Lab: 02-defensive/modules/06-siem/lab.md
+      - "07 · Log Parsing & Normalisation":
+          - Concept: 02-defensive/modules/07-log-parsing/README.md
+          - Lab: 02-defensive/modules/07-log-parsing/lab.md
   - Digital Forensics & IR: 03-forensics/README.md
   - Malware Analysis: 04-malware/README.md
   - Cloud & Container Security: 05-cloud/README.md
