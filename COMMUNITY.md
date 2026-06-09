@@ -4,8 +4,8 @@ We learn in the open. The community home is **Discord** — real-time help, stud
 searchable knowledge base of lab gotchas — alongside per-page **GitHub Discussions** comments on
 the site itself.
 
-> **Discord invite:** _add the invite link here once the server is live_, then surface it as a
-> badge in `README.md` and a button in the landing hero (`overrides/home.html`).
+> **Join the Discord:** <https://discord.gg/sZjQYqVvG> — also linked from the README badge, the
+> landing-page hero, and the site footer.
 
 Discord and the site comments are complementary, not redundant: comment on a specific lesson via
 giscus on its page; bring live questions, "did this work for you?", and show-your-work to Discord.

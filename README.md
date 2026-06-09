@@ -2,6 +2,9 @@
 
 > Open security education for everyone. No paywalls. No gatekeeping. Forever free.
 
+[![Join the Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/sZjQYqVvG)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-00aa55)](LICENSE)
+
 Plaintext is a community-built cybersecurity curriculum: hands-on, job-ready, and
 AI-augmented, built open-source-first. Professional-grade training from foundations to
 advanced specialisations — free to use, free to fork, free to improve.
@@ -45,6 +48,12 @@ tracks/                         ← curriculum source (MkDocs builds this into t
 python3 -m pip install -r requirements.txt
 mkdocs serve     # live preview at http://127.0.0.1:8000
 ```
+
+## Community
+
+Learn in the open with others: join the **[Plaintext Discord](https://discord.gg/sZjQYqVvG)** for
+real-time help, study rooms, and lab troubleshooting. Per-page discussion lives on each module page
+via GitHub Discussions. See [COMMUNITY.md](COMMUNITY.md) for the server layout and guidelines.
 
 ## Contributing
 

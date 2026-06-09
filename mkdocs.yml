@@ -56,6 +56,13 @@ plugins:
 # Regenerate via https://giscus.app (or the GraphQL discussionCategories query)
 # if categories are renamed or the repo moves.
 extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/sZjQYqVvG
+      name: Join the Plaintext Discord
+    - icon: fontawesome/brands/github
+      link: https://github.com/plaintext-security/plaintext
+      name: Plaintext on GitHub
   giscus:
     repo: plaintext-security/plaintext
     repo_id: "R_kgDOSzzNhw"  # GraphQL node ID of plaintext-security/plaintext
