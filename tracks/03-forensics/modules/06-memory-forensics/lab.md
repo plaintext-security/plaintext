@@ -43,17 +43,16 @@ The Meridian IR team captured a memory image from `MERIDIAN-FIN-WS01` before shu
 2. [ ] **Examine command lines (`cmdline` output).**
    In the `cmdline` section:
    - Find any process with an encoded PowerShell argument (`-enc`, `-EncodedCommand`).
-   - Base64-decode the encoded argument:
-     ```bash
-     echo "JABjAD0ATgBlAHcALQBPAGIAagBlAGMAdAA..." | base64 -d
-     ```
+   - Decode the encoded argument. (PowerShell `-enc` takes base64 of UTF-16LE text — decode it
+     the right way or you'll get mojibake; which decoder and what about the wide-char encoding?)
    - What does the decoded command do? Is it consistent with the incident scenario?
 
 3. [ ] **Examine network connections (`netscan` output).**
    In the `netscan` section:
    - Which processes have established outbound connections?
    - Are any connections made by processes that should not be making network calls (e.g., `notepad.exe`, a suspended process)?
-   - Note destination IPs and ports. Do any match the `10.99.4.22` C2 from the earlier scenario modules?
+   - Note destination IPs and ports. Does any destination match the C2 address from the earlier
+     scenario modules? Record the IP and port you find.
 
 4. [ ] **Triage injection findings (`malfind` output).**
    In the `malfind` section:

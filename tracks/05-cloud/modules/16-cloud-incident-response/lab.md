@@ -36,16 +36,16 @@ complete logs for 02:14–02:18 (the attack window) and from 08:30 onward (remed
 
 ## Do
 
-1. [ ] **Run `make demo` first.** Read the full timeline output. Note: the phases, the attacker's
-   source IP, the compromised principal, and the techniques. Identify the exact timestamp and event
-   that ended the attack window (the trail stop) and the timestamp where the gap in logging begins.
-   How long was the gap?
+1. [ ] **Triage the raw events yourself first.** Open `data/cloudtrail/incident.json` and work the
+   incident by hand before running the bundled tool. Establish the attacker's source IP, the
+   compromised principal, the event that stopped the trail, and the timestamp where the logging gap
+   begins. How long was the gap? Then run `make demo` and use `triage.py`'s timeline as a check
+   against what you found — what did you miss, and what did the tool miss?
 
-2. [ ] **Reconstruct the attack chain.** From the timeline output, label each CloudTrail event with
-   its kill-chain phase. The phases are: Initial Access → Enumeration → Privilege Escalation →
-   Collection → Exfiltration → Defense Evasion → Persistence → Remediation. (Note: the events
-   in the timeline are already tagged — cross-reference with the ATT&CK technique IDs to verify
-   the tagging is correct.)
+2. [ ] **Reconstruct the attack chain.** Label each CloudTrail event with its kill-chain phase. The
+   phases are: Initial Access → Enumeration → Privilege Escalation → Collection → Exfiltration →
+   Defense Evasion → Persistence → Remediation. Assign the phase yourself from the event names and
+   parameters, then cross-reference each against its ATT&CK technique ID to confirm your tagging.
 
 3. [ ] **Identify the persistence mechanism.** The attacker created a second access key before
    stopping the trail. Find the event, note the new key ID, and explain: if the SOC had only

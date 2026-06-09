@@ -40,23 +40,22 @@ function and its IAM role.
 ### Part 1: Enumeration with cloudfox
 
 1. [ ] **List all Lambda functions in the LocalStack environment.**
-   From the lab shell: `awslocal lambda list-functions`
-   How many functions are there? What are their names and runtimes?
+   From the lab shell, enumerate the deployed functions. How many are there? What are their
+   names and runtimes?
 
 2. [ ] **Enumerate permissions with cloudfox.**
-   *Hint:* `cloudfox aws --endpoint http://localstack:4566 permissions --profile localstack`
-   Note which functions have attached policies. What role does `meridian-notifier` use?
+   Point `cloudfox`'s `permissions` command at the LocalStack endpoint and the `localstack`
+   profile. Note which functions have attached policies. What role does `meridian-notifier` use?
 
 3. [ ] **Inspect the execution role in detail.**
-   `awslocal iam get-role --role-name meridian-notifier-role`
-   `awslocal iam list-attached-role-policies --role-name meridian-notifier-role`
-   What does `sts:AssumeRole *` on the role trust policy enable? What can an attacker do with
-   `iam:*` and `s3:*` if they achieve code execution inside the function?
+   Retrieve the role and its attached policies. What does `sts:AssumeRole *` on the role trust
+   policy enable? What can an attacker do with `iam:*` and `s3:*` if they achieve code execution
+   inside the function?
 
 4. [ ] **Check environment variables.**
-   `awslocal lambda get-function-configuration --function-name meridian-notifier`
-   What sensitive values are stored in environment variables? In a real account, how would you
-   retrieve these if you had code execution in the function? (Answer: `import os; print(os.environ)`)
+   Read the function's configuration. What sensitive values are stored in environment variables?
+   In a real account, how would you retrieve these if you had code execution in the function —
+   what is the smallest snippet that dumps the runtime's environment?
 
 5. [ ] **Map the finding to MITRE ATT&CK.**
    The over-privileged role + accessible environment variables maps to T1078 (Valid Accounts) and
@@ -66,20 +65,17 @@ function and its IAM role.
 ### Part 2: Injection demonstration
 
 6. [ ] **Invoke the Lambda with a normal input.**
-   `awslocal lambda invoke --function-name meridian-notifier \
-     --payload '{"account_id":"ACC-001","event_type":"payment"}' /tmp/response.json`
-   Read the response. What did the function do?
+   Send a well-formed event payload (e.g. an `account_id` and an `event_type` for a payment
+   notification) and read the response. What did the function do?
 
 7. [ ] **Invoke the Lambda with a malicious input.**
-   The function passes the `command` field to a subprocess. Send a payload with a command
-   injection in that field.
-   *Hint:* `{"account_id":"ACC-001","command":"ls /var/task && cat /var/task/handler.py"}`
-   What does the response show? Can you read the function's own source code from the event?
+   The function passes one field of the event straight to a subprocess. Craft a payload whose
+   injected field reads the function's own source from its task directory. What does the response
+   show? Can you read the handler's source code back through the event?
 
 8. [ ] **Understand the root cause in the function code.**
-   Read `data/lambda/handler.py`. Find the line that causes the injection. What is the fix?
-   (Answer: validate and whitelist the `command` field, never pass it to `subprocess.run`
-   or `os.system` directly.)
+   Read `data/lambda/handler.py`. Find the line that causes the injection. What is the one-line
+   fix that closes it without breaking the function's legitimate behaviour?
 
 ### Part 3: Remediation
 
@@ -95,11 +91,9 @@ function and its IAM role.
     error responses.
 
 11. [ ] **Redeploy and verify.**
-    Update `data/lambda/handler.py` with your fix and redeploy:
-    `sam deploy --stack-name meridian-notifier --template data/lambda/template.yaml \
-      --endpoint-url http://localstack:4566 --resolve-s3`
-    Re-run the injection payload from step 7 and confirm the function now returns an error instead
-    of executing the injected command.
+    Update `data/lambda/handler.py` with your fix and redeploy the SAM stack against the
+    LocalStack endpoint. Re-run the injection payload from step 7 and confirm the function now
+    returns an error instead of executing the injected command.
 
 ## Success criteria — you're done when
 

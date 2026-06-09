@@ -30,19 +30,10 @@ remediation recommendation with corrected records.
 1. [ ] `make demo` — watch all three records queried and validated. Note the policy in the
    DMARC record: is it `none`, `quarantine`, or `reject`? Is there a DKIM selector configured?
 
-2. [ ] `make shell` and query the records manually:
-   ```bash
-   # SPF:
-   dig @dns TXT meridian-fictional.com | grep spf
-
-   # DKIM (with the 'meridian2024' selector from data/dns-records.txt):
-   dig @dns TXT meridian2024._domainkey.meridian-fictional.com
-
-   # DMARC:
-   dig @dns TXT _dmarc.meridian-fictional.com
-   ```
-   For each record, note: the full TXT value, what each field means, and whether the record
-   is complete and correctly formatted.
+2. [ ] `make shell` and query all three records yourself against the local resolver with `dig`
+   (the DKIM selector is in `data/dns-records.txt`; recall the `_dmarc.` and
+   `<selector>._domainkey.` prefixes the protocols use). For each record note the full TXT
+   value, what each field means, and whether it is complete and well-formed.
 
 3. [ ] Validate the SPF record:
    - Does the SPF record end with `~all` (softfail) or `-all` (hardfail)? What is the
@@ -51,17 +42,9 @@ remediation recommendation with corrected records.
      adds one; SPF has a 10-lookup limit.)
    - Write the corrected SPF record with `-all` if the existing one uses `~all`.
 
-4. [ ] Validate the DKIM public key:
-   ```bash
-   # Extract the p= value from the DKIM TXT record and decode it:
-   dig @dns TXT meridian2024._domainkey.meridian-fictional.com +short \
-     | grep -oP 'p=\K[^;]+' \
-     | tr -d ' "' \
-     | base64 -d \
-     | openssl pkey -pubin -inform DER -text -noout 2>/dev/null || \
-     echo "Public key: base64 decode shows RSA/EC key details"
-   ```
-   What key type and size is the DKIM key? Is it RSA-2048 or larger? Ed25519?
+4. [ ] Validate the DKIM public key: extract the `p=` value from the DKIM TXT record, base64-
+   decode it, and inspect it with OpenSSL. What key type and size is it — RSA-2048 or larger?
+   Ed25519? Is it strong enough?
 
 5. [ ] Validate the DMARC record:
    - What is the `p=` policy? (none / quarantine / reject)

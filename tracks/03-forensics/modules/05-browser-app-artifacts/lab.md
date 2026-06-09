@@ -38,41 +38,28 @@ During the Meridian IR, the analyst imaged the compromised user's Chrome profile
    - Top visited domains
 
 2. [ ] **Query visited URLs directly with sqlite3.**
-   ```bash
-   sqlite3 data/History \
-     "SELECT datetime(last_visit_time/1000000 - 11644473600, 'unixepoch') as visited_at,
-             url, visit_count, title
-      FROM urls ORDER BY last_visit_time DESC LIMIT 20;"
-   ```
-   Which URLs were visited during the incident window (2024-03-15 02:00–02:35 UTC)?
-   Note any cloud storage, webmail, or file-sharing domains.
+   Write your own query over the `urls` table (fields: `url`, `title`, `visit_count`,
+   `last_visit_time`) ordered by most-recent visit. Chrome stores timestamps as microseconds
+   since 1601-01-01, not the Unix epoch — convert them to readable UTC in your `SELECT` so the
+   times line up with the incident window (2024-03-15 02:00–02:35 UTC). Which URLs fall in that
+   window? Note any cloud storage, webmail, or file-sharing domains.
 
 3. [ ] **Examine the downloads table.**
-   ```bash
-   sqlite3 data/History \
-     "SELECT datetime(start_time/1000000 - 11644473600, 'unixepoch') as downloaded_at,
-             target_path, tab_url, total_bytes, state
-      FROM downloads ORDER BY start_time DESC;"
-   ```
-   What was downloaded? From where? Does the download URL align with the exfiltration narrative?
+   Query the `downloads` table (fields like `target_path`, `tab_url`, `total_bytes`, `state`,
+   `start_time`) the same way, converting `start_time`. What was downloaded, and from where?
+   Does the download URL align with the exfiltration narrative?
 
 4. [ ] **Extract search terms.**
-   ```bash
-   sqlite3 data/History \
-     "SELECT datetime(u.last_visit_time/1000000 - 11644473600, 'unixepoch') as searched_at,
-             k.term, u.url
-      FROM keyword_search_terms k JOIN urls u ON k.url_id = u.id
-      ORDER BY u.last_visit_time DESC;"
-   ```
-   What search terms appear? Do any suggest the user was looking for exfiltration methods, external file storage, or ways to cover tracks?
+   Search terms live in `keyword_search_terms` (`term`, `url_id`), which you join to `urls` on
+   `urls.id` to recover the URL and timestamp. Write that join. What search terms appear — do any
+   suggest the user was looking for exfiltration methods, external file storage, or ways to cover
+   tracks?
 
 5. [ ] **Check the WAL file.**
-   The `data/History-wal` (if present) may contain rows from after a history clear. Use `sqlite3` to see if the WAL has any data:
-   ```bash
-   sqlite3 data/History "PRAGMA wal_checkpoint(FULL);" && \
-   sqlite3 data/History "SELECT count(*) FROM urls;"
-   ```
-   Does the row count change after a checkpoint? This demonstrates why clearing browser history doesn't necessarily wipe the WAL.
+   The `data/History-wal` (if present) may hold rows written after a history clear that the main
+   database file doesn't yet show. Count the `urls` rows, force a WAL checkpoint, then count
+   again. (Which `PRAGMA` flushes the WAL into the main database?) Does the row count change? This
+   demonstrates why clearing browser history doesn't necessarily wipe the WAL.
 
 6. [ ] **Write your findings.**
    Produce `browser-findings.md` with:

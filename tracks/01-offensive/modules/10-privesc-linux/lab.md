@@ -27,37 +27,27 @@ enumerating the system and exploiting one of the misconfigurations.
 
 ## Do
 
-1. [ ] Run the demo to see all three vectors and both exploits:
-   ```bash
-   make demo
-   ```
-   Note which vectors were found by each enumeration technique.
+1. [ ] Shell into the container as `appuser` and enumerate the host by hand to find your
+   escalation vectors — before looking at any worked answer. (`make shell`, then
+   `su - appuser`, password `appuser`.) Hunt SUID binaries, your sudo rights, and writable
+   scheduled jobs. (Which commands surface each? Three misconfigurations are planted —
+   find all three.) `make demo` runs the validated exploit for all three; save it to check
+   your enumeration *after* you've done it yourself.
 
-2. [ ] Shell into the container as appuser and enumerate manually:
-   ```bash
-   make shell
-   su - appuser           # switch to low-privilege user (password: appuser)
-   find / -perm -u=s 2>/dev/null | head -20
-   sudo -l
-   cat /etc/crontab
-   ```
+2. [ ] For Vector 1 (SUID binary): look the binary up on
+   [GTFOBins](https://gtfobins.github.io/), work out the invocation that spawns a shell
+   with its elevated privileges, run it, and confirm `id` shows you reached root. (Why does
+   the `-p` flag matter for a SUID shell?)
 
-3. [ ] For Vector 1 (SUID find):
-   - Look up `/usr/bin/find` on [GTFOBins](https://gtfobins.github.io/).
-   - What is the exact `find -exec` command that gives you a root shell?
-   - Run it and confirm `id` shows `euid=0(root)`.
+3. [ ] For Vector 2 (sudo NOPASSWD): your `sudo -l` output names a binary you can run as
+   root without a password. Turn that into a root shell or root command execution via its
+   GTFOBins technique. Why is this vector higher-confidence than the SUID one?
 
-4. [ ] For Vector 2 (sudo NOPASSWD):
-   - `sudo -l` shows you can run `find` as root without a password.
-   - Run `sudo find /dev/null -exec id \; -quit`. What uid do you get?
-   - Why is this higher-confidence than the SUID vector?
+4. [ ] For Vector 3 (writable scheduled job): confirm the script is writable, work out what
+   you'd append to have it execute your code as root, and explain why this is a persistence
+   vector, not just one-shot escalation.
 
-5. [ ] For Vector 3 (writable cron):
-   - Confirm the script is writable: `ls -la /usr/local/bin/backup.sh`
-   - What payload would you append to escalate privilege?
-   - Why is this a persistence vector, not just escalation?
-
-6. [ ] Explain the difference between:
+5. [ ] Explain the difference between:
    - `uid=0(root)` (real uid is root)
    - `euid=0(root)` (effective uid is root, via SUID)
    - Why does `sh -p` matter for the SUID exploit?

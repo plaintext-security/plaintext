@@ -32,27 +32,11 @@ You are a detection engineer at Meridian Financial. The red team has finished th
 
 1. [ ] **Run the demo.** `make demo` runs chainsaw over all EVTX files using the bundled rules. Read the output — which rules fired? What fields did chainsaw surface in the match? Note the event record ID and timestamp.
 
-2. [ ] **Study the Kerberoast rule.** Open `data/rules/kerberoast.yml`. Understand each field:
-   - `logsource`: why is `category: kerberos` + Windows Security important?
-   - `detection.selection`: what specific field and value catches Kerberoasting?
-   - `tags`: confirm the ATT&CK technique ID is T1558.003.
-   Validate it manually: open `data/evtx/kerberoast-4769.evtx` in the shell with `chainsaw search --json -e 4769 kerberoast-4769.evtx | head -50` — does the EncryptionType field in the event match the rule filter?
+2. [ ] **Study the Kerberoast rule.** Open `data/rules/kerberoast.yml` and account for every field: why does the `logsource` matter, which single event field+value is the discriminator for Kerberoasting, and is the ATT&CK tag correct? Then validate it by hand — search the matching EVTX for the relevant event and confirm the field in the raw event lines up with the rule's filter.
 
-3. [ ] **Write the DCSync Sigma rule.** The `data/rules/` directory includes a stub (`dcsync-stub.yml`). Fill it in:
-   - EventID: 4662
-   - ObjectType: DS-Replication-Get-Changes-All (GUID: `1131f6ad-9c07-11d1-f79f-00c04fc2dcd2`)
-   - SubjectUserName: must NOT end in `$` (exclude machine accounts / DCs)
-   - ATT&CK tag: T1003.006
-   Validate with: `chainsaw hunt data/evtx/dcsync-4662.evtx -s data/rules/dcsync.yml --mapping data/sigma-mappings.yml`
+3. [ ] **Write the DCSync Sigma rule.** Fill in the `dcsync-stub.yml` stub. You'll need: the right Event ID for directory-service access, the object/extended-right that identifies replication (look up its GUID), and an exclusion so legitimate DC-to-DC replication (machine accounts) doesn't fire it. Tag it with the correct sub-technique. Validate it with chainsaw against the DCSync EVTX.
 
-4. [ ] **Write the PTH Sigma rule.** Create `data/rules/pth.yml`:
-   - EventID: 4624
-   - LogonType: 3
-   - AuthenticationPackageName: `NTLM`
-   - SubjectUserSid: NOT `S-1-0-0` (null SID)
-   - WorkstationName: not null (source workstation present)
-   - Filter: exclude machine accounts (TargetUserName ending in `$`), exclude localhost
-   Validate against `data/evtx/pth-4624.evtx`.
+4. [ ] **Write the PTH Sigma rule.** Create `data/rules/pth.yml` to catch a pass-the-hash logon. Decide which event, logon type, and authentication package signal NTLM network logon, then add exclusions so machine accounts, the null SID, and localhost don't generate noise. Validate against the PTH EVTX.
 
 5. [ ] **Test false-positive behaviour.** The `data/evtx/` directory also contains `baseline-4624.evtx` — normal domain logon events. Run your PTH rule against it. Do any events match? If so, what would you add to the filter to suppress them?
 

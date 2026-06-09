@@ -40,23 +40,24 @@ staging, and map each step to its ATT&CK technique and its distinguishing CloudT
    attacker has a path to privilege escalation? (Hint: look for `iam:PassRole` or
    `sts:AssumeRole` with a broad trust policy.)
 
-2. [ ] **Enumerate interactively.** With the lab container running (`make shell`), use
-   `awslocal iam list-users` and `awslocal s3 ls` to enumerate the LocalStack environment.
-   Note the exact API calls you are making — those are what end up in CloudTrail.
+2. [ ] **Enumerate interactively.** With the lab container running (`make shell`), enumerate the
+   LocalStack environment's IAM users and S3 buckets the way an attacker with the leaked key
+   would. Note the exact API calls you are making — those are what end up in CloudTrail.
 
-3. [ ] **Detonate T1078.004.** Run `simulate.sh --technique assume-role` inside the container.
-   Examine the CloudTrail JSON output. Which `eventName` signals the role assumption? What
+3. [ ] **Detonate T1078.004.** Use `simulate.sh` to fire the role-assumption technique, then
+   examine the CloudTrail JSON output. Which `eventName` signals the role assumption? What
    fields in `userIdentity` change between the original key's calls and the assumed-role calls?
 
-4. [ ] **Detonate T1530.** Run `simulate.sh --technique s3-download`. The script calls
-   `GetObject` across every object in the seed buckets. What pattern in `eventName`,
+4. [ ] **Detonate T1530.** Drive `simulate.sh` to run the bulk S3 object-download technique,
+   which calls `GetObject` across every object in the seed buckets. What pattern in `eventName`,
    `requestParameters.key`, and `sourceIPAddress` would a detection rule key off? Why isn't a
    single `GetObject` a finding, but fifty in thirty seconds is?
 
-5. [ ] **Detonate T1537.** Run `simulate.sh --technique s3-exfil`. This adds a bucket
-   replication rule pointing at an external destination (a second LocalStack bucket acting as the
-   attacker's account). Identify the `eventName` and the `requestParameters` field that exposes
-   the external destination. Which ATT&CK sub-technique does this most precisely match?
+5. [ ] **Detonate T1537.** Drive `simulate.sh` to run the S3 exfiltration-staging technique,
+   which adds a bucket replication rule pointing at an external destination (a second LocalStack
+   bucket acting as the attacker's account). Identify the `eventName` and the `requestParameters`
+   field that exposes the external destination. Which ATT&CK sub-technique does this most
+   precisely match?
 
 6. [ ] **Map to ATT&CK.** For each of the three techniques you detonated, write one sentence
    describing the minimum CloudTrail event signature — the smallest set of fields a detection

@@ -28,12 +28,7 @@ You are the AD hardening lead at Meridian Financial, following the red team enga
 
 ## Do
 
-1. [ ] **Run the ACL posture audit.** Use `dacledit.py` to read the ACLs on the three highest-risk objects:
-   ```
-   dacledit.py MERIDIAN.LOCAL/tallen:'T@ll3n_IT@dmin!'@dc01.meridian.local \
-     -action read -target-dn 'CN=IT-Admins,CN=Users,DC=meridian,DC=local'
-   ```
-   Identify: which principals have write rights? Do any non-default accounts appear?
+1. [ ] **Run the ACL posture audit.** Read the ACLs on the three highest-risk objects (start with `IT-Admins`) with `dacledit.py`. Identify: which principals have write rights, and do any non-default accounts appear?
 
 2. [ ] **Audit Kerberoastable accounts.** Run the ldapsearch from module 02 for SPNs. Count the accounts and their password ages from `data/meridian-domain.md`. Score: 3 Kerberoastable accounts with multi-year-old passwords = HIGH risk.
 

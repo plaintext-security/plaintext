@@ -30,65 +30,20 @@ configuration values that must stay in git.
 1. [ ] `make demo` — watch the demo sequence: secret storage, retrieval, rotation, audit log
    review, SOPS encryption. Note the Vault path, the lease ID, and the audit log format.
 
-2. [ ] `make shell` and interact with Vault directly:
-   ```bash
-   # Store the database credential:
-   vault kv put secret/meridian/payroll/db \
-     username=payroll_svc \
-     password=initial-db-password
+2. [ ] `make shell` and use the Vault CLI (`vault kv`) to store a database credential under a
+   path, read it back, and read it as JSON (the form an application consumes). Confirm the value
+   round-trips.
 
-   # Read it back:
-   vault kv get secret/meridian/payroll/db
+3. [ ] Rotate the credential — overwrite it with a new value — then inspect the secret's
+   metadata. How many versions does the KV engine retain, and can you still retrieve the
+   previous one?
 
-   # Read as JSON (what an application receives):
-   vault kv get -format=json secret/meridian/payroll/db | jq '.data.data'
-   ```
+4. [ ] Inspect the Vault audit log (under `/vault/logs/`) and find the entries for your read and
+   write operations. What does each entry record — and, critically, what does it *not* record?
 
-3. [ ] Rotate the credential (simulate what happens after a suspected compromise):
-   ```bash
-   vault kv put secret/meridian/payroll/db \
-     username=payroll_svc \
-     password=rotated-db-password-$(date +%s)
-
-   # Confirm the new value:
-   vault kv get secret/meridian/payroll/db
-
-   # Show version history:
-   vault kv metadata get secret/meridian/payroll/db
-   ```
-   How many versions are stored? Can you retrieve the previous version?
-
-4. [ ] Review the audit log:
-   ```bash
-   cat /vault/logs/vault-audit.log | jq '. | {time, type, request: .request.operation, path: .request.path}' | tail -20
-   ```
-   Identify the log entries for your read and write operations. What information does each
-   entry contain? What is absent from the log (hint: look for the secret value itself).
-
-5. [ ] Encrypt a YAML configuration file with SOPS:
-   ```bash
-   # Generate an age key:
-   age-keygen -o /tmp/age-key.txt
-   export SOPS_AGE_KEY_FILE=/tmp/age-key.txt
-
-   # Create a config file with sensitive values:
-   cat > /tmp/config.yml <<'EOF'
-   database:
-     host: db.meridian.internal
-     port: 5432
-     username: payroll_svc
-     password: super-secret-password
-   api_key: sk-meridian-prod-12345
-   EOF
-
-   # Encrypt with SOPS:
-   sops --encrypt --age $(age-keygen -y /tmp/age-key.txt) /tmp/config.yml > /tmp/config.enc.yml
-   cat /tmp/config.enc.yml   # Note: keys visible, values encrypted
-
-   # Decrypt:
-   sops --decrypt /tmp/config.enc.yml
-   ```
-   Which values are encrypted? Which are visible? What does this mean for git-committed secrets?
+5. [ ] Encrypt a YAML config containing sensitive values with SOPS, using a locally generated
+   `age` key. Then decrypt it. In the encrypted file, which parts are ciphertext and which stay
+   readable — and what does that property mean for committing the file to git?
 
 6. [ ] Write `secrets-analysis.md`: compare the two patterns (Vault for runtime secrets vs
    SOPS for git-safe secrets). When would you use each, and what are the security trade-offs?

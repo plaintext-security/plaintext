@@ -27,25 +27,24 @@ defenses would have stopped you.
 
 ## Do
 
-1. [ ] Run the demo to see the full cracking pipeline:
-   ```bash
-   make demo
-   ```
-   Review: which hashes fell to the dictionary, which to rules, which stood.
+1. [ ] Before cracking anything, identify each hash type in `data/hashes.txt` by
+   inspection. (How do you tell NTLM from MD5 by length/format alone? Why does a bcrypt
+   hash start with `$2b$12$…`? What does the `aad3b435…` NTLM value tell you without
+   cracking it?) You'll choose the right algorithm/mode per type from this.
 
-2. [ ] Identify each hash type before cracking. Open `data/hashes.txt` and note:
-   - How do you tell NTLM from MD5 by inspection alone?
-   - Why does bcrypt start with `$2b$12$…`?
-   - What does the `aad3b435…` NTLM hash tell you without cracking it?
+2. [ ] Run a dictionary attack against the dump yourself and crack what falls fast. (Point
+   a real cracker at the hashes with a wordlist drawn from rockyou.txt — which tool and
+   mode per hash type?) Note which hashes fell in milliseconds and which stood.
 
-3. [ ] Trace the dictionary attack in `crack.py`. Understand the flow:
-   `load_hashes()` → `crack_hash()` → `ntlm()`/`md5()` → compare.
+3. [ ] Trace the dictionary attack in `crack.py` and follow the flow:
+   `load_hashes()` → `crack_hash()` → `ntlm()`/`md5()` → compare. (`make demo` runs the
+   full validated pipeline — use it to check your results against the reference run.)
 
-4. [ ] Explain why 8/11 hashes cracked in milliseconds but bcrypt did not.
-   Review the KDF comparison output (Step 4) — what is the cost factor doing?
+4. [ ] Explain why most hashes cracked in milliseconds but bcrypt did not. Review the KDF
+   comparison output — what is the cost factor doing?
 
-5. [ ] Run with rules enabled and observe which additional hashes (if any) fall.
-   What mutations does `apply_rules()` try, and why are they realistic?
+5. [ ] Re-run with rule-based mutations enabled and observe which additional hashes (if
+   any) fall. What mutations does `apply_rules()` try, and why are they realistic?
 
 6. [ ] Write the three defenses you'd recommend Meridian adopt, ranked by impact.
 

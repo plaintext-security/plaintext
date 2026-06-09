@@ -31,9 +31,9 @@ clean, which are unknown, and which timed out. The lead wants the enriched data 
 automated downstream processing.
 
 ## Do
-1. [ ] `make demo` — watch the reference `enrich.py` run. Note which IOCs are flagged malicious
-   and which trigger a retry. Read the mock API source in `mock-api/app.py` to understand what
-   responses it returns.
+1. [ ] Read the mock API source in `mock-api/app.py` to understand what responses each endpoint
+   returns (which status codes, for which IOCs). Don't run the reference yet — you'll use it as a
+   check at the end.
 2. [ ] Write your own `enrich.py` using `httpx.Client`:
    - Load the (dummy) API key from `os.environ.get("VT_API_KEY", "demo-key")`.
    - Set a `timeout=httpx.Timeout(connect=5.0, read=10.0)` on the client.
@@ -47,6 +47,8 @@ automated downstream processing.
    - `500`/`503`: mark as "error" and continue.
 4. [ ] Write the accumulated results to `output/enriched.json` using `json.dump`.
 5. [ ] Print a terminal summary: counts of malicious / clean / unknown / error.
+6. [ ] Run `make demo` to compare your output against the reference `enrich.py`. Do the same IOCs
+   come back malicious? Did you handle the retry (`429`) the same way? Where you differ, find out why.
 
 ## Success criteria — you're done when
 - [ ] `enrich.py` processes all 20 IOCs without crashing.

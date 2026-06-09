@@ -49,13 +49,11 @@ whether the session tells a coherent story of compromise — or just looks bad.
    scenario the binary is benign, but in a real investigation you'd submit the hash to VirusTotal.)
    Note the hash in your findings.
 
-4. [ ] **Use tshark to follow the HTTP stream.** Run inside the shell:
-   ```bash
-   tshark -r /data/capture.pcap -Y "http" -T fields \
-     -e frame.number -e ip.src -e ip.dst -e http.request.method \
-     -e http.request.uri -e http.response.code
-   ```
-   Confirm the HTTP request and response line up with what Zeek reported.
+4. [ ] **Use tshark to follow the HTTP stream.** From inside the shell, build a tshark command
+   that reads the PCAP, filters to HTTP, and extracts just the fields you care about as columns —
+   source/dest IP, request method and URI, response code. (Which read flag, which display filter,
+   and which output mode lets you name individual `-e` fields?) Confirm the HTTP request and
+   response line up with what Zeek reported.
 
 5. [ ] **Look at the TLS sessions** in `ssl.log`. Is there any HTTPS traffic to the same IP as
    the HTTP download? What does the SNI say (if present)? A host that serves HTTP on one port and

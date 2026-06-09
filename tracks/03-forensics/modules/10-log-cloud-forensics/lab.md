@@ -71,8 +71,8 @@ CloudTrail events to reconstruct the attacker's cloud pivot.
 
 6. [ ] **Map to ATT&CK.** For each category identified in step 5, look up the corresponding
    Cloud Matrix technique on [attack.mitre.org](https://attack.mitre.org/matrices/enterprise/cloud/)
-   and note the technique ID. (For example, `CreateUser` + `CreateAccessKey` maps to
-   T1136.003 — Create Account: Cloud Account.)
+   and note the technique ID and tactic. (Work out, for instance, which sub-technique the
+   `CreateUser` + `CreateAccessKey` pair maps to — don't guess the ID, find it in the matrix.)
 
 7. [ ] **Combined timeline.** Merge your endpoint mini-timeline (Part 1) with the CloudTrail
    event sequence (Part 2) in chronological order. Is there a gap between the last endpoint

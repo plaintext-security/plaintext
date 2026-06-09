@@ -32,31 +32,15 @@ full commit history for secrets, triage each finding, document which are live cr
    secrets are found, the types of secrets detected (AWS key, API token, private key header),
    and whether any finding is "Verified: true".
 
-2. [ ] `make shell` and scan manually with gitleaks:
-   ```bash
-   gitleaks detect --source /lab/data/repo --verbose --report-format json \
-     --report-path /tmp/gitleaks-report.json
-   cat /tmp/gitleaks-report.json | jq '.[] | {commit: .Commit, file: .File, match: .Match, rule: .RuleID}'
-   ```
-   For each finding: which commit hash, which file, which rule fired?
+2. [ ] `make shell` and scan the seed repo yourself with gitleaks, emitting a JSON report. For
+   each finding, pull out which commit, which file, and which rule fired.
 
-3. [ ] Find the commit where the secret was "removed":
-   ```bash
-   cd /lab/data/repo
-   git log --oneline   # look for a commit message like "remove credentials"
-   git show <removal-commit-hash> -- config.yml
-   ```
-   Is the secret still visible in the history? What does `git show <original-commit> -- config.yml`
-   show?
+3. [ ] Find the commit whose message claims to *remove* the credential, then show that file at
+   that commit and at the commit that introduced it. Is the secret still recoverable from
+   history? What does that prove about "just deleting" a committed secret?
 
-4. [ ] Scan with trufflehog for comparison:
-   ```bash
-   trufflehog git file:///lab/data/repo --no-verification --json 2>/dev/null \
-     | jq '{detector: .DetectorName, raw: .Raw, commit: .SourceMetadata.Data.Git.commit}' \
-     | head -40
-   ```
-   Do trufflehog and gitleaks find the same secrets? Are there findings in one that the other
-   missed?
+4. [ ] Scan the same repo with trufflehog and compare. Do the two tools surface the same set of
+   secrets? Is there anything one finds that the other misses, and why might that be?
 
 5. [ ] Write a remediation plan in `remediation-plan.md`:
    - List each secret found: type, commit, file, severity.
@@ -64,18 +48,10 @@ full commit history for secrets, triage each finding, document which are live cr
      or BFG repo cleaner), and notification step (who to inform — any forks or mirrors?).
    - Recommend a pre-commit hook configuration to prevent recurrence.
 
-6. [ ] Add a gitleaks pre-commit hook configuration:
-   ```bash
-   cat > /tmp/.pre-commit-config.yaml <<'EOF'
-   repos:
-   - repo: https://github.com/gitleaks/gitleaks
-     rev: v8.18.4
-     hooks:
-     - id: gitleaks
-   EOF
-   ```
-   Document: what would this hook do if a developer committed an API key? What is the
-   limitation of pre-commit hooks alone (hint: what if a developer runs `git commit --no-verify`)?
+6. [ ] Add a gitleaks pre-commit hook (via a `.pre-commit-config.yaml` referencing the gitleaks
+   repo and pinned to a release). Document: what would it do when a developer tries to commit an
+   API key, and what is the limitation of a pre-commit hook alone? (What if the developer runs
+   `git commit --no-verify`?)
 
 ## Success criteria — you're done when
 

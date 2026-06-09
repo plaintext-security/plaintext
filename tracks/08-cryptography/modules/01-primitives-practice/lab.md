@@ -27,59 +27,32 @@ they cannot do to GCM — so the team makes an informed choice.
 
 ## Do
 
-1. [ ] `make demo` — watch the demo encrypt a file with AES-256-CBC and AES-256-GCM, then
-   tamper with the ciphertext, then attempt decryption. Note: which mode detects the tampering,
-   which silently decrypts corrupted data.
+1. [ ] Attempt the experiment first, then run `make demo` to check your prediction. Before
+   running it, write down what you *expect* to happen when a ciphertext byte is flipped under
+   CBC vs under GCM. Then compare against the demo.
 
-2. [ ] `make shell` and encrypt a plaintext file with AES-256-CBC manually:
+2. [ ] `make shell` and encrypt `/lab/data/plaintext.txt` under AES-256-CBC. The `openssl enc`
+   invocation is the syntax worth seeing once — supply a 256-bit key and a 128-bit IV as hex:
    ```bash
    openssl enc -aes-256-cbc -in /lab/data/plaintext.txt -out /tmp/cipher-cbc.bin \
-     -K 0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20 \
-     -iv 0102030405060708090a0b0c0d0e0f10
+     -K <64-hex-char key> -iv <32-hex-char IV>
    ```
-   Now tamper with one byte of the ciphertext:
-   ```bash
-   python3 -c "
-   data = bytearray(open('/tmp/cipher-cbc.bin','rb').read())
-   data[32] ^= 0xFF  # flip bits in the second block
-   open('/tmp/cipher-cbc-tampered.bin','wb').write(data)
-   "
-   # Decrypt the tampered ciphertext:
-   openssl enc -d -aes-256-cbc -in /tmp/cipher-cbc-tampered.bin \
-     -K 0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20 \
-     -iv 0102030405060708090a0b0c0d0e0f10 2>/dev/null | xxd | head
-   ```
-   Did decryption succeed? What did the output look like? This is the "silent corruption" problem.
+   Now flip a byte inside the second ciphertext block, decrypt the tampered file, and record
+   what comes out. Did decryption *succeed*? What does that tell you about CBC's integrity
+   guarantee?
 
-3. [ ] Now encrypt with AES-256-GCM:
-   ```bash
-   openssl enc -aes-256-gcm -in /lab/data/plaintext.txt -out /tmp/cipher-gcm.bin \
-     -K 0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20 \
-     -iv 010203040506070809000000
-   ```
-   Tamper with the ciphertext in the same way and attempt decryption:
-   ```bash
-   python3 -c "
-   data = bytearray(open('/tmp/cipher-gcm.bin','rb').read())
-   data[10] ^= 0xFF
-   open('/tmp/cipher-gcm-tampered.bin','wb').write(data)
-   "
-   openssl enc -d -aes-256-gcm -in /tmp/cipher-gcm-tampered.bin \
-     -K 0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20 \
-     -iv 010203040506070809000000
-   ```
-   What error does OpenSSL return? This is authentication failure — the guarantee GCM provides.
+3. [ ] Encrypt the same plaintext under AES-256-GCM (same `enc` form, different cipher and a
+   96-bit IV). Flip a ciphertext byte the same way and attempt to decrypt. What does OpenSSL do
+   differently from the CBC case, and what is that behaviour called?
 
 4. [ ] Document the difference: write two paragraphs in `primitives-analysis.md`:
    - What happened when you tampered with the CBC ciphertext, and what this means for Meridian's data-at-rest design.
    - What happened when you tampered with the GCM ciphertext, and why this is the correct guarantee.
 
-5. [ ] Use OpenSSL to compute an HMAC of the plaintext (MAC-then-encrypt pattern for reference):
-   ```bash
-   openssl mac -digest SHA256 -macopt key:supersecretkey HMAC < /lab/data/plaintext.txt
-   ```
-   Explain: why is HMAC-then-encrypt different from AES-GCM? Which provides a stronger
-   guarantee and why? (Hint: read about Encrypt-then-MAC vs MAC-then-Encrypt.)
+5. [ ] Compute an HMAC of the plaintext with OpenSSL (`openssl mac … HMAC`). Then explain in
+   your notes: how does a MAC-then-encrypt construction differ from AES-GCM's built-in
+   authentication, and which ordering — Encrypt-then-MAC or MAC-then-Encrypt — is the safe
+   default, and why?
 
 ## Success criteria — you're done when
 

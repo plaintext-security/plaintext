@@ -30,8 +30,9 @@ with correct types, enrich each with the mock VT detection ratio, tag the event 
 and mark it ready for review.
 
 ## Do
-1. [ ] `make demo` — watch the reference `workflow.py` create the event and attach attributes
-   in the mock MISP. Note the event ID it prints.
+1. [ ] Browse the mock MISP UI at `http://localhost:8080` and skim the `pymisp` quickstart so you
+   know the object model (event → attributes → tags) before you script it. (Run `make demo` only at
+   the end — it builds the reference event, which you'll diff your own against.)
 2. [ ] Write `workflow.py` using `pymisp`:
    - Connect to `http://misp:8080` with the API key from `os.environ["MISP_KEY"]` (pre-set
      in the container).
@@ -43,6 +44,8 @@ and mark it ready for review.
 4. [ ] Tag the event: `tlp:amber` and `misp-galaxy:mitre-attack-pattern="Phishing T1566"`.
 5. [ ] Publish the event and print its MISP URL.
 6. [ ] Verify: query MISP for events with tag `tlp:amber` and confirm your event appears.
+7. [ ] Run `make demo` and compare the reference event against yours — same attribute types, same
+   tags, same enrichment comments? Where they differ, decide which is correct and why.
 
 ## Success criteria — you're done when
 - [ ] The MISP event exists in the mock instance with all 10 attributes.

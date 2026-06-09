@@ -28,37 +28,15 @@ You've obtained credentials for `jsmith` and identified via BloodHound that `svc
 
 ## Do
 
-1. [ ] **Query ACLs via ldapsearch.** Read the ACL on the `IT-Admins` group — who has `GenericWrite` or `WriteDacl`?
-   ```
-   ldapsearch -H ldap://dc01.meridian.local -x -D 'jsmith@MERIDIAN.LOCAL' -w 'Welcome1!' \
-     -b 'CN=IT-Admins,CN=Users,DC=meridian,DC=local' nTSecurityDescriptor
-   ```
-   The `nTSecurityDescriptor` attribute contains the raw ACL. This is harder to read than BloodHound — open `data/acl-findings.json` to see the interpreted version.
+1. [ ] **Query ACLs via ldapsearch.** As `jsmith`, read the `nTSecurityDescriptor` on the `IT-Admins` group and work out who holds `GenericWrite` or `WriteDacl`. The raw SDDL is hard to read by eye — `data/acl-findings.json` has the interpreted version to check against.
 
-2. [ ] **Read the BloodHound ACL findings.** Open `data/acl-findings.json` and identify:
-   - Which principal has `GenericWrite` on `IT-Admins`?
-   - What does `GenericWrite` on a group allow an attacker to do?
-   - What is the next hop after adding jsmith to IT-Admins?
+2. [ ] **Read the BloodHound ACL findings.** From `data/acl-findings.json`, answer: which principal has `GenericWrite` on `IT-Admins`, what does that right let you do to the group, and what is the next hop once `jsmith` is a member?
 
-3. [ ] **Simulate the GenericWrite exploit.** Using `svc-deploy` credentials (obtained via Kerberoasting in module 03), add `jsmith` to `IT-Admins`:
-   ```
-   python3 /opt/venv/bin/addcomputer.py -action modify ... 
-   ```
-   Alternative: use `samba-tool group addmembers` from inside the DC container (for the lab demo):
-   ```
-   docker compose exec samba-dc samba-tool group addmembers IT-Admins jsmith \
-     -U svc-deploy%'D3pl0y$3rv1ce!'
-   ```
-   Verify with ldapsearch that `jsmith` is now a member of `IT-Admins`.
+3. [ ] **Simulate the GenericWrite exploit.** Using the `svc-deploy` credential you cracked in module 03, exercise the `GenericWrite` to add `jsmith` to `IT-Admins` (Impacket's group/ACL tooling, or `samba-tool` from inside the DC container for the lab demo). Verify the new membership via LDAP.
 
-4. [ ] **Identify unconstrained delegation.** Find all accounts with unconstrained delegation:
-   ```
-   ldapsearch -H ldap://dc01.meridian.local -x -D 'jsmith@MERIDIAN.LOCAL' -w 'Welcome1!' \
-     -b 'DC=meridian,DC=local' '(userAccountControl:1.2.840.113556.1.4.803:=524288)' sAMAccountName
-   ```
-   Which account appears (other than DCs)? Why does `svc-backup` having unconstrained delegation create a TGT theft risk?
+4. [ ] **Identify unconstrained delegation.** Query for accounts with the unconstrained-delegation `userAccountControl` bit set. Which account appears besides the DCs, and why does `svc-backup` holding unconstrained delegation create a TGT-theft risk?
 
-5. [ ] **Map the full escalation path.** From the `data/acl-findings.json`, trace the complete path from `jsmith` to `Domain Admins` through ACL edges. Write it as: `jsmith -[MemberOf]-> Finance-Users -[..chain..]-> Domain Admins`. How many ACL hops are involved?
+5. [ ] **Map the full escalation path.** From `data/acl-findings.json`, trace `jsmith` → `Domain Admins` through the ACL edges (write it as `jsmith -[MemberOf]-> Finance-Users -[…]-> Domain Admins`). How many ACL hops?
 
 6. [ ] **Identify the defensive fix.** For each misconfiguration you found, note the remediation: which ACE should be removed, on which object, by whom?
 

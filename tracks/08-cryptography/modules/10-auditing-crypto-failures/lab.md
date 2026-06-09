@@ -32,21 +32,11 @@ and a specific remediation.
    severity distribution for each. This is the before/after matrix showing what "strong TLS
    configuration" looks like compared to a weak one.
 
-2. [ ] `make shell` and scan each server individually, saving output:
-   ```bash
-   testssl.sh --severity LOW --jsonfile /tmp/legacy.json nginx-legacy:443 2>/dev/null
-   testssl.sh --severity LOW --jsonfile /tmp/modern.json nginx-modern:443 2>/dev/null
-   testssl.sh --severity LOW --jsonfile /tmp/strong.json nginx-strong:443 2>/dev/null
-   ```
+2. [ ] `make shell` and scan each of the three servers (`nginx-legacy`, `nginx-modern`,
+   `nginx-strong`) with `testssl.sh`, writing each result to its own JSON file.
 
-3. [ ] Parse each JSON output for severity counts:
-   ```bash
-   for server in legacy modern strong; do
-     echo "=== $server ==="
-     jq -r '.[] | .severity' /tmp/${server}.json | sort | uniq -c | sort -rn
-   done
-   ```
-   Build a comparison table: server name × severity level × finding count.
+3. [ ] Parse the three JSON files for severity counts (jq over the `.severity` field) and build
+   a comparison table: server × severity level × finding count.
 
 4. [ ] For each CRITICAL or HIGH finding in the legacy server, write one row in your audit
    report:
@@ -63,11 +53,8 @@ and a specific remediation.
    and one that the modern server still has. What does this tell you about the value of
    incremental TLS hardening vs full migration to TLS 1.3?
 
-6. [ ] Confirm the strong server has no HIGH or CRITICAL findings:
-   ```bash
-   jq '[.[] | select(.severity == "HIGH" or .severity == "CRITICAL")] | length' /tmp/strong.json
-   ```
-   If any remain, identify the root cause.
+6. [ ] Confirm the strong server has no HIGH or CRITICAL findings — count them in its JSON
+   output. If any remain, identify the root cause.
 
 ## Success criteria — you're done when
 

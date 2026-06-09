@@ -31,40 +31,22 @@ rescan to confirm the findings are resolved.
 1. [ ] `make demo` — watch testssl.sh scan the weak nginx configuration. Record: which TLS
    versions are supported, which cipher suites are flagged, and any certificate findings.
 
-2. [ ] `make shell` and scan the weak nginx manually:
-   ```bash
-   testssl.sh --severity HIGH nginx:443 2>/dev/null | tee /tmp/weak-results.txt
-   grep -E "(HIGH|CRITICAL|MEDIUM)" /tmp/weak-results.txt
-   ```
-   For each HIGH or CRITICAL finding: which cipher suite or setting causes it, and what
-   property does it undermine (forward secrecy, authentication, confidentiality)?
+2. [ ] `make shell` and rescan the weak nginx yourself with `testssl.sh`, filtering to the
+   serious findings. For each HIGH or CRITICAL: which cipher suite or setting causes it, and
+   which property does it undermine (forward secrecy, authentication, confidentiality)?
 
-3. [ ] Inspect the weak nginx TLS configuration (`data/nginx-weak.conf`) and identify the
-   specific directives that produce each finding. Common culprits:
-   - `ssl_protocols TLSv1 TLSv1.1 TLSv1.2;` — TLS 1.0/1.1 enabled.
-   - `ssl_ciphers RC4:...` or `ssl_ciphers HIGH:!aNULL` — includes weak ciphers.
+3. [ ] Open the weak nginx config (`data/nginx-weak.conf`) and map each scanner finding back to
+   the specific directive that produces it. Which `ssl_protocols` / `ssl_ciphers` lines are the
+   root causes?
 
-4. [ ] Apply the Mozilla modern profile. Edit `data/nginx-strong.conf` to use:
-   ```nginx
-   ssl_protocols TLSv1.3;
-   ssl_ciphers TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256;
-   ssl_prefer_server_ciphers off;
-   add_header Strict-Transport-Security "max-age=63072000" always;
-   ```
-   Reload nginx with the strong config (the Makefile has a `reload-strong` target) and rescan:
-   ```bash
-   testssl.sh --severity HIGH nginx:443 2>/dev/null | tee /tmp/strong-results.txt
-   grep -E "(HIGH|CRITICAL|MEDIUM)" /tmp/strong-results.txt
-   ```
-   How many findings remain?
+4. [ ] Apply the Mozilla "modern" profile. Use the Mozilla SSL Configuration Generator to
+   derive the correct `ssl_protocols`, `ssl_ciphers`, `ssl_prefer_server_ciphers`, and HSTS
+   directives, write them into `data/nginx-strong.conf`, reload nginx with the strong config
+   (`make reload-strong`), and rescan. How many findings remain?
 
-5. [ ] Inspect the TLS handshake manually with OpenSSL:
-   ```bash
-   # Connect and show negotiated cipher and protocol:
-   openssl s_client -connect nginx:443 -tls1_3 < /dev/null 2>&1 \
-     | grep -E "(Protocol|Cipher|Certificate chain)"
-   ```
-   What cipher suite was negotiated? Which key exchange algorithm? Is it ECDHE (forward secret)?
+5. [ ] Inspect the negotiated handshake directly with `openssl s_client` against the strong
+   server. What protocol and cipher suite were negotiated, which key-exchange algorithm is in
+   use, and is it forward-secret?
 
 6. [ ] Write `tls-audit-report.md`: a table with finding name, severity, affected property,
    weak config directive, and strong config fix for the top five findings.

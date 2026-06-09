@@ -26,18 +26,18 @@ identify every vulnerability in each workflow, fix the workflows, and document t
 
 ## Do
 1. [ ] `make demo` — watch `gitleaks detect` run against `data/`. Note any findings.
-2. [ ] Read `data/ci-review-checklist.md` — the review framework. Apply it to each workflow:
-   - **`gitleaks-scan.yml`**: find the `pull_request_target` misuse. Fix it to use
-     `pull_request` instead. Check whether the permissions block is present.
-   - **`iac-scan.yml`**: find the unpinned action version (`uses: actions/checkov-action@v12`
-     rather than a SHA). Find the over-broad permissions (`permissions: write-all`). Fix both.
-   - **`sigma-lint.yml`**: find the secret printed to the log (`echo "token=${{ secrets.API_TOKEN }}"
-     `). Fix it by passing the token as an environment variable to the command.
-3. [ ] For each finding, write a one-paragraph entry in `security-review.md`: what the
-   vulnerability is, what an attacker could do with it, and how the fix addresses it.
+2. [ ] Read `data/ci-review-checklist.md` — the review framework. Work through each workflow
+   (`gitleaks-scan.yml`, `iac-scan.yml`, `sigma-lint.yml`) line by line against the checklist
+   and list every security issue you find. Each file hides at least one. Things to interrogate:
+   how the workflow is triggered and whether that trigger exposes secrets to untrusted code;
+   whether third-party actions are pinned; whether the `permissions` block follows least
+   privilege; and whether any step exposes a secret. Don't fix anything yet — first enumerate.
+3. [ ] For each finding, work out the fix and write a one-paragraph entry in `security-review.md`:
+   what the vulnerability is, what an attacker could do with it, and how your fix addresses it.
 4. [ ] Fix all three workflow files. Run `make demo` again to confirm `gitleaks` finds no secrets.
-5. [ ] Add `data/ci-review-checklist.md` items for the two findings not in the original checklist
-   (unpinned actions, secret-in-log) — extend the checklist so the next reviewer catches them.
+5. [ ] Compare your findings against the original `data/ci-review-checklist.md`: at least two of
+   the issues you found are not yet covered by a checklist item. Add an item for each — extend the
+   checklist so the next reviewer catches them.
 
 ## Success criteria — you're done when
 - [ ] All three workflows are fixed and you can explain each change.

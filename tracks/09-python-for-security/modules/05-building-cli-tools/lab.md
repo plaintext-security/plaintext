@@ -23,9 +23,9 @@ without reading the source. Your task: wrap it into a proper CLI tool called `io
 messages. The tool should be runnable by anyone who can type `python ioc-check.py --help`.
 
 ## Do
-1. [ ] `make demo` — read the `--help` output for the reference implementation. Note the
-   subcommands, the argument types, and the error message when you call `ioc-check enrich
-   --type invalid`.
+1. [ ] From the scenario, sketch the CLI contract before writing code: which subcommands, which
+   arguments and types, and what a good error message looks like for an invalid IOC type. (You'll
+   diff your `--help` against the reference at the end with `make demo` — design it yourself first.)
 2. [ ] Create `ioc-check.py` with two `typer` subcommands:
    - `enrich`: accepts `--ioc` (a single IOC string) or `--file` (a path to a list), and
      `--output` (optional path for JSON output; default stdout). Calls the mock API.

@@ -31,85 +31,22 @@ cracking cost difference.
    with a key, Argon2id hashes with tuned parameters, and a simulated crack attempt against
    the SHA-256 hashes.
 
-2. [ ] `make shell` and crack the unsalted SHA-256 hashes using the wordlist:
-   ```bash
-   python3 - <<'EOF'
-   import hashlib
+2. [ ] `make shell` and crack the unsalted SHA-256 hashes against the bundled wordlist
+   (`/lab/data/passwords.txt`). The mechanism is the lesson: build the lookup of
+   `sha256(word) -> word` over the wordlist and match the target hashes against it. How many of
+   the targets fall, and roughly what rate would a GPU-backed crack hit against unsalted SHA-256?
 
-   # Simulate the leaked database (unsalted SHA-256):
-   db = {}
-   with open('/lab/data/passwords.txt') as f:
-       for line in f:
-           pwd = line.strip()
-           db[hashlib.sha256(pwd.encode()).hexdigest()] = pwd
+3. [ ] Hash the same passwords with Argon2id using tuned parameters (`time_cost`, `memory_cost`,
+   `parallelism`), timing each hash. What is the per-hash cost, how many Argon2id hashes/sec can
+   this container manage, and how many orders of magnitude does that differ from the SHA-256
+   rate in step 2?
 
-   # Simulate hashes extracted from the application:
-   targets = [
-       hashlib.sha256(b"password123").hexdigest(),
-       hashlib.sha256(b"meridian2024").hexdigest(),
-       hashlib.sha256(b"Tr0ub4dor&3").hexdigest(),   # from the wordlist
-   ]
+4. [ ] Verify an Argon2id hash: hash a password, then confirm the verifier accepts the correct
+   password and rejects a wrong one. (Note what the library raises on mismatch.)
 
-   print("Cracking results:")
-   for h in targets:
-       result = db.get(h, "NOT FOUND")
-       print(f"  {h[:16]}... => {result}")
-   EOF
-   ```
-   How many of the three target hashes were cracked? What would a GPU-backed crack do with the
-   full wordlist?
-
-3. [ ] Hash the same passwords with Argon2id and observe the cost:
-   ```python
-   python3 - <<'EOF'
-   import time
-   from argon2 import PasswordHasher
-
-   ph = PasswordHasher(time_cost=3, memory_cost=65536, parallelism=2)
-
-   passwords = ["password123", "meridian2024", "Tr0ub4dor&3"]
-   for pwd in passwords:
-       start = time.perf_counter()
-       h = ph.hash(pwd)
-       elapsed = time.perf_counter() - start
-       print(f"Hashed '{pwd}' in {elapsed:.3f}s: {h[:40]}...")
-   EOF
-   ```
-   What is the per-hash cost? How many Argon2id hashes per second can this container compute?
-   Compare that to the SHA-256 cracking rate.
-
-4. [ ] Verify an Argon2id hash:
-   ```python
-   python3 - <<'EOF'
-   from argon2 import PasswordHasher
-   from argon2.exceptions import VerifyMismatchError
-
-   ph = PasswordHasher()
-   h = ph.hash("correct-password")
-   print("Hash:", h[:50], "...")
-
-   # Correct password:
-   try:
-       ph.verify(h, "correct-password")
-       print("Verification: SUCCESS")
-   except VerifyMismatchError:
-       print("Verification: FAILED")
-
-   # Wrong password:
-   try:
-       ph.verify(h, "wrong-password")
-   except VerifyMismatchError:
-       print("Wrong password: rejected")
-   EOF
-   ```
-
-5. [ ] Compute an HMAC-SHA256 for message integrity (not password storage):
-   ```bash
-   echo -n "Payroll batch 2026-06-01: total=$1234567.89" \
-     | openssl mac -digest SHA256 -macopt key:supersecrethmackey HMAC
-   ```
-   Modify one character of the message and recompute. Do the HMACs match? Why is HMAC
-   appropriate here but not for password storage?
+5. [ ] Compute an HMAC-SHA256 over a message with `openssl mac … HMAC`, then change one
+   character and recompute. Do the MACs match? Explain why HMAC is the right tool for message
+   integrity but the wrong tool for password storage.
 
 ## Success criteria — you're done when
 

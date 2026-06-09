@@ -32,68 +32,21 @@ ciphertexts encrypted under the same key and IV. Then implement the correct fix.
    corrupted but decryption succeeds. (2) GCM authentication: a tamper is detected. (3) GCM
    IV reuse: two ciphertexts with the same key/IV are XORed to reveal plaintext.
 
-2. [ ] `make shell` and demonstrate the IV reuse attack manually:
-   ```python
-   python3 - <<'EOF'
-   from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-   import os
+2. [ ] `make shell` and reproduce the IV-reuse attack yourself with the `cryptography`
+   library's `AESGCM`. Encrypt two different short messages under the *same* key and IV, then
+   XOR the two ciphertexts and XOR the two plaintexts. What relationship holds between the two
+   results, and what can an attacker who knows one plaintext now do to the other?
 
-   key = os.urandom(32)
-   bad_iv = b'\x00' * 12   # hardcoded IV — the bug
+3. [ ] Implement the fix: a random IV per encryption, serialised alongside the ciphertext
+   (the IV is not secret — work out why it can travel in the clear). Confirm a fresh IV is
+   generated on every call.
 
-   msg1 = b"Salary: $95,000 "
-   msg2 = b"Budget: $200,000"
+4. [ ] Add Associated Data to the GCM call, then attempt to decrypt with the AAD changed.
+   What happens, and what threat does authenticating-but-not-encrypting the AAD defend against?
+   Write a one-paragraph explanation.
 
-   ct1 = AESGCM(key).encrypt(bad_iv, msg1, None)
-   ct2 = AESGCM(key).encrypt(bad_iv, msg2, None)
-
-   # XOR the ciphertexts (excluding the 16-byte tag):
-   xor_ct = bytes(a ^ b for a, b in zip(ct1[:16], ct2[:16]))
-   print("XOR of ciphertexts:", xor_ct.hex())
-   print("XOR of plaintexts: ", bytes(a ^ b for a, b in zip(msg1, msg2)).hex())
-   print("Match:", xor_ct == bytes(a ^ b for a, b in zip(msg1, msg2)))
-   EOF
-   ```
-   The XOR of the ciphertexts equals the XOR of the plaintexts. What does an attacker do with
-   this? (Crib-dragging: if they know one message, they can recover the other.)
-
-3. [ ] Implement the fix — correct IV generation:
-   ```python
-   python3 - <<'EOF'
-   from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-   import os, json, base64
-
-   key = os.urandom(32)
-   msg = b"Salary: $95,000 for Q3 payroll"
-
-   # Correct: random IV per encryption
-   iv = os.urandom(12)
-   ct = AESGCM(key).encrypt(iv, msg, None)
-
-   # Serialise with IV prepended
-   payload = json.dumps({
-       "iv": base64.b64encode(iv).decode(),
-       "ct": base64.b64encode(ct).decode()
-   })
-   print("Encrypted payload:", payload)
-   EOF
-   ```
-   Note that the IV is random and transmitted with the ciphertext — it is not secret.
-
-4. [ ] Add Associated Data (the AAD parameter) to the GCM call:
-   ```python
-   aad = b"recipient:payroll-service"   # authenticated, not encrypted
-   ct = AESGCM(key).encrypt(iv, msg, aad)
-   # Verify decryption fails if AAD is modified:
-   try:
-       AESGCM(key).decrypt(iv, ct, b"recipient:attacker")
-   except Exception as e:
-       print("AAD mismatch rejected:", e)
-   ```
-   What does AAD protect against? Write a one-paragraph explanation.
-
-5. [ ] Repeat the nonce-reuse XOR demonstration with the fixed version (random IV). Confirm
-   that two properly-encrypted messages cannot be XORed to reveal plaintexts.
+5. [ ] Repeat the XOR experiment from step 2 against your fixed (random-IV) version. Confirm
+   the ciphertext-XOR relationship no longer leaks plaintext, and explain why.
 
 ## Success criteria — you're done when
 

@@ -30,11 +30,11 @@ switch hats: analyze what you left on the wire and how a defender would detect i
 
 ## Do
 
-1. [ ] Run the demo to see the full C2 lifecycle:
-   ```bash
-   make demo
-   ```
-   Note the session ID, host info, and each post-ex command's output.
+1. [ ] Read `implant/beacon.py` and `server/c2_server.py` first to learn the API the
+   implant and operator speak, then drive a full post-ex session yourself in step 4 before
+   watching the worked run. (`make demo` runs the validated end-to-end C2 lifecycle —
+   session check-in, tasking, results — use it afterwards to confirm your session ID, host
+   info, and command output match.)
 
 2. [ ] Read `implant/beacon.py`. Trace the beacon loop:
    - What data does each check-in POST to the server?

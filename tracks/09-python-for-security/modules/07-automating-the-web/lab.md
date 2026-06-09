@@ -28,9 +28,9 @@ web app, build a complete link map, and identify any endpoints that aren't reach
 main navigation — the kind of thing a pentester's spider would find in the first two minutes.
 
 ## Do
-1. [ ] `make demo` — watch the reference scraper discover all endpoints including the hidden one.
-   Open the target app in your browser at `http://localhost:5000` and verify that
-   `/internal/status` is not in the navigation.
+1. [ ] Open the target app in your browser at `http://localhost:5000` and explore the navigation.
+   Confirm that `/internal/status` is not linked anywhere visible — this is the endpoint your
+   scraper must surface. (Hold off on `make demo`; use it as a check once you've built your own.)
 2. [ ] Write `scraper.py` using `httpx.Client` and `beautifulsoup4`:
    - Start at `http://target:5000/` (the compose hostname).
    - Extract all `<a href>` links from each page.
@@ -43,6 +43,8 @@ main navigation — the kind of thing a pentester's spider would find in the fir
    `<a href>` or via the regex pass.
 5. [ ] Confirm that `/internal/status` is discovered by the regex pass (it's embedded in a
    JavaScript comment, not an anchor tag).
+6. [ ] Run `make demo` and compare your link map against the reference scraper. Did you find every
+   endpoint it did, including the hidden one? If it found something you missed, work out why.
 
 ## Success criteria — you're done when
 - [ ] `scraper.py` discovers all pages including `/internal/status`.

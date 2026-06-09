@@ -47,8 +47,8 @@ Meridian Financial is rolling out Kyverno to their EKS cluster to enforce contai
    For each policy, note the `validationFailureAction` (`Audit` or `Enforce`) and what it checks.
 
 2. [ ] Read `manifests/policies/disallow-privileged.yaml`.
-   What is the `deny` condition? What exact field in the pod spec does it check?
-   *Answer: `spec.containers[].securityContext.privileged = true`.*
+   What is the `deny` condition? What exact field in the pod spec does it check, and at what
+   path within the container's `securityContext`?
 
 3. [ ] Read `manifests/policies/require-non-root.yaml`.
    This policy requires `runAsNonRoot: true` OR `runAsUser > 0`. Why is this check paired — what does `runAsNonRoot: true` alone miss?

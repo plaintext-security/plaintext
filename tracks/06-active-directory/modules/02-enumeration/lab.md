@@ -29,46 +29,19 @@ You're a red teamer who has just obtained credentials for `jsmith` (password: `W
 
 ## Do
 
-1. [ ] **Baseline with enum4linux-ng.** From the attacker container, run:
-   ```
-   enum4linux-ng -A -u jsmith -p 'Welcome1!' dc01.meridian.local
-   ```
-   Note what the tool discovers without you writing a single LDAP filter. How many users, groups, and shares does it find? What would it have found if you'd run it *without* `-u` / `-p` (null session)?
+1. [ ] **Baseline with enum4linux-ng.** Point an all-in-one enumerator at the DC with your `jsmith` credential and record what it surfaces with no LDAP filters written. How many users, groups, and shares? What would a null session (no credential) have returned instead, and why is that a finding in itself?
 
-2. [ ] **Raw LDAP — user enumeration.** Run an ldapsearch to list all user accounts in the domain:
-   ```
-   ldapsearch -H ldap://dc01.meridian.local -x -D 'jsmith@MERIDIAN.LOCAL' -w 'Welcome1!' \
-     -b 'DC=meridian,DC=local' '(objectClass=user)' sAMAccountName userPrincipalName memberOf
-   ```
-   Save the output. Count the accounts. Which ones do not appear to be human users?
+2. [ ] **Raw LDAP — user enumeration.** Bind to the DC over LDAP as `jsmith` and pull every user object, requesting `sAMAccountName`, `userPrincipalName`, and `memberOf`. Save the output, count the accounts, and flag the ones that are clearly not human users.
 
-3. [ ] **Find Kerberoastable accounts.** Modify the filter to return only accounts with a `servicePrincipalName`:
-   ```
-   ldapsearch ... '(&(objectClass=user)(servicePrincipalName=*))' sAMAccountName servicePrincipalName
-   ```
-   List the SPNs you find. Cross-reference with `data/meridian-domain.md` — did you find all three Kerberoastable accounts?
+3. [ ] **Find Kerberoastable accounts.** Narrow your filter to only user objects that carry a `servicePrincipalName`. List the SPNs and cross-reference `data/meridian-domain.md` — did you find all three Kerberoastable accounts? (Hint: this is a bitwise-AND of two object conditions.)
 
-4. [ ] **Find AS-REP roastable accounts.** Filter for `userAccountControl` flag `4194304` (DONT_REQUIRE_PREAUTH):
-   ```
-   ldapsearch ... '(&(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' sAMAccountName
-   ```
-   Which accounts have this flag set? Why is this dangerous without any password at all?
+4. [ ] **Find AS-REP roastable accounts.** Filter on the `DONT_REQUIRE_PREAUTH` bit of `userAccountControl`. Which accounts have it set, and why is each exploitable with no password at all? (Hint: you'll need the LDAP bitwise-AND matching rule OID and the flag's decimal value — look them up.)
 
-5. [ ] **Find unconstrained delegation.** Query for computers and accounts with unconstrained delegation (`userAccountControl` flag `524288`):
-   ```
-   ldapsearch ... '(userAccountControl:1.2.840.113556.1.4.803:=524288)' sAMAccountName
-   ```
-   Note which accounts appear. Why does this list always include DCs?
+5. [ ] **Find unconstrained delegation.** Filter on the `userAccountControl` bit for unconstrained delegation. Which accounts appear, and why does the list always include DCs?
 
-6. [ ] **Run bloodhound-python.** Collect full BloodHound data from the DC:
-   ```
-   bloodhound-python -d MERIDIAN.LOCAL -u jsmith -p 'Welcome1!' -c All -ns 10.10.0.10 --zip
-   ```
-   This generates a ZIP file. Import it into BloodHound CE (run externally at `http://localhost:8080` if you have it), or examine the raw JSON files inside the ZIP.
+6. [ ] **Run bloodhound-python.** Collect a full BloodHound dataset from the DC as `jsmith`, producing a ZIP. Import it into BloodHound CE, or examine the raw JSON inside the ZIP. (If you'd rather skip the ingest, `data/bloodhound-meridian.json` is a pre-generated dataset for the same domain.)
 
-7. [ ] **Analyse the BloodHound data.** Whether using the CE UI or the raw JSON, answer: what is the shortest path from `jsmith` to `Domain Admins`? How many hops? List each hop and the edge type (e.g., `MemberOf`, `GenericWrite`, `CanPSRemote`).
-
-   Alternatively, import `data/bloodhound-meridian.json` into BloodHound CE to see a pre-generated graph.
+7. [ ] **Analyse the BloodHound data.** From the graph or the raw JSON, answer: what is the shortest path from `jsmith` to `Domain Admins`? How many hops, and what is the edge type of each (e.g., `MemberOf`, `GenericWrite`, `CanPSRemote`)?
 
 ## Success criteria — you're done when
 

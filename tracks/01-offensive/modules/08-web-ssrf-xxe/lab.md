@@ -28,38 +28,30 @@ endpoints have no server-side trust boundary.
 
 ## Do
 
-1. [ ] Run the demo to see both exploits:
-   ```bash
-   make demo
-   ```
-   Note what data each exploit extracts and what the fix would be.
+1. [ ] Read `app/app.py` and find the two vulnerable functions before running anything.
+   For each: what input does the server act on without validating its source, what does
+   "confused deputy" mean here, and which `urllib` / `lxml` arguments make it exploitable?
+   (`make demo` runs the validated exploit for both — use it afterwards to check what each
+   exploit extracts and what the fix is.)
 
-2. [ ] Read `app/app.py`. Find the two vulnerable functions. For each:
-   - What input does the server act on without validation?
-   - What does "confused deputy" mean in context?
-   - Which `urllib` / `lxml` arguments make it vulnerable?
+2. [ ] Exploit the SSRF (Bug 1) yourself: get the server to fetch the internal metadata
+   endpoint on your behalf and return what only it can reach. (The mock metadata server is
+   on `127.0.0.1:5001` inside the container — why can't you hit it directly, and which
+   request parameter makes the server do it for you?) In AWS this address is
+   `169.254.169.254`; what did Capital One's attacker do once they had the IAM credentials?
 
-3. [ ] Trace the SSRF (Bug 1) manually:
-   - The server fetches `url=http://127.0.0.1:5001/...` on the attacker's behalf.
-   - Why can't the attacker reach `127.0.0.1:5001` directly?
-   - In AWS, this address would be `169.254.169.254`. What did Capital One's attacker
-     do once they had the IAM credentials?
+3. [ ] Exploit the XXE (Bug 2) yourself: craft an XML body with an external entity that
+   reads a file off the server's filesystem, and send it to the importer endpoint. Then
+   escalate — read a more sensitive file, and chain it to SSRF by swapping the entity to an
+   `http://` URL pointing at the metadata service. (What entity declaration reads a local
+   file, and what makes the parser resolve it?)
 
-4. [ ] Trace the XXE (Bug 2) manually:
-   - Paste the XXE payload into a file and run:
-     ```bash
-     make shell
-     python3 -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/health').read())"
-     ```
-     Then craft a `curl` request with the XXE body.
-   - Change `file:///etc/hostname` to `file:///etc/passwd`. What comes back?
-   - How would you chain XXE to SSRF (use an `http://` entity instead of `file://`)?
-
-5. [ ] Apply Bug 1's fix: edit `app/app.py` and add the URL allow-list. Re-run
+4. [ ] Apply Bug 1's fix: edit `app/app.py` and add the URL allow-list. Re-run
    `make demo` and confirm the SSRF returns HTTP 403.
 
-6. [ ] Apply Bug 2's fix: switch to `lxml.etree.XMLParser(resolve_entities=False,
-   load_dtd=False)`. Re-run and confirm the XXE returns a parse error (no file read).
+5. [ ] Apply Bug 2's fix: harden the XML parser so it no longer resolves external
+   entities. Re-run and confirm the XXE returns a parse error (no file read). (Which
+   `lxml` parser options disable entity resolution and DTD loading?)
 
 ## Success criteria — you're done when
 

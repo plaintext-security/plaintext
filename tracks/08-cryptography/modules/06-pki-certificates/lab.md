@@ -30,64 +30,22 @@ demonstrate certificate revocation — the complete PKI lifecycle for an mTLS pr
    chain verification, OCSP query, and revocation. Note the certificate fields printed at
    each step.
 
-2. [ ] `make shell` and initialise a fresh CA (the demo has already done this — re-examine it):
-   ```bash
-   step ca certificate meridian.internal /tmp/leaf.crt /tmp/leaf.key \
-     --ca-url https://localhost:8443 \
-     --root /home/step/.step/certs/root_ca.crt \
-     --provisioner admin@meridian.internal
-   ```
-   Inspect the issued certificate:
-   ```bash
-   step certificate inspect /tmp/leaf.crt
-   openssl x509 -in /tmp/leaf.crt -text -noout | grep -A5 "Subject Alternative"
-   openssl x509 -in /tmp/leaf.crt -text -noout | grep -A2 "Validity"
-   ```
-   What is the default validity period? What SAN is included?
+2. [ ] `make shell` and issue a leaf certificate from the running CA with `step ca certificate`
+   (you'll need the CA URL, the root cert, and a provisioner). Inspect the issued cert with
+   `step certificate inspect` / `openssl x509`: what is the default validity period, and what
+   SAN was included?
 
-3. [ ] Verify the certificate chain:
-   ```bash
-   step certificate verify /tmp/leaf.crt \
-     --roots /home/step/.step/certs/root_ca.crt
-   echo "Chain verification: $?"
-   ```
-   Now corrupt the certificate slightly and try again:
-   ```bash
-   python3 -c "
-   data = open('/tmp/leaf.crt').read()
-   data = data.replace('CERTIFICATE', 'CERT1F1CATE')
-   open('/tmp/corrupt.crt','w').write(data)
-   "
-   step certificate verify /tmp/corrupt.crt \
-     --roots /home/step/.step/certs/root_ca.crt 2>&1
-   ```
-   What error does the chain verification produce?
+3. [ ] Verify the leaf against the root (`step certificate verify`) and confirm it passes.
+   Then corrupt a byte of the PEM and verify again — what error does chain verification produce,
+   and what does that tell you about how the signature is checked?
 
-4. [ ] Revoke the leaf certificate:
-   ```bash
-   step ca revoke $(step certificate fingerprint /tmp/leaf.crt) \
-     --ca-url https://localhost:8443 \
-     --root /home/step/.step/certs/root_ca.crt
-   ```
-   Then query OCSP to confirm the revocation status:
-   ```bash
-   step ca certificate-status /tmp/leaf.crt \
-     --ca-url https://localhost:8443 \
-     --root /home/step/.step/certs/root_ca.crt
-   ```
-   What status is returned? What serial number does the revoked certificate have?
+4. [ ] Revoke the leaf certificate through the CA, then query its status to confirm the
+   revocation took effect. What status is returned, and what serial number identifies the
+   revoked cert?
 
-5. [ ] Issue a second certificate with a short validity period (5 minutes):
-   ```bash
-   step ca certificate payroll.internal /tmp/short.crt /tmp/short.key \
-     --ca-url https://localhost:8443 \
-     --root /home/step/.step/certs/root_ca.crt \
-     --provisioner admin@meridian.internal \
-     --not-after 5m
-   openssl x509 -in /tmp/short.crt -noout -dates
-   ```
-   What is the `notAfter` timestamp? Why do short-lived certificates reduce reliance on
-   revocation?
+5. [ ] Issue a second certificate with a deliberately short validity window (a few minutes) and
+   read back its `notAfter`. Why do short-lived certificates reduce reliance on revocation
+   infrastructure?
 
 6. [ ] Inspect the root CA certificate and identify: the `basicConstraints` extension (CA:TRUE),
    the `keyUsage` extension (keyCertSign, cRLSign), and the self-signed signature. Write a

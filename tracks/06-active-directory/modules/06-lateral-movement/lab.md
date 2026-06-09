@@ -28,35 +28,15 @@ You now have credentials for `jsmith` (Finance) and have obtained `tallen`'s NT 
 
 ## Do
 
-1. [ ] **Enumerate the subnet.** Use netexec to discover live SMB hosts:
-   ```
-   nxc smb 10.10.0.0/24
-   ```
-   Note the output for each host: hostname, OS, domain, and most importantly — is signing `True` or `False`? Which hosts are signing-required vs. not?
+1. [ ] **Enumerate the subnet.** Sweep the `10.10.0.0/24` range for live SMB hosts and record, per host: hostname, OS, domain, and SMB signing status. Which hosts require signing and which don't?
 
-2. [ ] **Authenticate and enumerate with PTH.** Using `tallen`'s NT hash (from module 04), enumerate all hosts:
-   ```
-   nxc smb 10.10.0.0/24 -u tallen -H :NTLM_HASH_HERE
-   ```
-   Which hosts show `(Pwn3d!)` in the output? This means the credential has local admin access.
+2. [ ] **Authenticate and enumerate with PTH.** Replay the captured NT hash across every host. Which hosts report local-admin access for that credential, and how does the tool signal it?
 
-3. [ ] **psexec lateral movement.** Use impacket psexec to get a shell on ws-fin-01:
-   ```
-   psexec.py -hashes :NTLM_HASH_HERE MERIDIAN.LOCAL/tallen@10.10.0.101
-   ```
-   Run `whoami`. Note that you are `NT AUTHORITY\SYSTEM`. Exit the shell.
+3. [ ] **psexec lateral movement.** Get a shell on a Finance workstation by passing the hash. Confirm your privilege level. (What account do you land as, and why?)
 
-4. [ ] **smbexec lateral movement.** Try smbexec on ws-it-01:
-   ```
-   smbexec.py -hashes :NTLM_HASH_HERE MERIDIAN.LOCAL/tallen@10.10.0.102
-   ```
-   Run `whoami`. Compare the shell prompt/quality to psexec. Exit.
+4. [ ] **smbexec lateral movement.** Get execution on an IT workstation the same way but via smbexec. Compare the shell quality to psexec.
 
-5. [ ] **wmiexec lateral movement.** Try wmiexec on either host:
-   ```
-   wmiexec.py -hashes :NTLM_HASH_HERE MERIDIAN.LOCAL/tallen@10.10.0.101
-   ```
-   Note how the output looks different (command runs and exits vs. interactive shell). What does this imply about how wmiexec outputs results?
+5. [ ] **wmiexec lateral movement.** Get execution on a host via wmiexec. How does its output behaviour differ from psexec/smbexec, and what does that tell you about how it returns command results?
 
 6. [ ] **Compare artefact profiles.** For each technique, write down:
    - What Windows Event IDs are generated on the target?

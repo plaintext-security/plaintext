@@ -24,33 +24,17 @@ As `jsmith` on the Meridian Financial network, you have enumerated the domain (m
 
 ## Do
 
-1. [ ] **Kerberoast all SPNs.** From the attacker container, run:
-   ```
-   GetUserSPNs.py MERIDIAN.LOCAL/jsmith:'Welcome1!' -dc-ip 10.10.0.10 -request
-   ```
-   You should receive hashes for `svc-mssql`, `svc-backup`, and `svc-web`. Save the output to `spn-hashes.txt`. Notice the hash format: `$krb5tgs$23$*...` — the `23` is the etype (RC4).
+1. [ ] **Kerberoast all SPNs.** As `jsmith`, request a TGS for every account with an SPN and capture the ticket hashes to `spn-hashes.txt`. (Which Impacket tool requests SPNs and prints crackable hashes?) Note the hash format — what in the hash prefix tells you which encryption the KDC used for the ticket?
 
-2. [ ] **Inspect the hash structure.** Open `spn-hashes.txt` and identify: which field contains the account name? Which contains the encrypted ticket blob? Why does the etype matter for cracking speed?
+2. [ ] **Inspect the hash structure.** Open `spn-hashes.txt` and identify: which field carries the account name? Which is the encrypted ticket blob? Why does the etype drive cracking speed?
 
-3. [ ] **AS-REP roast.** Run — *with no password at all*:
-   ```
-   GetNPUsers.py MERIDIAN.LOCAL/ -dc-ip 10.10.0.10 -no-pass -usersfile /data/userlist.txt
-   ```
-   You should receive AS-REP hashes for `svc-legacy` and `svc-monitor`. The `$krb5asrep$23$` prefix identifies these. Note that no credential was required.
+3. [ ] **AS-REP roast.** With no credential at all, request AS-REP material for accounts that don't require pre-authentication, feeding the tool a user list. Which accounts return a hash, and what prefix identifies an AS-REP hash? Why did this require no password?
 
-4. [ ] **Crack the hashes offline.** Use hashcat against the sample hashes in `data/hashes.txt`:
-   ```
-   hashcat -m 13100 data/hashes.txt /usr/share/wordlists/rockyou.txt --force
-   ```
-   Which account's password cracks? How long did it take? What does this tell you about the password quality of service accounts?
+4. [ ] **Crack the hashes offline.** Run hashcat against the sample hashes in `data/hashes.txt` with rockyou. (Which hashcat mode matches a TGS-REP etype-23 hash? Which matches an AS-REP hash?) Which account cracks, how long did it take, and what does that say about service-account password hygiene?
 
-5. [ ] **Understand the etype downgrade.** Re-run the Kerberoast but force AES256:
-   ```
-   GetUserSPNs.py MERIDIAN.LOCAL/jsmith:'Welcome1!' -dc-ip 10.10.0.10 -request -etype 18
-   ```
-   Compare the hash prefix (`$krb5tgs$18$` vs `$krb5tgs$23$`). Look up the hashcat mode for AES256 TGS (`-m 19600`). Why does AES make cracking dramatically harder?
+5. [ ] **Understand the etype downgrade.** Re-request the roast forcing AES256 instead of RC4 and compare the hash prefixes. Find the matching hashcat mode for the AES256 TGS and explain why AES makes cracking dramatically harder. Record both etype numbers and their hashcat modes in your notes.
 
-6. [ ] **Map to ATT&CK.** Write down: which technique ID covers Kerberoasting? Which covers AS-REP roasting? For each, name the specific detection note from the ATT&CK page (Windows Event ID and what field to filter on).
+6. [ ] **Map to ATT&CK.** Write down: which technique ID covers Kerberoasting? AS-REP roasting? For each, name the specific detection note from the ATT&CK page (Windows Event ID and the field to filter on).
 
 ## Success criteria — you're done when
 

@@ -28,39 +28,35 @@ redirect execution to a function that was never supposed to be reachable.
 
 ## Do
 
-1. [ ] Run the demo to see the full pipeline:
-   ```bash
-   make demo
-   ```
-   Note the offset (80 bytes), the win() address, and the exit code check.
-
-2. [ ] Read `src/vuln.c`. Identify the vulnerable line. Draw the stack frame:
+1. [ ] Read `src/vuln.c`. Identify the vulnerable line and draw the stack frame:
    - Where is `buf[64]` relative to the saved return address?
    - What local variable is between `buf` and the saved RBP?
+   - From the frame, predict the offset (in bytes) that reaches the saved instruction
+     pointer. (`make demo` runs the validated pipeline end-to-end — use it to check your
+     prediction *after* you've worked it out, not before.)
 
-3. [ ] Trace `exploit.py` step by step:
+2. [ ] Confirm the overwrite yourself in gdb: build the binary, feed it a long cyclic
+   input, and read the instruction pointer after the crash. (`make shell` gives you `gcc`,
+   `gdb`, and `python3`; a cyclic/De Bruijn pattern lets you read the offset straight off
+   the clobbered register — which register holds it on x86-64?)
+
+3. [ ] Trace `exploit.py` and explain how it works without you in the loop:
    - How does `get_win_addr()` find the target address?
    - How does `find_offset()` confirm the right offset without gdb?
-   - What does `struct.pack("<Q", win_addr)` produce, and why little-endian?
+   - What byte sequence does packing the `win()` address produce, and why little-endian?
 
-4. [ ] Observe the crash output (Step 4). The exit code is negative — why?
-   What does `0x4141414141414141` in RIP tell you?
+4. [ ] Craft your own payload that redirects execution to `win()` and fire it at the
+   binary. Confirm you reached it (the function sets a distinctive exit code). When the
+   pointer is junk instead, the exit code goes negative — why, and what does a register
+   full of your filler byte tell you?
 
-5. [ ] Shell into the container and use gdb to confirm the overwrite:
-   ```bash
-   make shell
-   python3 exploit.py --build
-   gdb -q /tmp/meridian-login
-   (gdb) run <<< $(python3 -c "import sys; sys.stdout.buffer.write(b'A'*200)")
-   (gdb) info registers rip
-   ```
-
-6. [ ] In `src/vuln.c`, add `-fstack-protector` to the compile command in the
+5. [ ] In `src/vuln.c`, add `-fstack-protector` to the compile command in the
    comment, then compile manually and re-run the overflow payload. What changes?
 
 ## Success criteria — you're done when
 
-- [ ] You can draw the stack frame for `vuln()` and explain why offset=80.
+- [ ] You can draw the stack frame for `vuln()` and explain why the offset to the saved
+  return address is what it is.
 - [ ] You redirected execution to `win()` (exit code 42) with your own crafted payload.
 - [ ] You can explain what mitigations (canary, ASLR, NX) each individually prevent — and why "NX alone" doesn't stop ret2win.
 - [ ] You can state why memory-safe languages (Rust, Go) eliminate this class entirely.

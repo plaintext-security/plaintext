@@ -28,35 +28,28 @@ them, and state the fix.
 
 ## Do
 
-1. [ ] Run the demo to see both vulnerabilities:
-   ```bash
-   make demo
-   ```
-   Note which HTTP status codes confirm the exploit.
+1. [ ] Read `app/app.py` and find the two vulnerable functions before running anything.
+   For each: which line is the bug, what trust assumption is wrong, and what does the
+   server need to check instead? (`make demo` runs the validated exploit for both bugs —
+   use it afterwards to confirm your reading and which HTTP status codes prove each one.)
 
-2. [ ] Read `app/app.py`. Find the two vulnerable functions. For each:
-   - Which line is the bug?
-   - What trust assumption is wrong?
-   - What does the server need to check instead?
+2. [ ] Exploit the IDOR (Bug 1) yourself. `jsmith` is authenticated and owns orders 101
+   and 103. Get the app to hand him an order he doesn't own and read another user's
+   financial data. (What single value would you change, and what should the server have
+   checked first?)
 
-3. [ ] Trace the IDOR (Bug 1):
-   - `jsmith` is authenticated (owns orders 101, 103). He requests `/api/orders/102`.
-   - What should the server check before returning the order?
-   - The exploit is just changing `101` → `102` in the URL. Why does it work?
+3. [ ] Exploit the vertical escalation (Bug 2). `jsmith` hitting `/api/admin/users` gets
+   HTTP 403. Make the same request succeed as a non-admin. (The server trusts something
+   the client controls — what header or field, and why is trusting it the bug?)
 
-4. [ ] Trace the vertical escalation (Bug 2):
-   - `jsmith` hits `/api/admin/users` — gets HTTP 403.
-   - Same request, adds `X-Role: admin` header — gets HTTP 200.
-   - Why does a client-supplied header have any effect on server-side authorization?
+4. [ ] Build an access-control matrix for the orders: which users can read which order
+   IDs, expected vs. actual. One non-owner can read another user's high-value order — find
+   that cell yourself. What does it tell you about how to scope an audit?
 
-5. [ ] Read the access-control matrix in Step 5. Note: bmartin (user role)
-   can also read jsmith's high-value order (id=103, $880k). Why does that cell
-   appear in the matrix, and what does it tell you about how to scope an audit?
-
-6. [ ] Fix Bug 1: edit `app/app.py` and add the ownership check. Re-run
+5. [ ] Fix Bug 1: edit `app/app.py` and add the ownership check. Re-run
    `make demo` and confirm the IDOR returns HTTP 403 now.
 
-7. [ ] Fix Bug 2: remove the `X-Role` header trust. Re-run and confirm the
+6. [ ] Fix Bug 2: remove the `X-Role` header trust. Re-run and confirm the
    escalation returns HTTP 403 with the spoof header.
 
 ## Success criteria — you're done when

@@ -30,54 +30,28 @@ the new ECDH key exchange produces identical shared secrets on both sides.
 1. [ ] `make demo` — observe the full sequence: RSA-2048 keygen, ECDSA P-256 keygen, sign, verify,
    ECDH exchange. Note the time taken for each operation.
 
-2. [ ] `make shell` and generate keypairs manually:
+2. [ ] `make shell` and generate the two keypairs yourself with `openssl genpkey` — an
+   RSA-2048 pair and an EC P-256 pair — timing each generation and recording the private-key
+   file sizes. Document the generation-time and key-size differences.
+
+3. [ ] Sign a test message with each private key and verify with the matching public key
+   (`openssl pkeyutl -sign` / `-verify`). Then tamper with the message and confirm verification
+   fails for both.
+
+4. [ ] Perform an X25519 ECDH exchange between two simulated parties. Generate an X25519
+   keypair for each:
    ```bash
-   # RSA-2048 (time it)
-   time openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/rsa-priv.pem
-   openssl pkey -in /tmp/rsa-priv.pem -pubout -out /tmp/rsa-pub.pem
-
-   # EC P-256 (time it)
-   time openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out /tmp/ec-priv.pem
-   openssl pkey -in /tmp/ec-priv.pem -pubout -out /tmp/ec-pub.pem
-
-   # Compare key sizes:
-   wc -c /tmp/rsa-priv.pem /tmp/ec-priv.pem
-   ```
-   Document the generation time and key file size differences.
-
-3. [ ] Sign a message with each keypair and verify:
-   ```bash
-   echo "Meridian payroll batch Q3 2026" > /tmp/message.txt
-
-   # RSA sign:
-   openssl pkeyutl -sign -inkey /tmp/rsa-priv.pem -in /tmp/message.txt -out /tmp/sig-rsa.bin
-   openssl pkeyutl -verify -pubin -inkey /tmp/rsa-pub.pem -sigfile /tmp/sig-rsa.bin -in /tmp/message.txt
-
-   # EC sign (ECDSA):
-   openssl pkeyutl -sign -inkey /tmp/ec-priv.pem -in /tmp/message.txt -out /tmp/sig-ec.bin
-   openssl pkeyutl -verify -pubin -inkey /tmp/ec-pub.pem -sigfile /tmp/sig-ec.bin -in /tmp/message.txt
-   ```
-   Tamper with the message and confirm verification fails.
-
-4. [ ] Perform an ECDH key exchange between two simulated parties:
-   ```bash
-   # Alice's keypair:
    openssl genpkey -algorithm X25519 -out /tmp/alice-priv.pem
    openssl pkey -in /tmp/alice-priv.pem -pubout -out /tmp/alice-pub.pem
-
-   # Bob's keypair:
-   openssl genpkey -algorithm X25519 -out /tmp/bob-priv.pem
-   openssl pkey -in /tmp/bob-priv.pem -pubout -out /tmp/bob-pub.pem
+   # …and the same for Bob.
 
    # Alice computes shared secret using her private key + Bob's public key:
    openssl pkeyutl -derive -inkey /tmp/alice-priv.pem -peerkey /tmp/bob-pub.pem \
      | xxd | head -2
-
-   # Bob computes shared secret using his private key + Alice's public key:
-   openssl pkeyutl -derive -inkey /tmp/bob-priv.pem -peerkey /tmp/alice-pub.pem \
-     | xxd | head -2
+   # Bob does the same with his private key + Alice's public key.
    ```
-   Confirm the outputs are identical. This is the Diffie-Hellman property.
+   Confirm both sides arrive at the identical secret, and state which property of
+   Diffie-Hellman this demonstrates.
 
 5. [ ] Write a brief comparison in `key-exchange-analysis.md`:
    - RSA-2048 vs EC P-256: keygen time, signature size, verify time (measure each).

@@ -40,10 +40,7 @@ Following the attack path demonstration (modules 02-08) and the hardening sprint
    - Which accounts should be in Protected Users, and why?
    - Where should Authentication Policy Silos be applied?
 
-4. [ ] **Map tiering to the PATH-001 attack path.** Go through each hop of PATH-001 (module 08) and identify: at which hop does the tiered admin model stop the attack? Why?
-   - Step 1 (Kerberoast svc-mssql): does tiering prevent this? (No — this is a credential attack, not a credential co-location issue. Protection: gMSA.)
-   - Step 3 (GenericWrite on IT-Admins): does tiering prevent this? (No — this is an ACL fix. But tiering means that even if jsmith gets IT-Admins, IT-Admins accounts can't touch Tier 0 systems.)
-   - Step 4 (PTH to DC): does tiering prevent this? (Yes — if Tier 0 logon restrictions prevent non-Tier-0 accounts from authenticating to the DC, then IT-Admins membership doesn't help.)
+4. [ ] **Map tiering to the PATH-001 attack path.** Go through each hop of PATH-001 (module 08) and decide, for each: does the tiered admin model stop this hop, and why or why not? Be precise about *what* tiering does and does not address — at least one hop is a pure credential attack, one is an ACL fix that tiering only contains, and one is broken outright by Tier 0 logon restrictions. For each hop record which it is and the residual control needed (e.g. gMSA, ACE removal).
 
 5. [ ] **Design the JIT workflow.** Describe (in 3-5 paragraphs) how a Just-In-Time access workflow would work for Meridian: when `sgarcia` (an IT admin) needs to perform a task on the DC, what is the process? How long does the access last? What approvals are required? What happens at expiry?
 

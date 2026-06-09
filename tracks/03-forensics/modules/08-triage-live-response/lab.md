@@ -50,13 +50,11 @@ workflow a real responder would execute against the full fleet.
    of `RemoteAddr` and `State` columns.)
 
 3. [ ] **Write a custom VQL query** to find every file modified in the last two hours under
-   `/tmp` and `/var/tmp`. Use the `glob()` plugin:
-   ```
-   SELECT FullPath, Mtime, Size FROM glob(globs=["/tmp/**", "/var/tmp/**"])
-   WHERE Mtime > now() - 7200000000
-   ```
-   Run it with `make shell` inside the agent container via `velociraptor --config client.config.yaml
-   query "<paste>"`. Did anything show up that wasn't there before the demo seeded the environment?
+   `/tmp` and `/var/tmp`. (Build it from the `glob()` plugin with a recursive glob, select the
+   path/mtime/size columns, and add a `WHERE` on the modification time — note Velociraptor times
+   are in microseconds, so work out the two-hour cutoff in those units.) Run it via `make shell`
+   inside the agent container using the `velociraptor ... query` subcommand against the client
+   config. Did anything show up that wasn't there before the demo seeded the environment?
 
 4. [ ] **Scope decision.** Based on process, network, and file evidence, is this host "in scope
    for full imaging" or "low confidence, monitor"? Write a one-paragraph triage note that a

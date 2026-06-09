@@ -30,11 +30,12 @@ systems.
 
 ## Do
 
-1. [ ] Run the demo to see the full pivot in action:
-   ```bash
-   make demo
-   ```
-   Confirm that (a) the direct connection fails and (b) the tunnelled connection succeeds.
+1. [ ] Establish the pivot yourself: from the `attacker` container, set up a tunnel
+   through `pivot` and use it to reach and read the confidential inventory on
+   `internal-target` — which you cannot reach directly. (You have a shell on `pivot`; what
+   forward turns `pivot:8888` into a path to `internal-target:80`?) `make demo` runs the
+   validated pivot end-to-end — run it afterwards to confirm the direct connection fails
+   and the tunnelled one succeeds.
 
 2. [ ] Shell into the attacker container and confirm the network isolation:
    ```bash
