@@ -28,7 +28,7 @@ The detection coverage question is: for each technique in the adversary's post-c
 - [Wazuh rule writing guide](https://documentation.wazuh.com/current/user-manual/ruleset/ruleset-xml-syntax/index.html) — the Wazuh rule XML syntax; understand the `if_sid`, `field`, and `options` elements.
 
 **Sigma for endpoint detection**
-- [Sigma specification (GitHub)](https://github.com/SigmaHQ/sigma/blob/master/documentation/sigmahq/SigmaSpecification.md) — the rule schema reference; focus on `detection`, `condition`, and `logsource` sections.
+- [Sigma specification (GitHub)](https://github.com/SigmaHQ/sigma-specification/blob/main/specification/sigma-rules-specification.md) — the rule schema reference; focus on `detection`, `condition`, and `logsource` sections.
 - [SigmaHQ rules repository — linux category](https://github.com/SigmaHQ/sigma/tree/master/rules/linux) — browse the Linux endpoint rules; read 3–4 to understand the pattern before writing your own.
 
 **ATT&CK coverage and gap analysis**

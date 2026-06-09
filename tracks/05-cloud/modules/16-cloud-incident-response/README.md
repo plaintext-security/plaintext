@@ -56,7 +56,7 @@ modified to include `s3:*`). The timeline you build in this lab is the tool that
 ## Learn (~3.5 hrs)
 
 **Cloud incident response frameworks (~1 hr)**
-- [AWS Security Incident Response Guide](https://docs.aws.amazon.com/whitepapers/latest/aws-security-incident-response-guide/aws-security-incident-response-guide.html)
+- [AWS Security Incident Response Guide](https://docs.aws.amazon.com/security-ir/latest/userguide/security-incident-response-guide.html)
   — read the "Preparation" and "Detection and Analysis" chapters; these are the primary AWS source
   for how to structure a cloud IR engagement. Skip the organisational sections for now; focus on
   the forensics workflow.
@@ -70,7 +70,7 @@ modified to include `s3:*`). The timeline you build in this lab is the tool that
   — the `userIdentity` block is the most forensically rich field in a CloudTrail record; understand
   the difference between `IAMUser`, `AssumedRole`, `Root`, and `AWSService` types and what each
   implies for the attack chain.
-- [Detect and respond to compromised AWS credentials — AWS Blog](https://aws.amazon.com/blogs/security/how-to-detect-and-automatically-remediate-unintended-permissions-in-amazon-s3-object-acls-with-aws-config/)
+- [Detect and respond to compromised AWS credentials — AWS Blog](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html)
   — a practitioner walkthrough; watch for the pattern of using CloudTrail Insights and Athena for
   large-scale log queries. (~20 min read)
 

@@ -58,14 +58,12 @@ constrained — because it always is — and prioritise by: (1) closes the initi
 
 **Forensic report writing (~1 hr)**
 - [SWGDE — Best Practices for Computer Forensics (PDF)](https://www.swgde.org/documents/Current%20Documents/SWGDE%20Best%20Practices%20for%20Computer%20Forensics) — the professional standards body's report-writing guidance; sets the bar for what makes a finding defensible. Focus on the "Documentation" and "Report Preparation" sections.
-- [Lenny Zeltser — Writing Effective Security Incident Reports (blog)](https://zeltser.com/security-incident-report-writing/) — a concise, practitioner-written guide to the common report structure and the pitfalls. Read before drafting.
 
 **Root-cause analysis (~0.5 hrs)**
 - [NIST SP 800-61 Rev. 2 — Section 3.4: Post-Incident Activity](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf) — the NIST guidance on lessons-learned meetings and the questions to drive toward root cause. Focus on section 3.4.1 — "Lessons Learned."
 - [The "5 Whys" technique](https://en.wikipedia.org/wiki/Five_whys) — the standard structured approach to drilling past proximate causes to root cause. Apply it to the phishing-gateway bypass in the Meridian case as a warm-up.
 
 **Legal and evidence considerations (~0.5 hrs)**
-- [ACPO — Good Practice Guide for Digital Evidence (PDF)](https://www.digital-detective.net/digital-forensics-documents/ACPO_Good_Practice_Guide_for_Digital_Evidence_v6.pdf) — the UK law enforcement guidance on evidential handling; widely used as a professional standard even outside law enforcement contexts. Sections 1 and 2 establish the principles that govern what you can and cannot assert from digital evidence.
 
 ## Key concepts
 - Layered report structure: Executive Summary → Technical Findings → Appendix

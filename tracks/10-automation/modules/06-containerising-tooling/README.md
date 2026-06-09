@@ -48,11 +48,11 @@ the image without arguments.
 ## Learn (~2 hrs)
 
 **Dockerfile best practices (~1 hr)**
-- [Docker security best practices — Docker docs](https://docs.docker.com/develop/security-best-practices/) — read the full page; covers non-root user, secrets, read-only filesystems, and image signing.
+- [Docker security best practices — Docker docs](https://docs.docker.com/build/building/best-practices/) — read the full page; covers non-root user, secrets, read-only filesystems, and image signing.
 - [CIS Docker Benchmark — Center for Internet Security](https://www.cisecurity.org/benchmark/docker) — skim sections 4 (container images) and 5 (container runtime); the benchmark items map to Dockerfile instructions.
 
 **Minimal base images (~1 hr)**
-- [Chainguard Images — distroless containers](https://www.chainguard.dev/chainguard-images) — understand why minimal base images reduce CVE exposure; read the "Why distroless?" section.
+- [Chainguard Images — distroless containers](https://www.chainguard.dev/containers) — understand why minimal base images reduce CVE exposure; read the "Why distroless?" section.
 - [trufflehog — GitHub](https://github.com/trufflesecurity/trufflehog) — the tool you're containerising; read the README to understand its CLI and how it's normally installed.
 
 ## Key concepts

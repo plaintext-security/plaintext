@@ -31,7 +31,7 @@ A practical note on **enum4linux-ng**: it wraps several enumeration techniques (
 - [BloodHound CE source and docs (GitHub)](https://github.com/SpecterOps/BloodHound) — the architecture, the Cypher query examples, and the edge types. Skim the `docs/` directory to understand what each edge means.
 
 **bloodhound-python**
-- [bloodhound-python (GitHub)](https://github.com/dirkjanm/bloodhound-python) — the Python ingestor that talks to a live DC from a Linux attacker. Understand the flags: `-d` (domain), `-u` (user), `-p` (password), `-c All` (collect everything).
+- [bloodhound-python (GitHub)](https://github.com/dirkjanm/BloodHound.py) — the Python ingestor that talks to a live DC from a Linux attacker. Understand the flags: `-d` (domain), `-u` (user), `-p` (password), `-c All` (collect everything).
 
 **ATT&CK mapping**
 - [T1069 — Permission Groups Discovery (ATT&CK)](https://attack.mitre.org/techniques/T1069/) and [T1087 — Account Discovery (ATT&CK)](https://attack.mitre.org/techniques/T1087/) — the formal technique descriptions. Know the sub-techniques.

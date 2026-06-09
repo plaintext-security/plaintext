@@ -70,12 +70,12 @@ FIDO2 hardware is physical, the lab covers it in prose; the interactive demo is 
 - [headscale documentation](https://headscale.net/stable/) — the self-hosted Tailscale coordination server used in the lab. Read the "Getting started" and "ACLs" sections; the rest is operational reference.
 
 **Device posture and ZT (~1 hr)**
-- [Cloudflare Zero Trust — Device Posture](https://developers.cloudflare.com/cloudflare-one/identity/devices/) — Cloudflare's documentation on posture checks: how they query CrowdStrike, Intune, SentinelOne, and OS-level signals. This is what "posture-gated application access" looks like in a production product.
-- [Tailscale ACL syntax reference](https://tailscale.com/kb/1018/acls/) — how to express "only devices tagged corp-managed can reach service X" in Tailscale's HuJSON policy. Directly applicable to the lab scenario.
+- [Cloudflare Zero Trust — Device Posture](https://developers.cloudflare.com/cloudflare-one/reusable-components/posture-checks/) — Cloudflare's documentation on posture checks: how they query CrowdStrike, Intune, SentinelOne, and OS-level signals. This is what "posture-gated application access" looks like in a production product.
+- [Tailscale ACL syntax reference](https://tailscale.com/docs/features/access-control/acls) — how to express "only devices tagged corp-managed can reach service X" in Tailscale's HuJSON policy. Directly applicable to the lab scenario.
 
 **FIDO2 and passkeys (~1 hr)**
 - [WebAuthn.io](https://webauthn.io/) — browser-based FIDO2/WebAuthn demo; register and authenticate without hardware, in your browser. Run through it to understand the challenge-response flow before reading the spec.
-- [FIDO Alliance — How FIDO Authentication Works](https://fidoalliance.org/how-fido-works/) — the foundational explainer. Read to understand authenticator binding, user verification, and why the private key never leaves the device.
+- [FIDO Alliance — How FIDO Authentication Works](https://fidoalliance.org/passkeys/) — the foundational explainer. Read to understand authenticator binding, user verification, and why the private key never leaves the device.
 
 ## Key concepts
 

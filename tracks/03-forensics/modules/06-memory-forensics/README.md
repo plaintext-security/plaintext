@@ -25,12 +25,11 @@ A memory image is a dump of physical RAM at a moment in time — every bit of ev
 - [Memory Forensics with Volatility3 — 13Cubed YouTube playlist](https://www.youtube.com/watch?v=Uk3DEgY5Ue8) — a practitioner walkthrough of pslist, pstree, cmdline, netscan, and malfind; approximately 30 minutes total. Watch before the lab.
 
 **Memory acquisition and images (~1 hr)**
-- [Acquiring Memory for Incident Response — SANS poster](https://www.sans.org/posters/acquiring-memory-ir/) — concise reference covering Windows (WinPmem, DumpIt) and Linux (avml, LiME) acquisition tools.
+- [Acquiring Memory for Incident Response — SANS poster](https://www.sans.org/posters/memory-forensics-cheat-sheet/) — concise reference covering Windows (WinPmem, DumpIt) and Linux (avml, LiME) acquisition tools.
 - [MemLabs — GitHub](https://github.com/stuxnet999/MemLabs) — a set of beginner-friendly CTF memory forensics challenges with publicly available images; Lab01 is a good first target after this module.
 
 **Process injection detection (~1 hr)**
 - [MITRE ATT&CK T1055 — Process Injection](https://attack.mitre.org/techniques/T1055/) — the definitive breakdown of injection sub-techniques; maps what `malfind` is detecting to the ATT&CK taxonomy.
-- [Detecting Process Injection with Volatility — Patrick Olsen](https://www.trustedsec.com/blog/volatility-and-process-injection-analysis/) — practitioner walkthrough of `malfind` output with real examples of what a hit looks like and how to triage it.
 
 ## Key concepts
 - A memory image is a snapshot of physical RAM; Volatility3 uses kernel symbol tables to parse it.

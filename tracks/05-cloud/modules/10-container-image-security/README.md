@@ -20,7 +20,7 @@ The practitioner move is to treat scanning as a pipeline gate, not a periodic au
 ## Learn (~3 hrs)
 
 **Container image structure & supply chain (~1 hr)**
-- [Docker's "Overview of best practices for writing Dockerfiles"](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/) — the canonical reference for image hygiene; pay particular attention to the multi-stage build and least-privilege sections.
+- [Docker's "Overview of best practices for writing Dockerfiles"](https://docs.docker.com/build/building/best-practices/) — the canonical reference for image hygiene; pay particular attention to the multi-stage build and least-privilege sections.
 - [SLSA Supply-chain Levels for Software Artifacts — Introduction](https://slsa.dev/spec/v1.0/about) — a 10-minute read on the framework that formalises supply-chain security levels; the vocabulary shows up in job descriptions.
 
 **Trivy & Grype (~1 hr)**

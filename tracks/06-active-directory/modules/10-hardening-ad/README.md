@@ -30,7 +30,7 @@ The CIS Benchmark for Active Directory covers hundreds of controls, but the 20 t
 - [CIS Microsoft Windows Server 2019 Benchmark (CIS)](https://www.cisecurity.org/benchmark/microsoft_windows_server) — free download (registration required). Focus on the Active Directory-specific sections: account policies, Kerberos settings, audit policies, group memberships. Use as the reference for the hardening checklist.
 
 **Ansible for Windows/AD**
-- [Ansible — microsoft.ad collection (Galaxy docs)](https://docs.ansible.com/ansible/latest/collections/microsoft/ad/) — the official AD collection. The `microsoft.ad.user` and `microsoft.ad.group` modules are the primary ones for this module. Read the parameter documentation.
+- [Ansible — microsoft.ad collection (Galaxy docs)](https://docs.ansible.com/projects/ansible/latest/collections/microsoft/ad/) — the official AD collection. The `microsoft.ad.user` and `microsoft.ad.group` modules are the primary ones for this module. Read the parameter documentation.
 
 ## Key concepts
 - Posture measurement = automated query against the domain for known-bad configurations, scored and trended.

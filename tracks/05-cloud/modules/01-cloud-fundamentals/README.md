@@ -59,7 +59,7 @@ misconfiguration Meridian Financial's team found on their first audit.
 
 **AWS account structure & CLI (~1.5 hrs)**
 - [AWS CLI Getting Started](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) — installation and credential setup; follow the "install" and "configure" sections.
-- [AWS CLI Command Reference: IAM](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/index.html) — the enumeration commands you'll use: `list-users`, `list-roles`, `get-policy`, `get-policy-version`. Skim the structure before the lab.
+- [AWS CLI Command Reference: IAM](https://docs.aws.amazon.com/cli/latest/reference/iam/) — the enumeration commands you'll use: `list-users`, `list-roles`, `get-policy`, `get-policy-version`. Skim the structure before the lab.
 
 **Threat framework orientation (~0.5 hr)**
 - [MITRE ATT&CK for Cloud — Tactics overview](https://attack.mitre.org/matrices/enterprise/cloud/) — look at the tactic columns; each one maps to a phase of an attack that crosses one of the responsibility layers you just studied.

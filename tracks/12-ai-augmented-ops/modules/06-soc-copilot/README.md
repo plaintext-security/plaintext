@@ -55,10 +55,9 @@ which the "AI authors → you review → you own it" discipline becomes possible
 - [LangGraph — "Agentic RAG" conceptual overview](https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_agentic_rag/) — an example of exactly this pattern (retrieve + tool call + generate) in a graph-based agent framework. Skim for the architecture, not the API.
 
 **Prompt design for copilots (~30 min)**
-- [Anthropic, "Give Claude a role with a system prompt" (Docs)](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts) — the system prompt engineering section is model-agnostic; the principles apply to any copilot system prompt, including Ollama-served models.
+- [Anthropic, "Give Claude a role with a system prompt" (Docs)](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) — the system prompt engineering section is model-agnostic; the principles apply to any copilot system prompt, including Ollama-served models.
 
 **Attack surface (~30 min)**
-- [MITRE ATLAS — AML.T0051 (LLM Prompt Injection)](https://atlas.mitre.org/techniques/AML.T0051) — the technique the copilot is vulnerable to before Module 09's hardening; understand the attack before you build the target.
 
 ## Key concepts
 - Copilot as a coordination layer: retrieve → call tools → generate — in that order

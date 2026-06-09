@@ -35,7 +35,7 @@ is built on.
 ## Learn (~3 hrs)
 
 **The protocol**
-- [MDN — An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview) — the canonical, readable reference for messages, methods, and status codes; read this page top to bottom.
+- [MDN — An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview) — the canonical, readable reference for messages, methods, and status codes; read this page top to bottom.
 
 **Web security on-ramp**
 - [PortSwigger Web Security Academy — learning paths](https://portswigger.net/web-security/learning-paths) — free, hands-on, and the bridge straight into Track 01; start with the HTTP material.

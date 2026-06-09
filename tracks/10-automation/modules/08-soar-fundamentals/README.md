@@ -48,11 +48,10 @@ field; (3) an alert where the enrichment API is down; (4) an alert where the ver
 ## Learn (~2.5 hrs)
 
 **SOAR concepts (~1 hr)**
-- [What is SOAR? — IBM Security](https://www.ibm.com/topics/soar) — a vendor-neutral overview of the SOAR category; read the "How SOAR works" and "SOAR vs SIEM" sections.
-- [SOAR playbook best practices — Tines (no account required)](https://www.tines.com/blog/soar-playbook-best-practices) — the most practical non-vendor-specific guidance on playbook design; read for the human-in-the-loop gate discussion specifically.
+- [What is SOAR? — IBM Security](https://www.ibm.com/think/topics/security-orchestration-automation-and-response) — a vendor-neutral overview of the SOAR category; read the "How SOAR works" and "SOAR vs SIEM" sections.
 
 **n8n (~1.5 hrs)**
-- [n8n — Getting started guide](https://docs.n8n.io/getting-started/quickstart/) — work through the quickstart; understand workflow, node, and connection concepts.
+- [n8n — Getting started guide](https://docs.n8n.io/try-it-out/quickstart/) — work through the quickstart; understand workflow, node, and connection concepts.
 - [n8n — Webhook node documentation](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/) — the trigger node used in this lab; understand how to get the webhook URL and how n8n passes the payload to subsequent nodes.
 - [n8n — HTTP Request node documentation](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) — the node you'll use to query the mock API; understand authentication and response handling.
 

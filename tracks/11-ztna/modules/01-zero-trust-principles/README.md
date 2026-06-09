@@ -67,8 +67,8 @@ places where a flat-trust model causes the most damage when it fails.
 ## Learn (~3 hrs)
 
 **Foundations (~1.5 hrs)**
-- [BeyondCorp: A New Approach to Enterprise Security (Ward & Beyer, 2014)](https://research.google/pubs/pub43231/) — the founding paper; 10 pages. Read it first. Everything in the ZT space is downstream of this work, and the practitioner vocabulary comes from here.
-- [NIST SP 800-207: Zero Trust Architecture (2020)](https://csrc.nist.gov/publications/detail/sp/800-207/final) — the authoritative U.S. government specification. Read sections 1–3 (the abstract model and tenets) and section 7 (deployment scenarios). The rest is reference.
+- [BeyondCorp: A New Approach to Enterprise Security (Ward & Beyer, 2014)](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/) — the founding paper; 10 pages. Read it first. Everything in the ZT space is downstream of this work, and the practitioner vocabulary comes from here.
+- [NIST SP 800-207: Zero Trust Architecture (2020)](https://csrc.nist.gov/pubs/sp/800/207/final) — the authoritative U.S. government specification. Read sections 1–3 (the abstract model and tenets) and section 7 (deployment scenarios). The rest is reference.
 
 **Policy and maturity models (~1 hr)**
 - [CISA Zero Trust Maturity Model v2.0 (2023)](https://www.cisa.gov/sites/default/files/2023-04/zero_trust_maturity_model_v2_508.pdf) — CISA's five-pillar maturity model. Read the executive summary and the maturity table for each pillar. This is the framework practitioners use to benchmark where an org actually stands.

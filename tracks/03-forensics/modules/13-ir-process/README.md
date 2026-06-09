@@ -55,13 +55,12 @@ remediation roadmap more than any checklist.
 
 **NIST SP 800-61 (~1 hr)**
 - [NIST SP 800-61 Rev. 2 — Computer Security Incident Handling Guide (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf) — the canonical reference. Read Sections 3 (Handling an Incident) and 4 (Coordination and Information Sharing) — about 40 pages, but dense with practical guidance. This is the specification the lab exercise maps to.
-- [CISA — Incident Response Playbook (PDF)](https://www.cisa.gov/sites/default/files/publications/Federal_Government_Cybersecurity_Incident_and_Vulnerability_Response_Playbooks_508C.pdf) — CISA's operationalised playbook that implements NIST 800-61 for federal agencies; readable as a concrete example of what the framework looks like in practice.
+- [CISA — Incident Response Playbook (PDF)](https://www.cisa.gov/sites/default/files/2024-08/Federal_Government_Cybersecurity_Incident_and_Vulnerability_Response_Playbooks_508C.pdf) — CISA's operationalised playbook that implements NIST 800-61 for federal agencies; readable as a concrete example of what the framework looks like in practice.
 
 **IR in practice (~0.5 hrs)**
 - [SANS — The Incident Handler's Handbook (PDF)](https://www.sans.org/white-papers/33901/) — a free practitioner walkthrough of the NIST phases with real-world colour on where responses go wrong. Read sections 2 and 3 for the triage and containment decision frameworks.
 
 **Post-incident analysis (~0.5 hrs)**
-- [Etsy — Blameless Post-Mortems](https://www.etsy.com/codeascraft/blameless-postmortems/) — the SRE-originated approach to post-incident review that focuses on systemic causes rather than individual blame. The IR equivalent of a blameless post-mortem asks "why did the controls fail" not "who failed to apply the controls."
 
 ## Key concepts
 - NIST SP 800-61 phases: Preparation → Detection & Analysis → Containment/Eradication/Recovery → Post-Incident

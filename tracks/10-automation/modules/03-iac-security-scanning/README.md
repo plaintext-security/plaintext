@@ -50,7 +50,6 @@ suppress with justification; never start permissive and tighten later.
 
 **tfsec (~1 hr)**
 - [tfsec — Documentation](https://aquasecurity.github.io/tfsec/latest/) — read the "Getting Started" and "Configuration" sections; understand the severity levels and how to suppress findings.
-- [tfsec vs checkov — comparison (Snyk blog)](https://snyk.io/blog/checkov-vs-tfsec/) — a vendor comparison that gives you the practical differences; read for the rule coverage comparison, not the vendor pitch.
 
 ## Key concepts
 - Scanner pattern matching vs. architecture understanding — why human review is required

@@ -56,7 +56,7 @@ classification policy didn't permit. Local-first is a compliance posture, not ju
 
 **Routing and risk framing (~1 hr)**
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — LLM06 (Sensitive Information Disclosure) and LLM09 (Overreliance) are the two risks the routing table directly manages; read the descriptions and example scenarios.
-- [NIST AI Risk Management Framework (AI RMF) — Govern function overview](https://airc.nist.gov/Docs/1) — one page: what "govern" means for AI deployment. Understand the MAP category before you write your decision matrix.
+- [NIST AI Risk Management Framework (AI RMF) — Govern function overview](https://airc.nist.gov/) — one page: what "govern" means for AI deployment. Understand the MAP category before you write your decision matrix.
 
 **Practitioner view (~30 min)**
 - [Simon Willison, "Things we learned about LLMs in 2024"](https://simonwillison.net/2024/Dec/31/llms-in-2024/) — dense practical survey from one of the clearest thinkers on operational LLM use; skim for the sections on local models and privacy.

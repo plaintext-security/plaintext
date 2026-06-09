@@ -37,7 +37,7 @@ vector against GTFOBins by hand before you pull the trigger.
 ## Learn (~4 hrs)
 
 **The vectors**
-- [GTFOBins](https://gtfobins.github.io/) — the canonical catalog of Unix binaries that can be abused to escalate; you'll use this constantly.
+- [GTFOBins](https://gtfobins.org/) — the canonical catalog of Unix binaries that can be abused to escalate; you'll use this constantly.
 - [Linux Privilege Escalation using `sudo -l` — GTFOBins (video)](https://www.youtube.com/watch?v=HnlYElVhXpo) — a worked example of turning one misconfigured sudo rule into root.
 
 **Where it sits**

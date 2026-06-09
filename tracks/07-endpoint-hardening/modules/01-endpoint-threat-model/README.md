@@ -23,7 +23,7 @@ Mitigations follow from the asset/path analysis. A control that doesn't close or
 ## Learn (~3 hrs)
 
 **Threat modelling fundamentals**
-- [Threat Modeling: Designing for Security (Adam Shostack, Chapter 1 excerpt)](https://www.oreilly.com/library/view/threat-modeling-designing/9781118810057/) — the originator's framing; read Chapter 1 for the four-question framework (what, find, do, check).
+- [Threat Modeling: Designing for Security (Adam Shostack, Chapter 1 excerpt)](https://www.oreilly.com/library/view/threat-modeling/9781118810057/) — the originator's framing; read Chapter 1 for the four-question framework (what, find, do, check).
 - [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html) — concise reference for the process; skim the full page (~20 min) to map STRIDE to concrete attack categories.
 
 **Endpoint-specific threat landscape**

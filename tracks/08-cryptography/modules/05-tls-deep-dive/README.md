@@ -28,7 +28,7 @@ The distinction between protocol version, cipher suite, and certificate is the m
 
 **testssl.sh**
 - [testssl.sh documentation (drwetter)](https://testssl.sh/) — read the README and the output format section; understand what each category of check means.
-- [testssl.sh on GitHub](https://github.com/drwetter/testssl.sh) — browse the `doc/` directory for cipher suite interpretation guidance.
+- [testssl.sh on GitHub](https://github.com/testssl/testssl.sh) — browse the `doc/` directory for cipher suite interpretation guidance.
 
 **TLS configuration best practices**
 - [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/) — the tool that generates nginx/Apache/HAProxy TLS configs for modern/intermediate/old profiles; understand what each profile means and when to use each.

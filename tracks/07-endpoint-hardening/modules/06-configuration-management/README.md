@@ -23,15 +23,15 @@ Drift detection is the operational complement to idempotent application. Ansible
 ## Learn (~4 hrs)
 
 **Ansible fundamentals**
-- [Ansible Getting Started — official documentation](https://docs.ansible.com/ansible/latest/getting_started/index.html) — read the "Concepts" and "Playbooks" sections (~45 min); understand inventory, playbooks, tasks, and modules before writing any hardening playbook.
-- [Ansible best practices (official)](https://docs.ansible.com/ansible/latest/tips_tricks/ansible_tips_tricks.html) — roles structure, idempotency, and variable management; skim (~20 min) for the structural patterns.
+- [Ansible Getting Started — official documentation](https://docs.ansible.com/projects/ansible/latest/getting_started/index.html) — read the "Concepts" and "Playbooks" sections (~45 min); understand inventory, playbooks, tasks, and modules before writing any hardening playbook.
+- [Ansible best practices (official)](https://docs.ansible.com/projects/ansible/latest/tips_tricks/ansible_tips_tricks.html) — roles structure, idempotency, and variable management; skim (~20 min) for the structural patterns.
 
 **Ansible for security hardening**
 - [ansible-lockdown/UBUNTU22-CIS (GitHub)](https://github.com/ansible-lockdown/UBUNTU22-CIS) — a production-grade CIS role for Ubuntu 22.04; read the README and browse a few tasks in `tasks/` to understand how the community implements CIS controls as code.
 - [Ansible security automation (Red Hat)](https://www.ansible.com/use-cases/security-and-compliance) — the business case and patterns for security-as-code; skim for context.
 
 **Idempotency and testing**
-- [Molecule — Ansible testing framework](https://ansible.readthedocs.io/projects/molecule/) — the standard way to test Ansible roles against Docker containers; read the Getting Started guide for the test-driven hardening pattern.
+- [Molecule — Ansible testing framework](https://docs.ansible.com/projects/molecule/) — the standard way to test Ansible roles against Docker containers; read the Getting Started guide for the test-driven hardening pattern.
 
 ## Key concepts
 

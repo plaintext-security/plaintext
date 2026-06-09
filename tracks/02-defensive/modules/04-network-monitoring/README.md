@@ -38,7 +38,7 @@ expensive to store — most shops keep metadata long and full packets briefly.
 
 **The NSM tool**
 - [A Technical Introduction to Zeek/Bro (video)](https://www.youtube.com/watch?v=R-8WdoP-CtE) — what Zeek is and why its logs beat raw packets.
-- [Zeek documentation](https://docs.zeek.org/) — read "Getting Started" and the logs reference (conn, dns, http, ssl).
+- [Zeek documentation](https://docs.zeek.org/en/current/) — read "Getting Started" and the logs reference (conn, dns, http, ssl).
 
 **Read real traffic**
 - [Malware-Traffic-Analysis.net](https://www.malware-traffic-analysis.net/) — free, real malicious PCAPs with write-ups; your self-contained dataset.

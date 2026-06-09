@@ -51,16 +51,15 @@ gates, `gitleaks` is the standard choice — fast, no network dependency, predic
 
 **Container supply chain (~1.5 hrs)**
 - [trivy documentation — vulnerability scanning](https://aquasecurity.github.io/trivy/latest/docs/scanner/vulnerability/) — how trivy scans images, the SBOM it generates, the database it queries (Aqua's Trivy DB + NVD), and how to configure severity thresholds. Read the "Container Image" and "Filtering" sections.
-- [Docker Official Images — security and currency](https://docs.docker.com/trusted-content/official-images/) — why pinning a specific digest (`FROM python:3.12-slim@sha256:...`) is more secure than a tag, which is mutable.
+- [Docker Official Images — security and currency](https://docs.docker.com/docker-hub/image-library/trusted-content/) — why pinning a specific digest (`FROM python:3.12-slim@sha256:...`) is more secure than a tag, which is mutable.
 
 **gitleaks (~1 hr)**
 - [gitleaks — gitleaks/gitleaks](https://github.com/gitleaks/gitleaks) — the README covers scan modes (detect, protect, git), the `.gitleaks.toml` config format for custom rules, and the CI integration pattern. Read all sections.
 - [MITRE ATT&CK T1552.004 — Private Keys](https://attack.mitre.org/techniques/T1552/004/) — the technique gitleaks catches most often in practice.
 
 **GitHub Actions security (~1.5 hrs)**
-- [GitHub — Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions) — the authoritative GitHub guide: expression injection, `pull_request_target`, OIDC tokens, minimal permissions. Read the entire page.
+- [GitHub — Security hardening for GitHub Actions](https://docs.github.com/en/actions/reference/security/secure-use) — the authoritative GitHub guide: expression injection, `pull_request_target`, OIDC tokens, minimal permissions. Read the entire page.
 - [StepSecurity — GitHub Actions hardening](https://app.stepsecurity.io/) — the free tool that audits a workflow YAML and suggests hardening. Useful for calibration even if you apply the fixes manually.
-- [Keeping your GitHub Actions and workflows secure — Rhys Arkins, Snyk](https://snyk.io/blog/github-actions-security-best-practices/) — a practitioner walkthrough of the injection and pwn-requests patterns with real examples.
 
 ## Key concepts
 - Image vulnerability scanning: OS packages + application dependencies, SBOM generation

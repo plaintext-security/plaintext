@@ -53,8 +53,8 @@ who's never seen your codebase — because the model hasn't.
 ## Learn (~2.5 hrs)
 
 **The MCP specification (~1 hr)**
-- [Model Context Protocol — Introduction](https://modelcontextprotocol.io/introduction) — the official spec site; read "Core concepts" and "Tools" sections. The protocol is simple; understanding the lifecycle (init → list tools → call tool → result) takes 20 minutes.
-- [fastmcp documentation](https://gofastmcp.com/) — the library you'll use; read the "Quickstart" and "Tools" sections. Note how the schema is derived from type annotations.
+- [Model Context Protocol — Introduction](https://modelcontextprotocol.io/docs/getting-started/intro) — the official spec site; read "Core concepts" and "Tools" sections. The protocol is simple; understanding the lifecycle (init → list tools → call tool → result) takes 20 minutes.
+- [fastmcp documentation](https://gofastmcp.com/getting-started/welcome) — the library you'll use; read the "Quickstart" and "Tools" sections. Note how the schema is derived from type annotations.
 
 **Agent architecture (~1 hr)**
 - [Anthropic, "Building effective agents" (blog post)](https://www.anthropic.com/engineering/building-effective-agents) — the clearest framing of when to use tools vs. when to use RAG vs. when to use neither; the "augmented LLM" pattern is exactly what this module implements.

@@ -79,10 +79,10 @@ dynamic, and — correctly implemented — harder for an attacker to abuse.
 
 **Architecture patterns (~1.5 hrs)**
 - [Pomerium — Architecture Overview](https://www.pomerium.com/docs/internals/architecture) — the clearest documentation of the reverse-proxy ZTNA pattern: how the proxy sits in front of upstreams, how authentication and authorization are separated, and how the access policy is evaluated per request.
-- [Tailscale — Network Design](https://tailscale.com/kb/1151/what-is-tailscale/) — Tailscale's overview of the WireGuard mesh model, coordination server, and ACL-driven access control. Read alongside the headscale lab from module 03.
+- [Tailscale — Network Design](https://tailscale.com/docs/concepts/what-is-tailscale) — Tailscale's overview of the WireGuard mesh model, coordination server, and ACL-driven access control. Read alongside the headscale lab from module 03.
 
 **The BeyondCorp pattern (~1 hr)**
-- [BeyondCorp: Design to Deployment at Google (2016)](https://research.google/pubs/pub44860/) — the second BeyondCorp paper, focusing on deployment. Read sections 2–4 to see how the access proxy, device inventory, and trust inference engine were assembled. This is the original reverse-proxy ZTNA in production.
+- [BeyondCorp: Design to Deployment at Google (2016)](https://research.google/pubs/beyondcorp-design-to-deployment-at-google/) — the second BeyondCorp paper, focusing on deployment. Read sections 2–4 to see how the access proxy, device inventory, and trust inference engine were assembled. This is the original reverse-proxy ZTNA in production.
 
 **ADR format (~30 min)**
 - [Architecture Decision Records — Michael Nygard (2011)](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — the original ADR format post. Short. The structure (Context / Decision / Consequences) is what you'll use for the deliverable.

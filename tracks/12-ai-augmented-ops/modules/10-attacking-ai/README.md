@@ -55,7 +55,7 @@ isolation — is what you hand to a CISO asking whether the copilot is safe to d
 
 **garak (~1 hr)**
 - [garak — LLM vulnerability scanner (GitHub)](https://github.com/NVIDIA/garak) — the README covers installation, supported generators (including Ollama), and probe classes. Skim the probe library list to understand what's being tested.
-- [garak documentation — generators and probes](https://docs.garak.ai/) — focus on the Ollama generator configuration and the probe class descriptions for `injection`, `dan`, and `leakage`.
+- [garak documentation — generators and probes](https://docs.garak.ai/garak) — focus on the Ollama generator configuration and the probe class descriptions for `injection`, `dan`, and `leakage`.
 
 **promptfoo (~1 hr)**
 - [promptfoo — Getting started](https://www.promptfoo.dev/docs/getting-started/) — the config file format and the basic `promptfoo eval` workflow; skim the YAML config example.

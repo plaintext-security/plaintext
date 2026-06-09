@@ -32,13 +32,11 @@ The observability story is where Cilium separates from simpler CNI plugins. `cil
 
 **Cilium and eBPF (~1 hr)**
 - [Cilium Concepts — Network Policy](https://docs.cilium.io/en/stable/security/policy/) — the authoritative reference for `CiliumNetworkPolicy` vs. standard `NetworkPolicy`; understand the `fromEndpoints` selector before the lab.
-- [eBPF — The Future of Networking & Security (Brendan Gregg, 2021)](https://www.brendangregg.com/blog/2021-07-15/bpf-internals.html) — a short, accessible post on why kernel-level enforcement is architecturally different from userspace firewalls. Provides the "why eBPF, not iptables" mental model.
 
 **Hands-on: kind + Cilium setup (~45 min)**
 - [Getting Started with Cilium on kind (Cilium docs)](https://docs.cilium.io/en/stable/installation/kind/) — the exact setup the lab uses; read through once before running `make up` so you know what the bootstrap is doing.
 
 **Microsegmentation in practice (~30 min)**
-- [Zero Trust Segmentation: A Practical Guide (Illumio blog)](https://www.illumio.com/blog/zero-trust-segmentation) — vendor-neutral treatment of the "label-based, default-deny" model and common design pitfalls including the DNS-allow gap.
 
 ## Key concepts
 - Cilium enforces policy with eBPF at the kernel level — not a perimeter firewall, enforcement on every node.

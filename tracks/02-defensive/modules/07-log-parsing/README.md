@@ -38,7 +38,7 @@ pipeline — the same lesson as module 01, one layer down.
 
 **Pipelines**
 - [Vector documentation](https://vector.dev/docs/) — a modern, fast log pipeline; read the "Quickstart" and the VRL (transform language) intro.
-- [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/index.html) — the normalisation target: a shared field set so detections work across sources.
+- [Elastic Common Schema (ECS)](https://www.elastic.co/docs/reference/ecs) — the normalisation target: a shared field set so detections work across sources.
 
 **What good logs contain**
 - [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html) — what parseable, useful logs should include.

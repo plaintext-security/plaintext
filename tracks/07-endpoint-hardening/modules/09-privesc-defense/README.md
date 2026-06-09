@@ -14,7 +14,7 @@ Identify a SUID binary misconfiguration in a container, demonstrate the privileg
 
 Linux privilege escalation is a taxonomy problem. There are roughly six categories of local privesc path, each requiring a different defensive control. SUID/SGID misconfigurations (binaries that run as root regardless of who executes them) are closed by auditing the SUID set with `find / -perm -4000` and removing the bit from any binary that doesn't legitimately require it. Sudo misconfigurations (`(ALL) NOPASSWD: ALL` or a binary with a known GTFOBin) are closed by auditing `/etc/sudoers` with `visudo -c` and applying the principle of least privilege. Writable PATH entries allow an attacker to substitute their own binary for one a SUID or sudo rule calls — closed by enforcing a controlled PATH in sudo rules. Cron jobs running as root with world-writable scripts are closed by auditing `crontab -l` and file permissions together. Kernel vulnerabilities are closed by patching (module 08) and by namespace/capability restrictions.
 
-[GTFOBins](https://gtfobins.github.io/) is the reference database for this category. It lists every standard Unix binary with a known privilege escalation, shell escape, or file read technique. The attacker-side knowledge — which binaries can be abused — is the same knowledge the defender uses to audit the SUID set. A defender who hasn't read GTFOBins is auditing blindly; a defender who has can enumerate the dangerous subset of SUID binaries on a system in under a minute.
+[GTFOBins](https://gtfobins.org/) is the reference database for this category. It lists every standard Unix binary with a known privilege escalation, shell escape, or file read technique. The attacker-side knowledge — which binaries can be abused — is the same knowledge the defender uses to audit the SUID set. A defender who hasn't read GTFOBins is auditing blindly; a defender who has can enumerate the dangerous subset of SUID binaries on a system in under a minute.
 
 AppArmor and `fapolicyd` (module 04) complement permission remediation by adding a second layer: even if a SUID binary is present, a mandatory access control profile can constrain what it can do. An AppArmor profile on `/usr/bin/find` that denies write access to `/etc/` means that even if an attacker finds a way to abuse `find`'s SUID bit, they cannot write the files they'd need to complete the escalation. This is defense-in-depth: the SUID bit removal is the first layer; the MAC profile is the second.
 
@@ -24,14 +24,14 @@ The audit workflow for a hardened host follows a checklist pattern: enumerate SU
 
 **Privilege escalation taxonomy (attacker perspective — to understand what to defend)**
 - [HackTricks — Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation) — the comprehensive attacker checklist; read SUID, sudo, cron, and PATH sections to understand the techniques you are defending against.
-- [GTFOBins](https://gtfobins.github.io/) — the reference for SUID/sudo binary abuse; scan the index and click through a few (find, vim, python) to understand the pattern.
+- [GTFOBins](https://gtfobins.org/) — the reference for SUID/sudo binary abuse; scan the index and click through a few (find, vim, python) to understand the pattern.
 
 **Defensive controls**
 - [Linux privilege escalation prevention (DigitalOcean)](https://www.digitalocean.com/community/tutorials/how-to-secure-linux-server-with-sudo) — practical sudo hardening; read the sections on limiting NOPASSWD, restricting command scope, and using `Defaults` directives.
 - [sysctl hardening for kernel privesc mitigations (KSPP)](https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings) — kernel parameters that close namespace-based and memory-based escalation paths; read the "Recommended settings" table.
 
 **Auditing tools**
-- [LinPEAS (Linux Privilege Escalation Awesome Script)](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS) — the attacker's audit tool; understanding what it looks for tells you exactly what to harden. Read the README and the check categories (not the script itself — the categories).
+- [LinPEAS (Linux Privilege Escalation Awesome Script)](https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS) — the attacker's audit tool; understanding what it looks for tells you exactly what to harden. Read the README and the check categories (not the script itself — the categories).
 
 ## Key concepts
 
@@ -43,4 +43,4 @@ The audit workflow for a hardened host follows a checklist pattern: enumerate SU
 
 ## AI acceleration
 
-Give an AI the output of `find / -perm -4000 2>/dev/null` from a system and ask it to flag which binaries have known GTFOBins techniques. Cross-check against [gtfobins.github.io](https://gtfobins.github.io/) directly — the model's training data may be out of date for recently-added entries. AI accelerates the cross-reference; GTFOBins is the authority.
+Give an AI the output of `find / -perm -4000 2>/dev/null` from a system and ask it to flag which binaries have known GTFOBins techniques. Cross-check against [gtfobins.org](https://gtfobins.org/) directly — the model's training data may be out of date for recently-added entries. AI accelerates the cross-reference; GTFOBins is the authority.

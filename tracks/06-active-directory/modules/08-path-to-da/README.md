@@ -23,8 +23,7 @@ The closing exercise — mapping mitigations — is where the red and blue persp
 ## Learn (~3 hrs)
 
 **BloodHound path analysis**
-- [BloodHound CE — Cypher query reference (GitHub)](https://github.com/SpecterOps/BloodHound/blob/main/docs/cypher-queries.md) — the canonical query reference. The most important query: `MATCH p=shortestPath((u:User {name:'JSMITH@MERIDIAN.LOCAL'})-[*1..]->(g:Group {name:'DOMAIN ADMINS@MERIDIAN.LOCAL'})) RETURN p`.
-- [Abusing AD (harmj0y / SpecterOps)](https://www.harmj0y.net/blog/redteaming/abusing-active-directory-permissions-with-powerview/) — the landmark post on reading AD permissions as attack paths; the conceptual basis for BloodHound's edge model.
+- [BloodHound CE — Cypher query reference (GitHub)](https://github.com/SpecterOps/BloodHound/wiki) — the canonical query reference. The most important query: `MATCH p=shortestPath((u:User {name:'JSMITH@MERIDIAN.LOCAL'})-[*1..]->(g:Group {name:'DOMAIN ADMINS@MERIDIAN.LOCAL'})) RETURN p`.
 
 **ATT&CK mapping**
 - [MITRE ATT&CK — Enterprise matrix, Credential Access + Lateral Movement](https://attack.mitre.org/matrices/enterprise/) — review the full matrix for Windows; every hop in the Meridian path maps to a technique here. Know the sub-technique IDs.

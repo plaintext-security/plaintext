@@ -56,7 +56,7 @@ owns the affected service and needs to rotate immediately? The tool finds; you t
 - [MITRE ATT&CK T1552.001 — Credentials In Files](https://attack.mitre.org/techniques/T1552/001/) — the technique your scanner is catching; useful context for a threat brief.
 
 **HashiCorp Vault (~2 hrs)**
-- [Vault — Getting Started tutorial (HashiCorp Learn)](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-intro) — the official hands-on path: start Vault in dev mode, write/read secrets, understand the path model and token auth. Work through all six steps (~90 min).
+- [Vault — Getting Started tutorial (HashiCorp Learn)](https://developer.hashicorp.com/vault/tutorials/get-started/why-use-vault) — the official hands-on path: start Vault in dev mode, write/read secrets, understand the path model and token auth. Work through all six steps (~90 min).
 - [Vault secrets engines — database engine](https://developer.hashicorp.com/vault/docs/secrets/databases) — how dynamic database credentials work: Vault creates a short-lived Postgres/MySQL user and destroys it when the lease expires. Read the overview and the PostgreSQL example.
 
 **AWS-native pattern (~0.5 hr)**

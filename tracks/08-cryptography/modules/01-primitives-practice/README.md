@@ -27,7 +27,7 @@ Key size and algorithm selection interact with threat models in ways that surpri
 - [Crypto 101 (free e-book)](https://www.crypto101.io/) — chapters 1–5; a practitioner's introduction to the guarantee model (confidentiality, integrity, authenticity) and the common primitives. Download the PDF.
 
 **Applied OpenSSL**
-- [OpenSSL man pages — enc(1)](https://www.openssl.org/docs/man3.0/man1/openssl-enc.html) — the reference for `openssl enc`; understand the `-e`/`-d`, `-K`, `-iv`, and `-aead` options.
+- [OpenSSL man pages — enc(1)](https://docs.openssl.org/3.0/man1/openssl-enc/) — the reference for `openssl enc`; understand the `-e`/`-d`, `-K`, `-iv`, and `-aead` options.
 - [OpenSSL Cookbook (Ivan Ristić, free online)](https://www.feistyduck.com/library/openssl-cookbook/) — Chapter 1 "OpenSSL" and Chapter 3 "PKI and Certificates"; these two chapters give the practical command-line fluency you need for this track.
 
 **Why modes matter**

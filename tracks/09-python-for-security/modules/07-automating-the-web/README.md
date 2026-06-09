@@ -43,7 +43,7 @@ yourself — no external targets, ever.
 ## Learn (~2 hrs)
 
 **httpx sessions (~30 min)**
-- [httpx — Client documentation](https://www.python-httpx.org/advanced/#client-instances) — focus on the "Client Instances" and "Cookies" sections; understand how a session maintains state across requests.
+- [httpx — Client documentation](https://www.python-httpx.org/advanced/clients/) — focus on the "Client Instances" and "Cookies" sections; understand how a session maintains state across requests.
 
 **BeautifulSoup4 (~1 hr)**
 - [BeautifulSoup4 — Official documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) — read the "Quick Start", "Kinds of objects", and "Searching the tree" sections; `find_all()` is 90% of what you'll use.

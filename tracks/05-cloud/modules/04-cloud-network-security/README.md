@@ -64,7 +64,7 @@ to engineers and leadership who won't read a findings table.
 
 **VPC flow logs (~1 hr)**
 - [AWS — VPC Flow Logs documentation](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html) — the log format, field definitions, and how to enable flow logs. Read the "Flow log records" section carefully; you'll parse these records in the lab.
-- [AWS Security Blog — Analyzing VPC Flow Logs with Amazon Athena](https://aws.amazon.com/blogs/security/analyzing-vpc-flow-logs-with-amazon-athena/) — a practical walkthrough of querying flow logs at scale; read the query examples to understand what pattern detection looks like in practice.
+- [AWS Security Blog — Analyzing VPC Flow Logs with Amazon Athena](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html) — a practical walkthrough of querying flow logs at scale; read the query examples to understand what pattern detection looks like in practice.
 
 **cloudmapper (~1.5 hrs)**
 - [cloudmapper GitHub — README](https://github.com/duo-labs/cloudmapper) — Duo Labs' network topology mapper for AWS. Read the `collect`, `prepare`, and `audit` command descriptions. This is what generates the interactive graph from account JSON.

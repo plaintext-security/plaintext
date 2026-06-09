@@ -54,7 +54,7 @@ current data comes from tools (more on that in Modules 04–06).
 **How models run locally (~1.5 hrs)**
 - [Ollama documentation — Models overview](https://ollama.com/library) — browse the model library to understand the naming convention (`name:size-quantisation`); pay attention to the size column vs. the parameter count.
 - [GGUF and the llama.cpp ecosystem (Hugging Face blog)](https://huggingface.co/docs/hub/en/gguf) — explains the GGUF format, quantisation levels (Q4_K_M, Q8_0, etc.), and how to find models. Read the "Quantization" section carefully.
-- [llama.cpp README](https://github.com/ggerganov/llama.cpp/blob/master/README.md) — skim the benchmarking section; the `llama-bench` tool is what the lab automates.
+- [llama.cpp README](https://github.com/ggml-org/llama.cpp/blob/master/README.md) — skim the benchmarking section; the `llama-bench` tool is what the lab automates.
 
 **Practical deployment (~1 hr)**
 - [Simon Willison, "Run a model with llama.cpp"](https://simonwillison.net/2023/Mar/11/llama/) — short walkthrough that demystifies the whole stack in one read; written in 2023 but the concepts haven't changed.

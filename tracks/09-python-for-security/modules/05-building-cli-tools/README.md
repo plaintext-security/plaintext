@@ -45,7 +45,6 @@ still beats most GUI dashboards for exploratory analysis.
 
 **Typer fundamentals (~1 hr)**
 - [Typer — Build great CLIs (official tutorial)](https://typer.tiangolo.com/tutorial/) — work through the "First Steps", "CLI Arguments", "CLI Options", and "Commands" sections; this covers everything in the lab.
-- [Typer vs argparse — comparison (Hynek Schlawack)](https://hynek.me/articles/pandas-groupby/) — not directly about typer, but Hynek's writing on Python CLI design is the clearest thinking on the subject; skim for the design philosophy.
 
 **CLI UX for security tools (~30 min)**
 - [Command Line Interface Guidelines — clig.dev](https://clig.dev/) — the best single reference for CLI design; read the "Basics", "Output", and "Errors" sections; this is what separates a frustrating tool from a well-designed one.

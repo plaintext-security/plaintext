@@ -58,7 +58,7 @@ control doesn't apply to this resource and who approved it. That comment is the 
 - [trivy documentation — misconfiguration scanning](https://aquasecurity.github.io/trivy/latest/docs/scanner/misconfiguration/) — how `trivy config` works, supported formats (Terraform, CloudFormation, Helm, Kubernetes), and how to add custom policies.
 
 **CI/CD integration (~1 hr)**
-- [GitHub Actions — using Checkov in CI](https://www.checkov.io/4.Integrations/github-actions.html) — the canonical integration pattern. Read this to understand how to fail a PR on a policy violation.
+- [GitHub Actions — using Checkov in CI](https://www.checkov.io/2.Basics/CLI%20Command%20Reference.html) — the canonical integration pattern. Read this to understand how to fail a PR on a policy violation.
 - [MITRE ATT&CK T1562 — Impair Defenses](https://attack.mitre.org/techniques/T1562/) — many IaC misconfigurations (logging disabled, security group too open) enable this technique family; useful framing for why these checks matter.
 
 ## Key concepts

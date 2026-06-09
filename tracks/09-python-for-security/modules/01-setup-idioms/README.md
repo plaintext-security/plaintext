@@ -54,7 +54,6 @@ day one. Get into this habit on the first script; undoing it later is painful.
 - [Bandit — security linter for Python (PyCQA)](https://bandit.readthedocs.io/en/latest/) — skim the "Getting started" and "Tests" sections to understand the finding levels and how to suppress a false positive.
 
 **Security idioms (~30 min)**
-- [OWASP Python Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Python_Security_Cheat_Sheet.html) — covers `subprocess`, `eval`, secrets, and injection; this is the reference you return to when you're deciding whether a pattern is safe.
 
 ## Key concepts
 - Why virtual environments are a security boundary, not just a convenience

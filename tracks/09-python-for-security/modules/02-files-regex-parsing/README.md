@@ -52,7 +52,6 @@ persistence across restarts, you add a database; don't add one before you need i
 
 **Collections for log analytics (~1 hr)**
 - [collections — Container datatypes (Python docs)](https://docs.python.org/3/library/collections.html) — specifically `Counter` and `defaultdict`; these two handle 80% of the aggregation patterns in log analytics.
-- [SSH log analysis with Python — infosecmatter.com](https://www.infosecmatter.com/parsing-ssh-logs-with-python/) — a worked example close to this lab's scenario; read the parsing section, skip the parts that use external libraries.
 
 ## Key concepts
 - Named capture groups for self-documenting regex patterns

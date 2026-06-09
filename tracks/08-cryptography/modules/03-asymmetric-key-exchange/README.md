@@ -27,14 +27,13 @@ Forward secrecy deserves explicit attention because it is the property that make
 - [An Introduction to Mathematical Cryptography (Hoffstein, Pipher, Silverman) — Chapter 3 excerpt](https://link.springer.com/book/10.1007/978-1-4939-1711-2) — the elliptic curve chapter; read the introduction and the DH/ECDH sections for the mathematical grounding.
 
 **Practical OpenSSL**
-- [OpenSSL man pages — genpkey(1)](https://www.openssl.org/docs/man3.0/man1/openssl-genpkey.html) — generating RSA, EC, and X25519 keys.
-- [OpenSSL man pages — pkeyutl(1)](https://www.openssl.org/docs/man3.0/man1/openssl-pkeyutl.html) — signing, verification, and ECDH key derivation.
+- [OpenSSL man pages — genpkey(1)](https://docs.openssl.org/3.0/man1/openssl-genpkey/) — generating RSA, EC, and X25519 keys.
+- [OpenSSL man pages — pkeyutl(1)](https://docs.openssl.org/3.0/man1/openssl-pkeyutl/) — signing, verification, and ECDH key derivation.
 
 **Forward secrecy**
-- [Perfect Forward Secrecy (ImperialViolet blog, Adam Langley)](https://www.imperialviolet.org/2013/06/27/botched-ecdhe.html) — a practitioner's explanation of why ECDHE provides forward secrecy and what breaks it; read for the threat model clarity.
 
 **Algorithm selection**
-- [Cryptographic right answers (Latacora)](https://latacora.micro.blog/2018/04/03/cryptographic-right-answers.html) — a concise, opinionated guide to current algorithm recommendations; read the asymmetric encryption and signatures sections.
+- [Cryptographic right answers (Latacora)](https://www.latacora.com/blog/2018/04/03/cryptographic-right-answers/) — a concise, opinionated guide to current algorithm recommendations; read the asymmetric encryption and signatures sections.
 
 ## Key concepts
 

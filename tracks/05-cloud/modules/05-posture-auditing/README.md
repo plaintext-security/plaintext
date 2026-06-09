@@ -50,7 +50,7 @@ actual misses (logging disabled). The architectural misconfigurations are the on
 - [MITRE ATT&CK for Cloud — resource-hijacking and initial access](https://attack.mitre.org/matrices/enterprise/cloud/) — filter to Initial Access and Persistence to see which ATT&CK techniques a posture gap enables. Worth 20 minutes to map the mental model.
 
 **Prowler (~1.5 hrs)**
-- [Prowler docs — getting started](https://docs.prowler.com/projects/prowler-open-source/en/latest/) — installation, authentication, running a scan, filtering by severity and compliance framework. Read the "Quick Start" and the "Output formats" sections.
+- [Prowler docs — getting started](https://docs.prowler.com/introduction) — installation, authentication, running a scan, filtering by severity and compliance framework. Read the "Quick Start" and the "Output formats" sections.
 - [Prowler GitHub — prowler-cloud/prowler](https://github.com/prowler-cloud/prowler) — the full check library. Browse `checks/aws/` to understand what each finding actually tests; this is the fastest way to learn what good configuration looks like.
 
 **ScoutSuite (~1 hr)**

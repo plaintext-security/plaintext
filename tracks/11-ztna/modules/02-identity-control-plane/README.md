@@ -61,7 +61,7 @@ be replayed against a different application.
 **OIDC and JWTs (~1.5 hrs)**
 - [The OAuth 2.0 Authorization Framework (RFC 6749)](https://datatracker.ietf.org/doc/html/rfc6749) — read sections 1–2 (introduction and roles) and section 4.3 (Resource Owner Password Credentials grant, which the lab uses). The RFC is the ground truth when vendor docs disagree.
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) — read sections 1–3 (overview and authentication flows). OIDC is the identity layer on top of OAuth 2.0; understanding the distinction (authorization vs. authentication) is foundational.
-- [jwt.io](https://jwt.io/) — paste any JWT here to decode and inspect claims. Essential debugging tool; run through it during the lab.
+- [jwt.io](https://www.jwt.io/) — paste any JWT here to decode and inspect claims. Essential debugging tool; run through it during the lab.
 
 **Keycloak (~1 hr)**
 - [Keycloak documentation — Core Concepts](https://www.keycloak.org/docs/latest/server_admin/index.html#core-concepts-and-terms) — read "Core Concepts": realm, client, user, role, scope. 15 minutes; covers exactly the vocabulary you need for the lab.

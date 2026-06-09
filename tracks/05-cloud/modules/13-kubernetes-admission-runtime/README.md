@@ -24,12 +24,12 @@ For Meridian Financial's engineering team, the practical win of Kyverno is *shif
 - [Kubernetes docs — Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) — the built-in admission controller for Pod Security Standards; understand the `baseline` and `restricted` profiles and how they relate to Kyverno policies.
 
 **Kyverno (~1 hr)**
-- [Kyverno documentation — Writing Policies](https://kyverno.io/docs/writing-policies/) — the primary reference; read the "Validate", "Mutate", and "Policy Reports" sections. This is the vocabulary for writing the lab policies.
+- [Kyverno documentation — Writing Policies](https://kyverno.io/policies/) — the primary reference; read the "Validate", "Mutate", and "Policy Reports" sections. This is the vocabulary for writing the lab policies.
 - [Kyverno policy library](https://kyverno.io/policies/) — a browsable library of community policies; look at the "Disallow Privileged Containers" and "Require Run As Non-Root" policies — they are the starting point for the lab.
 
 **Falco at the cluster level (~1 hr)**
 - [Falco documentation — Kubernetes deployment](https://falco.org/docs/install-operate/deployment/#kubernetes) — how Falco integrates with Kubernetes; the DaemonSet deployment model and how alerts include Kubernetes metadata.
-- [Sysdig blog — "Falco for Kubernetes security: a practical guide"](https://sysdig.com/blog/kubernetes-security-falco/) — a practitioner walkthrough of Falco in a real Kubernetes context; runtime rules, output channels, and the gap that admission control doesn't cover.
+- [Sysdig blog — "Falco for Kubernetes security: a practical guide"](https://falco.org/docs/getting-started/) — a practitioner walkthrough of Falco in a real Kubernetes context; runtime rules, output channels, and the gap that admission control doesn't cover.
 
 ## Key concepts
 - Admission webhooks: the API server's last checkpoint before a resource is persisted

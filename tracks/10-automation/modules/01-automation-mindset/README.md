@@ -49,11 +49,10 @@ for a security tool running in production.
 
 **Where automation pays off (~1 hr)**
 - [The Security Chaos Engineering Book — O'Reilly (Ch. 1 sample)](https://www.oreilly.com/library/view/security-chaos-engineering/9781492080350/) — the context for why reliability thinking applies to security operations; read the introduction on the cost of manual processes.
-- [Tines — Security Automation ROI Guide](https://www.tines.com/blog/what-is-security-automation) — a vendor page but the framework section is vendor-neutral and practical; read the "what to automate" decision tree.
 
 **Automation failure modes (~1 hr)**
 - [SRE Book — Google — "Toil" chapter](https://sre.google/sre-book/eliminating-toil/) — the SRE definition of "toil" maps perfectly onto security operations; understand the criteria for toil elimination. Free online.
-- [NIST SP 800-137A — Assessing Information Security Continuous Monitoring](https://csrc.nist.gov/publications/detail/sp/800-137a/final) — skim sections 2 and 3 for the policy framework around automated monitoring; not a how-to, but the regulatory context that shapes what you're allowed to automate.
+- [NIST SP 800-137A — Assessing Information Security Continuous Monitoring](https://csrc.nist.gov/pubs/sp/800/137/a/final) — skim sections 2 and 3 for the policy framework around automated monitoring; not a how-to, but the regulatory context that shapes what you're allowed to automate.
 
 ## Key concepts
 - Repeatability + determinism = automation target; judgment calls stay human

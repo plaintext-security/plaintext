@@ -74,7 +74,7 @@ forces you to confront.
   the LocalStack integration; skim the `--endpoint-url` workflow before the lab.
 
 **Pacu (~1 hr)**
-- [Pacu GitHub wiki — Getting Started](https://github.com/RhinoSecurityLabs/pacu/wiki/Getting-Started)
+- [Pacu GitHub wiki — Getting Started](https://github.com/RhinoSecurityLabs/pacu/wiki/)
   — module layout and the `run`, `exec`, and `search` commands; the module naming convention mirrors
   ATT&CK technique IDs.
 - [Rhino Security Labs: "Pacu the AWS Exploitation Framework"](https://rhinosecuritylabs.com/aws/pacu-open-source-aws-exploitation-framework/)

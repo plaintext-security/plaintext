@@ -56,8 +56,6 @@ achieve before. Document that gap — it's the foundation of your AI security ri
 - [Simon Willison, "Prompt injection attacks against GPT-3"](https://simonwillison.net/2022/Sep/12/prompt-injection/) — the original framing; short and the examples are still the clearest demonstrations of the concept.
 
 **MITRE ATLAS (~45 min)**
-- [MITRE ATLAS — Technique list](https://atlas.mitre.org/techniques/) — browse AML.T0051 (LLM Prompt Injection), AML.T0054 (LLM Jailbreak), and AML.T0016 (Obtain Capabilities). These are the ATLAS techniques your attack scenarios implement.
-- [MITRE ATLAS — Case studies](https://atlas.mitre.org/studies/) — real documented attacks against AI systems; skim two or three for the operational context.
 
 **Defences (~30 min)**
 - [OWASP Top 10 for LLM — LLM07 (Insecure Plugin Design)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the tool permission and validation mitigations apply directly to the MCP server from Module 05.

@@ -36,7 +36,7 @@ and the cloud track builds directly on it.
 ## Learn (~4 hrs)
 
 **The Linux sensor**
-- [osquery documentation](https://osquery.readthedocs.io/) — query your host like a database; read "Getting Started" and a few example queries.
+- [osquery documentation](https://osquery.readthedocs.io/en/latest/) — query your host like a database; read "Getting Started" and a few example queries.
 - [Linux Audit (auditd) documentation](https://github.com/linux-audit/audit-documentation/wiki) — the kernel audit framework: rules, events, and what to log.
 
 **What to log**

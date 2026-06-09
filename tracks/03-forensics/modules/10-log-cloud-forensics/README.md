@@ -63,8 +63,8 @@ needs them. This is the planning decision that makes or breaks a cloud investiga
 - [EVTX Attack Samples (GitHub)](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES) — a large repository of real Windows attack event logs, categorised by ATT&CK technique. Browse the `T1078` (Valid Accounts) and `T1053` (Scheduled Task) samples — these are the techniques active in the Meridian scenario.
 
 **AWS CloudTrail forensics (~1 hr)**
-- [AWS CloudTrail — Log Event Reference](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference.html) — the field definitions: `userIdentity`, `eventSource`, `eventName`, `sourceIPAddress`, `requestParameters`. These are the fields you parse in the lab.
-- [Hacking the Cloud — CloudTrail Forensics](https://hackingthe.cloud/aws/post_exploitation/). — a practitioner-focused guide to reading CloudTrail for attacker activity; covers the specific event names that signal privilege escalation and persistence.
+- [AWS CloudTrail — Log Event Reference](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-events.html) — the field definitions: `userIdentity`, `eventSource`, `eventName`, `sourceIPAddress`, `requestParameters`. These are the fields you parse in the lab.
+- [Hacking the Cloud — CloudTrail Forensics](https://hackingthe.cloud/aws/). — a practitioner-focused guide to reading CloudTrail for attacker activity; covers the specific event names that signal privilege escalation and persistence.
 
 **Detection context (~0.5 hrs)**
 - [MITRE ATT&CK Cloud Matrix](https://attack.mitre.org/matrices/enterprise/cloud/) — the cloud-specific technique matrix; map the CloudTrail events you find in the lab to techniques here to understand what the attacker was doing.

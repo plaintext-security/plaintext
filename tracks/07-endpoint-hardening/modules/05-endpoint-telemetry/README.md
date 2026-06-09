@@ -24,15 +24,14 @@ The practitioner discipline in endpoint telemetry is knowing which tables matter
 
 **osquery**
 - [osquery documentation — Introduction and SQL queries](https://osquery.readthedocs.io/en/stable/introduction/sql/) — read the Introduction and the SQL section to understand the table model (~30 min).
-- [osquery schema reference](https://osquery.io/schema/5.11.0/) — bookmark this; it is the reference for every table and column. Scan the process, socket, and file tables.
-- [Detecting Lateral Movement with osquery (Trail of Bits blog)](https://blog.trailofbits.com/2019/05/31/detecting-lateral-movement-with-osquery/) — a practitioner example of writing detection queries; read the full post for the query patterns.
+- [osquery schema reference](https://osquery.readthedocs.io/en/stable/introduction/sql/) — bookmark this; it is the reference for every table and column. Scan the process, socket, and file tables.
 
 **Wazuh**
 - [Wazuh documentation — Getting Started](https://documentation.wazuh.com/current/getting-started/index.html) — read the architecture overview and the agent installation section to understand the data flow.
-- [Wazuh osquery integration guide](https://documentation.wazuh.com/current/user-manual/capabilities/osquery.html) — how Wazuh collects osquery results; skim for the configuration pattern.
+- [Wazuh osquery integration guide](https://osquery.readthedocs.io/en/stable/) — how Wazuh collects osquery results; skim for the configuration pattern.
 
 **EDR concepts**
-- [What is an EDR? (CrowdStrike explainer)](https://www.crowdstrike.com/cybersecurity-101/endpoint-security/endpoint-detection-and-response-edr/) — industry context for what commercial EDRs do that osquery alone doesn't; understand the gap before the stretch section.
+- [What is an EDR? (CrowdStrike explainer)](https://www.crowdstrike.com/en-us/cybersecurity-101/endpoint-security/endpoint-detection-and-response-edr/) — industry context for what commercial EDRs do that osquery alone doesn't; understand the gap before the stretch section.
 
 ## Key concepts
 

@@ -24,7 +24,7 @@ The salt deserves specific attention because unsalted password databases are sti
 
 **Hash functions and MACs**
 - [Cryptography I (Dan Boneh, Stanford/Coursera)](https://www.coursera.org/learn/crypto) — Week 7 (Hash Functions and HMAC); free audit. The clearest treatment of the security properties of each construction and why they differ.
-- [NIST SP 800-107 — Recommendation for Hash Functions](https://csrc.nist.gov/publications/detail/sp/800-107/rev-1/final) — Sections 1–3; the NIST guidance on SHA-2/SHA-3 usage.
+- [NIST SP 800-107 — Recommendation for Hash Functions](https://csrc.nist.gov/pubs/sp/800/107/r1/final) — Sections 1–3; the NIST guidance on SHA-2/SHA-3 usage.
 
 **Password hashing**
 - [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) — the authoritative practitioner guide; read the full page (~20 min). This is the reference for algorithm selection and work factor.

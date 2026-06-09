@@ -31,10 +31,10 @@ Patch management and vulnerability scanning are often separated in organisations
 - [Syft — SBOM generation (Anchore)](https://github.com/anchore/syft) — grype's companion tool that generates a Software Bill of Materials; understand how the SBOM feeds the CVE scan.
 
 **osquery for vulnerability management (revisit from module 05)**
-- [osquery deb_packages table](https://osquery.io/schema/5.11.0/#deb_packages) — the schema for querying installed packages on Debian/Ubuntu systems; note `version` and `source` columns.
+- [osquery deb_packages table](https://osquery.readthedocs.io/en/stable/introduction/sql/) — the schema for querying installed packages on Debian/Ubuntu systems; note `version` and `source` columns.
 
 **Patch management at scale**
-- [NIST SP 800-40 r4 — Guide to Enterprise Patch Management Planning](https://csrc.nist.gov/publications/detail/sp/800-40/rev-4/final) — Sections 1–3; the framework for building a patch management programme with SLAs.
+- [NIST SP 800-40 r4 — Guide to Enterprise Patch Management Planning](https://csrc.nist.gov/pubs/sp/800/40/r4/final) — Sections 1–3; the framework for building a patch management programme with SLAs.
 
 ## Key concepts
 

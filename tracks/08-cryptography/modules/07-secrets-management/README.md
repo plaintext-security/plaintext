@@ -23,11 +23,11 @@ The common mistake organisations make is treating secrets management as a one-ti
 ## Learn (~4 hrs)
 
 **HashiCorp Vault**
-- [Vault documentation — Getting Started](https://developer.hashicorp.com/vault/tutorials/getting-started) — work through the "Your first secret" and "Dynamic secrets" tutorials (~1 hr); these two tutorials cover the core workflow.
+- [Vault documentation — Getting Started](https://developer.hashicorp.com/vault/tutorials/get-started) — work through the "Your first secret" and "Dynamic secrets" tutorials (~1 hr); these two tutorials cover the core workflow.
 - [Vault architecture documentation](https://developer.hashicorp.com/vault/docs/internals/architecture) — read the storage backend, seal/unseal, and audit device sections; understand why Vault needs an unseal key before explaining it to others.
 
 **SOPS**
-- [mozilla/sops README (GitHub)](https://github.com/mozilla/sops) — read the usage section and the "Encryption Protocol" section to understand how SOPS encrypts values while preserving key structure.
+- [mozilla/sops README (GitHub)](https://github.com/getsops/sops) — read the usage section and the "Encryption Protocol" section to understand how SOPS encrypts values while preserving key structure.
 - [age encryption tool](https://github.com/FiloSottile/age) — read the README; age is the modern, simple alternative to GPG for SOPS key management.
 
 **Secrets management principles**

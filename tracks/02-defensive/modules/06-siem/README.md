@@ -36,7 +36,7 @@ you already know the answer before it earns a place in the pipeline.
 
 **The platform**
 - [Wazuh Practical Training for Beginners (video)](https://www.youtube.com/watch?v=UGYmG_hy3qQ) — install and use an open-source SIEM from scratch.
-- [Wazuh documentation](https://documentation.wazuh.com/) — read "Getting Started" and the ruleset/decoders overview.
+- [Wazuh documentation](https://documentation.wazuh.com/current/index.html) — read "Getting Started" and the ruleset/decoders overview.
 
 **What to surface**
 - [MITRE ATT&CK](https://attack.mitre.org/) — the behaviours your correlation rules should turn into alerts.

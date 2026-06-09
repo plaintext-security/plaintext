@@ -24,7 +24,7 @@ Continuous compliance — running scans on a schedule and alerting on score drif
 
 **Compliance frameworks and tools**
 - [PCI-DSS v4.0 — Section 2 (System Components Configuration)](https://www.pcisecuritystandards.org/document_library/) — free download; read Section 2 to understand what a compliance framework actually demands from a hardening programme.
-- [NIST SP 800-128 — Guide for Security-Focused Configuration Management](https://csrc.nist.gov/publications/detail/sp/800-128/final) — Sections 2–3 give the framework for continuous compliance as a lifecycle process.
+- [NIST SP 800-128 — Guide for Security-Focused Configuration Management](https://csrc.nist.gov/pubs/sp/800/128/upd1/final) — Sections 2–3 give the framework for continuous compliance as a lifecycle process.
 
 **OpenSCAP and Lynis (review from module 03)**
 - [OpenSCAP user manual — Generating reports](https://www.open-scap.org/resources/documentation/manual-for-openscap-scanner/#generating-reports) — specifically the HTML and XCCDF report sections; this is the audit evidence format.

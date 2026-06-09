@@ -37,7 +37,7 @@ alerts, which is worse than having no IDS at all.
 
 **The IDS**
 - [Introduction to Suricata IDS (video)](https://www.youtube.com/watch?v=91i7InHVOso) — what Suricata is and how rule-based detection works.
-- [Suricata documentation](https://docs.suricata.io/) — read "Quickstart" and the Rules intro; the authoritative reference.
+- [Suricata documentation](https://docs.suricata.io/en/suricata-8.0.5/) — read "Quickstart" and the Rules intro; the authoritative reference.
 
 **Rules**
 - [Emerging Threats Open ruleset](https://rules.emergingthreats.net/) — the free community signatures Suricata ships against; the real-world detection content.

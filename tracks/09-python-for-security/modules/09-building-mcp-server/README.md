@@ -44,12 +44,12 @@ status. The MCP server is a trust boundary: treat every tool argument as untrust
 ## Learn (~2 hrs)
 
 **MCP fundamentals (~1 hr)**
-- [Model Context Protocol — Introduction (modelcontextprotocol.io)](https://modelcontextprotocol.io/introduction) — read the "What is MCP?", "Core concepts", and "Tools" sections; understand the tool schema format and how clients discover tools.
-- [fastmcp — GitHub README](https://github.com/jlowin/fastmcp) — the library you'll use; read the "Quick start" and "Tools" sections; the decorator pattern is the entire API surface you need.
+- [Model Context Protocol — Introduction (modelcontextprotocol.io)](https://modelcontextprotocol.io/docs/getting-started/intro) — read the "What is MCP?", "Core concepts", and "Tools" sections; understand the tool schema format and how clients discover tools.
+- [fastmcp — GitHub README](https://github.com/PrefectHQ/fastmcp) — the library you'll use; read the "Quick start" and "Tools" sections; the decorator pattern is the entire API surface you need.
 
 **Security considerations for MCP (~1 hr)**
-- [MCP Security — Prompt Injection and Tool Safety (Simon Willison)](https://simonwillison.net/2025/Apr/9/mcp-security/) — Simon Willison's writing on MCP security is the clearest current thinking; read carefully, especially the prompt-injection risk for data-reading tools.
-- [Anthropic — Tool use (function calling) guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use) — understand the tool schema format from the client's perspective so you know what your server must produce.
+- [MCP Security — Prompt Injection and Tool Safety (Simon Willison)](https://simonwillison.net/2025/Apr/9/mcp-prompt-injection/) — Simon Willison's writing on MCP security is the clearest current thinking; read carefully, especially the prompt-injection risk for data-reading tools.
+- [Anthropic — Tool use (function calling) guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview) — understand the tool schema format from the client's perspective so you know what your server must produce.
 
 ## Key concepts
 - MCP tool schema: name, description, input schema (JSON Schema), return value

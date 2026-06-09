@@ -58,7 +58,6 @@ volume." That absence goes in the report.
 
 **NTFS forensics and timestomping (~1 hr)**
 - [SANS FOR508 — NTFS Timestamps White Paper (PDF)](https://www.sans.org/white-papers/36842/) — the definitive reference on how NTFS timestamps propagate (copy, move, open, execute) under normal conditions; the baseline you need to recognise abnormal SI/FN divergence. Free download.
-- [The Sleuth Kit — istat documentation](https://wiki.sleuthkit.org/index.php?title=Istat) — the command that shows all NTFS attribute timestamps. Read the field descriptions before the lab.
 
 **Anti-forensics techniques and detection (~1 hr)**
 - [Timestomping — MITRE ATT&CK T1070.006](https://attack.mitre.org/techniques/T1070/006/) — the technique page: how it's done, which tools implement it, and the detection recommendations. Read the "Detection" section carefully — it maps directly to the lab exercise.

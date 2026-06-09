@@ -22,9 +22,8 @@ Every major browser stores its state in a collection of SQLite databases and JSO
 ## Learn (~3 hrs)
 
 **Browser forensics foundations (~1.5 hrs)**
-- [hindsight — GitHub documentation](https://github.com/obsidianforensics/hindsight) — the tool's README and output field reference; read the Usage and Output sections before the lab.
+- [hindsight — GitHub documentation](https://github.com/RyanDFIR/hindsight) — the tool's README and output field reference; read the Usage and Output sections before the lab.
 - [Chrome SQLite Schema — Chromium source](https://source.chromium.org/chromium/chromium/src/+/main:components/history/core/browser/history_database.cc) — the authoritative schema; understand `urls`, `visits`, and `downloads` tables.
-- [Browser Forensics — SANS Digital Forensics Blog](https://www.sans.org/blog/google-chrome-forensics/) — practical breakdown of which Chrome files hold which evidence types; pairs well with hindsight's output.
 
 **SQLite forensics (~1 hr)**
 - [SQLite WAL mode — official documentation](https://www.sqlite.org/wal.html) — explains why WAL files contain rows that history-clearing misses; short and essential for understanding forensic recovery.

@@ -37,7 +37,7 @@ encoding sends you down a wrong path with confidence. The tool is fast; the conf
 - [CyberChef](https://gchq.github.io/CyberChef/) — "the cyber swiss-army knife"; build a recipe to peel apart layered base64/hex/URL and *see* each transformation.
 
 **Querying structured data**
-- [jq manual](https://jqlang.github.io/jq/manual/) — slice and filter JSON from the command line; you'll use this constantly.
+- [jq manual](https://jqlang.org/manual/) — slice and filter JSON from the command line; you'll use this constantly.
 
 ## Key concepts
 - Encoding ≠ encryption (reversible, not secret)

@@ -46,8 +46,7 @@ environment variable to a command that reads it from its environment, not as a C
 ## Learn (~2 hrs)
 
 **GitHub Actions security (~1.5 hrs)**
-- [GitHub Actions security hardening — GitHub docs](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions) — the canonical reference; read the "Understanding the risk of script injections", "Good practices for mitigating script injection attacks", and "Using third-party actions" sections in full.
-- [Keeping your GitHub Actions secure — Snyk blog](https://snyk.io/blog/github-actions-security-best-practices/) — a practical complement to the official docs; covers pinning action versions and permissions; shorter and more scannable.
+- [GitHub Actions security hardening — GitHub docs](https://docs.github.com/en/actions/reference/security/secure-use) — the canonical reference; read the "Understanding the risk of script injections", "Good practices for mitigating script injection attacks", and "Using third-party actions" sections in full.
 
 **gitleaks (~30 min)**
 - [gitleaks — GitHub](https://github.com/gitleaks/gitleaks) — the primary open-source secret scanner; read the README through the "Usage" section; understand the difference between `protect` (pre-commit) and `detect` (CI scan).

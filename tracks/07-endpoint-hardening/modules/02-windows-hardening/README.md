@@ -26,17 +26,15 @@ One common trap is treating benchmark compliance as security equivalence. CIS Le
 
 **CIS Benchmark and LGPO**
 - [CIS Microsoft Windows 11 Benchmark (CIS free PDF)](https://www.cisecurity.org/benchmark/microsoft_windows_desktop) — register for the free download; read Sections 1–2 (the scope and methodology) and skim the Level 1 control list. You do not need to read all 600 pages — understand the structure.
-- [LGPO.exe documentation (Microsoft Security Baseline blog)](https://techcommunity.microsoft.com/t5/microsoft-security-baselines/lgpo-exe-local-group-policy-object-utility-v1-0/ba-p/701045) — the tool you'll use to apply GPO settings; read the command reference section.
 
 **CIS-CAT Lite**
-- [CIS-CAT Lite overview and download](https://www.cisecurity.org/cybersecurity-tools/cis-cat-lite) — free configuration assessment; read the quick-start guide to understand the report format.
+- [CIS-CAT Lite overview and download](https://www.cisecurity.org/cis-cat-lite) — free configuration assessment; read the quick-start guide to understand the report format.
 
 **Microsoft Security Baseline**
 - [Microsoft Security Compliance Toolkit](https://www.microsoft.com/en-us/download/details.aspx?id=55319) — Microsoft's own baseline GPO backups, which overlap substantially with CIS Level 1; a useful cross-reference.
 - [Windows security baselines (Microsoft Learn)](https://learn.microsoft.com/en-us/windows/security/operating-system-security/device-management/windows-security-configuration-framework/windows-security-baselines) — conceptual overview of the baseline program; read the "What is a security baseline?" section.
 
 **Group Policy as code**
-- [PolicyAnalyzer (Microsoft)](https://techcommunity.microsoft.com/t5/microsoft-security-baselines/new-tool-policy-analyzer/ba-p/701049) — diff GPO settings between two baselines; useful for understanding what changed between CIS versions.
 
 ## Key concepts
 

@@ -27,10 +27,10 @@ The cumulative picture — all three TLS configurations audited, findings tallie
 - [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html) — the practitioner reference for storage-layer failures; read the full page.
 
 **testssl.sh (revisit from module 05)**
-- [testssl.sh severity levels](https://github.com/drwetter/testssl.sh/blob/3.2/doc/rating.md) — how testssl.sh assigns severity to each finding; understand what CRITICAL, HIGH, MEDIUM, LOW, and INFO mean in the tool's output.
+- [testssl.sh severity levels](https://github.com/testssl/testssl.sh/blob/3/doc/rating.md) — how testssl.sh assigns severity to each finding; understand what CRITICAL, HIGH, MEDIUM, LOW, and INFO mean in the tool's output.
 
 **NIST guidance on cryptographic algorithm deprecation**
-- [NIST SP 800-131A Rev 2 — Transitioning the Use of Cryptographic Algorithms](https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final) — the authoritative list of deprecated and disallowed algorithms; read Tables 1–4 for the algorithm transition schedule.
+- [NIST SP 800-131A Rev 2 — Transitioning the Use of Cryptographic Algorithms](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) — the authoritative list of deprecated and disallowed algorithms; read Tables 1–4 for the algorithm transition schedule.
 
 **Applied crypto failure case studies**
 - [Moxie Marlinspike — SSL and the Future of Authenticity (DEF CON 19)](https://www.youtube.com/watch?v=Z7Wl2FW2TcA) — a practitioner talk on real-world PKI and TLS failures; ~50 min; explains why the "padlock" is not what users think it is.

@@ -44,8 +44,8 @@ eventually end up in a git log.
 ## Learn (~2.5 hrs)
 
 **Ansible fundamentals (~1.5 hrs)**
-- [Ansible Getting Started — official documentation](https://docs.ansible.com/ansible/latest/getting_started/index.html) — work through "Getting started with Ansible" and "Building an inventory"; understand modules, tasks, handlers, and idempotency.
-- [Ansible Roles — official documentation](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html) — the role directory structure and how to call a role from a playbook; this is the pattern the lab uses.
+- [Ansible Getting Started — official documentation](https://docs.ansible.com/projects/ansible/latest/getting_started/index.html) — work through "Getting started with Ansible" and "Building an inventory"; understand modules, tasks, handlers, and idempotency.
+- [Ansible Roles — official documentation](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html) — the role directory structure and how to call a role from a playbook; this is the pattern the lab uses.
 
 **Security hardening with Ansible (~1 hr)**
 - [CIS Benchmarks — Center for Internet Security](https://www.cisecurity.org/cis-benchmarks/) — skim the "CIS Distribution Independent Linux Benchmark" overview; understand that each numbered item is an auditable policy requirement.

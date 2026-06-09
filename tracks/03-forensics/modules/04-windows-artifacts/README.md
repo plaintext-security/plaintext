@@ -29,10 +29,9 @@ Windows is designed for accountability — it was built for enterprise environme
 **Registry forensics (~1.5 hrs)**
 - [python-registry — GitHub](https://github.com/williballenthin/python-registry) — the library's README and examples; understand the `Registry`, `RegistryKey`, and `RegistryValue` classes.
 - [Windows Registry Forensics — Eric Zimmerman's tool docs](https://ericzimmerman.github.io/#!index.md) — the "Registry Explorer / RECmd" section explains the forensically important keys; focus on NTUSER.DAT MRU lists and run keys.
-- [SANS FOR508 Registry Cheat Sheet](https://www.sans.org/blog/sans-dfir-cheat-sheet-windows-forensic-artifacts/) — one-page reference of the most forensically relevant keys; keep it open during the lab.
+- [SANS FOR508 Registry Cheat Sheet](https://www.sans.org/posters/windows-forensic-analysis/) — one-page reference of the most forensically relevant keys; keep it open during the lab.
 
 **Execution artifacts (~1 hr)**
-- [Prefetch Analysis — Foxton Forensics](https://www.foxtonforensics.com/blog/post/prefetch-forensics) — practical walkthrough of what prefetch files record and how to parse them.
 - [Amcache and Shimcache — SANS](https://www.sans.org/white-papers/38630/) — white paper on the two execution history artifacts that survive prefetch deletion; understand what each records (file hash vs. metadata).
 
 ## Key concepts

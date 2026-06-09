@@ -34,7 +34,6 @@ A note on honeytokens: the most reliable detection for credential-based attacks 
 - [T1558.003 detection (ATT&CK)](https://attack.mitre.org/techniques/T1558/003/) — read the detection section; it specifies exactly which field values are anomalous.
 
 **Honeytokens**
-- [Active Directory Honeytokens (blog.redforce.io)](https://blog.redforce.io/ad-honeytokens/) — practical guide to deploying honey accounts and honey SPNs; the highest-fidelity detection approach.
 
 ## Key concepts
 - Detection requires the right audit policy first — without it, the event never appears.

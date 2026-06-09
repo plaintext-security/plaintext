@@ -22,14 +22,12 @@ Think of a super-timeline as a database index on time. Plaso's `log2timeline.py`
 **Plaso fundamentals (~2 hrs)**
 - [log2timeline / plaso — GitHub documentation](https://github.com/log2timeline/plaso) — read the "Getting Started" and "Usage" sections; understand the three-step workflow: `log2timeline.py` (ingest), `psort.py` (filter/sort), `pstatus.py` (inspect).
 - [plaso documentation — log2timeline.readthedocs.io](https://plaso.readthedocs.io/en/latest/) — the full plugin reference; skim the parser list to understand what artifact types plaso can ingest.
-- [SANS FOR508 Cheat Sheet — Super-Timeline Analysis](https://www.sans.org/blog/sans-dfir-cheat-sheet-super-timeline/) — a practitioner's one-page reference for the plaso workflow and `psort` filter syntax.
 
 **Timesketch (~1 hr)**
 - [Timesketch — GitHub](https://github.com/google/timesketch) — the README covers installation and the import workflow from plaso. Skim the "Usage" section.
 - [Timesketch documentation — timesketch.org](https://timesketch.org/guides/user/upload-data/) — explains how to upload a plaso store and begin querying; read the "Searching" section.
 
 **Timestamp forensics (~1 hr)**
-- [Timestomping and NTFS Timestamps — DFIR.blog](https://dfir.blog/understanding-ntfs-timestamps/) — the authoritative practitioner explanation of `$SI` vs. `$FN` timestamps and how to detect timestomping. Essential for timeline analysis.
 - [MITRE ATT&CK T1070.006 — Timestomp](https://attack.mitre.org/techniques/T1070/006/) — the ATT&CK page for timestomping; understand what it does and the detection approaches.
 
 ## Key concepts

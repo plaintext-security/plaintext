@@ -22,16 +22,15 @@ The practical workflow on a modern IR engagement runs like this: for a suspected
 ## Learn (~3.5 hrs)
 
 **Disk acquisition (~1.5 hrs)**
-- [dc3dd — DFIR Review: Imaging with dc3dd](https://dfir.blog/imaging-with-dc3dd/) — step-by-step practitioner walkthrough; shows the exact flags for inline hashing and split output. Read it before the lab.
 - [The Forensics Wiki — Dd](https://forensicswiki.xyz/wiki/index.php?title=Dd) — explains the differences between `dd`, `dc3dd`, and `dcfldd`; short but precise.
 - [libewf / ewfacquire man page](https://manpages.ubuntu.com/manpages/focal/man1/ewfacquire.1.html) — for when you need E01 output. Skim to understand the format options.
 
 **Memory acquisition (~1 hr)**
 - [Microsoft AVML on GitHub](https://github.com/microsoft/avml) — the tool's README and usage flags; read the "Usage" section to understand how it produces a usable memory image.
-- [Memory Acquisition Techniques — SANS DFIR Cheat Sheet](https://www.sans.org/posters/memory-acquisition/) — a one-page reference covering Windows and Linux tools side-by-side; a useful quick-reference for the field.
+- [Memory Acquisition Techniques — SANS DFIR Cheat Sheet](https://www.sans.org/posters/memory-forensics-cheat-sheet/) — a one-page reference covering Windows and Linux tools side-by-side; a useful quick-reference for the field.
 
 **Dead-box vs. live — the judgment call (~1 hr)**
-- [NIST SP 800-86 § 3.1 — Evidence Prioritization and Volatile Data](https://csrc.nist.gov/publications/detail/sp/800-86/final) — the authoritative treatment of volatile-vs-non-volatile tradeoffs. Read section 3.1 specifically.
+- [NIST SP 800-86 § 3.1 — Evidence Prioritization and Volatile Data](https://csrc.nist.gov/pubs/sp/800/86/final) — the authoritative treatment of volatile-vs-non-volatile tradeoffs. Read section 3.1 specifically.
 - [First Response — Chris Sanders & Jason Smith, Applied Network Security Monitoring, Ch. 15](https://www.amazon.com/Applied-Network-Security-Monitoring-Collection/dp/0124172083) — if available; chapter 15 is the best practitioner treatment of the live vs. dead acquisition decision.
 
 ## Key concepts

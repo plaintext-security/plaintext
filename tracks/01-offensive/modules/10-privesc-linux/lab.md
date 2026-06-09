@@ -40,7 +40,7 @@ enumerating the system and exploiting one of the misconfigurations.
    ```
 
 3. [ ] For Vector 1 (SUID find):
-   - Look up `/usr/bin/find` on [GTFOBins](https://gtfobins.github.io/).
+   - Look up `/usr/bin/find` on [GTFOBins](https://gtfobins.org/).
    - What is the exact `find -exec` command that gives you a root shell?
    - Run it and confirm `id` shows `euid=0(root)`.
 

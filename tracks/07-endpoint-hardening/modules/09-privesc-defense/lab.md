@@ -26,7 +26,7 @@ and add the check to the compliance scan so it doesn't regress.
 ## Do
 
 1. [ ] `make demo` — observe the SUID binary being found with `find / -perm -4000`. Note which
-   binary it is. Look it up on [GTFOBins](https://gtfobins.github.io/) — what escalation
+   binary it is. Look it up on [GTFOBins](https://gtfobins.org/) — what escalation
    technique does it enable?
 
 2. [ ] `make shell` (as the low-privileged `appuser`) and attempt the GTFOBins technique:
@@ -98,7 +98,7 @@ list before committing.
 
 After finding the SUID binary with `find`, paste its name into an AI and ask: "What is the
 GTFOBins SUID technique for this binary? Walk me through the exact commands." Then verify the
-technique against [gtfobins.github.io](https://gtfobins.github.io/) — the model may have the
+technique against [gtfobins.org](https://gtfobins.org/) — the model may have the
 technique slightly wrong or may suggest a newer variant. Run the technique in the lab to confirm
 it actually works before writing the remediation documentation.
 

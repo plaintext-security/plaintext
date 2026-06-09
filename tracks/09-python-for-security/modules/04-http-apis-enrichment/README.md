@@ -46,7 +46,7 @@ one that skips a few IOCs and finishes.
 
 **HTTP with httpx (~1 hr)**
 - [httpx documentation — Quickstart](https://www.python-httpx.org/quickstart/) — covers the synchronous API; focus on `Client`, `get`, `post`, response status codes, and timeout configuration.
-- [httpx documentation — Advanced Usage](https://www.python-httpx.org/advanced/) — read the "Timeout configuration" and "Authentication" sections specifically.
+- [httpx documentation — Advanced Usage](https://www.python-httpx.org/advanced/clients/) — read the "Timeout configuration" and "Authentication" sections specifically.
 
 **Error handling and retries (~1 hr)**
 - [Exponential Backoff And Jitter — AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) — the canonical explanation of why you add jitter to backoff; short read, high value.

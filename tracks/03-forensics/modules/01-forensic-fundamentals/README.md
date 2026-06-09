@@ -22,12 +22,11 @@ Finally, understand the difference between **volatile and non-volatile evidence*
 ## Learn (~3 hrs)
 
 **Foundations (~1 hr)**
-- [NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/publications/detail/sp/800-86/final) — the authoritative U.S. government framework; read sections 2–3 for evidence handling and collection principles. Free PDF, no login.
+- [NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) — the authoritative U.S. government framework; read sections 2–3 for evidence handling and collection principles. Free PDF, no login.
 - [RFC 3227 — Guidelines for Evidence Collection and Archiving](https://www.rfc-editor.org/rfc/rfc3227) — two pages of distilled guidance on collection order and handling; short enough to read twice.
 
 **Hashing and imaging (~1 hr)**
 - [dc3dd man page and usage guide (DCFL)](https://sourceforge.net/projects/dc3dd/files/dc3dd/7.2/) — the forensic `dd`; skim the flag listing (`hash`, `log`, `hof`) to understand what it gives you that plain `dd` doesn't.
-- [Hashing Evidence — SANS Digital Forensics Blog](https://www.sans.org/blog/hashing-evidence/) — concise practitioner explanation of why SHA-256 over MD5, and when dual-hashing (MD5 + SHA-1) is still asked for by courts.
 
 **Chain of custody (~1 hr)**
 - [SWGDE Best Practices for Computer Forensics (v3.1)](https://www.swgde.org/documents/Current%20Documents/2018-09-12%20SWGDE%20Best%20Practices%20for%20Computer%20Forensics) — pages 1–10 cover acquisition and chain of custody in a form courts recognize. Free download.

@@ -36,7 +36,7 @@ binaries. Evasion that isn't is just extra noise that gets you caught.
 
 **The technique**
 - [Living Off The Land Attacks Explained — LOLBins (video)](https://www.youtube.com/watch?v=lDK384LXhpU) — why and how attackers abuse native tooling.
-- [LOLBAS Project](https://lolbas-project.github.io/) (Windows) and [GTFOBins](https://gtfobins.github.io/) (Unix) — the canonical catalogs; you'll search these constantly.
+- [LOLBAS Project](https://lolbas-project.github.io/) (Windows) and [GTFOBins](https://gtfobins.org/) (Unix) — the canonical catalogs; you'll search these constantly.
 
 **Where it sits**
 - [MITRE ATT&CK — Defense Evasion (TA0005)](https://attack.mitre.org/tactics/TA0005/) — the tactic, and how detections catch LOLBin abuse anyway.

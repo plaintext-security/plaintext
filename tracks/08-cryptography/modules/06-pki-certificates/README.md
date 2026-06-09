@@ -31,7 +31,6 @@ Running a private CA with `step-ca` is the practical equivalent of what every PK
 - [step CLI documentation](https://smallstep.com/docs/step-cli/) — the command-line tool for interacting with step-ca; read the `step ca certificate` and `step certificate inspect` commands.
 
 **Revocation**
-- [OCSP Stapling (Scott Helme)](https://scotthelme.co.uk/ocsp-stapling-disabled-by-default-in-nginx/) — practical explanation of OCSP stapling and why it matters; short and authoritative.
 
 ## Key concepts
 

@@ -60,7 +60,7 @@ garbled triage result.
 
 **Prompting fundamentals (~1 hr)**
 - [Prompt Engineering Guide (DAIR.AI)](https://www.promptingguide.ai/) — the canonical community reference; read "Basic Prompting," "Zero-Shot," "Few-Shot," and "Chain of Thought" sections. Skip the fine-tuning material for now.
-- [OpenAI Cookbook — techniques to improve reliability](https://cookbook.openai.com/articles/techniques_to_improve_reliability) — short, practical, model-agnostic; the "decompose complex tasks" and "structured output" sections directly apply to SOC workflows.
+- [OpenAI Cookbook — techniques to improve reliability](https://developers.openai.com/cookbook/articles/techniques_to_improve_reliability) — short, practical, model-agnostic; the "decompose complex tasks" and "structured output" sections directly apply to SOC workflows.
 
 **Security-specific application (~1 hr)**
 - [OWASP Top 10 for LLM Applications — LLM01 (Prompt Injection)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — understanding injection is inseparable from writing injection-resistant prompts; read the description and examples.

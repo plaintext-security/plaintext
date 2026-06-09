@@ -31,7 +31,6 @@ Tailscale takes a different approach: rather than an inbound proxy, it gives eac
 - [BeyondCorp: A New Approach to Enterprise Security (Google, 2014)](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/) — the paper that made "ditch the VPN" credible. Short read; focus on the access proxy and the device inventory components.
 
 **Identity-aware proxies in practice (~1 hr)**
-- [Pomerium Core Concepts](https://www.pomerium.com/docs/concepts) — the official docs walk the authentication/authorization/proxy split clearly; read "Routes" and "Policy" sections carefully; these map directly to what you configure in the lab.
 - [How Pomerium works — architecture overview](https://www.pomerium.com/docs/internals/architecture) — the data-flow diagram is the fastest way to see where JWT validation sits relative to upstream forwarding.
 
 **OIDC and JWT without the hand-waving (~45 min)**

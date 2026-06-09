@@ -57,7 +57,6 @@ that the model had a systematic bias toward over-classifying a particular alert 
 - [n8n — HTTP Request node documentation](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) — the node that calls the Ollama API from within the workflow; understand the Request and Response settings.
 
 **AI-augmented SOAR design (~30 min)**
-- [MITRE ATLAS — AML.T0040 (ML Model Inference API Access)](https://atlas.mitre.org/techniques/AML.T0040) — the workflow you're building exposes a model inference API as part of an automated pipeline; understand the threat before enabling it.
 - [OWASP Top 10 for LLM — LLM08 (Excessive Agency)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the containment automation node is the excessive-agency risk; read the mitigation checklist.
 
 **Workflow design (~30 min)**

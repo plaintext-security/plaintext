@@ -67,7 +67,7 @@ role permissions themselves.
 
 **Lambda hardening (~1.5 hrs)**
 - [AWS Lambda — security best practices](https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html) — the official guide: execution role least privilege, VPC placement, environment variable encryption, and resource-based policies. Read all sections.
-- [AWS SAM CLI — getting started](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/getting-started.html) — the deployment tool you'll use in the lab. Skim the overview and the `sam deploy` flow; you don't need deep SAM knowledge for this lab.
+- [AWS SAM CLI — getting started](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/) — the deployment tool you'll use in the lab. Skim the overview and the `sam deploy` flow; you don't need deep SAM knowledge for this lab.
 - [pacu — RhinoSecurityLabs/pacu](https://github.com/RhinoSecurityLabs/pacu) — the AWS exploitation framework. Read the Lambda-specific module list. You won't use it directly in this lab but it contextualises the automated exploitation that cloudfox's findings enable.
 
 ## Key concepts

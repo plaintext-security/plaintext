@@ -25,15 +25,13 @@ One architectural note that practitioners often miss: because ZT proxies (Pomeri
 ## Learn (~2.5 hrs)
 
 **ZT and continuous monitoring (~45 min)**
-- [CISA Zero Trust Maturity Model v2, §4 — Visibility & Analytics](https://www.cisa.gov/sites/default/files/2023-03/zero_trust_maturity_model_v2_0.pdf) — the authoritative federal framework for ZT monitoring; §4 maps directly to what this module builds. Focus on the "Visibility" and "Analytics" pillars.
-- [Cloudflare Access audit logs documentation](https://developers.cloudflare.com/cloudflare-one/analytics/logs/audit-logs/) — a real-world ZT log structure reference; the field names in this lab's seed data mirror this structure. Read the "Access audit logs" section.
+- [Cloudflare Access audit logs documentation](https://developers.cloudflare.com/cloudflare-one/insights/logs/dashboard-logs/access-authentication-logs/) — a real-world ZT log structure reference; the field names in this lab's seed data mirror this structure. Read the "Access audit logs" section.
 
 **Sigma and detection-as-code (~1 hr)**
-- If you haven't done the defensive track: [Sigma rules — quick start (SigmaHQ GitHub)](https://github.com/SigmaHQ/sigma/wiki/Rule-Creation-Guide) — the canonical rule-writing guide; covers `logsource`, `detection`, and the condition grammar needed for the lab's `selection and not filter` pattern.
+- If you haven't done the defensive track: [Sigma rules — quick start (SigmaHQ GitHub)](https://github.com/SigmaHQ/sigma/wiki/) — the canonical rule-writing guide; covers `logsource`, `detection`, and the condition grammar needed for the lab's `selection and not filter` pattern.
 - [Sigma rule collection — Cloud and ZT (SigmaHQ repo)](https://github.com/SigmaHQ/sigma/tree/master/rules/cloud) — real Sigma rules for cloud access events; useful reference for the field-naming conventions in this lab.
 
 **Behavioral detection in identity-centric environments (~45 min)**
-- [Detecting Identity-Based Attacks with UEBA (Securonix blog, 2023)](https://www.securonix.com/blog/ueba-and-identity-security/) — covers the user-entity behavioral analytics approach; the unexpected-country and bulk-export patterns in this lab's seed data are canonical UEBA detections. Focuses on the analytical strategy, not a specific product.
 
 ## Key concepts
 - ZT proxies log every access decision — not just anomalies — with full identity and device context attached.

@@ -23,14 +23,12 @@ ChaCha20-Poly1305 is the AEAD alternative to AES-GCM. It uses the ChaCha20 strea
 ## Learn (~4 hrs)
 
 **AES-GCM in depth**
-- [NIST SP 800-38D — Recommendation for GCM](https://csrc.nist.gov/publications/detail/sp/800-38d/final) — the specification; read Sections 5–6 (the construction and requirements) and Section 8 (the key usage guidance). The nonce uniqueness requirement is in Section 8.
-- [GCM Security Analysis (blog, Filippo Valsorda)](https://words.filippo.io/dispatches/gcm-nonce-reuse/) — a clear explanation of what nonce reuse actually enables an attacker to do; short, authoritative.
+- [NIST SP 800-38D — Recommendation for GCM](https://csrc.nist.gov/pubs/sp/800/38/d/final) — the specification; read Sections 5–6 (the construction and requirements) and Section 8 (the key usage guidance). The nonce uniqueness requirement is in Section 8.
 
 **AEAD alternatives**
 - [RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols](https://www.rfc-editor.org/rfc/rfc8439) — the spec for ChaCha20-Poly1305; read the Introduction and Section 2 for the construction overview.
 
 **IV reuse attack implementation**
-- [Nonce-Disrespecting Adversaries (2016 paper)](https://nonce-disrespect.github.io/) — the paper that documented widespread GCM nonce reuse in real products; read the abstract and introduction for the real-world impact.
 
 **Python cryptography library**
 - [cryptography.io — Symmetric encryption with AEAD](https://cryptography.io/en/latest/hazmat/primitives/aead/) — the `AESGCM` and `ChaCha20Poly1305` API reference; understand the `nonce` parameter and the `InvalidTag` exception.

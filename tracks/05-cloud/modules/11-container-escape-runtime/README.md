@@ -30,7 +30,7 @@ The practitioner's mental model for runtime security is **signal vs. noise tunin
 
 **Falco runtime detection (~1 hr)**
 - [Falco documentation — Rules](https://falco.org/docs/rules/) — the rules language reference; read the "Conditions", "Output", and "Macros" sections. This is the vocabulary you need to write and tune rules.
-- [Sysdig blog — "Falco: runtime security for containers"](https://sysdig.com/blog/falco-runtime-security-for-containers/) — the conceptual overview of how Falco instruments syscalls via eBPF; a 10-minute read that builds the mental model before the lab.
+- [Sysdig blog — "Falco: runtime security for containers"](https://falco.org/docs/concepts/event-sources/) — the conceptual overview of how Falco instruments syscalls via eBPF; a 10-minute read that builds the mental model before the lab.
 
 ## Key concepts
 - Containers share the host kernel — namespaces provide isolation, not a security boundary

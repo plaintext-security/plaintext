@@ -69,7 +69,7 @@ any ZT enforcement point: minimum access, explicit policy, regular review.
 
 **Cloudflare Zero Trust (~1.5 hrs)**
 - [Cloudflare Zero Trust documentation — Getting started](https://developers.cloudflare.com/cloudflare-one/setup/) — the official setup guide. Read "Getting started" and "Connections → Tunnels" before the lab. The documentation is accurate and current; the lab follows it closely.
-- [cloudflared Tunnel — How it works](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/) — the technical explainer for the tunnel architecture: why outbound-only tunnels are the security model, and how the edge routes traffic.
+- [cloudflared Tunnel — How it works](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/) — the technical explainer for the tunnel architecture: why outbound-only tunnels are the security model, and how the edge routes traffic.
 
 **SASE concepts (~1 hr)**
 - [Gartner — The Future of Network Security Is in the Cloud (2019)](https://www.gartner.com/en/documents/3957375) — the original SASE paper (requires free Gartner account or institutional access; a summary is freely available at https://www.gartner.com/smarterwithgartner/the-future-of-network-security-is-in-the-cloud). Read the summary for the SASE component taxonomy.

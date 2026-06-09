@@ -38,7 +38,7 @@ the code was never the skill; directing and reviewing it is.
 - [Corey Schafer — Python for Beginners #1: Install & Setup (~10 min)](https://www.youtube.com/watch?v=YYXdXT2l-Gg) — new to Python? start here, then continue his numbered beginner series as far as you need.
 
 **Regex — the analyst's scalpel**
-- [Real Python — Regular Expressions](https://realpython.com/regex-python-part-1/) — the `re` module done properly; you'll reach for this on every log-parsing task.
+- [Real Python — Regular Expressions](https://realpython.com/regex-python/) — the `re` module done properly; you'll reach for this on every log-parsing task.
 - [regex101](https://regex101.com/) — build and test your pattern interactively (set the flavour to Python) before it goes into code.
 
 **Reference**

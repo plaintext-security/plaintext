@@ -54,9 +54,8 @@ both. That combination is Module 06.
 ## Learn (~3 hrs)
 
 **How RAG works (~1.5 hrs)**
-- [LlamaIndex — "What is RAG?" explainer](https://docs.llamaindex.ai/en/stable/getting_started/concepts/) — the cleanest conceptual walkthrough: retrieval, augmentation, generation in sequence; read the "Key concepts" page.
-- [ChromaDB documentation — Getting started](https://docs.trychroma.com/getting-started) — the vector store you'll use; skim the basic collection, add, and query examples before touching the lab.
-- [Nomic AI blog, "Introducing nomic-embed-text"](https://blog.nomic.ai/posts/nomic-embed) — short post on the embedding model you'll use; understanding what the model was trained on tells you where it will and won't work well.
+- [LlamaIndex — "What is RAG?" explainer](https://developers.llamaindex.ai/python/framework/getting_started/concepts/) — the cleanest conceptual walkthrough: retrieval, augmentation, generation in sequence; read the "Key concepts" page.
+- [ChromaDB documentation — Getting started](https://docs.trychroma.com/docs/overview/getting-started) — the vector store you'll use; skim the basic collection, add, and query examples before touching the lab.
 
 **Chunking and retrieval quality (~1 hr)**
 - [Greg Kamradt, "5 Levels of Text Splitting" (YouTube, 25 min)](https://www.youtube.com/watch?v=8OJC21T2SL4) — the most practical treatment of chunking strategy; watch for the intuition on how chunk size affects retrieval precision vs. recall.

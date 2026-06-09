@@ -56,8 +56,7 @@ model for prompt review if accuracy drops below 80%.
 - [OWASP Top 10 for LLM — LLM09 (Overreliance)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the triage pipeline is the canonical overreliance scenario; read the description and mitigations before implementing automated actions on model output.
 
 **Evaluation methodology (~45 min)**
-- [Google, "Classification: True vs False, Positive vs Negative" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/true-false-positive-negative) — the confusion matrix concepts you'll compute; short, visual, directly applicable.
-- [AWS re:Post — "Security alert triage automation" (blog)](https://repost.aws/articles/ARyKhJCEBsQNiNi_DI6DXKkA) — a real-world example of AI-assisted triage in a production SOC context; skim for the architecture and the accuracy discussion.
+- [Google, "Classification: True vs False, Positive vs Negative" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/thresholding) — the confusion matrix concepts you'll compute; short, visual, directly applicable.
 
 **Automation patterns (~30 min)**
 - [Python `concurrent.futures` documentation](https://docs.python.org/3/library/concurrent.futures.html) — `ThreadPoolExecutor` is how you batch multiple Ollama requests concurrently; read the basic example to understand the map pattern.

@@ -23,7 +23,6 @@ The specific impacket tools: `psexec.py` authenticates via SMB using PTH, create
 ## Learn (~3 hrs)
 
 **Pass the hash mechanics**
-- [Pass-the-Hash Attack Explained (Microsoft DART blog)](https://www.microsoft.com/en-us/security/blog/2012/03/13/the-anatomy-of-pass-the-hash-attacks/) — Microsoft's own analysis of why PTH is a design consequence, not a bug. The 2012 paper still accurately describes the core mechanics.
 - [T1550.002 — Pass the Hash (MITRE ATT&CK)](https://attack.mitre.org/techniques/T1550/002/) — procedure examples and detections. Note the sub-technique distinction from pass-the-ticket.
 
 **Secretsdump and DCSync**
