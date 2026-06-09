@@ -33,13 +33,21 @@ channels, and onboarding).
    # career-and-jobs
    # off-topic
 
-🎓 HELP  (Forum channels — one post = one question, stays searchable)
-   # foundations-help
-   # offensive-help
-   # defensive-help
-   # other-tracks-help  (forensics / malware / cloud / AD / crypto / ztna … until each earns its own)
-   # labs-and-docker    (env / Makefile / compose issues — the busiest help channel)
-   # ai-and-automation  (the AI-acceleration thread that runs through every module)
+🎓 HELP  (Forum channels — one post = one question, stays searchable. One per track.)
+   # 00-foundations-help
+   # 01-offensive-help
+   # 02-defensive-help
+   # 03-forensics-help
+   # 04-malware-help
+   # 05-cloud-help
+   # 06-active-directory-help
+   # 07-endpoint-hardening-help
+   # 08-cryptography-help
+   # 09-python-help
+   # 10-automation-help
+   # 11-ztna-help
+   # 12-ai-ops-help
+   # labs-and-docker          (cross-cutting: env / Makefile / compose issues — the busiest channel)
 
 🛠 CONTRIBUTE
    # contributing       (PRs, the hybrid-module model, CONTRIBUTING.md)
@@ -54,7 +62,15 @@ channels, and onboarding).
 ```
 
 Use **Forum** channels for the HELP category: each question becomes its own searchable thread with
-a "Solved" tag, so the community becomes a knowledge base instead of a scrolling wall.
+a "Solved" tag, so the community becomes a knowledge base instead of a scrolling wall. The number
+prefixes mirror the curriculum's track numbering (`00`–`12`) so a channel maps 1:1 to a track and
+sorts in order. The AI-acceleration thread runs through every module, so AI questions go in that
+track's help channel; `#12-ai-ops-help` is for the AI-Augmented Ops track and AI-tooling chat.
+
+Tip for launch: 13 forum channels can feel empty on day one. Optional — start with the
+highest-traffic ones visible (`00`/`01`/`02` + `#labs-and-docker`) and reveal each remaining track
+channel as its first cohort arrives. The track self-assign roles let you @-mention a cohort when you
+open theirs.
 
 ### Roles
 
