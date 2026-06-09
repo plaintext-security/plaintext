@@ -27,7 +27,6 @@ A practical note on **enum4linux-ng**: it wraps several enumeration techniques (
 - [AD LDAP Enumeration (HackTricks)](https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap) — practical filter recipes for common enumeration goals; good reference during the lab.
 
 **BloodHound CE**
-- [BloodHound CE — Getting Started (SpecterOps)](https://bloodhoundenterprise.io/blog/2023/05/09/bloodhound-community-edition-getting-started/) — the official walkthrough for spinning up BloodHound CE and importing data. Read this before the lab.
 - [BloodHound CE source and docs (GitHub)](https://github.com/SpecterOps/BloodHound) — the architecture, the Cypher query examples, and the edge types. Skim the `docs/` directory to understand what each edge means.
 
 **bloodhound-python**

@@ -24,7 +24,6 @@ Forward secrecy deserves explicit attention because it is the property that make
 
 **Asymmetric cryptography foundations**
 - [Cryptography I (Dan Boneh, Stanford/Coursera)](https://www.coursera.org/learn/crypto) — Week 5 (Public Key Encryption) and Week 6 (Digital Signatures); audit for free. These are the clearest formal treatments of RSA and its security assumptions.
-- [An Introduction to Mathematical Cryptography (Hoffstein, Pipher, Silverman) — Chapter 3 excerpt](https://link.springer.com/book/10.1007/978-1-4939-1711-2) — the elliptic curve chapter; read the introduction and the DH/ECDH sections for the mathematical grounding.
 
 **Practical OpenSSL**
 - [OpenSSL man pages — genpkey(1)](https://docs.openssl.org/3.0/man1/openssl-genpkey/) — generating RSA, EC, and X25519 keys.

@@ -49,7 +49,6 @@ authorized in writing; everything outside that scope is illegal regardless of in
 
 **Scapy (~2 hrs)**
 - [Scapy — Official documentation, "Building packets"](https://scapy.readthedocs.io/en/latest/usage.html#generating-sets-of-packets) — the "Quick start" and "Building packets" sections; focus on the layer stack model (`/` operator).
-- [Scapy for Penetration Testers — TCM Security (YouTube, 25 min)](https://www.youtube.com/watch?v=1mYYPWnHqFw) — practical demo of sniff, send, and ARP spoofing; watch the first 18 minutes for the packet crafting fundamentals.
 
 ## Key concepts
 - `socket.connect_ex()` for non-throwing port probes; `settimeout()` to prevent hangs

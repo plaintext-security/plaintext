@@ -74,7 +74,6 @@ places where a flat-trust model causes the most damage when it fails.
 - [CISA Zero Trust Maturity Model v2.0 (2023)](https://www.cisa.gov/sites/default/files/2023-04/zero_trust_maturity_model_v2_508.pdf) — CISA's five-pillar maturity model. Read the executive summary and the maturity table for each pillar. This is the framework practitioners use to benchmark where an org actually stands.
 
 **Mental model video (~30 min)**
-- [Zero Trust Explained in Plain English (NetworkChuck, ~17 min)](https://www.youtube.com/watch?v=yn_L_EgaOVM) — a fast, concrete walkthrough of ZT concepts without the marketing fog; good for building the visual model before reading the specs.
 
 ## Key concepts
 

@@ -52,7 +52,6 @@ resets, and whether the incident is still active.
 
 **Velociraptor fundamentals (~1.5 hrs)**
 - [Velociraptor Docs — Quick Start](https://docs.velociraptor.app/docs/overview/) — the architecture overview: server, client, GUI, and VQL. Read the "Deployment" and "Artifacts" sections to understand how queries flow to endpoints.
-- [Velociraptor — Hunt a Fleet (YouTube, ~25 min)](https://www.youtube.com/watch?v=JD0hIkEn-bY) — a walkthrough of deploying a hunt across multiple endpoints; shows VQL artifacts running at scale. Watch to see the investigator perspective before doing the lab.
 
 **VQL & artifacts (~1 hr)**
 - [VQL Reference](https://docs.velociraptor.app/vql_reference/) — the built-in functions and plugins. Focus on the `Process`, `Network`, and `Filesystem` categories — those cover the core triage questions.

@@ -68,7 +68,6 @@ to engineers and leadership who won't read a findings table.
 
 **cloudmapper (~1.5 hrs)**
 - [cloudmapper GitHub — README](https://github.com/duo-labs/cloudmapper) — Duo Labs' network topology mapper for AWS. Read the `collect`, `prepare`, and `audit` command descriptions. This is what generates the interactive graph from account JSON.
-- [AWS re:Invent 2018 — Finding Weaknesses in AWS Account Configurations](https://www.youtube.com/watch?v=1GKL28e0dq4) — Scott Piper's talk introducing cloudmapper (approx. 43 min); watch the first 25 minutes for the motivation and demo; the rest is reference.
 
 ## Key concepts
 - VPC as a software-defined network: Security Groups, NACLs, route tables, and Internet Gateways as IAM-controlled objects
