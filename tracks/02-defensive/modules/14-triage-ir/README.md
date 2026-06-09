@@ -1,4 +1,4 @@
-# Module 13 — Alert Triage & Incident Response
+# Module 14 — Alert Triage & Incident Response
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 

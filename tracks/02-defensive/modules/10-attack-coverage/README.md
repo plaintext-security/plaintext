@@ -28,7 +28,7 @@ The trap, and why this module has teeth: coverage maps are seductive because the
 inflate. A green Navigator is **not** the same as being defended. A detection mapped to T1059 that
 only catches one variant — or that doesn't actually fire (module 09) — still shows green. So
 **coverage ≠ effectiveness**, and "do we have a rule" is not "would we catch it." The honest version
-weights by *threat relevance* — what actually targets you (intel, module 14) — rather than raw
+weights by *threat relevance* — what actually targets you (intel, module 15) — rather than raw
 technique count; total coverage of techniques nobody uses against you is wasted effort dressed up as
 progress.
 

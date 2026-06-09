@@ -1,4 +1,4 @@
-# Module 15 — Cloud & Container Attack Primer
+# Module 16 — Cloud & Container Attack Primer
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 

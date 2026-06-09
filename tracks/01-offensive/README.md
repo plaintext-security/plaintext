@@ -29,8 +29,9 @@ collect exploits; it's to understand *why* systems fall so you can explain and f
 | 12 | [Pivoting & Lateral Movement](modules/12-pivoting/README.md) | Tunneling and moving between hosts | `chisel`, `ligolo-ng`, `proxychains` |
 | 13 | [C2 & Post-Exploitation](modules/13-c2-postex/README.md) | Command-and-control and tradecraft | `sliver`, `pwncat` |
 | 14 | [Living-off-the-Land & Evasion](modules/14-lolbins-evasion/README.md) | Native tooling and basic AV/EDR evasion | `LOLBAS`, `GTFOBins` |
-| 15 | [Cloud & Container Attack Primer](modules/15-cloud-primer/README.md) | Where on-prem skills meet cloud (handoff to T05) | `pacu`, `peirates` |
-| 16 | [Reporting & Remediation](modules/16-reporting/README.md) | Prioritised, reproducible, defender-ready reports | `ghostwriter` |
+| 15 | [PowerShell Offensive Tradecraft](modules/15-powershell-tradecraft/README.md) | Cradles, in-memory execution, AMSI & logging evasion | `pwsh`, `PowerSploit` |
+| 16 | [Cloud & Container Attack Primer](modules/16-cloud-primer/README.md) | Where on-prem skills meet cloud (handoff to T05) | `pacu`, `peirates` |
+| 17 | [Reporting & Remediation](modules/17-reporting/README.md) | Prioritised, reproducible, defender-ready reports | `ghostwriter` |
 
 ## Phases & projects
 

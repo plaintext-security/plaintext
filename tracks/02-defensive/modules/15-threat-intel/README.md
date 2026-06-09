@@ -1,4 +1,4 @@
-# Module 14 — Threat Intelligence
+# Module 15 — Threat Intelligence
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 

@@ -1,4 +1,4 @@
-# Lab 15 — Cloud Attack Primer
+# Lab 16 — Cloud Attack Primer
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 

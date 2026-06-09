@@ -79,7 +79,7 @@ findings as a JSON array. Commit the refactored script.
 
 ## Connects forward
 The C2 IP (185.220.101.47) and the persistence artifacts feed directly
-into module 14 (threat-intel enrichment) and the Sigma rule from
+into module 15 (threat-intel enrichment) and the Sigma rule from
 Step 5 can be tested against module 09's detection-testing harness.
 Network and endpoint hunts (11–12) together complete Phase 2.
 

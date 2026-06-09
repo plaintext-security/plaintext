@@ -1,4 +1,4 @@
-# Lab 13 — Run an Incident in TheHive
+# Lab 14 — Run an Incident in TheHive
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 
@@ -82,10 +82,10 @@ arrays per the [TheHive schema](https://docs.strangebee.com/thehive/api-docs/#ta
 Commit the extended script.
 
 ## Connects forward
-The C2 indicator (185.220.101.47) connects to module 14's
+The C2 indicator (185.220.101.47) connects to module 15's
 threat-intel enrichment — this is where the ThreatFox lookup you built
 pays off. The improvement actions from the post-incident review connect
-to module 15 (SOAR automation) and back to module 08 (detection-as-code).
+to module 16 (SOAR automation) and back to module 08 (detection-as-code).
 
 ## Marketable proof
 > "I triage real alerts through the NIST SP 800-61 lifecycle — from

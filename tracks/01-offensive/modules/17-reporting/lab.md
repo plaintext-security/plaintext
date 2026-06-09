@@ -1,4 +1,4 @@
-# Lab 16 — Penetration Test Reporting
+# Lab 17 — Penetration Test Reporting
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 

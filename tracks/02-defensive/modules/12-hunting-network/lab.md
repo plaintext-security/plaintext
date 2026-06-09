@@ -69,7 +69,7 @@ to `beacon_hunt.py` that writes a Markdown threat-hunting report to
 paragraph. Commit the extended script and the generated report.
 
 ## Connects forward
-The C2 IP you surfaced (185.220.101.47) feeds directly into module 14 (threat intel
+The C2 IP you surfaced (185.220.101.47) feeds directly into module 15 (threat intel
 enrichment) — you'll look it up in ThreatFox to confirm attribution. Network and
 endpoint hunts (11–12) together complete Phase 2.
 

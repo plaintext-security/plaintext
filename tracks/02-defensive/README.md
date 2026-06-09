@@ -26,19 +26,20 @@ telemetry in, tested detections out, mapped to attacker behaviour.
 | 10 | [ATT&CK Mapping & Coverage](modules/10-attack-coverage/README.md) | Measuring and closing detection gaps | ATT&CK Navigator |
 | 11 | [Threat Hunting — Endpoint](modules/11-hunting-endpoint/README.md) | Hypothesis-driven host hunting | `osquery`, `velociraptor` |
 | 12 | [Threat Hunting — Network](modules/12-hunting-network/README.md) | Hunting across protocol and flow data | `zeek`, `jupyter` |
-| 13 | [Alert Triage & Incident Response](modules/13-triage-ir/README.md) | A repeatable process from alert to verdict | `TheHive` |
-| 14 | [Threat Intelligence](modules/14-threat-intel/README.md) | Managing IOCs and enriching detections | `MISP`, `OpenCTI` |
-| 15 | [Response Automation (SOAR primer)](modules/15-soar/README.md) | Automating enrich → contain → ticket | `Shuffle` |
+| 13 | [PowerShell Logging & Hunting](modules/13-powershell-logging-hunting/README.md) | Script-block/module logging and hunting PowerShell abuse | `pwsh`, `chainsaw`, `sigma` |
+| 14 | [Alert Triage & Incident Response](modules/14-triage-ir/README.md) | A repeatable process from alert to verdict | `TheHive` |
+| 15 | [Threat Intelligence](modules/15-threat-intel/README.md) | Managing IOCs and enriching detections | `MISP`, `OpenCTI` |
+| 16 | [Response Automation (SOAR primer)](modules/16-soar/README.md) | Automating enrich → contain → ticket | `Shuffle` |
 
 ## Phases & projects
 
-The fifteen modules run in three phases; each ends in a **project** that integrates its modules.
+The sixteen modules run in three phases; each ends in a **project** that integrates its modules.
 
 - **Phase 1 · Get the data** (01–07) — **Project:** a working telemetry pipeline that ingests host
   *and* network data into a searchable SIEM, with a real attack dataset flowing through it.
-- **Phase 2 · Find the attacker** (08–12) — **Project:** a set of detections-as-code mapped to MITRE
+- **Phase 2 · Find the attacker** (08–13) — **Project:** a set of detections-as-code mapped to MITRE
   ATT&CK, tested against a real attack dataset, plus one documented threat hunt.
-- **Phase 3 · Respond** (13–15) — **Project:** an incident handled from alert to root cause, with an
+- **Phase 3 · Respond** (14–16) — **Project:** an incident handled from alert to root cause, with an
   automated enrich → contain → ticket step (the track capstone).
 
 > **Standalone by design.** Every detection lab here sources a **real public dataset** (and a

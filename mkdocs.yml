@@ -147,12 +147,15 @@ nav:
       - "14 · Living-off-the-Land & Evasion":
           - Concept: 01-offensive/modules/14-lolbins-evasion/README.md
           - Lab: 01-offensive/modules/14-lolbins-evasion/lab.md
-      - "15 · Cloud & Container Attack Primer":
-          - Concept: 01-offensive/modules/15-cloud-primer/README.md
-          - Lab: 01-offensive/modules/15-cloud-primer/lab.md
-      - "16 · Reporting & Remediation":
-          - Concept: 01-offensive/modules/16-reporting/README.md
-          - Lab: 01-offensive/modules/16-reporting/lab.md
+      - "15 · PowerShell Offensive Tradecraft":
+          - Concept: 01-offensive/modules/15-powershell-tradecraft/README.md
+          - Lab: 01-offensive/modules/15-powershell-tradecraft/lab.md
+      - "16 · Cloud & Container Attack Primer":
+          - Concept: 01-offensive/modules/16-cloud-primer/README.md
+          - Lab: 01-offensive/modules/16-cloud-primer/lab.md
+      - "17 · Reporting & Remediation":
+          - Concept: 01-offensive/modules/17-reporting/README.md
+          - Lab: 01-offensive/modules/17-reporting/lab.md
   - Defensive Operations:
       - Overview: 02-defensive/README.md
       - "01 · Telemetry & Log Centralisation":
@@ -191,15 +194,18 @@ nav:
       - "12 · Threat Hunting — Network":
           - Concept: 02-defensive/modules/12-hunting-network/README.md
           - Lab: 02-defensive/modules/12-hunting-network/lab.md
-      - "13 · Alert Triage & Incident Response":
-          - Concept: 02-defensive/modules/13-triage-ir/README.md
-          - Lab: 02-defensive/modules/13-triage-ir/lab.md
-      - "14 · Threat Intelligence":
-          - Concept: 02-defensive/modules/14-threat-intel/README.md
-          - Lab: 02-defensive/modules/14-threat-intel/lab.md
-      - "15 · Response Automation (SOAR)":
-          - Concept: 02-defensive/modules/15-soar/README.md
-          - Lab: 02-defensive/modules/15-soar/lab.md
+      - "13 · PowerShell Logging & Hunting":
+          - Concept: 02-defensive/modules/13-powershell-logging-hunting/README.md
+          - Lab: 02-defensive/modules/13-powershell-logging-hunting/lab.md
+      - "14 · Alert Triage & Incident Response":
+          - Concept: 02-defensive/modules/14-triage-ir/README.md
+          - Lab: 02-defensive/modules/14-triage-ir/lab.md
+      - "15 · Threat Intelligence":
+          - Concept: 02-defensive/modules/15-threat-intel/README.md
+          - Lab: 02-defensive/modules/15-threat-intel/lab.md
+      - "16 · Response Automation (SOAR)":
+          - Concept: 02-defensive/modules/16-soar/README.md
+          - Lab: 02-defensive/modules/16-soar/lab.md
   - Digital Forensics & IR:
       - Overview: 03-forensics/README.md
       - "01 · Forensic Fundamentals & Evidence Handling":

@@ -1,4 +1,4 @@
-# Module 16 — Reporting & Remediation
+# Module 17 — Reporting & Remediation
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 

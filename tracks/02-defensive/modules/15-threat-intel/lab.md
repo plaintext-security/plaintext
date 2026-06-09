@@ -1,4 +1,4 @@
-# Lab 14 — Work Real Threat Intel
+# Lab 15 — Work Real Threat Intel
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 
@@ -42,7 +42,7 @@ Have a model extract structured IOCs from a threat report — then verify each a
 and judge its confidence. Collection is easy; assessment is the skill.
 
 ## Connects forward
-Enriched intel sharpens detections (module 08) and drives the automated enrichment step in module 15
+Enriched intel sharpens detections (module 08) and drives the automated enrichment step in module 16
 (SOAR).
 
 ## Marketable proof

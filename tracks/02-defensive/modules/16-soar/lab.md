@@ -1,4 +1,4 @@
-# Lab 15 — Build a Response Playbook (Track Capstone)
+# Lab 16 — Build a Response Playbook (Track Capstone)
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 

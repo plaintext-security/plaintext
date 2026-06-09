@@ -1,4 +1,4 @@
-# Module 15 — Response Automation (SOAR)
+# Module 16 — Response Automation (SOAR)
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
