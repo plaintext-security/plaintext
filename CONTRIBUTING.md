@@ -111,6 +111,45 @@ A short recap checklist of "The core idea" — not the teaching itself.
 The specific way AI/automation speeds this up — and what you must review and own.
 ```
 
+## Bridge-prose quality checklist
+
+**"The core idea" is the bar a module lives or dies on.** It is the original-prose bridge — the part
+no Learn link can hand the reader. Before you call a module's core idea done, hold it against this
+checklist. If it fails, it's a *thin* module (concept-plus-links) or a *regurgitation* module
+(re-teaching what a link already nails) — both are unfinished.
+
+A strong "The core idea" has, in 2–5 short paragraphs:
+
+- [ ] **A mental model.** One sharp framing the learner keeps: *"a super-timeline is the `JOIN`
+  you'd do by hand, with time as the join key"*, *"a port number is a hypothesis, not an answer"*,
+  *"the graph is a road map and each edge is a road with its own toll and traffic camera."* Not a
+  definition — a way to *think* about the thing.
+- [ ] **A practitioner translation** — "X is really the Y you already know." Anchor the new concept
+  to something the reader has done before (a firewall rule, a database join, a flow log), ideally
+  naming the prior skill explicitly. This is the single most valuable move and the one most often
+  missing.
+- [ ] **Cross-source synthesis** — at least one connection no single Learn link makes: how this ties
+  to another module/track (offense↔defense interplay especially), or how two linked sources fit
+  together. The bridge connects; the links explain.
+- [ ] **The judgment / the gotcha** — the non-obvious thing that separates someone who *uses* the
+  tool from someone who *understands* it: the false-positive economics, the precondition that
+  decides whether a vector works, the timezone error that fabricates a sequence, the "this is the
+  loudest thing you'll do." State the trap and the discipline that avoids it.
+- [ ] **The AI caveat, specific to this topic** — not "verify AI output" in the abstract, but the
+  concrete failure mode here (it labels a CDN's polling "C2"; it proposes a vector whose
+  preconditions your box doesn't meet; it invents events not in your data) and what the learner
+  must check by hand.
+
+And it must **not**:
+
+- [ ] **Re-derive what a Learn link explains step-by-step** — no "how TCP works / how Kerberos works"
+  walkthrough. If a linked resource covers the mechanism well, frame and connect it; don't rewrite it.
+- [ ] **Be a list in disguise** — a paragraph that's just key concepts strung into sentences isn't
+  bridge prose. Bold the load-bearing idea, but the prose around it must teach the *judgment*.
+
+The exemplars to copy: [`00-foundations/.../01-security-principles`](tracks/00-foundations/modules/01-security-principles/README.md)
+and [`02-defensive/.../08-detection-as-code`](tracks/02-defensive/modules/08-detection-as-code/README.md).
+
 ## Lab template
 
 ```markdown
