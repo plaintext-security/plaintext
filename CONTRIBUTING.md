@@ -45,6 +45,13 @@ finished lab. A track counts as complete only when all its labs meet this bar.
 Each **track** (`tracks/<NN>-<name>/README.md`) is a content map that ends in a
 **capstone** — a portfolio-worthy artifact (its starter lives in `plaintext-labs`) that proves the track.
 
+Tracks group their modules into **phases**, each ending in a **phase project**, and the **capstone is
+the final phase's project, restated** in the `## Capstone` section. Keep the two in sync: the
+`## Capstone` description (and its rubric) must match the last `Phase N · … — **Project:** the track
+capstone …` line — same scenario, same deliverable. A `## Capstone` that describes an *earlier* phase's
+project is a bug (the capstone integrates all phases but *culminates* in the final one). When you edit
+either the phases list or the capstone, update the other.
+
 **A module is a guided learning unit, not a summary page — and not a bare link list.** Plaintext
 follows a **hybrid model**: *curate the raw explanation, write original prose for the bridge.*
 The step-by-step "how it works" is covered well elsewhere — **link** to it in the **Learn** path.
