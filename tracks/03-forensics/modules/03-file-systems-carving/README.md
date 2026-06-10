@@ -27,8 +27,8 @@ Every filesystem is a data structure — a tree of metadata (inodes, MFT entries
 - [NTFS Documentation — ntfs.com](https://www.ntfs.com/ntfs-attributes.htm) — brief but precise on MFT attributes; understand `$DATA`, `$STANDARD_INFORMATION`, and `$FILE_NAME` before the lab.
 
 **SleuthKit in practice (~1.5 hr)**
-- [Digital Forensics with SleuthKit — SANS poster](https://www.sans.org/posters/sleuth-kit-cheatsheet/) — a one-page reference of the most used commands and their layer; print it or keep it open during the lab.
-- [foremost — Carnegie Mellon CERT](https://foremost.sourceforge.net/) — the carver's documentation and configuration format; read the header/footer configuration section to understand how you'd add a new file type.
+- [SleuthKit User Guide and Tool Documentation](https://sleuthkit.org/sleuthkit/docs/) — official reference for all SleuthKit tools (`fls`, `icat`, `fsstat`, `istat`, `mmls`); each tool's usage and output format. Keep this open during the lab.
+- [foremost — SourceForge Project Documentation](https://foremost.sourceforge.net/) — the carver's documentation and configuration format; read the header/footer configuration section to understand how you'd add a new file type.
 
 **FAT32 internals (for the lab image) (~1 hr)**
 - [FAT32 File System Specification (Microsoft)](https://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/fatgen103.doc) — the authoritative spec; sections 3–5 cover the FAT structure and directory entries. Worth a skim so you know what `fsstat` is reporting.

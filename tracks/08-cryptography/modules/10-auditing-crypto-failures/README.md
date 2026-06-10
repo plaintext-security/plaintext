@@ -30,7 +30,7 @@ The cumulative picture — all three TLS configurations audited, findings tallie
 - [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html) — the practitioner reference for storage-layer failures; read the full page.
 
 **testssl.sh (revisit from module 05)**
-- [testssl.sh severity levels](https://github.com/testssl/testssl.sh/blob/3/doc/rating.md) — how testssl.sh assigns severity to each finding; understand what CRITICAL, HIGH, MEDIUM, LOW, and INFO mean in the tool's output.
+- [testssl.sh GitHub — Severity Rating Documentation](https://github.com/testssl/testssl.sh) — read the README section on severity ratings; understand how the tool assigns CRITICAL, HIGH, MEDIUM, LOW, and INFO severity to each finding.
 
 **NIST guidance on cryptographic algorithm deprecation**
 - [NIST SP 800-131A Rev 2 — Transitioning the Use of Cryptographic Algorithms](https://csrc.nist.gov/pubs/sp/800/131/a/r2/final) — the authoritative list of deprecated and disallowed algorithms; read Tables 1–4 for the algorithm transition schedule.

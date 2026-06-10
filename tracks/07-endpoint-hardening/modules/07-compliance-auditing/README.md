@@ -30,7 +30,7 @@ Continuous compliance — running scans on a schedule and alerting on score drif
 - [NIST SP 800-128 — Guide for Security-Focused Configuration Management](https://csrc.nist.gov/pubs/sp/800/128/upd1/final) — Sections 2–3 give the framework for continuous compliance as a lifecycle process.
 
 **OpenSCAP and Lynis (review from module 03)**
-- [OpenSCAP user manual — Generating reports](https://www.open-scap.org/resources/documentation/manual-for-openscap-scanner/#generating-reports) — specifically the HTML and XCCDF report sections; this is the audit evidence format.
+- [OpenSCAP GitHub — User Guide and Report Generation](https://github.com/OpenSCAP/openscap/tree/maint-1.3/docs) — specifically the report format documentation; HTML and XCCDF are the audit evidence formats used for compliance scoring.
 - [Lynis CI integration guide (CISOfy)](https://cisofy.com/documentation/lynis/get-started/#cicd) — running Lynis in CI; read for the exit-code and threshold patterns.
 
 **Continuous compliance**

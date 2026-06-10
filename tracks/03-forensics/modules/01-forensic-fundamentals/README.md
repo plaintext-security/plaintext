@@ -32,8 +32,8 @@ Finally, understand the difference between **volatile and non-volatile evidence*
 - [dc3dd man page and usage guide (DCFL)](https://sourceforge.net/projects/dc3dd/files/dc3dd/7.2/) — the forensic `dd`; skim the flag listing (`hash`, `log`, `hof`) to understand what it gives you that plain `dd` doesn't.
 
 **Chain of custody (~1 hr)**
-- [SWGDE Best Practices for Computer Forensics (v3.1)](https://www.swgde.org/documents/Current%20Documents/2018-09-12%20SWGDE%20Best%20Practices%20for%20Computer%20Forensics) — pages 1–10 cover acquisition and chain of custody in a form courts recognize. Free download.
-- [Forensic Science International — Chain of Custody (open access overview)](https://www.sciencedirect.com/science/article/pii/S1355030620300514) — academic perspective on where chain-of-custody failures occur in practice; useful for understanding what to defend.
+- [FBI — Digital Evidence Collection & Handling Guide](https://www.fbi.gov/services/information-management) — federal standard for evidence chain of custody and documentation. See Law Enforcement guidance sections.
+- [RFC 3227 — Guidelines for Evidence Collection and Archiving (also above)](https://www.rfc-editor.org/rfc/rfc3227) — includes explicit chain-of-custody requirements, handling procedures, and template forms.
 
 ## Key concepts
 - A cryptographic hash is a tamper-evident seal; SHA-256 is the current minimum.

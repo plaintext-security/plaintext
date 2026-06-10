@@ -30,7 +30,7 @@ Lynis produces a "hardening index" on a 0–100 scale. This number is useful for
 - [Lynis GitHub repository](https://github.com/CISOfy/lynis) — the README explains the scoring model and the output format.
 
 **OpenSCAP and SCAP Security Guide**
-- [OpenSCAP user manual](https://www.open-scap.org/resources/documentation/manual-for-openscap-scanner/) — read the "Scanning" section; understand the difference between XCCDF, OVAL, and a profile.
+- [OpenSCAP GitHub — Documentation](https://github.com/OpenSCAP/openscap/tree/maint-1.3/docs) — the tool's user guide; understand the difference between XCCDF, OVAL, and a profile scanning workflow.
 - [SCAP Security Guide documentation](https://complianceascode.readthedocs.io/en/latest/) — the SSG is the content OpenSCAP scans against; read the "Profiles" section to understand how CIS, STIG, and PCI profiles differ.
 
 **CIS Linux Benchmarks**

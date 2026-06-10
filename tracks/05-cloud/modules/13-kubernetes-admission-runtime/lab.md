@@ -72,7 +72,7 @@ Meridian Financial is rolling out Kyverno to their EKS cluster to enforce contai
 7. [ ] Write a new Kyverno `ClusterPolicy` called `disallow-latest-tag` that denies any pod
    using an image with `:latest` or no tag (e.g. `nginx` or `nginx:latest`).
    *Hint: use a `deny` condition with `image.tag` check or a `pattern` match on the image field.
-   The Kyverno policy library has an example: https://kyverno.io/policies/best-practices/disallow-latest-tag/*
+   See the [Kyverno Policy Library](https://kyverno.io/policies/) for policy examples and best practices.*
 
 8. [ ] Apply your policy: `kubectl apply -f disallow-latest-tag.yaml`
 

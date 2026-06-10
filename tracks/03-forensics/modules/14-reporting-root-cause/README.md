@@ -60,7 +60,7 @@ constrained — because it always is — and prioritise by: (1) closes the initi
 ## Learn (~2 hrs)
 
 **Forensic report writing (~1 hr)**
-- [SWGDE — Best Practices for Computer Forensics (PDF)](https://www.swgde.org/documents/Current%20Documents/SWGDE%20Best%20Practices%20for%20Computer%20Forensics) — the professional standards body's report-writing guidance; sets the bar for what makes a finding defensible. Focus on the "Documentation" and "Report Preparation" sections.
+- [NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) — the U.S. government standard for forensic documentation and reporting; sections 5–6 cover report structure, findings documentation, and defensible conclusions. Free PDF.
 
 **Root-cause analysis (~0.5 hrs)**
 - [NIST SP 800-61 Rev. 2 — Section 3.4: Post-Incident Activity](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf) — the NIST guidance on lessons-learned meetings and the questions to drive toward root cause. Focus on section 3.4.1 — "Lessons Learned."

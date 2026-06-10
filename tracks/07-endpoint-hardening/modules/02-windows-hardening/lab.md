@@ -33,9 +33,9 @@ and PowerShell, rescan, and produce a delta report that the security team can pr
 
 **On your Windows VM:**
 
-1. [ ] Download [CIS-CAT Lite](https://www.cisecurity.org/cybersecurity-tools/cis-cat-lite) and
-   run `CIS-CAT-Lite.bat` against your Windows 11 host. Export the JSON report as
-   `cis-report-before.json`. Note your baseline score.
+1. [ ] Download [CIS-CAT Lite](https://www.cisecurity.org/) from CIS and
+   navigate to the Assessments section to find the CAT Lite tool. Run `CIS-CAT-Lite.bat` against your Windows 11 host.
+   Export the JSON report as `cis-report-before.json`. Note your baseline score.
 
 2. [ ] Open `data/lgpo-commands.ps1` from the lab directory. Review each command and the CIS
    control it addresses (the comment above each block). Run the script in an elevated PowerShell

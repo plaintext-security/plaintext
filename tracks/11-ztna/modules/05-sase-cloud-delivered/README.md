@@ -75,7 +75,7 @@ any ZT enforcement point: minimum access, explicit policy, regular review.
 - [cloudflared Tunnel — How it works](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/) — the technical explainer for the tunnel architecture: why outbound-only tunnels are the security model, and how the edge routes traffic.
 
 **SASE concepts (~1 hr)**
-- [Cloudflare — What is SASE?](https://www.cloudflare.com/learning/access-management/what-is-sase/) — a clear vendor-neutral explanation of the SASE components (ZTNA, CASB, SWG, FWaaS) and how they combine. Read as a conceptual supplement to the Gartner framing.
+- [NIST Cybersecurity Framework & Zero Trust Principles](https://www.nist.gov/cyberframework) — U.S. government guidance on Zero Trust principles and architecture; foundational concepts behind SASE components (ZTNA, CASB, SWG).
 
 **Tunnel security model (~30 min)**
 - [Cloudflare Blog — Introducing Cloudflare Tunnel (2018)](https://blog.cloudflare.com/argo-tunnel/) — the original tunnel announcement; explains the "no inbound ports" security model and why it matters. Shorter and more readable than the full documentation.

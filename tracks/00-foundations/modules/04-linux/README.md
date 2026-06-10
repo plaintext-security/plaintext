@@ -40,7 +40,7 @@ the point; AI accelerates building it, it doesn't replace it.
 
 **The shell & the filesystem**
 - [The Missing Semester — The Shell](https://missing.csail.mit.edu/2020/course-shell/) — MIT's no-fluff intro to thinking in the shell; do the exercises.
-- [Linux Journey — The Command Line](https://linuxjourney.com/lesson/the-shell) — bite-sized and hands-on; the fastest way to fill gaps.
+- [The Linux Command Line — Bash Basics](https://linuxcommand.org/lc3_learning_the_shell.php) — bite-sized and hands-on introduction to the shell; covers pipes, redirection, and basic commands.
 - [Filesystem Hierarchy Standard](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html) — skim it so `/etc`, `/var`, and `/proc` stop being mysterious.
 
 **Permissions, processes & users**

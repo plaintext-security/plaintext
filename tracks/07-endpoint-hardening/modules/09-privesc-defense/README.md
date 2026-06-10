@@ -26,11 +26,11 @@ The audit workflow for a hardened host follows a checklist pattern: enumerate SU
 ## Learn (~4 hrs)
 
 **Privilege escalation taxonomy (attacker perspective — to understand what to defend)**
-- [HackTricks — Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation) — the comprehensive attacker checklist; read SUID, sudo, cron, and PATH sections to understand the techniques you are defending against.
-- [GTFOBins](https://gtfobins.org/) — the reference for SUID/sudo binary abuse; scan the index and click through a few (find, vim, python) to understand the pattern.
+- [GTFOBins](https://gtfobins.org/) — the reference for SUID/sudo binary abuse; scan the index and click through a few (find, vim, python) to understand the pattern and what binaries enable escalation.
+- [MITRE ATT&CK — T1134 Access Token Manipulation & T1548 Abuse Elevation Control](https://attack.mitre.org/techniques/T1548/) — real-world privilege escalation techniques and how attackers leverage them; read the sub-techniques for SUID/sudo abuse.
 
 **Defensive controls**
-- [Linux privilege escalation prevention (DigitalOcean)](https://www.digitalocean.com/community/tutorials/how-to-secure-linux-server-with-sudo) — practical sudo hardening; read the sections on limiting NOPASSWD, restricting command scope, and using `Defaults` directives.
+- [Sudo Configuration and Security — Official Manual](https://www.sudo.ws/) — official sudo documentation; read the man pages for sudoers configuration syntax, NOPASSWD restrictions, and `Defaults` directives for secure setup.
 - [sysctl hardening for kernel privesc mitigations (KSPP)](https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings) — kernel parameters that close namespace-based and memory-based escalation paths; read the "Recommended settings" table.
 
 **Auditing tools**

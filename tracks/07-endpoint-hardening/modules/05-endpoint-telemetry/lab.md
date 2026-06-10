@@ -88,7 +88,7 @@ pipeline that feeds a SIEM.
 
 Tell an AI: "Write an osquery SQL query that detects a process running from a /tmp directory
 with an outbound network connection, mapped to ATT&CK T1059 (Command and Scripting
-Interpreter)." Check the table and column names against the [osquery schema](https://osquery.io/schema/5.11.0/),
+Interpreter)." Check the table and column names by running `osqueryi` with `.tables` and `.schema <table>` commands,
 run it in `osqueryi`, and confirm it produces the expected result. The model is good at the
 SQL shape; the schema validation and test run are yours.
 

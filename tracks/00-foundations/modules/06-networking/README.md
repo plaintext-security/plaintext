@@ -39,7 +39,7 @@ yourself is the durable skill; the model is a faster route to fluency, not a rep
 ## Learn (~3–4 hrs)
 
 **The model & the protocols**
-- [Cloudflare — What is the OSI model?](https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/) — the layered model in plain language; read it first.
+- [OSI Model Explained — Practical Networking](https://www.practicalnetworking.net/series/osi-model/) — the layered model in plain language with practical examples; understand each layer before diving deeper.
 - [PracticalNetworking — Packet Traveling](https://www.practicalnetworking.net/series/packet-traveling/packet-traveling/) — walks a packet hop by hop, TCP/IP and all; the clearest mental model out there.
 - [How DNS Works (comic)](https://howdns.works/) — the resolution chain you'll watch in the lab, told as a friendly comic.
 

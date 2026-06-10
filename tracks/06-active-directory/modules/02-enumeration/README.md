@@ -27,7 +27,7 @@ A practical note on **enum4linux-ng**: it wraps several enumeration techniques (
 
 **LDAP enumeration**
 - [ldapsearch man page + tutorial (LDAP.com)](https://ldap.com/ldap-tools/) — understand the filter syntax before you run anything. The most important filter for AD: `(objectClass=user)`, `(objectClass=group)`, `(servicePrincipalName=*)`.
-- [AD LDAP Enumeration (HackTricks)](https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap) — practical filter recipes for common enumeration goals; good reference during the lab.
+- [LDAP Filter Syntax — RFC 4515](https://tools.ietf.org/html/rfc4515) — the canonical LDAP filter specification; reference for crafting precise queries for users, groups, and SPNs.
 
 **BloodHound CE**
 - [BloodHound CE source and docs (GitHub)](https://github.com/SpecterOps/BloodHound) — the architecture, the Cypher query examples, and the edge types. Skim the `docs/` directory to understand what each edge means.

@@ -8,7 +8,7 @@
 **Windows VM required.** This lab needs a Windows host; Docker won't work here.
 
 **Option A — Windows eval VM (local):**
-1. Download the [Windows Server 2019/2022 eval ISO](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
+1. Download the [Windows Server eval ISO](https://www.microsoft.com/en-us/evalcenter/)
    (180-day free trial, no license key).
 2. Create a VM in VirtualBox or VMware. Snapshot the clean state before planting misconfigs.
 3. Run the lab seeder (as Administrator in PowerShell):

@@ -91,9 +91,9 @@ edge.
 5. [ ] **Verify denial.** In a private/incognito window (unauthenticated), browse to the hostname.
    You should see the Cloudflare Access login page, not the nginx page. Also confirm: the nginx
    container on port 8090 is reachable locally (`curl http://localhost:8090/`) but the same
-   content is not reachable from the public internet on that port (try from a different network or
-   use a service like [https://check.host](https://check.host) to verify port 8090 is closed
-   externally). The application is only accessible via the tunnel.
+   content is not reachable from the public internet on that port (try directly from a different
+   network with `nc -v <your-ip> 8090`, or use `netstat -an | grep 8090` to verify the port is
+   only listening on localhost). The application is only accessible via the tunnel.
 
 6. [ ] **Inspect the Access policy JSON.** In the Zero Trust dashboard, the Access application
    has an export option (or review `data/access-policy-example.json` for a representative

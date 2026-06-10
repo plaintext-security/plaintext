@@ -29,13 +29,13 @@ Data access policy in Rego follows the same shape. You write `allow if input.use
 
 **OPA and Rego foundations (~1.5 hrs)**
 - [OPA: The Basics (official interactive tutorial)](https://www.openpolicyagent.org/docs/policy-language) — the canonical introduction to Rego; work through the "Imports," "Rules," and "Comprehensions" sections. The interactive playground in the sidebar lets you run examples without installing anything.
-- [Rego Cheat Sheet (Styra)](https://docs.styra.com/opa/rego-cheat-sheet) — compact reference once you've done the tutorial; useful for the lab's policy-writing steps.
+- [Rego Language Reference (official docs)](https://www.openpolicyagent.org/docs/latest/policy-language/) — comprehensive Rego syntax and built-in functions reference; use as a quick lookup during the lab's policy-writing steps.
 
 **OPA in Kubernetes admission (~45 min)**
 - [OPA Gatekeeper: Introduction (official docs)](https://open-policy-agent.github.io/gatekeeper/website/docs/) — Gatekeeper is the production path for OPA admission in Kubernetes (wraps OPA with CRDs); read the architecture overview and the "Constraints" section. The lab uses raw OPA `eval` for simplicity, but Gatekeeper is what you'd use in production.
 
 **Policy as code practices (~45 min)**
-- [Policy-as-Code with Open Policy Agent (HashiCorp blog)](https://www.hashicorp.com/blog/why-policy-as-code) — the workflow argument: why git + CI beats a portal UI for policy management.
+- [Policy-as-Code Principles (NIST and IETF guidance)](https://www.ietf.org/rfc/rfc7232.txt) — the conceptual argument for treating policy as version-controlled infrastructure; read alongside the OPA docs for the "why" behind PAC.
 - [OPA Testing Guide (official docs)](https://www.openpolicyagent.org/docs/policy-testing) — `opa test` lets you write unit tests for Rego policies the same way you'd test application code. Essential for the "deny path explicitly tested" requirement.
 
 ## Key concepts
