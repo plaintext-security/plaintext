@@ -132,8 +132,8 @@ AI drafts the `aws cli` commands and the jq filters. You verify:
 # Starter scaffold
 ENDPOINT="${ENDPOINT_URL:-}"
 REGION="${AWS_DEFAULT_REGION:-us-east-1}"
-# TODO: list functions; for each, get role, check policies, check env vars, check resource policy
-# TODO: output Markdown table
+# YOU: list functions; for each, get role, check policies, check env vars, check resource policy
+# YOU: output Markdown table
 ```
 
 ## AI acceleration

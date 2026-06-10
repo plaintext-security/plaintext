@@ -112,9 +112,9 @@ AI drafts the loops, the jq filters, and the exit-code logic. You verify:
 # Starter scaffold
 TARGET="${1:-terraform/}"
 FAIL=0
-# TODO: run checkov, tfsec, trivy; capture exit codes
-# TODO: merge summaries into scan-report.json
-# TODO: exit $FAIL
+# YOU: run checkov, tfsec, trivy; capture exit codes
+# YOU: merge summaries into scan-report.json
+# YOU: exit $FAIL
 ```
 
 ## AI acceleration

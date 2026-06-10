@@ -72,6 +72,7 @@ extra:
 
 nav:
   - Home: index.md
+  - Start Here: start-here.md
   - Foundations:
       - Overview: 00-foundations/README.md
       - "01 · Security First Principles":
@@ -572,3 +573,4 @@ nav:
       - "10 · Attacking AI Systems":
           - Concept: 12-ai-augmented-ops/modules/10-attacking-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/10-attacking-ai/lab.md
+  - Glossary: glossary.md
