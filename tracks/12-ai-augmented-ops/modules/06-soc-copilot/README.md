@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **AI-Augmented Security Operations** — *the copilot combines everything: institutional memory from RAG, live data from MCP tools, and reasoning from the local model.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Modules 04 and 05 built the two halves of a useful AI assistant: a knowledge base that can be

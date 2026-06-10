@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **AI-Augmented Security Operations** — *red-teaming AI is the same discipline as red-teaming anything: systematic coverage, documented findings, and a repeatable test suite.*
+
+<!-- module-meta -->
+**Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~3.5–5.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Module 09 taught you to attack specific, known vulnerabilities in your copilot. This module

@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *a timeline is the one artifact that turns a pile of evidence into a story.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Forensic artifacts are evidence, but they don't become a case until they're correlated. The Security event log, the browser history, the filesystem MAC times, the prefetch timestamps, and the memory acquisition time all record pieces of the same incident in different timezones, different timestamp formats, and different levels of granularity. A super-timeline stitches them together into a single, time-sorted view where every event from every source appears in order. It is the primary analytical tool for answering "what happened, in what order, and how long did it take?" — and it's often the evidence that turns a hypothesis into a finding.

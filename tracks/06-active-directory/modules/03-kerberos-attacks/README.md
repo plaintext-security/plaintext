@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Active Directory & Windows Security** — *Kerberos was designed for a world where everyone on the network is trusted; Active Directory inherited that assumption and never fully escaped it.*
+
+<!-- module-meta -->
+**Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 

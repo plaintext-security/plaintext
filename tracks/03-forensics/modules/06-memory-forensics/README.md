@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *RAM is the one place an attacker cannot clean up and leave — everything running exists in memory.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Advanced attackers go to great lengths to avoid touching disk: fileless malware runs entirely in memory, injected shellcode lives inside legitimate processes, encryption keys are decrypted at runtime and never written to a file. A traditional disk investigation sees none of this. Memory forensics is the technique that reveals what is actually running — processes, their injected payloads, their network connections, the decryption keys in use — from a single memory capture. For a sophisticated intrusion, memory is often the *only* place the full picture exists.

@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Cloud & Container Security** — *containers are not a security boundary; understand where the walls are and how they break.*
+
+<!-- module-meta -->
+**Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 The phrase "it's just a container" is one of the most dangerous assumptions in cloud security. A developer who deploys `--privileged` because it "fixed the permission error" has handed an attacker a root shell on the node — one pivot away from every other pod on the host, the instance metadata service, and the cloud credential chain. CVE-2019-5736 (runc overwrite), CVE-2020-15257 (Containerd abstract Unix socket), and CVE-2021-30465 (runc symlink race) are real escapes from real container runtimes, each exploited in the wild. Runtime security tooling like Falco exists precisely because scanning and policy can't catch what code does at runtime — only syscall visibility can.

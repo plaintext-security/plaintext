@@ -20,3 +20,57 @@
 .md-typeset code {
   color: #8affc8;
 }
+
+/* Per-module metadata strip (difficulty · time · prerequisites) rendered
+   just under the module hook line. Reads as a quiet, scannable bar. */
+.md-typeset p.module-meta {
+  margin: 0.6rem 0 1rem;
+  padding: 0.5rem 0.8rem;
+  border-left: 0.2rem solid #00ff88;
+  background: rgba(0, 255, 136, 0.06);
+  border-radius: 0.1rem;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+/* Client-side progress tracking: a checkbox the local-progress.js script
+   injects at the top of every module page, plus the per-track progress pill. */
+.module-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0.55rem 0.8rem;
+  border: 0.05rem solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  font-size: 0.72rem;
+}
+
+.module-progress input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: #00ff88;
+  cursor: pointer;
+  margin: 0;
+}
+
+.module-progress label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.module-progress.is-done {
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.08);
+}
+
+.module-progress .module-progress__reset {
+  margin-left: auto;
+  font-size: 0.66rem;
+  background: none;
+  border: none;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}

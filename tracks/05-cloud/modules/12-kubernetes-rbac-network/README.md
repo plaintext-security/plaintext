@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Cloud & Container Security** — *in Kubernetes, the IAM is the cluster; getting RBAC wrong is a blast-radius problem, not an account problem.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 When Shopify, Tesla, and Capital One disclosed container/Kubernetes misconfigurations, the common thread was not a zero-day — it was `cluster-admin` ServiceAccounts accessible to workloads that should have had no API access at all. A pod that can call the Kubernetes API with broad permissions can list secrets, create privileged pods, modify RBAC, and lateral-move to cloud credentials via the instance metadata service. CIS Kubernetes Benchmark controls for RBAC are consistently among the highest-failure controls in enterprise audits. Meridian Financial's EKS migration revealed that their CI/CD system's ServiceAccount had `cluster-admin` — meaning a compromised CI pipeline could rewrite any workload in the cluster.

@@ -4,6 +4,10 @@
 
 **Offensive Security** — *the attacker's favourite tool is already installed, signed, and trusted on every Windows box.*
 
+<!-- module-meta -->
+**Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
+
 ## Why this matters
 PowerShell is the single most-abused execution vector on Windows — signed by Microsoft, present
 everywhere, and able to download and run code entirely in memory. Operators reach for it constantly:

@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *the only shot you get at the original evidence is the first one — take it cleanly.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Acquisition is the most time-sensitive and least reversible step in any forensic investigation. If you image a disk sector-perfectly with a verified hash, every subsequent analysis phase can work from that image indefinitely. If you skip the write block, run the wrong tool, or copy only the visible filesystem, you may destroy the very data your investigation depends on — and you can never go back to the original. Memory acquisition is even more time-critical: the moment a machine reboots or the user kills a process, that volatile state is gone. This module teaches you to capture evidence cleanly under pressure.

@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Cloud & Container Security** — *policy-as-code: the control you apply before a workload starts is worth ten detections after it does.*
+
+<!-- module-meta -->
+**Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Detection without prevention is surveillance. Module 11 showed that Falco can detect a privileged container escape *after it happens*; module 12 showed that kube-bench finds RBAC misconfigurations *after they're deployed*. The gap is admission: the moment a pod spec is submitted to the API server, before any container starts, is the last cheap moment to enforce policy. Kyverno, Open Policy Agent/Gatekeeper, and the built-in Pod Security Admission controller are the tools that close this gap — they evaluate policy against the manifest itself and return an allow or deny before the scheduler ever sees the pod. Financial services teams facing PCI DSS and SOC 2 Type II use admission policies to enforce that no production workload can start with `privileged: true`, no root containers, and no images from unscanned registries — centrally, without relying on every developer to remember.

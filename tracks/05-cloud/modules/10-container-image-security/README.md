@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Cloud & Container Security** — *the image is your artifact: if you ship a vulnerable image, you ship a vulnerable workload.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Container supply-chain attacks are no longer theoretical. The 2020 SolarWinds compromise made the pipeline itself the attack surface; the 2021 CodeCov supply-chain breach showed that a build script you curl-pipe is an unsigned trust extension. In Kubernetes clusters, a single vulnerable base image can be the foothold that lets an attacker move from one pod to the entire node. Meridian Financial's security team discovered, during a routine audit, that three production images were running a base OS with a critical CVE patched six months earlier — no one had rebuilt the images since the initial push.
