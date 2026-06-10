@@ -32,18 +32,18 @@ Status: ✅ done · 🟡 partial · ⬜ not started · ➖ n/a
 | T4 | ✅ | Reword learner `# TODO:` scaffolds → `# YOU:` | P0 | plaintext | Haiku 4.5 | XS | — |
 | T5 | ✅ | Lab CI + cross-repo consistency check (incl. opt-in `.ci-demo` re-scope) | P0 | plaintext-labs | Opus 4.8 | L | — |
 | T6 | ✅ | `make grade` grading system + completion receipts | P0 | plaintext-labs | Opus 4.8 | XL | T5 |
-| T7 | 🟡 | Track certificate + public verification page (verify_receipt.py done; certificate + site page TODO) | P1 | both | Opus 4.8 | L | T6 |
-| T8 | ⬜ | Phase structure across tracks 03–12 | P1 | plaintext | Opus 4.8 | L | — |
-| T9 | ⬜ | Capstone rubrics (13) + lab capstone scaffolds | P1 | both | Sonnet 4.6 | M | — |
-| T10 | ⬜ | Even out thin bridge prose + quality gate | P1 | plaintext | Opus 4.8 | M–L | — |
-| T11 | 🟡 | Start-Here/roadmap + glossary + progress tracking (Start-Here + glossary done; difficulty headers + progress tracking TODO) | P1 | plaintext | Sonnet 4.6 | M | — |
-| T12 | ⬜ | MCP server over the curriculum (AI tutor) | P2 | plaintext-labs | Sonnet 4.6 | M | — |
+| T7 | ✅ | Track certificate + public verification page | P1 | both | Opus 4.8 | L | T6 |
+| T8 | ✅ | Phase structure across tracks 03–12 | P1 | plaintext | Opus 4.8 | L | — |
+| T9 | ✅ | Capstone rubrics (13) + lab capstone scaffolds | P1 | both | Sonnet 4.6 | M | — |
+| T10 | ✅ | Even out thin bridge prose + quality gate | P1 | plaintext | Opus 4.8 | M–L | — |
+| T11 | ✅ | Start-Here/roadmap + glossary + per-module headers + progress tracking | P1 | plaintext | Sonnet 4.6 | M | — |
+| T12 | ✅ | MCP server over the curriculum (AI tutor) | P2 | plaintext-labs | Sonnet 4.6 | M | — |
 | T13 | ✅ | AI rubric-grader for design/paper labs | P2 | plaintext-labs | Sonnet 4.6 | M | T6 |
-| T14 | 🟡 | Link-check CI + per-module "last reviewed" (link-check CI done; "last reviewed" field TODO) | P2 | plaintext | Sonnet 4.6 | S–M | T3 |
-| T15 | ⬜ | Living CISA-KEV lab | P2 | both | Sonnet 4.6 | M | T5 |
+| T14 | ✅ | Link-check CI + per-module "last reviewed" | P2 | plaintext | Sonnet 4.6 | S–M | T3 |
+| T15 | ✅ | Living CISA-KEV lab (defensive module 17) | P2 | both | Sonnet 4.6 | M | T5 |
 | T16 | ➖ | Accessibility: alt-text audit (n/a — curriculum has no images) | P2 | plaintext | Sonnet 4.6 | S–M | — |
-| T17 | ⬜ | Community: showcase + office hours + instructor guide | P2 | plaintext | Sonnet 4.6 | M | — |
-| T18 | 🟡 | Triage & fix labs failing the full CI matrix; opt each into `.ci-demo` (AD build fix + opt-in re-scope done; full census triage TODO) | P1 | plaintext-labs | Sonnet 4.6 (Opus for design calls) | L | T5 |
+| T17 | ✅ | Community: showcase + office hours + instructor guide | P2 | plaintext | Sonnet 4.6 | M | — |
+| T18 | ✅ | Triage & fix labs failing the full CI matrix; opt each into `.ci-demo` | P1 | plaintext-labs | Sonnet 4.6 (Opus for design calls) | L | T5 |
 
 ---
 
@@ -220,8 +220,6 @@ one-line reason**; the full matrix census has been triaged; no lab is red-by-acc
 ---
 
 *Generated from a content+structure review on 2026-06-10. Re-run the assessment after P0/P1 land to re-prioritise P2.*
-*Update 2026-06-10 — all merged to `main`:*
-- *Fully done (✅): T1, T2, T3 (desktop / PRs #14–15); T4, T11-core, T14-CI (plaintext PR #16); T5, T6, T13 (plaintext-labs PR #1); T5 opt-in re-scope + AD build fix (plaintext-labs PR #2).*
-- *Partial (🟡): T7 (receipt verifier done; certificate + public page left); T11 (Start-Here + glossary done; difficulty headers + progress tracking left); T14 ("last reviewed" field left); T18 (AD fix + opt-in done; full census triage left).*
-- *N/A (➖): T16 (no images in the curriculum).*
-- *Not started (⬜): T8, T9, T10, T12, T15, T17.*
+*Update 2026-06-10 — COMPLETE. Every task T1–T18 is merged to `main` in both repos (T16 was n/a — no images). Landed across: plaintext PRs #14–24 and plaintext-labs PRs #1–7, plus the module-17 polish. All `mkdocs build --strict` green; the opt-in Labs CI (`.ci-demo`) is green on its 4 enforced reference labs.*
+
+*Ongoing (not a task — a maintenance loop): Labs CI coverage grows as more labs are verified green and opted in (T18 fixed the `discover` bug, `automation/06`, and 9 broken `make demo` recipes; those 9 are left unmarked until the nightly full matrix confirms them green). New tasks discovered during the work should be appended below.*
