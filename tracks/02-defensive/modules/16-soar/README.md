@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *automate the boring 80% of response — with a human on the trigger.*
 
 <!-- module-meta -->

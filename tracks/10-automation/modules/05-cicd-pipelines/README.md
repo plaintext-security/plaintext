@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *the security check that runs before the merge is the one that can't be bypassed.*
 
 <!-- module-meta -->

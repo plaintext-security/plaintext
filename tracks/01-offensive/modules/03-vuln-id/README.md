@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *from "this host runs X 1.2.3" to "here's the known way in, and how urgent it is."*
 
 <!-- module-meta -->

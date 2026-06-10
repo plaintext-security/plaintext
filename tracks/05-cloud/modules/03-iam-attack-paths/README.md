@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *privilege escalation in the cloud isn't a vulnerability — it's a policy composition that an attacker walks like a graph.*
 
 <!-- module-meta -->

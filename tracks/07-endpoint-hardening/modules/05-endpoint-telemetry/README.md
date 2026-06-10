@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 07 — Endpoint & Host Hardening]** — *Hardening reduces the attack surface; telemetry tells you when an attacker found the part you missed.*
 
 <!-- module-meta -->

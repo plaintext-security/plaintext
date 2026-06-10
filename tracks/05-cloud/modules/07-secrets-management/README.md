@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the credential you don't know is in git is the one that gets you breached.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *RAM is the one place an attacker cannot clean up and leave — everything running exists in memory.*
 
 <!-- module-meta -->

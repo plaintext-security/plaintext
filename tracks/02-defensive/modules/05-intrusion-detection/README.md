@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *signatures and anomalies on the wire — catching the known-bad as it happens.*
 
 <!-- module-meta -->

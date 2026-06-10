@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the attacker's footprint is in the API log; the defender's job is to find it before it becomes news.*
 
 <!-- module-meta -->

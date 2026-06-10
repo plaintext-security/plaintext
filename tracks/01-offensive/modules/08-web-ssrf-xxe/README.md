@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *the server-side classes that turn one web bug into cloud compromise.*
 
 <!-- module-meta -->

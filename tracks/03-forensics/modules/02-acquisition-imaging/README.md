@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *the only shot you get at the original evidence is the first one — take it cleanly.*
 
 <!-- module-meta -->

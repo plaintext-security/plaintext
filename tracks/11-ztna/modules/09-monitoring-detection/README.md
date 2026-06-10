@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *"trust nothing" doesn't mean log nothing — it means log everything, with identity attached.*
 
 <!-- module-meta -->

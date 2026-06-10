@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *SASE is Zero Trust principles delivered as a managed global edge, not a data-centre appliance.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *a detection that isn't tested isn't a detection — it's a guess with a YAML file.*
 
 <!-- module-meta -->

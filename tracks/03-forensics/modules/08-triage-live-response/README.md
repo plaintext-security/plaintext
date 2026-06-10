@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *get the right data off the right hosts in minutes, before the attacker cleans up or the machine reboots.*
 
 <!-- module-meta -->

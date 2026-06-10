@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *almost every web attack and defense is just manipulating these fields.*
 
 <!-- module-meta -->

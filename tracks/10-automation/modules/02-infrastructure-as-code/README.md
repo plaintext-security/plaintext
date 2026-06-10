@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *if you clicked it into existence, you can't prove it's correct and you can't reproduce it.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *you can't defend what you haven't attacked: simulate adversary techniques safely, in your own environment.*
 
 <!-- module-meta -->

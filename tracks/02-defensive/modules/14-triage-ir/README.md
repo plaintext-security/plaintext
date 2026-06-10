@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *an alert is a question; triage and IR are how you answer it without panic.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *when the perimeter dissolves, identity is the only boundary left.*
 
 <!-- module-meta -->

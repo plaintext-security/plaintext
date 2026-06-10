@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *identity tells you who is asking; device posture tells you whether to believe the device they're asking from.*
 
 <!-- module-meta -->

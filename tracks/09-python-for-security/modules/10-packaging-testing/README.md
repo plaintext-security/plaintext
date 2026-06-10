@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *the code an AI generates is a first draft; the tests you write turn it into software.*
 
 <!-- module-meta -->

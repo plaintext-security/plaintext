@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *the skill is not running the tools — it is reading the graph and writing the narrative.*
 
 <!-- module-meta -->

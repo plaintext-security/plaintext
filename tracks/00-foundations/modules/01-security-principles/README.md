@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *the vocabulary and mental models the whole field is built on.*
 
 <!-- module-meta -->

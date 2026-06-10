@@ -1,0 +1,114 @@
+name: Last-reviewed check
+
+# Flags module READMEs whose "*Last reviewed: YYYY-MM*" date is older than STALE_MONTHS.
+# Report only — it does NOT gate the Pages deploy (stale prose is a backlog item, not a publish blocker);
+# the weekly run opens/refreshes a tracking issue when modules drift out of review.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"        # Mondays 07:00 UTC (alongside the link check)
+  pull_request:
+    paths: ["tracks/**/README.md"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write                # weekly run files a tracking issue when modules are stale
+
+env:
+  STALE_MONTHS: "12"           # flag modules not reviewed within this many months
+
+jobs:
+  last-reviewed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan module READMEs for stale / missing review dates
+        id: scan
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, re, glob, sys
+          from datetime import date
+
+          stale_months = int(os.environ.get("STALE_MONTHS", "12"))
+          today = date.today()
+          today_idx = today.year * 12 + (today.month - 1)
+
+          field_re = re.compile(r"^\*Last reviewed:\s*(\d{4})-(\d{2})\s*\*\s*$")
+
+          # Module READMEs only: tracks/<track>/modules/<module>/README.md
+          paths = sorted(
+              p for p in glob.glob("tracks/**/README.md", recursive=True)
+              if "/modules/" in p
+          )
+
+          stale, missing = [], []
+          for p in paths:
+              found = None
+              with open(p, encoding="utf-8") as fh:
+                  for line in fh:
+                      m = field_re.match(line.strip())
+                      if m:
+                          found = (int(m.group(1)), int(m.group(2)))
+                          break
+              if found is None:
+                  missing.append(p)
+                  continue
+              y, mo = found
+              age = today_idx - (y * 12 + (mo - 1))
+              if age > stale_months:
+                  stale.append((p, f"{y:04d}-{mo:02d}", age))
+
+          lines = []
+          lines.append(f"# Last-reviewed report ({today.isoformat()})")
+          lines.append("")
+          lines.append(f"Threshold: modules not reviewed within **{stale_months} months** are flagged.")
+          lines.append("")
+          lines.append(f"Scanned **{len(paths)}** module READMEs.")
+          lines.append("")
+          if missing:
+              lines.append(f"## Missing `*Last reviewed: YYYY-MM*` field ({len(missing)})")
+              lines.append("")
+              for p in missing:
+                  lines.append(f"- `{p}`")
+              lines.append("")
+          if stale:
+              lines.append(f"## Stale — older than {stale_months} months ({len(stale)})")
+              lines.append("")
+              for p, when, age in stale:
+                  lines.append(f"- `{p}` — last reviewed {when} ({age} months ago)")
+              lines.append("")
+          if not missing and not stale:
+              lines.append("All module READMEs are within the review window. Nothing to flag.")
+              lines.append("")
+
+          report = "\n".join(lines)
+          print(report)
+
+          with open("last-reviewed-report.md", "w", encoding="utf-8") as fh:
+              fh.write(report)
+
+          summary = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary:
+              with open(summary, "a", encoding="utf-8") as fh:
+                  fh.write(report + "\n")
+
+          flagged = len(missing) + len(stale)
+          gh_out = os.environ.get("GITHUB_OUTPUT")
+          if gh_out:
+              with open(gh_out, "a", encoding="utf-8") as fh:
+                  fh.write(f"flagged={flagged}\n")
+
+          # Report only: never fail the job, so the deploy is never blocked.
+          sys.exit(0)
+          PY
+
+      - name: Open/refresh tracking issue (scheduled only)
+        if: github.event_name == 'schedule' && steps.scan.outputs.flagged != '0'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "Stale module review dates found by the weekly last-reviewed check"
+          content-filepath: ./last-reviewed-report.md
+          labels: review-stale

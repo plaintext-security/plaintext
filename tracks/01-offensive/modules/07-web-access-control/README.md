@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *broken access control is OWASP's #1 risk for a reason.*
 
 <!-- module-meta -->

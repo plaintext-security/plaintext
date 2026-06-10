@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *where your on-prem skills meet the cloud — the bridge to Track 05.*
 
 <!-- module-meta -->

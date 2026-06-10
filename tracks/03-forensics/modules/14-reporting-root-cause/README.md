@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *the investigation is only as valuable as the report — findings that can't survive scrutiny, or can't be read by a non-technical audience, don't drive decisions.*
 
 <!-- module-meta -->

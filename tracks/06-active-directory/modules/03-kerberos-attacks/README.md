@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *Kerberos was designed for a world where everyone on the network is trusted; Active Directory inherited that assumption and never fully escaped it.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *logs are the ground truth; parsing them is the first craft.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the cloud network looks like what you know, until it doesn't — and the differences are where attackers hide.*
 
 <!-- module-meta -->

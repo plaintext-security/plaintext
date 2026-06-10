@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *the misconfiguration that never deploys is the cheapest one to fix.*
 
 <!-- module-meta -->

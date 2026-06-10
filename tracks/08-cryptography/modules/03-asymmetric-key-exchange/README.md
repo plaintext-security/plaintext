@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 08 — Cryptography, PKI & Secrets]** — *Public-key cryptography solves the key distribution problem; Diffie-Hellman turns it into something you can do over an untrusted channel.*
 
 <!-- module-meta -->

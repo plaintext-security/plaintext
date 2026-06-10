@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *MCP is the USB port for AI tools: write the tool once, and any compliant client can call it.*
 
 <!-- module-meta -->

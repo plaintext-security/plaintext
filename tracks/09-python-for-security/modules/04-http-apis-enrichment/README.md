@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *every IOC you can't explain is a ticket you can't close; APIs give you the context.*
 
 <!-- module-meta -->

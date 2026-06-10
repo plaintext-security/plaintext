@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *the copilot combines everything: institutional memory from RAG, live data from MCP tools, and reasoning from the local model.*
 
 <!-- module-meta -->

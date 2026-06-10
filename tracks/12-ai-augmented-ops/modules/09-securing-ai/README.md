@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *the copilot you built in Module 06 is now the attack surface; understand it before an adversary does.*
 
 <!-- module-meta -->

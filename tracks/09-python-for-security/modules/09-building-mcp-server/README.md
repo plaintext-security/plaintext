@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *if you can describe a security operation as a function, you can hand it to an LLM.*
 
 <!-- module-meta -->

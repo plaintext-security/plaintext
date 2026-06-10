@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *a password hash is not a password, but in Windows it is often just as good.*
 
 <!-- module-meta -->

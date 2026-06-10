@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *why a program crashes is often why it gets exploited.*
 
 <!-- module-meta -->

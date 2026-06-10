@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *four patterns, one principle: match the architecture to the threat model, not to the vendor's marketing.*
 
 <!-- module-meta -->

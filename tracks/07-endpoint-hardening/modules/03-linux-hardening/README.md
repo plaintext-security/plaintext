@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 07 — Endpoint & Host Hardening]** — *Lynis and OpenSCAP scan the host and tell you exactly what to fix — the discipline is acting on the output.*
 
 <!-- module-meta -->

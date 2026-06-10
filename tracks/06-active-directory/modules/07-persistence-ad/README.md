@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *losing domain admin access once is a setback; being kicked out after a golden ticket is nearly impossible without a full domain rebuild.*
 
 <!-- module-meta -->

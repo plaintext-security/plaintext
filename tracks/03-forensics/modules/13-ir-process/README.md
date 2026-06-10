@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *the investigation without a process is just a fire drill — the process is what turns technical findings into organisational decisions.*
 
 <!-- module-meta -->

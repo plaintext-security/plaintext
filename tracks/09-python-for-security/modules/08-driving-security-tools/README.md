@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *the best tool is the one you can script; scripting it means you can scale it.*
 
 <!-- module-meta -->

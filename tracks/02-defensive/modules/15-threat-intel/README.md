@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *context turns an indicator into a decision; CTI is how you get it.*
 
 <!-- module-meta -->

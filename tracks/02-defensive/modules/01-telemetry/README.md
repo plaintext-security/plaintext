@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *you can't detect what you don't collect; this is the data plane everything else runs on.*
 
 <!-- module-meta -->

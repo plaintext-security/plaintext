@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *the prompt is the program; write it like one.*
 
 <!-- module-meta -->

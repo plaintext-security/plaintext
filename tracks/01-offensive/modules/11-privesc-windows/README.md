@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *from a user shell to SYSTEM, usually via misconfiguration.*
 
 <!-- module-meta -->

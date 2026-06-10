@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *the quietest attacks bring no tools — they use what's already there.*
 
 <!-- module-meta -->

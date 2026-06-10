@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *build a toolchain you'd trust with production data, starting from the first line.*
 
 <!-- module-meta -->

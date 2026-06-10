@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *what a real operator does after the shell: persist, collect, and control — quietly.*
 
 <!-- module-meta -->

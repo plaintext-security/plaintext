@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *the most dangerous attack paths in AD are not exploits — they are legitimate permissions given to the wrong principal.*
 
 <!-- module-meta -->

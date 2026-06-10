@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *judgment before tools: what are we protecting, from whom, and where can it go wrong?*
 
 <!-- module-meta -->

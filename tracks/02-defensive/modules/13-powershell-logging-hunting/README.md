@@ -2,6 +2,7 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
 **Defensive Operations** — *the most-abused tool on Windows is also the most observable — if you turned the logging on.*
 
 <!-- module-meta -->

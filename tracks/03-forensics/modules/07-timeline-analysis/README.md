@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *a timeline is the one artifact that turns a pile of evidence into a story.*
 
 <!-- module-meta -->

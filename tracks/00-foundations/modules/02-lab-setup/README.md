@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *you need somewhere safe to break things before you break anything for real.*
 
 <!-- module-meta -->

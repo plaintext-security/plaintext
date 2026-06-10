@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *in the cloud, identity is the perimeter — and most of the misconfiguration lives here.*
 
 <!-- module-meta -->

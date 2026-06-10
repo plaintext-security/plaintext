@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *recognise the attacker's attempts to erase their tracks — and understand why those attempts rarely succeed completely.*
 
 <!-- module-meta -->

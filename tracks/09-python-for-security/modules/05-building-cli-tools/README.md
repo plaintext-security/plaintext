@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *a tool that takes arguments and has a `--help` is a tool someone else can use.*
 
 <!-- module-meta -->

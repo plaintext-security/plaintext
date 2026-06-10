@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 07 — Endpoint & Host Hardening]** — *Hardening that lives in a runbook dies in a ticket queue; hardening expressed as code survives team changes, scales to thousands of hosts, and can be tested.*
 
 <!-- module-meta -->
