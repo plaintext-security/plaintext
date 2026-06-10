@@ -76,6 +76,9 @@ extra:
 nav:
   - Home: index.md
   - Start Here: start-here.md
+  - Showcase: showcase.md
+  - Office Hours: office-hours.md
+  - Instructor & Cohort Guide: instructor-guide.md
   - Foundations:
       - Overview: 00-foundations/README.md
       - "01 · Security First Principles":
