@@ -44,6 +44,12 @@ Status: ✅ done · 🟡 partial · ⬜ not started · ➖ n/a
 | T16 | ➖ | Accessibility: alt-text audit (n/a — curriculum has no images) | P2 | plaintext | Sonnet 4.6 | S–M | — |
 | T17 | ✅ | Community: showcase + office hours + instructor guide | P2 | plaintext | Sonnet 4.6 | M | — |
 | T18 | ✅ | Triage & fix labs failing the full CI matrix; opt each into `.ci-demo` | P1 | plaintext-labs | Sonnet 4.6 (Opus for design calls) | L | T5 |
+| T19 | 🟡 | PR build gate: `mkdocs build --strict` on pull_request (today it's push-to-main only) | P1 | plaintext | Sonnet 4.6 | S | — |
+| T20 | 🟡 | pytest + CI for the grading/credential scripts (grade/verify/certificate/consistency) | P1 | plaintext-labs | Sonnet 4.6 | M | T6 |
+| T21 | 🟡 | `grade.yaml` schema-lint in CI | P2 | plaintext-labs | Sonnet 4.6 | S | T6 |
+| T22 | 🟡 | Document grading/`.ci-demo`/credentials in CLAUDE.md + CONTRIBUTING.md + a learner page | P1 | plaintext | Sonnet 4.6 | M | — |
+
+*(T19–T22 added 2026-06-10 from a testing/CI + docs review — the grading system shipped but was untested in CI and undocumented in the charter, and PRs had no build gate.)*
 
 ---
 
