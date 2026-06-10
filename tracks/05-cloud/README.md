@@ -54,10 +54,11 @@ Complete Track 00 — Foundations first.
 > resources when done.
 
 ## Capstone
-Find a privilege-escalation path in a deliberately vulnerable cloud account (CloudGoat or
-flaws.cloud), explain it, then close it as code — Terraform gated by a scanner in CI — and
-detect the attack from cloud logs. **Deliverable:** the attack path, the fix-as-code, and
-the detection.
+The capstone is the Phase 3 project — it integrates all three phases. Run the full cloud-attack loop
+against a deliberately vulnerable account: **simulate** a real attack (`stratus-red-team` / Pacu),
+**detect** it from cloud logs (a native detection *and* a Sigma rule), then **investigate and
+contain** it — and close the underlying path as Terraform gated by a scanner in CI (the IAM-and-posture
+work from Phases 1–2). **Deliverable:** the attack path, the fix-as-code, and the detection.
 
 The starter scaffold and acceptance checks live in
 [`plaintext-labs/cloud/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/cloud/capstone).
