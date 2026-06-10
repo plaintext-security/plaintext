@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *most of what you'll defend, attack, or investigate runs on Linux.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
+{ .module-meta }
 
 ## Why this matters
 Servers, containers, security tooling, and half an attacker's targets are Linux. The shell

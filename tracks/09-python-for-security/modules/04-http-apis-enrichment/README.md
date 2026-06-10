@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Python for Security** — *every IOC you can't explain is a ticket you can't close; APIs give you the context.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 A bare IP address tells you nothing. An IP address with its ASN, abuse-report count, country,

@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Security Automation** — *a security tool in a Dockerfile is a tool that runs the same way, everywhere, forever.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Security tooling has a dependency problem: `volatility3` needs Python 3.9, the IDS needs

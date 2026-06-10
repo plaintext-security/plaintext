@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Cloud & Container Security** — *the attacker's footprint is in the API log; the defender's job is to find it before it becomes news.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Cloud environments are comprehensively logged by default in ways on-premises infrastructure never

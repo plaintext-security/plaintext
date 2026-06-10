@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **[Track 08 — Cryptography, PKI & Secrets]** — *A hash is not a MAC, a MAC is not a password hash, and using the wrong one for the job is a common and serious mistake.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 

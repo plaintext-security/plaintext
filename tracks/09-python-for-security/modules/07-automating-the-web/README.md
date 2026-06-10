@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Python for Security** — *an unprotected endpoint is only hidden if nobody looks; a scraper looks.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Web scraping is a reconnaissance skill, a data-collection skill, and an automation skill in one.

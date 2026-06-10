@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **[Track 08 — Cryptography, PKI & Secrets]** — *Secrets that escaped into source control don't expire when you remove them from the latest commit — they live in every clone of the repository's history.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 

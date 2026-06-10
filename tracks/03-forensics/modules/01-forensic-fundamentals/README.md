@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *every conclusion you ever draw in this track stands or falls on what you do in the first five minutes.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Forensic work is downstream of trust: a timeline reconstruction, a root-cause verdict, a legal hold — all of it is only as reliable as the chain of custody that precedes it. Get the fundamentals wrong and every artifact you surface later is tainted. Courts have excluded forensic evidence because the examiner couldn't prove the image matched the original; IR reports have been challenged because the hash wasn't taken before first access. This module is the foundation everything else is built on, and it pays forward to every subsequent module in the track.

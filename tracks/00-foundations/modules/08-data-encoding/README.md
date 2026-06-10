@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *security data is a mess of formats; reading them is a daily skill.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
+{ .module-meta }
 
 ## Why this matters
 Indicators, payloads, tokens, and captured data show up base64'd, hex-encoded, URL-encoded,

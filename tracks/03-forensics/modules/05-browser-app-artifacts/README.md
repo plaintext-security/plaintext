@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *the browser is the most detailed diary of what a user actually did — and most people forget it exists.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Web browsers and desktop applications are the primary interface for most modern work — and most modern threats. A user who was phishing-targeted clicked something in a browser. An insider who exfiltrated data probably navigated to a cloud storage service or a webmail provider. A compromised machine is often first accessed via a malicious payload downloaded by a browser. Understanding what the browser recorded — and that it recorded far more than the visible history — is essential for reconstructing user activity during an incident.

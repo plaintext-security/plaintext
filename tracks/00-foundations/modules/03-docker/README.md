@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *every lab here is Docker-first; this is the literacy that assumes.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
+{ .module-meta }
 
 ## Why this matters
 Containers are how modern software ships — and how every lab here runs, because they're

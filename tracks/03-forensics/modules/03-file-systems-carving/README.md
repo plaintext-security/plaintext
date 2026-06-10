@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *deleted files don't disappear — they just become invisible to the OS, and visible to you.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 When a user deletes a file or an attacker wipes their traces, the operating system marks that space as available — but the data usually remains on disk until overwritten. File system forensics is the discipline of reading what's really on the media, not what the OS presents. It is where evidence goes after it's been "deleted" and where malware that never ran from a normal path often hides. Understanding how NTFS and ext4 actually allocate and reclaim space is what separates an investigator who can say "I found a deleted file" from one who can prove *when it was deleted, who deleted it, and what it contained*.

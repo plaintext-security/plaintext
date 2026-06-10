@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *stop doing by hand what a 20-line script does reliably.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
+{ .module-meta }
 
 ## Why this matters
 Security work is repetition: parsing logs, enriching indicators, calling APIs, reshaping

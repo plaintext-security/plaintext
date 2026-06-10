@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *the vocabulary and mental models the whole field is built on.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** None — start here
+{ .module-meta }
 
 ## Why this matters
 Before tools, before tracks, you need the shared language: what security is actually trying

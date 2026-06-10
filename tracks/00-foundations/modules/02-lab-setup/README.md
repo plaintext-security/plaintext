@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Foundations** — *you need somewhere safe to break things before you break anything for real.*
+
+<!-- module-meta -->
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
+{ .module-meta }
 
 ## Why this matters
 Every later lab — and all your own experimentation — needs an isolated, disposable,

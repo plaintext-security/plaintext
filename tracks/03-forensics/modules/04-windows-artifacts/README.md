@@ -2,8 +2,11 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
-
 **Digital Forensics & IR** — *Windows leaves a detailed record of everything that ran — if you know where to look.*
+
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
 
 ## Why this matters
 Windows is the dominant enterprise endpoint, and it is extraordinarily artifact-rich. Every program that runs leaves traces across event logs, the registry, prefetch files, the shellbag, and the timeline. An attacker who compromises a Windows host is operating in a recording studio: they may wipe the most obvious logs, but they can rarely erase all traces across all artifact sources simultaneously. The forensic investigator who knows all the sources — and which ones survive each anti-forensics technique — has a decisive advantage. This module maps the terrain.

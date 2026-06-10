@@ -4,6 +4,10 @@
 
 **Defensive Operations** — *the most-abused tool on Windows is also the most observable — if you turned the logging on.*
 
+<!-- module-meta -->
+**Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
+{ .module-meta }
+
 ## Why this matters
 PowerShell is the attacker's favourite Windows execution vector (Module 15 is the offensive side), and
 it is also one of the most *catchable* — but only if you enabled the right logging before the incident.
