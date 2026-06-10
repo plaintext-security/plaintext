@@ -50,6 +50,22 @@ Harden a Windows and a Linux host to CIS as code, score the before/after complia
 drift detection catches a deliberate misconfiguration, and show telemetry firing on a
 simulated attack. **Deliverable:** the config-as-code, the score delta, and the detection.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/endpoint-hardening/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/endpoint-hardening/capstone).
+
+### Capstone rubric
+
+Harden **both** a Windows and a Linux host, and prove the baseline holds *and* drift is caught.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Hardening coverage** | One OS, or partial baseline | Both Windows and Linux hardened to a CIS profile, expressed as code (Ansible/GPO/SCAP) | Profile tailored to a threat model — exceptions justified, not blind benchmark application |
+| **Compliance scoring** | No score, or score not reproducible | OpenSCAP/CIS-CAT score before and after, with the delta documented | Failing controls triaged (fix vs. accept-with-reason); score re-run from clean state |
+| **Drift detection** | None | A deliberate misconfiguration is introduced and the tooling flags it | Drift detection is automated/scheduled and reports *what* changed, not just *that* it did |
+| **Telemetry** | No telemetry, or fires on nothing | Endpoint telemetry catches a simulated attack the baseline didn't stop | Detection mapped to ATT&CK and tuned against benign noise |
+| **As-code & reproducibility** | Manual steps | A reader can re-apply the baseline from the committed code | One command re-hardens a fresh host and re-scores it; idempotent |
+
 ## AI & automation
 AI generates the hardening (Ansible, GPO, SCAP profiles) — and that's exactly where silent
 mistakes hide. The skill is reviewing generated configuration against the benchmark and

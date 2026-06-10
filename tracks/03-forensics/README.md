@@ -57,6 +57,22 @@ Take a training disk or memory image to a root-cause incident report: acquire an
 build a super-timeline, and reconstruct what happened — every claim tied to an artifact.
 **Deliverable:** the timeline and a report that would survive scrutiny.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/forensics/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/forensics/capstone).
+
+### Capstone rubric
+
+The bar is **defensibility**: every claim traces to an artifact, and integrity holds.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Evidence integrity** | No hashing, or hashes don't match; acquisition order unclear | Image hashed on acquisition and verified before analysis; working on a copy; chain of custody noted | Hashes recorded at every handoff; write-blocking/read-only demonstrated; order of volatility respected |
+| **Artifact recovery** | Surface artifacts only | Recovered and interpreted artifacts across at least two sources (disk + memory or + network) | Recovered deleted/carved data or pivoted from memory to disk to confirm a finding |
+| **Super-timeline** | Events listed, not correlated | A timeline correlating activity across sources, with the key events called out | Pivots on the timeline reconstruct the full sequence; gaps and anti-forensics noted |
+| **Root-cause verdict** | Conclusion not supported by artifacts | A defensible root cause; every claim cites the artifact behind it | Initial access → actions → impact established, with confidence levels and what's *not* proven stated |
+| **Reporting** | Notes, not a report | Clear narrative an investigator could follow and reproduce | Would survive scrutiny: methodology, tooling, hashes, and limitations all documented |
+
 ## AI & automation
 AI summarises timelines, correlates artifacts, and drafts the incident narrative far faster
 than you can by hand. Forensic soundness sets the limit: an AI summary is a *lead*, never

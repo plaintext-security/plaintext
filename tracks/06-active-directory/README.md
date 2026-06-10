@@ -52,6 +52,21 @@ Find an attack path from a low-privilege user to Domain Admin in a lab domain, w
 then close it: harden as code and write detections for each step you used. **Deliverable:**
 the attack path, the before/after posture score, and the detections.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/active-directory/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/active-directory/capstone).
+
+### Capstone rubric
+
+You must **walk the path, then close it and prove it's closed**. **Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Attack path** | One technique run in isolation | Low-priv → Domain Admin path walked, each hop (Kerberos/ACL/cred theft/lateral) validated in the lab | BloodHound path confirmed by hand, alternative paths noted, each step mapped to ATT&CK |
+| **Hardening as code** | Manual GPO clicks, not reproducible | Each abused step closed via reviewed config-as-code (GPO/PowerShell/Ansible) | Tiering/least-privilege applied; changes are idempotent and re-runnable |
+| **Posture measurement** | No before/after, claims only | PingCastle (or equivalent) score before and after, with the delta | Score delta tied to specific paths closed; residual risk acknowledged |
+| **Detections** | No detection for the steps used | A detection per attack step used, tested to fire on the lab activity | Honeytoken or behaviour-based detection beyond signatures; FP-tested |
+| **Write-up** | Screenshots without narrative | Clear before/after story a blue *and* red reader can follow | Reproducible: lab build, attack, fix, and detection all documented end to end |
+
 ## AI & automation
 AI summarises BloodHound paths and drafts detection logic, but the domain is unforgiving of
 hallucination — every path is validated in the lab, and generated hardening is reviewed

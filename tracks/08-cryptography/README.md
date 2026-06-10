@@ -48,6 +48,22 @@ Audit a small system's crypto posture: TLS configuration, certificate hygiene, s
 handling, and SPF/DKIM/DMARC — then fix each finding and re-test. **Deliverable:** the audit
 report with before/after evidence.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/cryptography/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/cryptography/capstone).
+
+### Capstone rubric
+
+Audit the **whole crypto posture**, fix each finding, and **re-test to prove the fix**.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **TLS configuration** | Ran `testssl.sh`, didn't interpret | Weak protocols/ciphers identified and explained, with the standard each violates | Re-tested after the fix; cites RFC 8446 / current NIST guidance for each decision |
+| **Certificate hygiene** | Checked expiry only | Chain, key strength, SAN, and revocation reviewed against RFC 5280 | Issuance/renewal automated (step-ca/ACME); short-lived certs or rotation demonstrated |
+| **Secrets handling** | Found a secret, no remediation | Leaked/poorly-stored secrets found and moved to proper storage (Vault/SOPS) | History scrubbed, rotation done, detection wired to prevent recurrence |
+| **Email auth** | Checked one of SPF/DKIM/DMARC | SPF, DKIM, and DMARC all assessed with the policy gaps named | Recommends an enforce-mode rollout path with the risk of each step |
+| **Audit report** | Findings without before/after | Each finding has evidence, a fix, and a re-test proving it | Severity-ranked, tool output attached, no "trust me" — every claim has a test behind it |
+
 ## AI & automation
 Crypto is where confident-but-wrong AI advice is dangerous — models suggest broken modes
 and deprecated ciphers. Use AI to explain and to draft audit tooling, then verify every

@@ -53,6 +53,22 @@ Cloudflare Tunnel + Access), enforce an access policy as code with OPA, and show
 logs that prove every request was authenticated and authorised. **Deliverable:** the working
 setup, the policy-as-code, and the audit trail.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/ztna/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/ztna/capstone).
+
+### Capstone rubric
+
+The service must be reachable with **no inbound ports**, gated by **policy as code**, with an
+**audit trail that proves it**. **Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **No inbound ports** | Service exposed on an open port | Service reachable only through an identity-aware proxy/tunnel; no inbound ports | Verified with an external port scan showing nothing open; egress-only tunnel proven |
+| **Identity-aware access** | Single shared credential | Per-request access tied to authenticated identity (OIDC/SSO) | Device posture or hardware-bound auth (FIDO2/passkey) factored into the decision |
+| **Policy as code** | Policy clicked in a UI | Access policy expressed as code (OPA/Rego) and version-controlled | Policy is tested — allow *and* deny cases asserted — and least-privilege by default |
+| **Audit trail** | No logs, or logs don't show identity | Access logs prove each request was authenticated and authorised | A denied-and-allowed pair shown end to end; logs feed a detection |
+| **Reproducibility** | Manual, undocumented setup | A reader can stand up the proxy and policy from the committed config | One command brings the whole gated service up; policy change is a reviewed diff |
+
 ## AI & automation
 ZTNA is policy-as-code, and AI will happily write the policy — including one that's quietly
 too permissive. The skill is reviewing generated authorization rules against least

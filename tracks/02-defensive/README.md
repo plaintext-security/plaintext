@@ -58,6 +58,22 @@ and catch it: ship the logs, write the detection-as-code mapped to ATT&CK, and p
 incident write-up from alert to root cause. **Deliverable:** the tested detections plus the
 investigation.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/defensive/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/defensive/capstone).
+
+### Capstone rubric
+
+You must **catch the attack you simulate** and follow it from alert to root cause.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Telemetry pipeline** | Logs from one source, not searchable | Host *and* network telemetry flowing into a searchable store | Pipeline reproducible as code; parsing normalised to a common schema |
+| **Detection-as-code** | A rule that only matches the demo data | A versioned detection (Sigma) mapped to ATT&CK that fires on the simulated attack | Validated against benign data for false positives; tuning rationale documented |
+| **The catch** | Attack ran but wasn't detected | The simulated attack (Atomic Red Team / replayed PCAP) is caught by your detection | Detection catches the *technique*, not the exact sample — proven on a variation |
+| **Investigation** | Alert noted, no follow-through | Triaged alert → root cause, with the supporting events cited | Full alert→containment narrative; what the attacker did and what they didn't |
+| **Write-up & automation** | Manual, undocumented | A repeatable process and an incident write-up | An automated enrich→ticket step closes the loop; the whole thing re-runs |
+
 ## AI & automation
 A small local model triages and classifies log lines cheaply at volume; a frontier model
 drafts an incident narrative or a Sigma rule. The skill is review: a generated detection

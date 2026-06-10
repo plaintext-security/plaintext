@@ -59,6 +59,22 @@ flaws.cloud), explain it, then close it as code — Terraform gated by a scanner
 detect the attack from cloud logs. **Deliverable:** the attack path, the fix-as-code, and
 the detection.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/cloud/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/cloud/capstone).
+
+### Capstone rubric
+
+The loop is **attack → fix-as-code → detect**, and the fix must be *gated*, not just written.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Attack path** | A single misconfig noted, no chain | An IAM/serverless privesc path walked end to end and explained | Multi-step chain mapped to ATT&CK for Cloud, with the trust relationship that enabled each hop |
+| **Fix as code** | Fixed in the console (click-ops) | The fix expressed as Terraform/IaC that closes the path | Least-privilege fix, parameterised and reusable, with the diff that proves the path is gone |
+| **CI gate** | No scanner, or scanner not enforced | A scanner (Checkov/tfsec/Trivy) runs in CI and *fails* the bad config | The gate is tuned (no noise), blocks merge on the specific finding, and passes on the fix |
+| **Detection** | No detection, or fires on nothing | A detection from cloud logs (CloudTrail/equivalent) that catches the attack | Detection validated against benign activity for false positives, mapped to the technique |
+| **Cost & teardown** | Left billable resources running | Resources torn down; no secrets in code | Whole thing rebuilds from `terraform apply` and tears down cleanly; budget-safe by design |
+
 ## AI & automation
 In the cloud the infrastructure *is* code, and increasingly that code is AI-written —
 exactly where misconfigurations hide (over-broad IAM, `0.0.0.0/0`, privileged containers).

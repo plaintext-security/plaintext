@@ -49,6 +49,22 @@ Build a small but genuinely useful security tool — for example, an IOC enrichm
 MCP server that exposes a tool to an LLM — with tests and a README. **Deliverable:** the
 tool, its tests, and a short write-up of what you had AI write and what you changed.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/python-for-security/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/python-for-security/capstone).
+
+### Capstone rubric
+
+It must be a **genuinely useful tool you own** — tested, documented, and reviewed line by line.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Usefulness** | A toy that re-implements a one-liner | Solves a real security task (enrichment, parsing, an MCP tool) you'd actually reach for | Fills a real gap; handles a workflow start to finish |
+| **Code quality** | Monolithic script; no error handling | Structured, handles malformed input, passes `ruff`; has a `--help` | Idiomatic, typed, packaged installable; clean separation of concerns |
+| **Tests** | None, or they only test the happy path | `pytest` covering core logic *and* edge/malformed input | Meaningful coverage incl. failure modes; tests run in CI |
+| **Robustness** | Crashes on bad input or API errors | Fails gracefully; rate-limits/retries where it talks to APIs | Handles secrets safely (env, not hardcoded); no injection of unvalidated input |
+| **Ownership of AI code** | Pasted AI output unread | Write-up names what AI generated and what you changed and why | Demonstrates a caught bug/risk in the generated code that you fixed and explained |
+
 ## AI & automation
 This is the track where "AI authors → you review → you own it" becomes a daily habit. A
 model will write the whole script; your job is to read it — check the regex, handle the

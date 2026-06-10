@@ -54,6 +54,22 @@ responds to an alert with a human approval step — both as reviewed, version-co
 code. **Deliverable:** the pipeline, the playbook, and a note on what AI generated vs. what
 you corrected.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/automation/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/automation/capstone).
+
+### Capstone rubric
+
+Two things must work: a **CI gate that blocks a bad config** and a **playbook with a human approval step**.
+**Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **CI gate** | Scanner runs but doesn't block | A misconfiguration is *blocked before deploy* by a scanner in CI | Gate is tuned (no false-positive noise), passes the fixed config, and explains the failure |
+| **SOAR playbook** | Linear automation, no human gate | Enrich → contain → ticket with an explicit human approval step | Idempotent, handles failure/rollback, and logs each action for audit |
+| **As-code discipline** | Click-ops or untracked scripts | Pipeline and playbook are version-controlled, reviewable code | Modular and reusable across labs; secrets handled out of band |
+| **Review of AI output** | Generated YAML/HCL shipped unread | The note names what AI generated and what you corrected | A concrete over-broad-RBAC / wildcard-IAM / missing-gate catch documented and fixed |
+| **Reproducibility** | Runs only on your machine | A reader can run the pipeline and trigger the playbook | One command stands up the whole loop; teardown is clean |
+
 ## AI & automation
 The whole track *is* the AI/automation thesis: AI writes the YAML, HCL, and playbook
 logic — and generated automation is *exactly* where misconfigurations hide (over-broad

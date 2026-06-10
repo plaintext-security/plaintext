@@ -51,6 +51,22 @@ Build a small SoC copilot — an MCP server exposing one real tool, grounded in 
 of your own notes — then red-team it: demonstrate a prompt-injection or data-exfil weakness
 and harden against it. **Deliverable:** the copilot, the attack, and the fix.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/ai-augmented-ops/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/ai-augmented-ops/capstone).
+
+### Capstone rubric
+
+You **build the copilot, break it, then fix it** — and the fix must hold against the attack you
+showed. **Proficient is the bar to ship.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **The copilot** | Bare LLM call, no grounding or tools | MCP server exposing one real tool, grounded in a RAG corpus of your notes | Genuinely useful for a SOC task; retrieval is relevant and tools are scoped |
+| **The attack** | Theoretical, not demonstrated | A working prompt-injection or data-exfil exploit shown against your own system | Mapped to OWASP LLM Top 10 / MITRE ATLAS; shows real impact (tool misuse or data leak) |
+| **The fix** | Generic advice, not applied | A concrete hardening that defeats the demonstrated attack | Re-tested: the same attack now fails; defence-in-depth (input + tool-scoping + output checks) |
+| **Tool & data scoping** | Tools/over-broad access unbounded | Tools and retrieval scoped to least privilege | Untrusted content can't reach privileged tools; the trust boundary is explicit |
+| **Write-up** | Disconnected pieces | Build → attack → fix told as one coherent story | Honest about residual risk and what the model can still be tricked into |
+
 ## AI & automation
 This track *is* the AI thesis made explicit, and it closes the loop the whole curriculum
 runs on: you build the automation, then you attack it. The discipline throughout —

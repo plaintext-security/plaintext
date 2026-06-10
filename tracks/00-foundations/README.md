@@ -57,6 +57,22 @@ TLS), decode a layered encoded blob, and threat-model the little system you buil
 **Deliverable:** a `foundations/` folder in your git repo with the capture write-up, the
 decoded blob, and a one-page STRIDE model — your first portfolio piece.
 
+The starter scaffold and acceptance checks live in
+[`plaintext-labs/foundations/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/foundations/capstone).
+
+### Capstone rubric
+
+Grade your `foundations/` folder against this before you call it done. **Proficient is the
+bar to ship; exemplary is the portfolio piece.**
+
+| Dimension | Developing | Proficient | Exemplary |
+|---|---|---|---|
+| **Packet-capture walk-through** | Capture exists but layers aren't separated; DNS/TCP/TLS conflated | DNS lookup, the three-way handshake, and the TLS hello are each identified by packet number and explained in your own words | Adds the *why* — SNI, what's encrypted vs. cleartext after ClientHello, one security-relevant header — tied back to the relevant RFC |
+| **Decoding the blob** | One layer peeled; tool used as a black box | All layers decoded to plaintext, with the order and each encoding (base64/hex/URL) named | Decoded by a committed script (not just CyberChef clicks), with a note on how you recognised each layer |
+| **STRIDE model** | Lists assets only, or generic threats not tied to your system | One page mapping your lab's trust boundaries to STRIDE categories with a concrete threat per relevant category | Threats are ranked, each has a mitigation, and the model references real components you built |
+| **Secret & git hygiene** | Artifacts (`.pcap`, keys) committed, or history dirty | No captures/keys/secrets in history; `.gitignore` present; clean, readable commits | Pre-commit secret scan wired in; commits tell the build story |
+| **Reproducibility** | Steps not written down | A reader can follow your write-up and reproduce each result | One `make`/script rebuilds the lab and re-runs the decode from zero |
+
 ## AI & automation
 
 Automation and AI are assumed from day one — but as accelerators, not substitutes for
