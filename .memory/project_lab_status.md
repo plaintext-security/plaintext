@@ -7,7 +7,7 @@ metadata:
   originSessionId: 91371537-f8b8-4daf-825d-97396eb4e43f
 ---
 
-## Lab validation status (as of 2026-06-08)
+## Lab validation status (as of 2026-06-10)
 
 **Defensive track (10/15 done)**
 - [x] 01-telemetry — SSH log pipeline (Python stdlib, no ext deps)
@@ -32,8 +32,9 @@ metadata:
 
 **Foundations track (0/12 done)**
 
-## Open PR
-PR #10 on plaintext repo (feat/defensive-labs branch) — covers 7 labs from this session.
+## Recent work
+- PR #15: Fixed 32 broken links across curriculum (feat/fix-broken-links merged to main)
+- In progress: Local browser progress tracking (Phase 1 of roadmap)
 
 ## Key build patterns
 - Seed `.log` files: gitignored; use `audit_events.txt` naming OR add `data/zeek/.gitignore` with `!*.log` negation
