@@ -105,8 +105,8 @@ non-zero if any CRITICAL finding is found (so it can gate a CI pipeline).
 ENDPOINT="${ENDPOINT_URL:-http://localhost:4566}"
 OUTPUT=$(mktemp /tmp/prowler-XXXXXX.json)
 prowler aws --endpoint-url "$ENDPOINT" -S -o "$OUTPUT"
-# TODO: jq filter → Markdown table
-# TODO: exit 1 if any .severity == "critical"
+# YOU: jq filter → Markdown table
+# YOU: exit 1 if any .severity == "critical"
 ```
 
 ## AI acceleration

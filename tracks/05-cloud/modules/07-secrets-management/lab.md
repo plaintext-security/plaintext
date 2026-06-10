@@ -127,9 +127,9 @@ AI drafts the argument handling and exit-code merging. You verify:
 TARGET="${1:-.}"
 FAIL=0
 command -v trufflehog >/dev/null || { echo "trufflehog not found"; exit 1; }
-# TODO: run trufflehog; capture exit code
-# TODO: run gitleaks if available; capture exit code
-# TODO: print summary; exit $FAIL
+# YOU: run trufflehog; capture exit code
+# YOU: run gitleaks if available; capture exit code
+# YOU: print summary; exit $FAIL
 ```
 
 ## AI acceleration
