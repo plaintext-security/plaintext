@@ -1,0 +1,23 @@
+name: Build (PR gate)
+
+# Pre-merge build gate: catch a broken `mkdocs build --strict` before it
+# reaches main. Deploy (deploy.yml) still runs the same build on push to main.
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install MkDocs
+        run: pip install -r requirements.txt
+      - name: Build site (strict)
+        run: mkdocs build --strict

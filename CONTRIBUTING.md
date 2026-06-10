@@ -198,3 +198,38 @@ Which later modules/tracks build on this.
 ## Stretch (optional)
 - A harder extension for the motivated.
 ```
+
+## Grading a lab (`grade.yaml`, `make grade`, `.ci-demo`)
+
+A finished lab makes its **Success criteria** machine-checkable so a learner can self-verify and
+earn a completion receipt. The grader and credential tooling live in **`plaintext-labs/scripts/`** —
+its [`README.md`](https://github.com/plaintext-security/plaintext-labs/blob/main/scripts/README.md)
+is the authoritative reference; this is the author's quick-start.
+
+**Add grading to a lab:**
+
+1. In the lab's `plaintext-labs/<track>/<NN-module-name>/` directory, write a `grade.yaml` whose
+   checks mirror the `lab.md` "Success criteria" (one check per criterion where you can).
+2. Expose a `make grade` target (the reference labs already do — copy
+   `offensive/06-web-injection` or `defensive/08-detection-as-code`). It runs `scripts/grade.py`
+   and, on an all-pass, writes a `receipt.json` the learner commits to their portfolio.
+
+**Check types** (pick the one that actually *proves* the criterion):
+
+| type | proves |
+|------|--------|
+| `flag` | the learner reached something only completion exposes (compared by sha256) |
+| `structural` | an artifact exists and matches / avoids patterns (lint-ish) |
+| `artifact_functional` | the learner's script runs and gives the expected exit/output |
+| `target_state` | the live lab is in the proven state (a fix holds, a marker is written) |
+| `advisory` / `ai_rubric` | informational only (e.g. a design/report rubric) — **never** gates the grade |
+
+Checks are required unless `required: false`; `advisory`/`ai_rubric` default to optional. Where a
+check should prove a *general* solution (a detection quiet on benign data, a parser that hits a rate
+on unseen logs), grade against a **held-out** set distinct from the `demo` set.
+
+**Opt the lab into CI (`.ci-demo`).** Labs CI runs `make demo` for a lab **only if** its directory
+contains a `.ci-demo` marker. Add one **only once `make up && make demo && make down` is green on a
+Linux runner.** Do *not* add it to a learner-exercise lab (whose demo fails until the learner
+completes it) or a VM/cloud lab (needs Windows, a hypervisor, or real cloud credentials) — those are
+intentionally left out of CI.
