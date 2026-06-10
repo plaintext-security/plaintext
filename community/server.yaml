@@ -42,6 +42,23 @@ roles:
   - { name: Automation,         color: "#3399ff", mentionable: true }
   - { name: ZTNA,               color: "#3399ff", mentionable: true }
   - { name: AI-Ops,             color: "#3399ff", mentionable: true }
+  # Completion roles — GRANTED BY THE VERIFY-BOT (plaintext-labs/community/verify-bot), not
+  # self-assigned. Earned when a learner's committed capstone receipt for the track verifies.
+  # Names must match verify_core.TRACK_META exactly. Keep the bot's highest role above these.
+  - { name: "Plaintext Verified", color: "#00ff88", hoist: true, mentionable: false }
+  - { name: "Foundations ✓",   color: "#00cc66", mentionable: false }
+  - { name: "Offensive ✓",     color: "#00cc66", mentionable: false }
+  - { name: "Defensive ✓",     color: "#00cc66", mentionable: false }
+  - { name: "Forensics ✓",     color: "#00cc66", mentionable: false }
+  - { name: "Malware ✓",       color: "#00cc66", mentionable: false }
+  - { name: "Cloud ✓",         color: "#00cc66", mentionable: false }
+  - { name: "AD ✓",            color: "#00cc66", mentionable: false }
+  - { name: "Endpoint ✓",      color: "#00cc66", mentionable: false }
+  - { name: "Crypto ✓",        color: "#00cc66", mentionable: false }
+  - { name: "Python ✓",        color: "#00cc66", mentionable: false }
+  - { name: "Automation ✓",    color: "#00cc66", mentionable: false }
+  - { name: "ZTNA ✓",          color: "#00cc66", mentionable: false }
+  - { name: "AI-Ops ✓",        color: "#00cc66", mentionable: false }
 
 categories:
   - name: START HERE

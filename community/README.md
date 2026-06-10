@@ -6,6 +6,13 @@ like — it creates what's missing, patches what drifted, and leaves correct thi
 
 [`../COMMUNITY.md`](../COMMUNITY.md) is the human-readable narrative of this same layout.
 
+The **`… ✓` completion roles** and the hoisted **`Plaintext Verified`** role in `server.yaml` are
+granted automatically by the **verify-bot** (in the companion repo at
+[`plaintext-labs/community/verify-bot`](https://github.com/plaintext-security/plaintext-labs/tree/main/community/verify-bot))
+when a learner runs `/verify` and their committed capstone receipt checks out — not self-assigned.
+`discord_sync.py` only *creates* the roles here; the bot *assigns* them. Keep the role names in
+lockstep with the bot's `verify_core.TRACK_META`.
+
 **First time setting up the server?** Follow [`SETUP.md`](SETUP.md) — the full end-to-end runbook
 (server, bot, apply, CI, and the manual bits). This file is the tool reference for day-to-day use.
 
