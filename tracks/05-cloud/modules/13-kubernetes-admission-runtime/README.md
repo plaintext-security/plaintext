@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *policy-as-code: the control you apply before a workload starts is worth ten detections after it does.*
 
 <!-- module-meta -->

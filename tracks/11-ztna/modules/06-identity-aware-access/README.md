@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *every request carries proof of who you are before a packet reaches your service.*
 
 <!-- module-meta -->

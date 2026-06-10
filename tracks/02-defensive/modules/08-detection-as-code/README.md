@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *write the detection once, version it, test it — like software, because it is.*
 
 <!-- module-meta -->

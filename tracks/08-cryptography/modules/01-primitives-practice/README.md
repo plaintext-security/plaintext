@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 08 — Cryptography, PKI & Secrets]** — *Every cryptographic system is built from a small set of primitives — choose the wrong one and the system is broken before you write a line of code.*
 
 <!-- module-meta -->

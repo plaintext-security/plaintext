@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *the trust layer under every secure system.*
 
 <!-- module-meta -->

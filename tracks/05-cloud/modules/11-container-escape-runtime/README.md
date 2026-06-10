@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *containers are not a security boundary; understand where the walls are and how they break.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *if it isn't committed, it didn't happen — and this whole curriculum is "commit the artifact."*
 
 <!-- module-meta -->

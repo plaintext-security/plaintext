@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *investigate from the paper trail when the disk is gone, the instance is terminated, and the only artifact is what the platform logged.*
 
 <!-- module-meta -->

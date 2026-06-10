@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *before you can attack or defend the cloud, you have to know who owns what.*
 
 <!-- module-meta -->

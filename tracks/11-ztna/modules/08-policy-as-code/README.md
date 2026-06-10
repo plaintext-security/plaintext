@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *authorization logic that lives in git, gets reviewed, and can be tested like software.*
 
 <!-- module-meta -->

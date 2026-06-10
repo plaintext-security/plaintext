@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *the engagement starts here; the wider the attack surface you find, the more there is to test.*
 
 <!-- module-meta -->

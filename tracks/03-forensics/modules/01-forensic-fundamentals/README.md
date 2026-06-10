@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *every conclusion you ever draw in this track stands or falls on what you do in the first five minutes.*
 
 <!-- module-meta -->

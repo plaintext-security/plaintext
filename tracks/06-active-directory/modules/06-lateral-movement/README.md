@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *getting domain admin is not the goal; reaching the data is — and data rarely lives on the first machine you land on.*
 
 <!-- module-meta -->

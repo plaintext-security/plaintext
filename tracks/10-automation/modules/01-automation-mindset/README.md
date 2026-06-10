@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *automate the repeatable so humans can own the judgment.*
 
 <!-- module-meta -->

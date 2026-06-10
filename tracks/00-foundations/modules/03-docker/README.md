@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *every lab here is Docker-first; this is the literacy that assumes.*
 
 <!-- module-meta -->

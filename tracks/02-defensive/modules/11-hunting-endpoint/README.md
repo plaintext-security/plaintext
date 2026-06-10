@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *don't wait for an alert — go looking for what your detections missed.*
 
 <!-- module-meta -->

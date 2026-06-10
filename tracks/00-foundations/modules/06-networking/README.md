@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *you can't attack, defend, or investigate what you can't read on the wire.*
 
 <!-- module-meta -->

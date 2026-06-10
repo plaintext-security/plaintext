@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *get the data into shape, then make it readable by a human and a machine.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 07 — Endpoint & Host Hardening]** — *Before you harden anything, decide what you're actually defending it from.*
 
 <!-- module-meta -->

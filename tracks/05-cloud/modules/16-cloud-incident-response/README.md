@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the attacker left in the API log; your job is to find the thread and pull it.*
 
 <!-- module-meta -->

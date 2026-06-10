@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 08 — Cryptography, PKI & Secrets]** — *TLS is the applied cryptography you interact with hundreds of times per day — reading the handshake tells you everything about a connection's actual security.*
 
 <!-- module-meta -->

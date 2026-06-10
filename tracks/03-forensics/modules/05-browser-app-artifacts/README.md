@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *the browser is the most detailed diary of what a user actually did — and most people forget it exists.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *a playbook is repeatable; a human running the same steps for the fifth time this week is not.*
 
 <!-- module-meta -->

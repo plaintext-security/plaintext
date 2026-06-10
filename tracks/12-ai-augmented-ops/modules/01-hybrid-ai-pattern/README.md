@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *not every task needs a frontier model — the decision of what runs where is itself a security posture.*
 
 <!-- module-meta -->

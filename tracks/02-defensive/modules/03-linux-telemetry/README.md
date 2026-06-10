@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *servers and containers are Linux; this is how you watch them.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **AI-Augmented Security Operations** — *red-teaming AI is the same discipline as red-teaming anything: systematic coverage, documented findings, and a repeatable test suite.*
 
 <!-- module-meta -->

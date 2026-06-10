@@ -2,6 +2,7 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
 **Offensive Security** — *the attacker's favourite tool is already installed, signed, and trusted on every Windows box.*
 
 <!-- module-meta -->

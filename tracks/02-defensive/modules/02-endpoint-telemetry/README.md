@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *the endpoint sees what the network can't; Sysmon is how you make it talk.*
 
 <!-- module-meta -->

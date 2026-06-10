@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *security data is a mess of formats; reading them is a daily skill.*
 
 <!-- module-meta -->

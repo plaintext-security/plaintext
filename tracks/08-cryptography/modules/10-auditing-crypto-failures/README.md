@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 08 — Cryptography, PKI & Secrets]** — *Applied cryptography fails in patterns — knowing the pattern tells you exactly where to look in an audit.*
 
 <!-- module-meta -->

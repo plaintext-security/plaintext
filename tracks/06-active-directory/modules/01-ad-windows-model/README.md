@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *before you can attack or defend a domain, you need an accurate map of how Windows decides "yes" or "no."*
 
 <!-- module-meta -->

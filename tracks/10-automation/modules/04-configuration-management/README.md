@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *if you hardened it once by hand, a configuration management tool can harden a thousand more.*
 
 <!-- module-meta -->

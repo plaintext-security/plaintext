@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *deleted files don't disappear — they just become invisible to the OS, and visible to you.*
 
 <!-- module-meta -->

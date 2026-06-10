@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Offensive Security** — *credentials are the keys; cracking and capturing them is how access spreads.*
 
 <!-- module-meta -->

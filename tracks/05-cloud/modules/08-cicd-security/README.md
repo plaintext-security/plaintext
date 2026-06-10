@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the build pipeline is the highest-trust path in your environment — and frequently the least scrutinised.*
 
 <!-- module-meta -->

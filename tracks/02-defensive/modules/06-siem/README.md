@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *where all your telemetry meets: search, correlate, alert.*
 
 <!-- module-meta -->

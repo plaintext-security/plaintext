@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *an unprotected endpoint is only hidden if nobody looks; a scraper looks.*
 
 <!-- module-meta -->

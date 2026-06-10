@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Digital Forensics & IR** — *reconstruct what moved across the wire — sessions, files, and intent — from the packet record.*
 
 <!-- module-meta -->

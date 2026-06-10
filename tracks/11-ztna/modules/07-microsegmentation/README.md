@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *shrink the blast radius to a single service boundary, not a VLAN.*
 
 <!-- module-meta -->

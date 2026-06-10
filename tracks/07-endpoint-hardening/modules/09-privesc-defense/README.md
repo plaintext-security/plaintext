@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **[Track 07 — Endpoint & Host Hardening]** — *The hardening baseline gets an attacker to user-level access; privilege-escalation defense is what stops them from going further.*
 
 <!-- module-meta -->

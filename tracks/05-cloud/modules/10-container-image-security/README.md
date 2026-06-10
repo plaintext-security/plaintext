@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *the image is your artifact: if you ship a vulnerable image, you ship a vulnerable workload.*
 
 <!-- module-meta -->

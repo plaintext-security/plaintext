@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Security Automation** — *a security tool in a Dockerfile is a tool that runs the same way, everywhere, forever.*
 
 <!-- module-meta -->

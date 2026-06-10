@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Cloud & Container Security** — *in Kubernetes, the IAM is the cluster; getting RBAC wrong is a blast-radius problem, not an account problem.*
 
 <!-- module-meta -->

@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Python for Security** — *understanding the wire is what separates a script from a tool and a tool from an audit.*
 
 <!-- module-meta -->

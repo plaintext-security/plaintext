@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Foundations** — *the enterprise runs on Windows, and so do most attacks; you can't stay Linux-only.*
 
 <!-- module-meta -->

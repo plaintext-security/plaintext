@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *C2 hides in plain sight; beaconing is how you find it.*
 
 <!-- module-meta -->

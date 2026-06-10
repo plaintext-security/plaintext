@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Defensive Operations** — *raw logs are chaos; a common schema is what makes detection scale.*
 
 <!-- module-meta -->

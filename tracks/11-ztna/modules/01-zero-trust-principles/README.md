@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Zero Trust Network Access** — *the perimeter didn't fail; it dissolved — and the model that replaced it starts by trusting nothing.*
 
 <!-- module-meta -->

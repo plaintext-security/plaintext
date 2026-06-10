@@ -2,6 +2,8 @@
 
 *Module concept · [Go to the hands-on lab →](lab.md)*
 
+*Last reviewed: 2026-06*
+
 **Active Directory & Windows Security** — *you can't attack what you can't see; every domain-level attack starts with a read.*
 
 <!-- module-meta -->
