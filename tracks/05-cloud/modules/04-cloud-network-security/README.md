@@ -22,8 +22,10 @@ offensive cloud work and cloud incident response.
 
 ## Objective
 Use `cloudmapper` and VPC flow log analysis to map the network topology of a simulated Meridian
-Financial AWS account, identify misconfigured Security Groups and unexpected traffic patterns, and
-produce a network security findings report.
+Financial AWS account and identify misconfigured Security Groups and unexpected traffic patterns —
+then *remediate*: author a least-privilege Security Group ruleset and prove with a reachability check
+that the internet-facing paths are closed while the app's legitimate flows still work. Finding the
+exposure and closing it without breaking the application are equal halves of the job.
 
 ## The core idea
 The fundamental conceptual shift when moving from on-prem to cloud networking is that **the control
@@ -84,6 +86,7 @@ to engineers and leadership who won't read a findings table.
 - Flow log 5-tuple analysis: detecting port scans, lateral movement, and exfiltration candidates
 - `cloudmapper collect` → `prepare` → `audit` → `webserver` workflow
 - Security Group drift as a common misconfiguration indicator
+- Remediate then verify: author least-privilege Security Groups and prove reachability — the internet-facing path is denied while the app's legitimate flows still resolve (the build half, not just the finding)
 
 ## AI acceleration
 Paste a set of VPC flow log entries into a model and ask it to identify anomalous patterns —
