@@ -103,6 +103,20 @@ bearer-token reality. Real and ZT-core, but thinner OSS tooling and harder to la
    **This is a decision, not a default** (see cloud audit item #4): it is the larger, lab-validation-heavy
    piece and should be confirmed before building, because shipping an unvalidated module would violate the
    charter's labs-built-and-validated definition of done.
+
+   **Status (2026-06-11):** *built, pending lab validation.* Module 10 — Workload Identity & mTLS
+   (SPIFFE/SPIRE) is authored: concept `README.md`, lab `lab.md`, a full `plaintext-labs/ztna/10-…`
+   env (SPIRE server + agent + two workloads doing mTLS, a `rogue` deny proof, `check_identity.sh`,
+   `Makefile` up/demo/mtls/deny/check), nav, and the track map/phases. **Not yet validated:** Docker
+   was unavailable in the authoring session, so `make up`/`make demo` has **not** been run. Per the
+   charter this makes the lab a stub until proven. Two consequences, deliberately honest:
+   - The landing page (`overrides/home.html`) was **left at "TRACK_11 · 9 modules live" / 134 total** —
+     it claims "every one with a validated lab," which module 10 isn't yet. Bump to **10 live / 135**
+     only after `make up && make demo && make down` is green on a Linux runner.
+   - No `.ci-demo` marker was added to the lab (it would gate Labs CI on a demo that hasn't been run).
+   **Validation to-do:** run `make up`/`make demo`/`make check`; the likely friction points are the
+   join-token bootstrap ordering and the Docker workload attestor (`pid: "host"` + `docker.sock`); fix,
+   then bump the two counts and add `.ci-demo`.
 4. **Minor, opportunistic:** 09's data-volume rule is punted to a stretch because the offline matcher
    lacks numeric `|gte`; could be made a core step by teaching the `detect.py` extension. Low priority.
 

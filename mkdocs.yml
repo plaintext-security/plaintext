@@ -555,6 +555,9 @@ nav:
       - "09 · Monitoring & Detection":
           - Concept: 11-ztna/modules/09-monitoring-detection/README.md
           - Lab: 11-ztna/modules/09-monitoring-detection/lab.md
+      - "10 · Workload Identity & mTLS":
+          - Concept: 11-ztna/modules/10-workload-identity-mtls/README.md
+          - Lab: 11-ztna/modules/10-workload-identity-mtls/lab.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":
