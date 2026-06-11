@@ -287,7 +287,7 @@ Same format as `TODO.md`; move onto that board when started. Prepend the standar
 | # | Task | Pri | Repo | Effort |
 |---|------|-----|------|--------|
 | T-CS1 | KEV + Vulhub freshness watcher (CI) | P1 | both | M |
-| T-CS2 | Stale-link audit against the Section 1 flags | P0 | plaintext | S–M |
+| T-CS2 | ✅ **done** — Stale-link audit against the Section 1 flags | P0 | plaintext | S–M |
 | T-CS3 | "Concept→lab attachment" audit | P1 | plaintext | M |
 | T-CS4 | Content flywheel: showcase + "why this matters now" | P1 | plaintext | M |
 | T-CS5 | Adopt the fresh AI-security targets (FinBot/PwnzzAI/Stratus) | P1 | both | M–L |
@@ -306,16 +306,22 @@ module-17 KEV-refresh plumbing where possible.
 > environment and matches a module topic, open/update a `content-fresh` tracking issue. Don't auto-edit
 > modules — surface candidates for human review. Build on `defensive/17`'s KEV plumbing.
 
-### T-CS2 — Stale-link audit against Section 1 flags · plaintext
+### T-CS2 — Stale-link audit against Section 1 flags · plaintext · ✅ DONE (2026-06-11)
 **Why:** several canonical citations have moved or gone stale (picoCTF→cylabacademy.org, HackTricks→.wiki,
 Assetnote→slcyber.io, DetectionLab dead, MITRE training path moved). lychee catches 404s but not these
 "resolves-but-wrong/superseded" cases.
-**Done when:** every module's Learn section is checked against the ⚠️/❌ flags in Section 1; moved links
-repointed, dead anchors replaced with the listed successor, age-labels added to ~2017 RE material.
-> **Kickoff:** Sweep `tracks/**/README.md` Learn sections against the flags in `CONTENT-SOURCING.md`
-> Section 1. Repoint moved resources (picoCTF→cylabacademy.org, HackTricks→book.hacktricks.wiki,
-> Assetnote→slcyber.io, MITRE training path), replace dead anchors (DetectionLab→Ludus/attack_range), and
-> add age-labels to MalwareUnicorn/Azeria ARM material. Keep `mkdocs build --strict` green.
+**Outcome:** swept all `tracks/**/README.md` Learn sections against the flags. **The prose was already
+remarkably clean** — none of the headline dead/moved domains (`picoctf.org`, `hacktricks.xyz`,
+`assetnote.io`, `DetectionLab`, `mandiant.com`) appear anywhere in `tracks/`. Three fixes made:
+1. `malware/12-ioc-extraction-attck` — MITRE CTI training repointed from the old `/resources/training/cti/`
+   to the current `/resources/learn-more-about-attack/training/cti/` path.
+2. `malware/12-ioc-extraction-attck` — a **mislabeled duplicate** link (labeled "Cyber Threat Coalition"
+   but pointing at the same MITRE CTI training URL) repointed to **David Bianco's Pyramid of Pain**, which
+   is what the entry actually describes — fixing both the mislabel and the duplicate-source.
+3. `foundations/05-windows` — a bare `tryhackme.com` homepage link → the specific Windows Fundamentals
+   module URL, with a free-tier caveat (THM is moving rooms to premium).
+`mkdocs build --strict` green. *Not done (no occurrences found): age-labels on MalwareUnicorn/Azeria ARM
+material — those resources aren't currently cited in `tracks/`, so nothing to label.*
 
 ### T-CS3 — "Concept→lab attachment" audit · plaintext
 **Why:** PortSwigger's signature (and fCC's) is that **every concept has an immediately-attached thing you
