@@ -360,6 +360,9 @@ nav:
       - "16 · Cloud Incident Response":
           - Concept: 05-cloud/modules/16-cloud-incident-response/README.md
           - Lab: 05-cloud/modules/16-cloud-incident-response/lab.md
+      - "17 · Data Protection & KMS":
+          - Concept: 05-cloud/modules/17-data-protection-kms/README.md
+          - Lab: 05-cloud/modules/17-data-protection-kms/lab.md
   - Active Directory & Windows:
       - Overview: 06-active-directory/README.md
       - "01 · AD & Windows Security Model":
