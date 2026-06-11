@@ -20,8 +20,9 @@ exploit. Finding and fixing them before an attacker does is the core skill this 
 
 ## Objective
 Build and traverse an IAM privilege-escalation graph for a seeded Meridian Financial account, identify
-all paths from a low-privilege starting principal to admin, and write a remediation plan that breaks
-each path with a minimal, targeted policy change.
+all paths from a low-privilege starting principal to admin, then *apply* the minimum cut — remove the
+one edge that breaks the path — and re-run the analyzer to prove no path to admin remains. Finding the
+path and cutting it are both the job.
 
 ## The core idea
 Think of an IAM account as a directed graph: principals are nodes, and an edge from A to B exists
