@@ -49,7 +49,7 @@ Status: ✅ done · 🟡 partial · ⬜ not started · ➖ n/a
 | T21 | ✅ | `grade.yaml` schema-lint in CI | P2 | plaintext-labs | Sonnet 4.6 | S | T6 |
 | T22 | ✅ | Document grading/`.ci-demo`/credentials in CLAUDE.md + CONTRIBUTING.md + a learner page | P1 | plaintext | Sonnet 4.6 | M | — |
 | T23 | ⬜ | Harden GitHub Actions supply chain: pin actions to commit SHAs + Dependabot | P2 | both | Haiku 4.5 | S | — |
-| T24 | ⬜ | Cloud track build-vs-find rebalance (see `planning/cloud-track-rebalance.md`) | P1 | both | Sonnet 4.6 (Opus for KMS module) | M–L | — |
+| T24 | 🟡 | Cloud track build-vs-find rebalance (see `planning/cloud-track-rebalance.md`) — core 4 items done+validated; minor 03/10 polish optional | P1 | both | Sonnet 4.6 (Opus for KMS module) | M–L | — |
 
 *(T19–T22 added 2026-06-10 from a testing/CI + docs review — the grading system shipped but was untested in CI and undocumented in the charter, and PRs had no build gate.)*
 *(T23 added 2026-06-10 from the recognition-system PR review — workflows reference mutable `@v4`/`@v5` tags.)*
