@@ -19,8 +19,11 @@ everything that follows in offensive and defensive cloud work.
 
 ## Objective
 Use `cloudfox` to enumerate IAM users, roles, and policies in a deliberately misconfigured AWS
-environment, identify the specific policy statements that violate least privilege, and describe at
-least two privilege-escalation vectors the configuration enables.
+environment and identify the specific policy statements that violate least privilege and the
+privilege-escalation vectors they enable — then *close* the headline vector: author the minimum-cut
+least-privilege policy that breaks the `iam:PassRole` escalation, and verify with a policy evaluation
+that the path is gone while the principal's legitimate access still works. Finding the escalation and
+closing it are equal halves.
 
 ## The core idea
 AWS IAM is an authorisation system that answers a single question: is this identity allowed to
@@ -79,6 +82,7 @@ appears in both red team and cloud security assessment toolkits.
 - Trust policies: who can assume a role, and the common scope mistakes (`*`, account root)
 - How `iam:PassRole` + a launch action composes into privilege escalation
 - `cloudfox` as an enumeration accelerator for the IAM surface
+- The minimum cut: scoping `iam:PassRole`'s *resource* to a non-admin role breaks the escalation with one targeted change — then verify the path is closed and legitimate access remains (the build half, not just the finding)
 
 ## AI acceleration
 Ask a model to explain a complex IAM policy and flag any privilege-escalation risks. Models are
