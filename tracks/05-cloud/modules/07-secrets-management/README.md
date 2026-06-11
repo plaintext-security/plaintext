@@ -18,9 +18,11 @@ an attacker does, and how to manage secrets properly so they don't end up there 
 is table-stakes cloud security.
 
 ## Objective
-Use `trufflehog` to find a planted secret in a git repository's history, understand why it persists
-after deletion, and operate HashiCorp Vault in dev mode to store, retrieve, and rotate a secret —
-bridging detection and prevention.
+Use `trufflehog` to find a planted secret in a git repository's history and understand why it
+persists after deletion; then *operate* secrets safely — store one in Vault behind a least-privilege
+policy, have Vault mint **dynamic, auto-expiring** database credentials that an app fetches at
+runtime (holding no static secret), automate root rotation, and reproduce the pattern with AWS
+Secrets Manager + an IAM-gated read. Detection and safe handling get equal weight.
 
 ## The core idea
 
@@ -74,7 +76,8 @@ owns the affected service and needs to rotate immediately? The tool finds; you t
 - Git history persistence: removing a commit doesn't remove a secret from history
 - Credential verification vs. detection: trufflehog actively checks if credentials are live
 - Vault path model: `secret/data/<path>`, auth methods, policies
-- Dynamic credentials: lease TTL, renewal, revocation
+- Dynamic credentials: minted per-request, auto-expiring (lease TTL), revocable — nothing to rotate, nothing to leak long-term
+- Runtime fetch: the app pulls its secret from Vault/Secrets Manager at startup and holds no static credential — the architecture that makes a git leak impossible
 - MITRE ATT&CK T1552 (Unsecured Credentials), T1528 (Steal Application Access Token)
 - Pre-commit and CI gates for secrets scanning
 
