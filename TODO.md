@@ -49,9 +49,11 @@ Status: ✅ done · 🟡 partial · ⬜ not started · ➖ n/a
 | T21 | ✅ | `grade.yaml` schema-lint in CI | P2 | plaintext-labs | Sonnet 4.6 | S | T6 |
 | T22 | ✅ | Document grading/`.ci-demo`/credentials in CLAUDE.md + CONTRIBUTING.md + a learner page | P1 | plaintext | Sonnet 4.6 | M | — |
 | T23 | ⬜ | Harden GitHub Actions supply chain: pin actions to commit SHAs + Dependabot | P2 | both | Haiku 4.5 | S | — |
+| T24 | ⬜ | Cloud track build-vs-find rebalance (see `planning/cloud-track-rebalance.md`) | P1 | both | Sonnet 4.6 (Opus for KMS module) | M–L | — |
 
 *(T19–T22 added 2026-06-10 from a testing/CI + docs review — the grading system shipped but was untested in CI and undocumented in the charter, and PRs had no build gate.)*
 *(T23 added 2026-06-10 from the recognition-system PR review — workflows reference mutable `@v4`/`@v5` tags.)*
+*(T24 added 2026-06-11 from a cloud-track balance audit — the track skews to find/attack/detect; full plan in `planning/cloud-track-rebalance.md`.)*
 
 ---
 
@@ -241,6 +243,23 @@ SHA; swap tag→SHA, keep `# version` comment.
 > full commit SHAs, with the version in a trailing comment. Pin the template's `PLAINTEXT_REF` to a release
 > tag. Add a `github-actions` Dependabot config to each repo so the pins are kept current via PR. Verify
 > each pinned SHA against the tag with `git ls-remote`; don't change action behaviour or inputs.
+
+### T24 — Cloud track build-vs-find rebalance · Sonnet 4.6 (Opus for the KMS module) · both repos
+**Why:** a lab-level audit (`planning/cloud-track-rebalance.md`) found the cloud track skews toward
+*find / attack / detect*; ~3 labs stop before the proactive "build & operate securely" half, secrets
+practices safe handling only shallowly, and there is **no Data Protection / KMS module** at all.
+**Done when:** (1) module **07** deepens its operate side — dynamic/leased creds, app-fetch-at-runtime,
+automated rotation, an AWS-native Secrets Manager/SSM variant; (2) module **04** gains a build half —
+author the corrected SG ruleset + default-deny baseline and re-verify reachability; (3) module **02**
+gains a build half — author the least-privilege policy that closes the traced escalation and re-run
+`iam-simulator` to prove it; (4) a decision (and, if yes, a new module) on **Data Protection & KMS**
+(envelope encryption, key policies vs IAM, grants, default-encryption, rotation). Each change ships
+validated prose + lab in both repos, strict build green. **Don't** bolt a build half onto the pure-by-
+design labs (01 foundational, 14 attack-sim).
+> **Kickoff:** Read `planning/cloud-track-rebalance.md`, then execute the sequenced plan: deepen module
+> 07's secret-management operate side, add a build→verify half to modules 04 and 02, and scope/draft a
+> new Data Protection & KMS module. Prose in `plaintext`, lab envs in `plaintext-labs`; each lab must
+> `make up`/`make demo` green and carry a `grade.yaml`. Keep `mkdocs build --strict` green.
 
 ---
 
