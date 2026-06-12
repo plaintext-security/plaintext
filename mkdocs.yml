@@ -32,9 +32,11 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/tour.css
 
 extra_javascript:
   - javascripts/local-progress.js
+  - javascripts/tour.js
 
 markdown_extensions:
   - admonition
@@ -81,6 +83,21 @@ nav:
   - Instructor & Cohort Guide: instructor-guide.md
   - Grading & Certificates: grading.md
   - Verify a Certificate: verify.md
+  - "Interactive Tour (Prototype)":
+      - tour/index.md
+      - "00 · Building Your Lab": tour/02-lab-setup.md
+      - "01 · SSRF & XXE": tour/08-web-ssrf-xxe.md
+      - "02 · Intrusion Detection": tour/05-intrusion-detection.md
+      - "03 · Cloud Log Forensics": tour/10-log-cloud-forensics.md
+      - "04 · Detection & Reporting (YARA)": tour/13-detection-reporting.md
+      - "05 · Posture Auditing (CSPM)": tour/05-posture-auditing.md
+      - "06 · Path to Domain Admin": tour/08-path-to-da.md
+      - "07 · Host Boot Integrity": tour/11-host-boot-integrity.md
+      - "08 · Crypto Primitives": tour/01-primitives-practice.md
+      - "09 · Structured Data → Report": tour/03-structured-data-reporting.md
+      - "10 · SOAR Fundamentals": tour/08-soar-fundamentals.md
+      - "11 · Policy as Code": tour/08-policy-as-code.md
+      - "12 · Building MCP Servers": tour/05-building-mcp-servers.md
   - Foundations:
       - Overview: 00-foundations/README.md
       - "01 · Security First Principles":
