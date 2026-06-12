@@ -434,7 +434,7 @@ const MODULES = [
   {type:"mcq", t:"Bite 7 / read the pipeline", q:"In `grep Failed auth.log | awk '{print $NF}' | sort | uniq -c | sort -rn`, which stage does the counting?",
    options:[{t:"grep"},{t:"uniq -c — it collapses identical adjacent lines and prepends the count (so you sort first)",correct:true},{t:"awk"}], explain:"grep filters, awk extracts the field, sort groups identical lines, `uniq -c` counts them, `sort -rn` ranks. Knowing each stage’s job lets you build any triage one-liner."},
   {type:"note", t:"Bite 8 / a real shell, in your browser", html:"You’ve been reading planted output. Now drive a <b>real Linux kernel</b> — no install. This boots a genuine Debian client-side (the scenario’s planted users/logs live in the local lab below; here you just get a real shell to practise on).",
-   render:()=>'<a class="pt-launch" href="https://webvm.io/" target="_blank" rel="noopener">▶ Open a real Linux shell (WebVM)</a><div class="pt-linkrow">Real Debian via x86→WASM. Try <code>ls -l /etc</code>, <code>cat /etc/passwd</code>, <code>ps aux</code>. (Third-party frame; opens in a new tab.)</div>'}
+   render:()=>'<iframe class="pt-vm" src="https://webvm.io/" title="real Linux terminal" loading="lazy" allow="cross-origin-isolated"></iframe><div class="pt-linkrow">A real Debian terminal, client-side (x86→WASM). Try <code>ls -l /etc</code>, <code>cat /etc/passwd</code>, <code>ps aux</code>. If the frame is blocked, <a href="https://webvm.io/" target="_blank" rel="noopener">open it in a new tab</a>.</div>'}
  ]},
 {track:"00 · foundations", id:"fnd-05-windows", title:"Windows for Security",
  engine:"event-log triage (JS)",
@@ -555,6 +555,7 @@ function mountTour(mount){
   var enr=(typeof ENRICH!=='undefined'&&ENRICH[id])||{};
   var nStd=m.steps.length, hasReal=!!enr.realenv, total=nStd+(hasReal?1:0)+1;
   var state={si:0,passed:{}};
+  var CSURL="https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1";
 
   function bite(i){
     if(i<nStd) return {kind:'std',tier:(enr.tiers&&enr.tiers[i])||'T0',learn:(enr.learn&&enr.learn[i])||'',link:(enr.links&&enr.links[i])||null,title:m.steps[i].t,step:m.steps[i]};
@@ -598,18 +599,14 @@ function mountTour(mount){
 
   function realenv(card,doEl,step){
     doEl.innerHTML='';
-    var a=el('a','pt-launch');a.href=step.href;a.target='_blank';a.rel='noopener';a.textContent='▶ '+(step.launchLabel||'Launch in GitHub Codespaces');doEl.appendChild(a);
-    doEl.appendChild(el('div','pt-fld',step.afterLaunch||'Then paste the flag your run prints:'));
-    var ti=el('input','pt-ti');ti.placeholder=step.placeholder||'FLAG{...}';doEl.appendChild(ti);
-    var row=el('div','pt-row');var go=el('button','pt-btn','verify flag');row.appendChild(go);doEl.appendChild(row);
-    go.onclick=async function(){var h=await sha256hex(ti.value.trim());var ok=h.indexOf(step.flagPrefix)===0;verdict(card,ok,ok?step.okMsg:step.noMsg);if(ok)pass(state.si);};
+    var url=(step.href&&/codespaces/.test(step.href))?step.href:CSURL;
+    var a=el('a','pt-launch');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='▶ '+(step.launchLabel||'Open the lab in GitHub Codespaces');doEl.appendChild(a);
+    doEl.appendChild(el('div','pt-fld','One click spins up the full lab — real container, free tier, nothing to install. Do the steps and commit the artifact you build.'));
+    state.passed[state.si]=true;
   }
 
   function render(){
     mount.innerHTML='';
-    mount.appendChild(el('div','pt-intro',
-      'PROTOTYPE — a module as <b>interleaved bites</b>: each bite <b>teaches</b> one idea (with a scoped Learn link), then makes you <b>do</b> it and auto-checks. The badge shows <b>where each bite runs</b>.'+
-      '<div class="pt-legend"><span class="pt-tier t0">T0 in-browser</span><span class="pt-tier t1">T1 real linux</span><span class="pt-tier t2">T2 real container</span><span class="pt-tier t3">T3 capstone</span></div>'));
     mount.appendChild(el('div','pt-crumbs',m.track+' / '+m.id));
     mount.appendChild(el('div','pt-h1',m.title));
     var meta=el('div','pt-meta');
@@ -625,7 +622,7 @@ function mountTour(mount){
     var doEl=el('div','pt-do');card.appendChild(doEl);
     if(b.kind==='std')interaction(card,doEl,b.step);
     else if(b.kind==='real')realenv(card,doEl,b.step);
-    else{doEl.innerHTML='<div class="pt-prose">The <b>integrative</b> bite: the real environment, run locally (<code>git clone</code> + <code>make up</code>), where the module’s ideas combine into a portfolio artifact you own.</div>';state.passed[state.si]=true;}
+    else{doEl.innerHTML='<div class="pt-prose">The <b>integrative</b> bite: spin up the full environment and combine the module’s ideas into the portfolio artifact you own.</div>';var ca=el('a','pt-launch');ca.href=CSURL;ca.target='_blank';ca.rel='noopener';ca.textContent='▶ Open in GitHub Codespaces';doEl.appendChild(ca);state.passed[state.si]=true;}
     var nav=el('div','pt-nav');
     var prev=el('button','pt-btn pt-ghost','← prev');if(state.si===0){prev.disabled=true;prev.style.opacity=0.4;}prev.onclick=function(){if(state.si>0){state.si--;render();}};
     var next=el('button','pt-btn pt-cy',state.si===total-1?'finish ✓':'next bite →');next.onclick=function(){if(state.si<total-1){state.si++;render();}};
