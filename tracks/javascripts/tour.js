@@ -433,8 +433,7 @@ const MODULES = [
      return {output:t.map(x=>String(x[1]).padStart(3)+"  "+x[0]).join("\n"), pass:t.length>0&&t[0][0]==="45.83.64.1", msg: (t.length>0&&t[0][0]==="45.83.64.1")?"45.83.64.1 leads — your block candidate, and the seed of a real detection. This five-stage pipeline is what you’ll live in.":"Count ‘Failed password … from <ip>’ per IP, ranked."}; }},
   {type:"mcq", t:"Bite 7 / read the pipeline", q:"In `grep Failed auth.log | awk '{print $NF}' | sort | uniq -c | sort -rn`, which stage does the counting?",
    options:[{t:"grep"},{t:"uniq -c — it collapses identical adjacent lines and prepends the count (so you sort first)",correct:true},{t:"awk"}], explain:"grep filters, awk extracts the field, sort groups identical lines, `uniq -c` counts them, `sort -rn` ranks. Knowing each stage’s job lets you build any triage one-liner."},
-  {type:"note", t:"Bite 8 / a real shell, in your browser", html:"You’ve been reading planted output. Now drive a <b>real Linux kernel</b> — no install. This boots a genuine Debian client-side (the scenario’s planted users/logs live in the local lab below; here you just get a real shell to practise on).",
-   render:()=>'<iframe class="pt-vm" src="https://webvm.io/" title="real Linux terminal" loading="lazy" allow="cross-origin-isolated"></iframe><div class="pt-linkrow">A real Debian terminal, client-side (x86→WASM). Try <code>ls -l /etc</code>, <code>cat /etc/passwd</code>, <code>ps aux</code>. If the frame is blocked, <a href="https://webvm.io/" target="_blank" rel="noopener">open it in a new tab</a>.</div>'}
+  {type:"linuxvm", t:"Bite 8 / a real shell, in your browser", prose:"You’ve been reading planted output. Now drive a <b>real Linux kernel</b>, booted in your browser — just a terminal, no install. Try <code>ls -l /etc</code>, <code>cat /etc/passwd</code>, <code>ps aux</code>."}
  ]},
 {track:"00 · foundations", id:"fnd-05-windows", title:"Windows for Security",
  engine:"event-log triage (JS)",
@@ -546,6 +545,29 @@ const ENRICH = {"02-lab-setup": {"tiers": ["T0", "T0", "T1"], "learn": ["A secur
 
 /* ---- engine v2: each bite = tier badge + LEARN half + DO half; +realenv +capstone ---- */
 function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+var PT_VM_READY=null;
+function ptLoadScript(src){return new Promise(function(res,rej){var el=document.createElement('script');el.src=src;el.onload=res;el.onerror=function(){rej(new Error('load failed: '+src))};document.head.appendChild(el);});}
+function ptLoadCss(href){var l=document.createElement('link');l.rel='stylesheet';l.href=href;document.head.appendChild(l);}
+async function ptBootLinux(termWrap,btn,fb){
+  try{
+    if(!PT_VM_READY){
+      ptLoadCss('https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css');
+      await ptLoadScript('https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js');
+      await ptLoadScript('https://copy.sh/v86/build/libv86.js');
+      PT_VM_READY=true;
+    }
+    var V=window.V86||window.V86Starter;
+    var term=new window.Terminal({fontSize:15,fontFamily:'IBM Plex Mono, ui-monospace, monospace',cursorBlink:true,convertEol:true,theme:{background:'#05080a',foreground:'#bfe0f2'}});
+    term.open(termWrap);term.write('booting a real Linux kernel… (first boot pulls ~5MB)\r\n');
+    var emu=new V({wasm_path:'https://copy.sh/v86/build/v86.wasm',bios:{url:'https://copy.sh/v86/bios/seabios.bin'},bzimage:{url:'https://copy.sh/v86/images/buildroot-bzimage68.bin'},cmdline:'console=ttyS0',memory_size:128*1024*1024,autostart:true});
+    emu.add_listener('serial0-output-byte',function(b){term.write(String.fromCharCode(b));});
+    term.onData(function(d){emu.serial0_send(d);});
+    btn.style.display='none';
+  }catch(e){
+    btn.disabled=false;btn.textContent='▶ Boot failed — use the links below';
+    if(fb)fb.style.color='#ffc4ca';
+  }
+}
 function tierName(t){return {T0:'in-browser · WASM',T1:'real Linux · in-browser',T2:'real container · Codespaces',T3:'capstone · local'}[t]||t;}
 
 function mountTour(mount){
@@ -588,6 +610,16 @@ function mountTour(mount){
       doEl.innerHTML='<div class="pt-prose">'+(step.prose||'')+'</div>';var term=el('div','pt-term','<span class="o">// type a command and press enter</span>');doEl.appendChild(term);
       var row3=el('div','pt-row');row3.appendChild(el('span','pt-pill','$'));var cmd=el('input','pt-ti');cmd.style.flex='1';cmd.placeholder='command';row3.appendChild(cmd);doEl.appendChild(row3);
       cmd.addEventListener('keydown',function(e){if(e.key!=='Enter')return;var c=cmd.value.trim();if(!c)return;var o=step.commands[c]!==undefined?step.commands[c]:'command not found: '+c;term.innerHTML+='\n<span class="p">$ '+c+'</span>\n<span class="o">'+o+'</span>';cmd.value='';term.scrollTop=term.scrollHeight;if(c===step.goal){verdict(card,true,step.goalMsg);pass(state.si);}});return;}
+    if(t==='linuxvm'){
+      doEl.innerHTML='';
+      doEl.appendChild(el('div','pt-prose',step.prose||'A real Linux kernel, booted in your browser — just a terminal.'));
+      var termWrap=el('div','pt-vm');termWrap.style.display='none';
+      var row=el('div','pt-row');var btn=el('button','pt-btn','▶ Boot real Linux');row.appendChild(btn);
+      var fb=el('div','pt-linkrow','Prefer a ready shell? <a href="https://webvm.io/" target="_blank" rel="noopener">WebVM</a> · <a href="'+CSURL+'" target="_blank" rel="noopener">Codespaces</a>.');
+      doEl.appendChild(row);doEl.appendChild(termWrap);doEl.appendChild(fb);
+      state.passed[state.si]=true;
+      btn.onclick=function(){btn.disabled=true;btn.textContent='booting…';termWrap.style.display='block';ptBootLinux(termWrap,btn,fb);};
+      return;}
     if(t==='order'){
       var cur=step.items.slice().sort(function(){return Math.random()-0.5;});doEl.innerHTML='<div class="pt-prose">'+step.prose+'</div>';var o=el('div');doEl.appendChild(o);
       var row4=el('div','pt-row');var chk=el('button','pt-btn','check order');row4.appendChild(chk);doEl.appendChild(row4);
