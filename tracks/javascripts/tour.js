@@ -1,9 +1,7 @@
-/* Plaintext interactive-tour engine (PROTOTYPE). Auto-generated from the POC.
-   Mounts one module tour into each #pt-tour[data-module]. All logic runs client-side. */
+/* Plaintext interactive-tour engine v2 (PROTOTYPE) — learn+do bites, substrate tiers.
+   Auto-generated; logic carried from the tested POC. Mounts into #pt-tour[data-module]. */
 (function(){
 'use strict';
-
-/* ---------- tiny real helpers (run client-side, no deps) ---------- */
 const enc = new TextEncoder();
 async function sha256hex(input){
   const data = typeof input==='string' ? enc.encode(input) : input;
@@ -365,93 +363,98 @@ const MODULES = [
    explain:"A tool is an attack surface the moment a model (steerable by untrusted content) can invoke it. Validate inputs, scope permissions, never trust the call blindly — the curriculum's 'review every line' posture, enforced in code."}
  ]}
 ];
+const ENRICH = {"02-lab-setup": {"tiers": ["T0", "T0", "T1"], "learn": ["A security lab runs hostile software <i>on purpose</i>. <b>Isolation is control #1</b>: keep the vulnerable box on a network that reaches only itself — never your home LAN or the internet.", "Compose files encode that isolation. <code>network_mode: host</code> hands the container your real network; a named/<code>internal</code> network walls it off. You fix the environment by editing the environment.", "Bringing it up and confirming from the shell is itself the skill — and where a <b>real Linux shell</b> belongs (Tier&nbsp;1: WebVM/v86 in-browser, or your own Docker)."], "links": [{"href": "https://docs.docker.com/network/", "label": "Docker networking (docs)"}, null, null], "realenv": {"t": "Do it for real", "learn": "Spin the actual lab in a free GitHub Codespace — real Docker, real isolation — then prove it’s contained.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch lab in Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{lab-isolated}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{lab-isolated}</code>", "flagPrefix": "09987a25ca9d1a4e"}}, "08-web-ssrf-xxe": {"tiers": ["T0", "T0", "T0"], "learn": ["SSRF abuses a server feature that fetches a URL <i>for you</i>. Because the request originates inside the trust boundary, you can reach things you can’t from outside — like the cloud metadata service.", "The pattern generalises: SSRF, XXE and injection are all <b>untrusted input crossing into a privileged interpreter/requester</b>. Always ask: <i>who actually makes this request, and what can they reach?</i>", "XXE is the same move against an XML parser — an external entity makes the parser read a local file. The fix is structural: disable DTDs/external entities."], "links": [{"href": "https://portswigger.net/web-security/ssrf", "label": "PortSwigger — SSRF (free labs)"}, null, {"href": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing", "label": "OWASP — XXE"}], "realenv": {"t": "Exploit a real SSRF CVE", "learn": "Bring up a Vulhub SSRF target in a Codespace and pull the (mock) metadata creds against a live server.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{ssrf-169254}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{ssrf-169254}</code>", "flagPrefix": "99737b77559466f8"}}, "05-intrusion-detection": {"tiers": ["T0", "T0", "T0"], "learn": ["An IDS rule fires when traffic matches a pattern. The cheap version is one content string — but cheap rules are noisy.", "Precision is the craft: add predicates until you hit the attack and <i>only</i> the attack. A rule is defined as much by what it <b>doesn’t</b> match.", "False-positive economics: a noisy rule gets muted, then misses the real thing. Tune against a benign baseline before you ship."], "links": [{"href": "https://docs.suricata.io/en/latest/rules/intro.html", "label": "Suricata — rule syntax"}, null, null], "realenv": {"t": "Run real Suricata", "learn": "Replay a PCAP through actual Suricata in a Codespace and confirm your rule fires.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{alert-fired}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{alert-fired}</code>", "flagPrefix": "ac40ed270dcbff4a"}}, "10-log-cloud-forensics": {"tiers": ["T0", "T0", "T0"], "learn": ["Cloud forensics is timeline reconstruction over API logs. CloudTrail records who did what, from where, when — your whole case is in the JSON.", "The pivot is where a trusted identity turns hostile: same user, new IP, sudden privilege. Spotting that transition is the core skill.", "Attackers cover tracks (<code>DeleteTrail</code>, <code>StopLogging</code>). Ship logs off-account so the cover-up <i>itself</i> becomes evidence."], "links": [{"href": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html", "label": "AWS — CloudTrail concepts"}, null, null], "realenv": {"t": "Query a real export", "learn": "Open a CloudTrail export in a Codespace and reconstruct the intrusion with <code>jq</code>.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{deletetrail}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{deletetrail}</code>", "flagPrefix": "8c6125f78a02bae9"}}, "13-detection-reporting": {"tiers": ["T0", "T0", "T0"], "learn": ["YARA matches malware on strings/bytes plus a condition. Start by catching the sample.", "Then the hard part: <b>don’t match goodware</b>. A unique artifact (a C2 string) beats a generic one (<code>MZ</code>, in every PE).", "Reporting turns a match into shippable intel: the IOC + the ATT&CK technique + your confidence."], "links": [{"href": "https://yara.readthedocs.io/en/stable/writingrules.html", "label": "YARA — writing rules"}, null, null], "realenv": {"t": "Compile real YARA", "learn": "Scan a MalwareBazaar sample with the real <code>yara</code> CLI in a Codespace.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{yara-hit}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{yara-hit}</code>", "flagPrefix": "85af614421df4429"}}, "05-posture-auditing": {"tiers": ["T0", "T0", "T0"], "learn": ["CSPM tools emit a flood of findings. The skill isn’t running the scanner — it’s <b>triage</b>: severity × exploitability × blast-radius.", "Remediation is editing the artifact. Remove the public principal and the bucket is private; a re-scan flips the finding to PASS.", "The exec summary is two numbers: how many FAIL, and the worst one."], "links": [{"href": "https://github.com/prowler-cloud/prowler", "label": "Prowler (open-source CSPM)"}, null, null], "realenv": {"t": "Run real Prowler", "learn": "Point Prowler at a CloudGoat/sandbox account in a Codespace and triage live output.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{public-bucket}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{public-bucket}</code>", "flagPrefix": "68c649605b639170"}}, "08-path-to-da": {"tiers": ["T0", "T0", "T2"], "learn": ["BloodHound models AD as a graph — users, groups, machines, and the rights between them. Attack paths are just <b>reachability</b>.", "Finding the path is the defender’s skill too: cut one edge and the route to Domain Admin disappears.", "Executing the chain (Kerberoast → crack → ACL abuse) is real tradecraft — it belongs in a live AD range (Tier&nbsp;2/3), not a browser."], "links": [{"href": "https://bloodhound.specterops.io/", "label": "BloodHound (docs)"}, null, null], "realenv": {"t": "Walk the chain live", "learn": "Stand up the GOAD-style AD range and run the path end-to-end to Domain Admin.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch AD range", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{domain-admin}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{domain-admin}</code>", "flagPrefix": "9cf3699c0ade85c4"}}, "11-host-boot-integrity": {"tiers": ["T0", "T0", "T0"], "learn": ["Measured boot hashes each boot component into a TPM PCR, chaining them: <code>PCR = H(PCR ‖ component)</code>. The final value fingerprints the whole chain.<details><summary>Go deeper: why chaining?</summary>Because each measurement folds into the previous, you can’t alter an early component without changing every later PCR — there’s nowhere to hide a swap.</details>", "Tamper one component and every later PCR diverges from the golden value — detection by cryptography, not signatures.", "It beats AV because trust is rooted in hardware and measured <i>before</i> the OS, so malware in that OS can’t forge a clean result."], "links": [{"href": "https://wiki.archlinux.org/title/Trusted_Platform_Module", "label": "Arch Wiki — TPM"}, null, null], "realenv": {"t": "Read real PCRs", "learn": "Read PCRs off a vTPM with <code>tpm2-tools</code> in a Codespace and diff against golden.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{pcr-mismatch}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{pcr-mismatch}</code>", "flagPrefix": "cc2ff99694d56323"}}, "01-primitives-practice": {"tiers": ["T0", "T0", "T0"], "learn": ["A hash is deterministic, one-way, fixed-length. Flip one input bit and ~half the output bits flip (avalanche).", "That property powers the <b>flag check</b> you keep seeing: we store a hash, you prove you found the input — zero answer-leak.", "A bare hash proves integrity, not authenticity. An HMAC adds a secret key, so only a key-holder can forge the tag."], "links": [{"href": "https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto", "label": "MDN — SubtleCrypto"}, null, null], "realenv": {"t": "Sign with OpenSSL", "learn": "Generate a key and sign/verify a file with real <code>openssl</code> in a Codespace.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{hmac-verified}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{hmac-verified}</code>", "flagPrefix": "112d1105a09e7637"}}, "03-structured-data-reporting": {"tiers": ["T0", "T0", "T0"], "learn": ["Security work drowns in rows — scans, logs, findings. Step one is filtering to what matters.", "A report is the few numbers a decision-maker reads: distinct exposed hosts, not raw row counts.", "Dedupe before counting — raw output double-counts hosts, and an inflated number costs you credibility."], "links": [{"href": "https://docs.python.org/3/library/csv.html", "label": "Python — csv module"}, null, null], "realenv": {"t": "Run the real Python", "learn": "Run the actual parser over an nmap CSV in a Codespace and emit a Markdown report.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{report-built}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{report-built}</code>", "flagPrefix": "fa14b55f90203152"}}, "08-soar-fundamentals": {"tiers": ["T0", "T0", "T0"], "learn": ["A SOAR playbook is a pipeline: <b>enrich → decide → act</b>. Order matters — acting before deciding is how you auto-isolate the CEO.", "The decision is a threshold on confidence. Too high misses; too low auto-contains on noise.", "Reversible actions (enrich, tag) automate freely; destructive ones (disable user, isolate host) stay human-gated."], "links": [{"href": "https://github.com/Shuffle/Shuffle", "label": "Shuffle (open-source SOAR)"}, null, null], "realenv": {"t": "Fire a real playbook", "learn": "Wire a Shuffle workflow in a Codespace and trigger it on a webhook alert.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{playbook-fired}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{playbook-fired}</code>", "flagPrefix": "498821ddadf14145"}}, "08-policy-as-code": {"tiers": ["T0", "T0", "T0"], "learn": ["Zero trust is <b>default-deny</b>: access is granted only when explicit conditions hold. You write those conditions as a policy.", "Identity alone isn’t enough — device posture is a first-class input. The missing predicate is what denies the non-compliant insider.", "As code, the policy is versioned, unit-tested, reviewed, and identical at every enforcement point.<details><summary>Go deeper: the twin</summary>This is detection-as-code’s twin — a file in git, tested in CI, deployed everywhere — applied to access instead of alerts.</details>"], "links": [{"href": "https://www.openpolicyagent.org/docs/latest/policy-language/", "label": "OPA — Rego language"}, null, null], "realenv": {"t": "Run real OPA", "learn": "Evaluate your Rego with the real <code>opa</code> CLI and its unit tests in a Codespace.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{policy-passes}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{policy-passes}</code>", "flagPrefix": "c548c9e02bcc4e0d"}}, "05-building-mcp-servers": {"tiers": ["T0", "T0", "T0"], "learn": ["A model can only call a tool it’s been <i>described</i>. The JSON schema is the entire contract between the model and your code.", "The MCP loop: model emits <code>tool_use</code> → your handler runs → <code>tool_result</code> goes back → model continues. Closing that loop <i>is</i> an MCP server.", "A callable tool is an attack surface: the model (steerable by untrusted content) will pass bad args. Validate, scope, never trust the call blindly."], "links": [{"href": "https://modelcontextprotocol.io/", "label": "Model Context Protocol (spec)"}, null, null], "realenv": {"t": "Run a real MCP server", "learn": "Launch a real MCP server + inspector in a Codespace and watch a client call your tool.", "href": "https://codespaces.new/plaintext-security/plaintext-labs?quickstart=1", "launchLabel": "Launch in GitHub Codespaces", "afterLaunch": "Then run the lab steps and paste the flag your run prints (same hash-check the in-browser bites use):", "placeholder": "FLAG{tool-called}", "okMsg": "Verified — that’s the full real-container → flag loop, identical to <code>make grade</code>.", "noMsg": "In the real lab this comes from the grader. For the POC, paste: <code>FLAG{tool-called}</code>", "flagPrefix": "4f8a7d4b73551523"}}};
 
-/* ---- engine: mount one module's tour into each #pt-tour[data-module] ---- */
+/* ---- engine v2: each bite = tier badge + LEARN half + DO half; +realenv +capstone ---- */
 function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function tierName(t){return {T0:'in-browser · WASM',T1:'real Linux · in-browser',T2:'real container · Codespaces',T3:'capstone · local'}[t]||t;}
 
 function mountTour(mount){
   var id=mount.getAttribute('data-module');
   var m=MODULES.find(function(x){return x.id===id;});
   if(!m){mount.innerHTML="<p style='color:#ff5d6c'>Unknown tour module: "+id+"</p>";return;}
+  var enr=(typeof ENRICH!=='undefined'&&ENRICH[id])||{};
+  var nStd=m.steps.length, hasReal=!!enr.realenv, total=nStd+(hasReal?1:0)+1;
   var state={si:0,passed:{}};
 
-  function passStep(i){state.passed[i]=true;var d=mount.querySelectorAll('.pt-dot');if(d[i])d[i].classList.add('pass');}
+  function bite(i){
+    if(i<nStd) return {kind:'std',tier:(enr.tiers&&enr.tiers[i])||'T0',learn:(enr.learn&&enr.learn[i])||'',link:(enr.links&&enr.links[i])||null,title:m.steps[i].t,step:m.steps[i]};
+    if(hasReal&&i===nStd){var r=enr.realenv;return {kind:'real',tier:'T2',learn:r.learn,link:r.link||null,title:r.t,step:r};}
+    return {kind:'cap',tier:'T3',learn:m.capstone,link:null,title:'Capstone — own it'};
+  }
+  function pass(i){state.passed[i]=true;var d=mount.querySelectorAll('.pt-dot');if(d[i])d[i].classList.add('pass');}
   function verdict(card,ok,msg){var v=card.querySelector('.pt-verdict');if(!v){v=el('div','pt-verdict');card.appendChild(v);}v.className='pt-verdict show '+(ok?'ok':'no');v.innerHTML=(ok?'✓ ':'✗ ')+msg;}
   function out(card,text){var o=card.querySelector('.pt-out.dyn');if(!o){o=el('div','pt-out dyn');card.appendChild(o);}o.className='pt-out dyn show';o.textContent=text;}
 
-  function renderStep(card,step){
-    var head='<div class="pt-step-t">'+(step.t||'step')+'</div>';
-    if(step.type==='note'){card.innerHTML=head+'<div class="pt-prose">'+(step.html||'')+'</div>'+(step.render?step.render(m):'');state.passed[state.si]=true;return;}
-    if(step.type==='mcq'){
-      card.innerHTML=head+'<div class="pt-prose">'+step.q+'</div>';
-      var wrap=el('div');card.appendChild(wrap);
+  function interaction(card,doEl,step){
+    var t=step.type;
+    if(t==='note'){doEl.innerHTML=(step.html?'<div class="pt-prose">'+step.html+'</div>':'')+(step.render?step.render(m):'');state.passed[state.si]=true;return;}
+    if(t==='mcq'){
+      doEl.innerHTML='<div class="pt-prose">'+step.q+'</div>';var wrap=el('div');doEl.appendChild(wrap);
       step.options.forEach(function(o){var b=el('button','pt-opt',o.t);
-        b.onclick=function(){wrap.querySelectorAll('.pt-opt').forEach(function(x){x.disabled=true;});b.classList.add(o.correct?'ok':'no');
-          verdict(card,!!o.correct,(o.correct?'':'Not quite. ')+step.explain);
-          if(o.correct)passStep(state.si);else wrap.querySelectorAll('.pt-opt').forEach(function(x){if(x!==b)x.disabled=false;});};
-        wrap.appendChild(b);});
-      return;}
-    if(step.type==='input'){
-      card.innerHTML=head+'<div class="pt-prose">'+step.prose+'</div>';
-      var ti=el('input','pt-ti');ti.placeholder=step.placeholder||'';card.appendChild(ti);
-      var row=el('div','pt-row');var go=el('button','pt-btn','check');row.appendChild(go);card.appendChild(row);
-      var run=async function(){var r=await step.verify(ti.value);if(r.out)out(card,r.out);verdict(card,r.pass,r.msg);if(r.pass)passStep(state.si);};
-      go.onclick=run;ti.addEventListener('keydown',function(e){if(e.key==='Enter')run();});
-      return;}
-    if(step.type==='run'){
-      card.innerHTML=head+'<div class="pt-prose">'+(step.prose||'')+'</div><label class="pt-fld">editable — change it and re-run</label>';
-      var ta=el('textarea','pt-ta');ta.value=step.code||'';card.appendChild(ta);
-      var row2=el('div','pt-row');var b=el('button','pt-btn','▶ run');row2.appendChild(b);row2.appendChild(el('span','pt-pill',m.engine));card.appendChild(row2);
-      b.onclick=async function(){var r=await step.run(ta.value,m);out(card,r.output||'');verdict(card,r.pass,r.msg);if(r.pass)passStep(state.si);};
-      return;}
-    if(step.type==='terminal'){
-      card.innerHTML=head+'<div class="pt-prose">'+(step.prose||'')+'</div>';
-      var term=el('div','pt-term','<span class="o">// type a command and press enter</span>');card.appendChild(term);
-      var row3=el('div','pt-row');row3.appendChild(el('span','pt-pill','$'));var cmd=el('input','pt-ti');cmd.style.flex='1';cmd.placeholder='command';row3.appendChild(cmd);card.appendChild(row3);
-      cmd.addEventListener('keydown',function(e){if(e.key!=='Enter')return;var c=cmd.value.trim();if(!c)return;
-        var o=step.commands[c]!==undefined?step.commands[c]:'command not found: '+c;
-        term.innerHTML+='\n<span class="p">$ '+c+'</span>\n<span class="o">'+o+'</span>';cmd.value='';term.scrollTop=term.scrollHeight;
-        if(c===step.goal){verdict(card,true,step.goalMsg);passStep(state.si);}});
-      return;}
-    if(step.type==='order'){
-      var cur=step.items.slice().sort(function(){return Math.random()-0.5;});
-      card.innerHTML=head+'<div class="pt-prose">'+step.prose+'</div>';
-      var o=el('div');card.appendChild(o);
-      var row4=el('div','pt-row');var chk=el('button','pt-btn','check order');row4.appendChild(chk);card.appendChild(row4);
-      function draw(){o.innerHTML='';cur.forEach(function(it,i){var b=el('div','pt-opt','<b style="color:var(--pt-cy)">'+(i+1)+'.</b> '+it+' <span style="float:right"><button class="pt-btn pt-ghost pt-mini" data-u="'+i+'">↑</button> <button class="pt-btn pt-ghost pt-mini" data-d="'+i+'">↓</button></span>');o.appendChild(b);});
-        o.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){var i=+b.dataset.u;if(i>0){var t=cur[i-1];cur[i-1]=cur[i];cur[i]=t;draw();}};});
-        o.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){var i=+b.dataset.d;if(i<cur.length-1){var t=cur[i+1];cur[i+1]=cur[i];cur[i]=t;draw();}};});}
-      draw();
-      chk.onclick=function(){var ok=cur.every(function(x,i){return x===step.correct[i];});verdict(card,ok,(ok?'':'Not yet. ')+step.explain);if(ok)passStep(state.si);};
-      return;}
+        b.onclick=function(){wrap.querySelectorAll('.pt-opt').forEach(function(x){x.disabled=true;});b.classList.add(o.correct?'ok':'no');verdict(card,!!o.correct,(o.correct?'':'Not quite. ')+step.explain);if(o.correct)pass(state.si);else wrap.querySelectorAll('.pt-opt').forEach(function(x){if(x!==b)x.disabled=false;});};
+        wrap.appendChild(b);});return;}
+    if(t==='input'){
+      doEl.innerHTML='<div class="pt-prose">'+step.prose+'</div>';var ti=el('input','pt-ti');ti.placeholder=step.placeholder||'';doEl.appendChild(ti);
+      var row=el('div','pt-row');var go=el('button','pt-btn','check');row.appendChild(go);doEl.appendChild(row);
+      var run=async function(){var r=await step.verify(ti.value);if(r.out)out(card,r.out);verdict(card,r.pass,r.msg);if(r.pass)pass(state.si);};
+      go.onclick=run;ti.addEventListener('keydown',function(e){if(e.key==='Enter')run();});return;}
+    if(t==='run'){
+      doEl.innerHTML='<div class="pt-prose">'+(step.prose||'')+'</div><label class="pt-fld">editable — change it and re-run</label>';
+      var ta=el('textarea','pt-ta');ta.value=step.code||'';doEl.appendChild(ta);
+      var row2=el('div','pt-row');var b=el('button','pt-btn','▶ run');row2.appendChild(b);row2.appendChild(el('span','pt-pill',m.engine));doEl.appendChild(row2);
+      b.onclick=async function(){var r=await step.run(ta.value,m);out(card,r.output||'');verdict(card,r.pass,r.msg);if(r.pass)pass(state.si);};return;}
+    if(t==='terminal'){
+      doEl.innerHTML='<div class="pt-prose">'+(step.prose||'')+'</div>';var term=el('div','pt-term','<span class="o">// type a command and press enter</span>');doEl.appendChild(term);
+      var row3=el('div','pt-row');row3.appendChild(el('span','pt-pill','$'));var cmd=el('input','pt-ti');cmd.style.flex='1';cmd.placeholder='command';row3.appendChild(cmd);doEl.appendChild(row3);
+      cmd.addEventListener('keydown',function(e){if(e.key!=='Enter')return;var c=cmd.value.trim();if(!c)return;var o=step.commands[c]!==undefined?step.commands[c]:'command not found: '+c;term.innerHTML+='\n<span class="p">$ '+c+'</span>\n<span class="o">'+o+'</span>';cmd.value='';term.scrollTop=term.scrollHeight;if(c===step.goal){verdict(card,true,step.goalMsg);pass(state.si);}});return;}
+    if(t==='order'){
+      var cur=step.items.slice().sort(function(){return Math.random()-0.5;});doEl.innerHTML='<div class="pt-prose">'+step.prose+'</div>';var o=el('div');doEl.appendChild(o);
+      var row4=el('div','pt-row');var chk=el('button','pt-btn','check order');row4.appendChild(chk);doEl.appendChild(row4);
+      function draw(){o.innerHTML='';cur.forEach(function(it,i){var bb=el('div','pt-opt','<b style="color:var(--pt-cy)">'+(i+1)+'.</b> '+it+' <span style="float:right"><button class="pt-btn pt-ghost pt-mini" data-u="'+i+'">↑</button> <button class="pt-btn pt-ghost pt-mini" data-d="'+i+'">↓</button></span>');o.appendChild(bb);});
+        o.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){var i=+b.dataset.u;if(i>0){var x=cur[i-1];cur[i-1]=cur[i];cur[i]=x;draw();}};});
+        o.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){var i=+b.dataset.d;if(i<cur.length-1){var x=cur[i+1];cur[i+1]=cur[i];cur[i]=x;draw();}};});}
+      draw();chk.onclick=function(){var ok=cur.every(function(x,i){return x===step.correct[i];});verdict(card,ok,(ok?'':'Not yet. ')+step.explain);if(ok)pass(state.si);};return;}
+  }
+
+  function realenv(card,doEl,step){
+    doEl.innerHTML='';
+    var a=el('a','pt-launch');a.href=step.href;a.target='_blank';a.rel='noopener';a.textContent='▶ '+(step.launchLabel||'Launch in GitHub Codespaces');doEl.appendChild(a);
+    doEl.appendChild(el('div','pt-fld',step.afterLaunch||'Then paste the flag your run prints:'));
+    var ti=el('input','pt-ti');ti.placeholder=step.placeholder||'FLAG{...}';doEl.appendChild(ti);
+    var row=el('div','pt-row');var go=el('button','pt-btn','verify flag');row.appendChild(go);doEl.appendChild(row);
+    go.onclick=async function(){var h=await sha256hex(ti.value.trim());var ok=h.indexOf(step.flagPrefix)===0;verdict(card,ok,ok?step.okMsg:step.noMsg);if(ok)pass(state.si);};
   }
 
   function render(){
     mount.innerHTML='';
-    mount.appendChild(el('div','pt-intro','This is a <b>proof-of-concept</b> of a proposed format: the module cut into a few inline <b>bites</b>, each one idea you immediately <b>do</b> and that auto-checks — freeCodeCamp-style gating × Tour-of-Go runnable cells. Real engines run in your browser; heavier targets are simulated, with the live version noted as the module’s capstone.'));
+    mount.appendChild(el('div','pt-intro',
+      'PROTOTYPE — a module as <b>interleaved bites</b>: each bite <b>teaches</b> one idea (with a scoped Learn link), then makes you <b>do</b> it and auto-checks. The badge shows <b>where each bite runs</b>.'+
+      '<div class="pt-legend"><span class="pt-tier t0">T0 in-browser</span><span class="pt-tier t1">T1 real linux</span><span class="pt-tier t2">T2 real container</span><span class="pt-tier t3">T3 capstone</span></div>'));
     mount.appendChild(el('div','pt-crumbs',m.track+' / '+m.id));
     mount.appendChild(el('div','pt-h1',m.title));
     var meta=el('div','pt-meta');
+    meta.appendChild(el('span','pt-chip','bite <b>'+(state.si+1)+'</b> / '+total));
     meta.appendChild(el('span','pt-chip','engine: <b>'+m.engine+'</b>'));
-    meta.appendChild(el('span','pt-chip','step <b>'+(state.si+1)+'</b> / '+m.steps.length));
-    meta.appendChild(el('span','pt-chip',m.substrate==='real'?'<b style="color:var(--pt-grn)">real execution</b>':'<b style="color:var(--pt-amber)">simulated target</b>'));
     mount.appendChild(meta);
-    var dots=el('div','pt-dots');
-    m.steps.forEach(function(_,i){dots.appendChild(el('span','pt-dot'+(i===state.si?' on':'')+(state.passed[i]?' pass':'')));});
-    mount.appendChild(dots);
+    var dots=el('div','pt-dots');for(var i=0;i<total;i++){dots.appendChild(el('span','pt-dot'+(i===state.si?' on':'')+(state.passed[i]?' pass':'')));}mount.appendChild(dots);
+    var b=bite(state.si);
     var card=el('div','pt-card');mount.appendChild(card);
-    renderStep(card,m.steps[state.si]);
+    card.appendChild(el('span','pt-tier '+b.tier.toLowerCase(),b.tier+' · '+tierName(b.tier)));
+    card.appendChild(el('div','pt-step-t',b.title));
+    if(b.learn){var lh='<span class="pt-llabel">learn</span> '+b.learn;if(b.link)lh+='<div class="pt-linkrow">↗ Go deeper: <a href="'+b.link.href+'" target="_blank" rel="noopener">'+b.link.label+'</a></div>';card.appendChild(el('div','pt-learn',lh));}
+    var doEl=el('div','pt-do');card.appendChild(doEl);
+    if(b.kind==='std')interaction(card,doEl,b.step);
+    else if(b.kind==='real')realenv(card,doEl,b.step);
+    else{doEl.innerHTML='<div class="pt-prose">The <b>integrative</b> bite: the real environment, run locally (<code>git clone</code> + <code>make up</code>), where the module’s ideas combine into a portfolio artifact you own.</div>';state.passed[state.si]=true;}
     var nav=el('div','pt-nav');
-    var prev=el('button','pt-btn pt-ghost','← prev');if(state.si===0){prev.disabled=true;prev.style.opacity=0.4;}
-    prev.onclick=function(){if(state.si>0){state.si--;render();}};
-    var next=el('button','pt-btn pt-cy',state.si===m.steps.length-1?'finish ✓':'next step →');
-    next.onclick=function(){if(state.si<m.steps.length-1){state.si++;render();}};
+    var prev=el('button','pt-btn pt-ghost','← prev');if(state.si===0){prev.disabled=true;prev.style.opacity=0.4;}prev.onclick=function(){if(state.si>0){state.si--;render();}};
+    var next=el('button','pt-btn pt-cy',state.si===total-1?'finish ✓':'next bite →');next.onclick=function(){if(state.si<total-1){state.si++;render();}};
     nav.appendChild(prev);nav.appendChild(next);mount.appendChild(nav);
-    mount.appendChild(el('div','pt-cap','<b>Capstone (the container/cloud part):</b> '+m.capstone));
   }
   render();
 }
-function ptInit(){var ms=document.querySelectorAll('#pt-tour');ms.forEach(mountTour);}
+window.PT={MODULES:MODULES,mountTour:mountTour};
+function ptInit(){document.querySelectorAll('#pt-tour[data-module]').forEach(mountTour);}
 if(document.readyState!=='loading')ptInit();else document.addEventListener('DOMContentLoaded',ptInit);
-
 })();

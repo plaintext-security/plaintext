@@ -47,3 +47,22 @@
 #pt-tour .pt-cap{margin-top:20px;font-size:12.5px;color:var(--pt-mut);border-top:1px dashed var(--pt-line);padding-top:12px;line-height:1.5}
 #pt-tour .pt-cap b{color:var(--pt-amber)}
 #pt-tour .pt-pill{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--pt-mut)}
+
+/* --- v2: learn+do bites, substrate tiers --- */
+#pt-tour .pt-legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#pt-tour .pt-tier{display:inline-block;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
+#pt-tour .pt-card>.pt-tier{margin-bottom:8px}
+#pt-tour .pt-tier.t0{background:rgba(0,255,136,.14);color:var(--pt-grn);border:1px solid rgba(0,255,136,.4)}
+#pt-tour .pt-tier.t1{background:rgba(0,170,255,.14);color:var(--pt-cy);border:1px solid rgba(0,170,255,.4)}
+#pt-tour .pt-tier.t2{background:rgba(255,193,77,.14);color:var(--pt-amber);border:1px solid rgba(255,193,77,.4)}
+#pt-tour .pt-tier.t3{background:rgba(193,140,255,.16);color:#c9a6ff;border:1px solid rgba(193,140,255,.45)}
+#pt-tour .pt-learn{background:rgba(0,170,255,.05);border-left:3px solid var(--pt-cy);border-radius:0 8px 8px 0;padding:11px 14px;margin:0 0 14px;font-size:14.5px;line-height:1.55;color:var(--pt-ink)}
+#pt-tour .pt-learn b{color:#fff}
+#pt-tour .pt-llabel{font-family:IBM Plex Mono,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--pt-cy);margin-right:7px;border:1px solid rgba(0,170,255,.4);border-radius:4px;padding:1px 5px}
+#pt-tour .pt-learn details{margin-top:8px}
+#pt-tour .pt-learn summary{cursor:pointer;color:var(--pt-cy);font-size:13px}
+#pt-tour .pt-linkrow{margin-top:9px;font-size:12.5px;color:var(--pt-mut)}
+#pt-tour .pt-linkrow a{color:var(--pt-cy)}
+#pt-tour .pt-do{margin-top:2px}
+#pt-tour .pt-launch{display:inline-block;background:var(--pt-amber);color:#1a1205;font-weight:700;padding:9px 16px;border-radius:8px;text-decoration:none;font-size:13px}
+#pt-tour .pt-launch:hover{filter:brightness(1.06)}
