@@ -21,8 +21,11 @@ mean time to triage.
 ## Objective
 Build a SOAR playbook in n8n that receives a webhook alert, enriches the source IP via the mock
 threat-intel API, creates a ticket (writes a JSON file), and notifies the analyst (logs to
-stdout) — end to end, from webhook trigger to human-readable notification, without leaving the
-lab environment.
+stdout) — then add the **human-in-the-loop containment gate** the module is really about: the
+playbook automates everything *up to* the action, but a containment step (block the IP) only
+executes after explicit approval. **Prove the gate holds**: a HIGH alert produces a pending-
+approval record and **no** containment artifact until you approve. Automating the response and
+proving it won't act without a human are equal halves.
 
 ## The core idea
 SOAR platforms are essentially workflow engines with pre-built connectors to security tools.
@@ -66,6 +69,7 @@ field; (3) an alert where the enrichment API is down; (4) an alert where the ver
 ## Key concepts
 - SOAR workflow: trigger → enrich → decide → respond
 - Human-in-the-loop gate: ticket with recommended action vs. auto-execute
+- Build then verify the gate: prove a containment action does NOT fire without approval — an un-approved HIGH alert leaves a pending-approval record and no block artifact (the build half, not a stretch)
 - Webhook trigger: the interface between SIEM and playbook
 - n8n workflow JSON: human-readable, version-controllable
 - Testing with four scenarios: happy path, missing field, API down, unknown verdict

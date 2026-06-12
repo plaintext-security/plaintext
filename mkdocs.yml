@@ -430,6 +430,9 @@ nav:
       - "10 · Detecting Host Compromise":
           - Concept: 07-endpoint-hardening/modules/10-detecting-host-compromise/README.md
           - Lab: 07-endpoint-hardening/modules/10-detecting-host-compromise/lab.md
+      - "11 · Host & Boot Integrity":
+          - Concept: 07-endpoint-hardening/modules/11-host-boot-integrity/README.md
+          - Lab: 07-endpoint-hardening/modules/11-host-boot-integrity/lab.md
   - Cryptography, PKI & Secrets:
       - Overview: 08-cryptography/README.md
       - "01 · Primitives in Practice":
@@ -526,6 +529,9 @@ nav:
       - "10 · Reviewing AI-Generated Automation":
           - Concept: 10-automation/modules/10-reviewing-ai-automation/README.md
           - Lab: 10-automation/modules/10-reviewing-ai-automation/lab.md
+      - "11 · Secrets Handling in Pipelines":
+          - Concept: 10-automation/modules/11-pipeline-secrets/README.md
+          - Lab: 10-automation/modules/11-pipeline-secrets/lab.md
   - Zero Trust Network Access:
       - Overview: 11-ztna/README.md
       - "01 · Zero Trust Principles":
@@ -555,6 +561,9 @@ nav:
       - "09 · Monitoring & Detection":
           - Concept: 11-ztna/modules/09-monitoring-detection/README.md
           - Lab: 11-ztna/modules/09-monitoring-detection/lab.md
+      - "10 · Workload Identity & mTLS":
+          - Concept: 11-ztna/modules/10-workload-identity-mtls/README.md
+          - Lab: 11-ztna/modules/10-workload-identity-mtls/lab.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":

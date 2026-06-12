@@ -22,7 +22,9 @@ from its training priors.
 
 ## Objective
 Build a working RAG pipeline against a fictional Meridian security knowledge base, query it with
-realistic SOC questions, and document where retrieval succeeds and where it fails — and why.
+realistic SOC questions, **and evaluate retrieval against a labeled set** — reporting retrieval@k
+and a grounding check rather than eyeballing relevance. Building the pipeline and measuring it
+against ground truth are equal halves.
 
 ## The core idea
 The intuition behind vector search is simpler than the term suggests: encode every document chunk
@@ -78,6 +80,7 @@ both. That combination is Module 06.
 - Chunk size tradeoffs: small chunks = precise retrieval, may miss full context; large = vice versa
 - RAG failure modes: retrieval miss, context poisoning, hallucination-on-context
 - RAG vs. tool calls: static corpus retrieval vs. live data (covered in Module 05)
+- Evaluate the AI, don't eyeball it: retrieval@k + a grounding check against a labeled query→expected-doc set, incl. a not-in-corpus case
 
 ## AI acceleration
 Use a model to help draft the corpus ingestion script — it knows the ChromaDB API well and

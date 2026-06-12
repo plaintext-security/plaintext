@@ -22,8 +22,12 @@ Getting identity right is the prerequisite for everything else in the ZT stack.
 ## Objective
 
 Deploy a Keycloak identity provider, seed it with the Meridian realm configuration, obtain a JWT
-via an OIDC flow, and demonstrate how per-application access decisions are enforced through claims
-— then reason about how Meridian's existing Okta/Entra ID would federate into the same pattern.
+via an OIDC flow, and demonstrate how per-application access decisions are enforced through claims —
+then *harden* the realm to ZT discipline: shorten the access-token lifespan, scope the token to a
+single audience, and minimise its claims, and **prove** the boundary holds by showing that a token
+minted for one client is rejected by a second client on audience mismatch. Inspecting the default
+and authoring the hardened, verified config are equal halves — then reason about how Meridian's
+existing Okta/Entra ID would federate into the same pattern.
 
 ## The core idea
 
@@ -90,6 +94,7 @@ be replayed against a different application.
 - Federation broker pattern: Keycloak as the broker between Okta/Entra ID upstream and applications downstream
 - Token lifetime discipline: short-lived tokens preserve the per-request evaluation model
 - Claim minimization: issue only the claims the application needs, scoped to a single audience
+- Author then verify: harden the realm yourself (short lifespan, single `aud`, minimal claims) and prove the boundary — a token for the wrong audience is rejected by the other client (the build half, not just inspecting the default)
 
 ## AI acceleration
 

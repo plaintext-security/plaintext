@@ -16,7 +16,7 @@ Security hardening that lives in a checklist in a SharePoint site will drift. Gr
 
 ## Objective
 
-Audit the Meridian domain's ACL posture using `dacledit.py`, produce a scored hardening report against a CIS-aligned checklist, and write an Ansible playbook that codifies the key remediations as idempotent, reviewable tasks.
+Audit the Meridian domain's ACL posture using `dacledit.py`, produce a scored hardening report against a CIS-aligned checklist, and write an Ansible playbook that codifies the key remediations as idempotent, reviewable tasks — then *apply* the two highest-value fixes to the live DC and **prove** them: re-run the attack (the AS-REP roast against `svc-legacy` now fails) and re-score to show the HIGH findings cleared. Auditing/authoring the remediation and proving it closes the path on the live domain are equal halves.
 
 ## The core idea
 
@@ -47,6 +47,7 @@ The CIS Benchmark for Active Directory covers hundreds of controls, but the 20 t
 - PingCastle scores posture on a 0-100 scale (lower is better/riskier); use the risk categories as a priority guide.
 - Hardening playbooks should be in version control and run with `--check` before applying.
 - Delta reporting (this week vs. last week) is how you demonstrate remediation progress.
+- Apply then verify: prove a remediation works by applying it to the live DC and re-running the attack — a hardening playbook never tested against the domain is documentation, not a control.
 
 ## AI acceleration
 

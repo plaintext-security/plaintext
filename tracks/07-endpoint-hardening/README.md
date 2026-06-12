@@ -23,10 +23,11 @@ recognised benchmarks — as code, with compliance scoring and drift detection.
 | 08 | [Patch & Vulnerability Management](modules/08-patch-vuln-management/README.md) | Finding and closing exposure | `osquery`, `grype` |
 | 09 | [Local Privilege-Escalation Defense](modules/09-privesc-defense/README.md) | Closing the paths Track 01 abuses | — |
 | 10 | [Detecting Host Compromise](modules/10-detecting-host-compromise/README.md) | Catching what the baseline didn't stop | `wazuh`, `sigma` |
+| 11 | [Host & Boot Integrity](modules/11-host-boot-integrity/README.md) | Proving files and the boot chain haven't been tampered with | `aide`, Secure Boot/TPM |
 
 ## Phases & projects
 
-The ten modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours). Work on VMs you own, and
 snapshot before destructive changes.
 
@@ -36,9 +37,10 @@ snapshot before destructive changes.
 - **Phase 2 · Scale, score & patch** (05–08) — **Project:** stand up endpoint telemetry, push the
   baseline at scale with Ansible, score compliance with OpenSCAP, and run a patch/vuln-management
   loop — proving drift detection catches a deliberate misconfiguration.
-- **Phase 3 · Detect & defend** (09–10) — **Project:** the track capstone — close the local
-  privilege-escalation paths Track 01 abuses, show telemetry firing on a simulated host compromise,
-  and deliver the config-as-code, the before/after score delta, and the detection.
+- **Phase 3 · Detect & defend** (09–11) — close the local privilege-escalation paths Track 01 abuses,
+  catch a simulated host compromise with telemetry, and prove files and the boot chain are intact with
+  file-integrity monitoring. **Project:** the track capstone — deliver the config-as-code, the
+  before/after score delta, the detection, and a tamper-evident integrity baseline.
 
 ## Prerequisites
 Complete Track 00 — Foundations first.

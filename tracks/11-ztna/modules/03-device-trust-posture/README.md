@@ -22,9 +22,13 @@ device posture, and a policy engine that factors that signal into every access d
 ## Objective
 
 Deploy headscale (the self-hosted Tailscale coordination server) in Docker, register a device node,
-and demonstrate that only enrolled and registered devices can reach the protected service — then map
-the fictional Meridian device posture policy to the controls Tailscale ACLs and Cloudflare Access
-would enforce in production.
+and demonstrate that only enrolled and registered devices can reach the protected service — then
+*author and apply* a second access tier: extend the ACL so a `contractor`-tagged node reaches only a
+permitted subset, **apply it to the live mesh**, and **prove** with a request that the contractor
+node is denied the corp-only service while the corp node still reaches it. Verifying the default and
+building the tiered control that closes the BYOD gap are equal halves — then map the fictional
+Meridian device posture policy to the controls Tailscale ACLs and Cloudflare Access would enforce in
+production.
 
 ## The core idea
 
@@ -93,6 +97,7 @@ FIDO2 hardware is physical, the lab covers it in prose; the interactive demo is 
 - Posture-gated access: minimum posture score required before token is issued or route allowed
 - FIDO2/passkeys: user presence + hardware-bound credential as the human-layer complement to device identity
 - Blast radius of a compromised device with vs. without device posture controls
+- Author then verify: apply a tiered ACL to the running mesh and prove the deny — a `contractor`-tagged node is refused the corp-only service while the corp node still reaches it (the build half, not just reasoning about the stanza)
 
 ## AI acceleration
 
