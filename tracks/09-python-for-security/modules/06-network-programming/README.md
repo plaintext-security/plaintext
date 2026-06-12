@@ -18,8 +18,10 @@ exactly what a scanner is doing on the wire when you fire it at a target.
 
 ## Objective
 Write a port scanner and banner grabber in raw Python `socket`, then use `scapy` to capture and
-parse a small packet trace — understanding what is happening at each layer rather than just
-reading tool output.
+parse a small packet trace — and **prove the scanner with a test you wrote**: an assertion that it
+returns OPEN/CLOSED correctly for the fixed target port set, plus at least one SYN-ACK/RST check
+from the capture. Building the scanner and committing a test that pins its verdicts are equal
+halves — understanding what is happening at each layer, not just reading tool output.
 
 ## The core idea
 A TCP port scanner is thirty lines of Python. `socket.connect_ex(host, port)` returns `0` on
@@ -65,6 +67,7 @@ authorized in writing; everything outside that scope is illegal regardless of in
 - Scapy layer model: `Ether / IP / TCP / Raw`
 - BPF filters in `scapy.sniff()` — same syntax as tcpdump
 - Authorization: scan only what you own or have written permission for
+- Verify by test, not by eye: a learner-written test that asserts OPEN/CLOSED per the fixed target ports (plus a SYN-ACK/RST check) — the ownership half, not a diff against `make demo`
 
 ## AI acceleration
 Ask a model to write a port scanner. It will produce a working one. Then ask it to add a

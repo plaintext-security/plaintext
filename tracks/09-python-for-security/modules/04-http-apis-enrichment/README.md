@@ -19,8 +19,10 @@ senior engineer automates it.
 
 ## Objective
 Use `httpx` to query a local mock threat-intel API; enrich a list of IOCs (IPs and hashes) from
-`data/iocs.txt`; handle errors, timeouts, and rate-limiting correctly; and output enriched
-results.
+`data/iocs.txt`; handle errors, timeouts, and rate-limiting correctly; output enriched results —
+and **prove it with a test you wrote**: a `test_enrich.py` that asserts the `429`-retry succeeds
+and the malicious/clean/404 verdicts are correct. Building the enrichment client and committing a
+test that pins its behaviour are equal halves.
 
 ## The core idea
 The HTTP layer is simple; the error handling is not. A script that queries an API and prints the
@@ -69,6 +71,7 @@ one that skips a few IOCs and finishes.
 - `429` + `Retry-After`: sleep and retry; exponential backoff for other 5xx errors
 - Loading API keys from environment variables only — never from source files
 - Enrichment as a pipeline: iterate IOCs, query, handle error, accumulate, write results
+- Verify by test, not by eye: a learner-written `test_enrich.py` that asserts the retry and the verdicts — the ownership half, not a diff against `make demo`
 
 ## AI acceleration
 A model writes the API query loop quickly. The hidden bugs are in the error cases: test it
