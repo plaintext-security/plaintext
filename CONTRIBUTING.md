@@ -2,6 +2,11 @@
 
 Thanks for helping make security education free and open.
 
+> **Redesign in progress (`feat/verdict-redesign`).** Module *shape* is now governed by the type-driven
+> model in **[`AUTHORING.md`](AUTHORING.md)** and **[`planning/MODULE-TYPE-LIBRARY.md`](planning/MODULE-TYPE-LIBRARY.md)**
+> — read those before authoring a module. This file still governs the build mechanics (MkDocs, nav,
+> grading machinery, secret hygiene). Where the two disagree on module shape, `AUTHORING.md` wins.
+
 ## How to contribute
 
 1. Fork the repo
