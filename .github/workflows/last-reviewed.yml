@@ -22,7 +22,7 @@ jobs:
   last-reviewed:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
       - name: Scan module READMEs for stale / missing review dates
         id: scan
@@ -107,7 +107,7 @@ jobs:
 
       - name: Open/refresh tracking issue (scheduled only)
         if: github.event_name == 'schedule' && steps.scan.outputs.flagged != '0'
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@e8ef132d6df98ed982188e460ebb3b5d4ef3a9cd  # v5.0.1
         with:
           title: "Stale module review dates found by the weekly last-reviewed check"
           content-filepath: ./last-reviewed-report.md

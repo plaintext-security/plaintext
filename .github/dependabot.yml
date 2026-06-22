@@ -1,0 +1,15 @@
+version: 2
+
+# Keep the GitHub Actions pins (full commit SHAs in .github/workflows/) current.
+# Workflows pin every `uses:` to a SHA with the version in a trailing comment; Dependabot
+# opens a PR to bump the SHA + comment when a new release ships, so the pins don't go stale.
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"

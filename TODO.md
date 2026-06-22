@@ -48,7 +48,7 @@ Status: ✅ done · 🟡 partial · ⬜ not started · ➖ n/a
 | T20 | ✅ | pytest + CI for the grading/credential scripts (69 tests, grade/verify/certificate/consistency) | P1 | plaintext-labs | Sonnet 4.6 | M | T6 |
 | T21 | ✅ | `grade.yaml` schema-lint in CI | P2 | plaintext-labs | Sonnet 4.6 | S | T6 |
 | T22 | ✅ | Document grading/`.ci-demo`/credentials in CLAUDE.md + CONTRIBUTING.md + a learner page | P1 | plaintext | Sonnet 4.6 | M | — |
-| T23 | ⬜ | Harden GitHub Actions supply chain: pin actions to commit SHAs + Dependabot | P2 | both | Haiku 4.5 | S | — |
+| T23 | ✅ | Harden GitHub Actions supply chain: pin actions to commit SHAs + Dependabot | P2 | both | Haiku 4.5 | S | — |
 | T24 | ⬜ | Cloud track build-vs-find rebalance (see `planning/cloud-track-rebalance.md`) | P1 | both | Sonnet 4.6 (Opus for KMS module) | M–L | — |
 
 *(T19–T22 added 2026-06-10 from a testing/CI + docs review — the grading system shipped but was untested in CI and undocumented in the charter, and PRs had no build gate.)*
@@ -264,6 +264,7 @@ design labs (01 foundational, 14 attack-sim).
 ---
 
 *Generated from a content+structure review on 2026-06-10. Re-run the assessment after P0/P1 land to re-prioritise P2.*
-*Update 2026-06-10 — COMPLETE. Every task T1–T18 is merged to `main` in both repos (T16 was n/a — no images). Landed across: plaintext PRs #14–24 and plaintext-labs PRs #1–7, plus the module-17 polish. All `mkdocs build --strict` green; the opt-in Labs CI (`.ci-demo`) is green on its 4 enforced reference labs.*
+*Update 2026-06-10 — Every task T1–T18 is merged to `main` in both repos (T16 was n/a — no images). Landed across: plaintext PRs #14–24 and plaintext-labs PRs #1–7, plus the module-17 polish. All `mkdocs build --strict` green; the opt-in Labs CI (`.ci-demo`) is green on its 4 enforced reference labs.*
+*Update 2026-06-22 — COMPLETE. T24 (cloud rebalance) and T23 (Actions supply-chain hardening) landed. T23: every workflow `uses:` in both repos + the learner badge template pinned to full commit SHAs (version in trailing comment), the template's `PLAINTEXT_REF` pinned to a plaintext-labs commit SHA instead of `main`, and a `github-actions` Dependabot config added to each repo. All tasks T1–T24 are now done (T16 n/a).*
 
 *Ongoing (not a task — a maintenance loop): Labs CI coverage grows as more labs are verified green and opted in (T18 fixed the `discover` bug, `automation/06`, and 9 broken `make demo` recipes; those 9 are left unmarked until the nightly full matrix confirms them green). New tasks discovered during the work should be appended below.*
