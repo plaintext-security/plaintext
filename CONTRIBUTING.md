@@ -211,37 +211,30 @@ Which later modules/tracks build on this.
 - A harder extension for the motivated.
 ```
 
-## Grading a lab (`grade.yaml`, `make grade`, `.ci-demo`)
+## Validating a lab (honor system — no grading)
 
-A finished lab makes its **Success criteria** machine-checkable so a learner can self-verify and
-earn a completion receipt. The grader and credential tooling live in **`plaintext-labs/scripts/`** —
-its [`README.md`](https://github.com/plaintext-security/plaintext-labs/blob/main/scripts/README.md)
-is the authoritative reference; this is the author's quick-start.
+Plaintext is an **honor-system** curriculum: there is **no automated grading, no receipts, and no
+credentials**. A finished lab isn't *graded* — it makes its **Success criteria** clear enough that a
+learner can verify them *for themselves*, and names a **Deliverable** (the portfolio artifact they commit
+to their own repo). The committed work is the proof. Your job as an author is to make "you're done when…"
+unambiguous, not to build a checker.
 
-**Add grading to a lab:**
+**What a finished lab provides:**
 
-1. In the lab's `plaintext-labs/<track>/<NN-module-name>/` directory, write a `grade.yaml` whose
-   checks mirror the `lab.md` "Success criteria" (one check per criterion where you can).
-2. Expose a `make grade` target (the reference labs already do — copy
-   `offensive/06-web-injection` or `defensive/08-detection-as-code`). It runs `scripts/grade.py`
-   and, on an all-pass, writes a `receipt.json` the learner commits to their portfolio.
+1. A `lab.md` with measurable **Success criteria** (checkbox "you're done when…") and a clear
+   **Deliverable**. Where you can, make the criteria *observable* (a file exists, a tool exits 0, a
+   detection fires on the attack and stays quiet on benign data) so self-verification is honest.
+2. A `Makefile` with the standard targets — `up` / `down` / `reset` / `demo` (and `shell`/`check` where
+   useful). `make demo` is the worked reference run, not a grader.
+3. Capstones additionally ship a self-assessment **`rubric.md`** the learner grades their own work against
+   (peer or reviewer feedback welcome).
 
-**Check types** (pick the one that actually *proves* the criterion):
-
-| type | proves |
-|------|--------|
-| `flag` | the learner reached something only completion exposes (compared by sha256) |
-| `structural` | an artifact exists and matches / avoids patterns (lint-ish) |
-| `artifact_functional` | the learner's script runs and gives the expected exit/output |
-| `target_state` | the live lab is in the proven state (a fix holds, a marker is written) |
-| `advisory` / `ai_rubric` | informational only (e.g. a design/report rubric) — **never** gates the grade |
-
-Checks are required unless `required: false`; `advisory`/`ai_rubric` default to optional. Where a
-check should prove a *general* solution (a detection quiet on benign data, a parser that hits a rate
-on unseen logs), grade against a **held-out** set distinct from the `demo` set.
+**Hold "general" claims to a held-out set.** Where a lab's point is a *general* solution (a detection
+quiet on benign data, a parser that works on unseen logs), have the learner test against data **distinct
+from the `demo` set** — and say so in the criteria, so "it worked once" isn't mistaken for "it works."
 
 **Opt the lab into CI (`.ci-demo`).** Labs CI runs `make demo` for a lab **only if** its directory
-contains a `.ci-demo` marker. Add one **only once `make up && make demo && make down` is green on a
-Linux runner.** Do *not* add it to a learner-exercise lab (whose demo fails until the learner
-completes it) or a VM/cloud lab (needs Windows, a hypervisor, or real cloud credentials) — those are
-intentionally left out of CI.
+contains a `.ci-demo` marker — this is **lab quality assurance** (the lab runs on a clean runner), not
+learner grading. Add one **only once `make up && make demo && make down` is green on a Linux runner.**
+Do *not* add it to a learner-exercise lab (whose demo fails until the learner completes it) or a VM/cloud
+lab (needs Windows, a hypervisor, or real cloud credentials) — those are intentionally left out of CI.

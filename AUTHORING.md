@@ -67,8 +67,9 @@ wrong, and is the correct answer load-bearing?* If not, skip it and teach the sk
 
 ## Step 3 — Write to the type's template
 
-Each type in the library gives a **README shape**, a **Lab shape**, the **deliverable**, the **`grade.yaml`
-check** it maps to, and the **exemplar to copy**. Use them. The README still keeps the recognizable house
+Each type in the library gives a **README shape**, a **Lab shape**, the **deliverable**, the
+**self-check signal** (how the learner verifies they're done — honor system, no grader), and the
+**exemplar to copy**. Use them. The README still keeps the recognizable house
 sections (the `module-meta` line, an objective, *Learn*, *Key concepts*, *AI acceleration*); what varies is
 whether "The core idea" is a predict-then-reveal or a build/decision framing.
 
@@ -97,9 +98,10 @@ whether "The core idea" is a predict-then-reveal or a build/decision framing.
   `plaintext-labs/<track>/<NN-module>/` at promotion.
 - `make up && make demo && make down` has **actually been run** on a Linux runner and works (add the
   `.ci-demo` marker only then; learner-exercise and VM/cloud labs stay unmarked — see `CONTRIBUTING.md`).
-- A `grade.yaml` makes the "Success criteria" machine-checkable, using the **check type the module's type
-  maps to** (each library entry names it). Grade general solutions against a **held-out** set, never the
-  demo set — this is doubly true for Type 13 (Eval Harness).
+- The **Success criteria are observable and self-verified** — honor system, no grader. Make them
+  concrete (a file exists, a tool exits 0, a detection fires on the attack and is quiet on benign data)
+  so the learner can honestly check their own work; each library entry names the self-check signal. Hold
+  general-solution claims to a **held-out** set, never the demo set — doubly true for Type 13 (Eval Harness).
 - A `lab.md` that only references an external target or an untested `docker run` line is a **stub**, not a
   finished lab.
 
@@ -114,15 +116,16 @@ guide.
 ## What still governs (from `CONTRIBUTING.md`)
 
 The build mechanics are unchanged: MkDocs (`docs_dir: tracks`, explicit `nav:`, `mkdocs build --strict`),
-the two-repo split (prose here, runnable labs in `plaintext-labs`), the grading/receipt/certificate
-machinery (`plaintext-labs/scripts/`), and secret & artifact hygiene (never commit captures, keys, dumps).
-Read `CONTRIBUTING.md` for those; read this for *what shape a module takes and why*.
+the two-repo split (prose here, runnable labs in `plaintext-labs`), and secret & artifact hygiene (never
+commit captures, keys, dumps). **There is no grading, receipt, or credential machinery** — Plaintext is an
+honor system; the committed portfolio artifact is the only proof. Read `CONTRIBUTING.md` for the mechanics;
+read this for *what shape a module takes and why*.
 
 ## Definition of done (a module)
 
 1. Tagged with a **type**; written to that type's template.
 2. **Anchored** on a real, cited artifact (no `VALIDATE` markers left).
 3. Rules-scaled correctly (predict-then-reveal vs build-first per the type).
-4. **Lab built and validated** (`make demo` green) with a type-appropriate `grade.yaml`.
+4. **Lab built and validated** (`make demo` green); Success criteria observable and self-checkable.
 5. Ends in the **owned artifact** the type prescribes.
 6. Honest about tooling; original prose; AI parts reviewed and noted.

@@ -59,4 +59,3 @@ working definition, not a dictionary entry — enough to keep reading without br
 - **Reference lab** — a one-command containerised environment (`make up`/`demo`/`reset`/`down`) bundled
   in `plaintext-labs`.
 - **Capstone** — the portfolio-worthy build that integrates a whole track.
-- **Completion receipt** — the signed JSON `make grade` emits on a pass; your verifiable proof of work.

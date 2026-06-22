@@ -46,7 +46,6 @@ git clone https://github.com/plaintext-security/plaintext-labs
 cd plaintext-labs/<track>/<module>
 make up      # start the environment
 make demo    # watch the worked example
-make grade   # check your work (writes a completion receipt)
 make down    # stop it
 ```
 
@@ -59,8 +58,8 @@ skill is directing and rigorously reviewing it. Never submit something you can't
 There's no paywalled exam — your **portfolio is the credential**:
 
 - Each lab's committed artifact (writeup, script, detection rule, report) is evidence.
-- `make grade` runs the lab's checks and, on a pass, writes a **`receipt.json`** you commit to your
-  own repo — verifiable, and it runs as a green check in *your* GitHub Actions.
+- Self-check your work against the lab's **Success criteria** and commit the deliverable — this is an
+  honor system; no tool grades you, the proof is the committed work itself.
 - A track's **capstone** integrates the whole track into one portfolio-worthy build.
 
 ## Get help

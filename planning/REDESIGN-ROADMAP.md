@@ -12,8 +12,8 @@ A track is **converted** when:
 2. Every module is **anchored** on a real, cited artifact — no `VALIDATE` markers left.
 3. The track's **shape mismatches are fixed** and its **coverage-gap modules are added** (per
    `type-pass/<track>.md`).
-4. Every lab is **built and validated** (`make demo` green) with a type-appropriate `grade.yaml`, living
-   in `plaintext-labs/<track>/`.
+4. Every lab is **built and validated** (`make demo` green), with **observable, self-checkable Success
+   criteria** (honor system — no grader), living in `plaintext-labs/<track>/`.
 5. `mkdocs build --strict` is green and the nav is updated.
 
 The curriculum is **done** when all 13 tracks meet that bar and the four systemic constructs (Eval
@@ -27,7 +27,7 @@ Harness, Migration, ADR, Adversarial Review) are present everywhere the type pas
 - **Don't lose what's good.** Tracks that are already coherent (AD, endpoint, python) need *light* touches
   (anchors, an eval, an ADR), not rewrites. Convert effort to where the mismatches are.
 - **Prose and lab ship together.** A converted module with an unvalidated lab is half-done (the standing
-  rule). Each module: author prose → build/colocate lab → `make demo` → `grade.yaml`.
+  rule). Each module: author prose → build/colocate lab → `make demo` → observable Success criteria.
 - **Proven pipeline** (from the cloud/foundations prototypes): write a track `DESIGN.md` spine (anchors +
   per-module type) → author modules to type (parallelizable) → colocate/build labs → scrub/validate →
   `STATUS.md`. Reuse it per track.
@@ -96,7 +96,7 @@ Wave-2 constructs they need.*
 
 1. Write/extend the track `DESIGN.md`: assign each module a **type** + a **real anchor** (from `SOURCES.md`).
 2. Author the module to its type's template (parallelizable across modules; one author per module).
-3. Build or colocate the lab; **run `make demo`**; write the `grade.yaml` for the type's check.
+3. Build or colocate the lab; **run `make demo`**; make the Success criteria observable and self-checkable.
 4. Resolve `VALIDATE` links; scrub any fictional persona; honesty pass.
 5. `mkdocs build --strict`; update nav; write the track `STATUS.md`.
 

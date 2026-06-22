@@ -58,17 +58,24 @@ A failed build does **not** take down the live site — Pages keeps the last goo
 
 `.github/workflows/build.yml` is the **PR build gate**: it runs the same `pip install -r requirements.txt` + `mkdocs build --strict` on every `pull_request` and on push to non-`main` branches, so a build-breaking PR fails *before* merge rather than only on deploy. It does not publish — deploy.yml owns that.
 
-### Grading, CI & credentials
+### Honor system — no grading, no credentials
 
-The *prose* lives here; the *grading and credential machinery* lives in **`plaintext-labs`** (`scripts/`), and **[`plaintext-labs/scripts/README.md`](https://github.com/plaintext-security/plaintext-labs/blob/main/scripts/README.md) is the reference** for all of it. The shape, so you know what the prose is describing:
+Plaintext is an **honor-system** curriculum: there is **no automated grading, no receipts, and no
+credentials**. Learning is the point, and that's on all of us. How a learner knows they're done:
 
-- **`grade.yaml` + `make grade`** — each lab turns its "Success criteria" into executable checks declared in a per-lab `grade.yaml`, run by `scripts/grade.py` via a `make grade` target. Check types: `flag` (sha256 of something only completion exposes), `structural` (artifact exists / matches-or-avoids patterns), `artifact_functional` (the learner's script runs with the expected exit/output), `target_state` (the live lab is in the proven state), and `advisory`/`ai_rubric` (informational, never gates).
-- **`receipt.json`** — on an all-pass, the grader writes a completion receipt (lab id, timestamp, checks passed, artifact hashes, a digest) that the learner commits to *their own* portfolio repo. `scripts/verify_receipt.py` recomputes the digest (and an optional HMAC) — tamper-evident, not proctored.
-- **`track_certificate.py`** — aggregates a track's receipts (every module lab + the capstone) into one `certificate.json`, re-digests the bundle, and can render a badge. Built on the same digest scheme as the receipt.
-- **Public verify page** — `tracks/verify.md` here runs the identical digest check in-browser (SubtleCrypto); its JS canonicaliser is kept byte-identical to Python's `json.dumps(sort_keys=True)`. The learner-facing explainer is `tracks/grading.md`.
-- **`.ci-demo` opt-in marker** — Labs CI (`plaintext-labs/.github/workflows/labs-ci.yml`) runs a lab's `make demo` **only if** the lab directory contains a `.ci-demo` file. This is deliberate: learner-exercise labs (the demo fails until the learner finishes it) and VM/cloud labs are *not* expected to pass in CI. Add `.ci-demo` to a lab only once its `make up && make demo && make down` is green on a Linux runner.
+- Each `lab.md` states measurable **Success criteria** ("you're done when…") the learner checks for
+  themselves, and a **Deliverable** — the portfolio artifact they commit to their *own* repo. The
+  committed work is the only proof, to them and to anyone who reads it. **Your repos are the credential.**
+- Capstones ship a self-assessment **`rubric.md`**; you grade your own work against it (peer or reviewer
+  feedback welcome). No tool gates completion.
+- **`.ci-demo` opt-in marker** — Labs CI (`plaintext-labs/.github/workflows/labs-ci.yml`) runs a lab's
+  `make demo` **only if** the lab directory contains a `.ci-demo` file. This is **lab quality assurance**,
+  not learner grading — it proves the lab works on a clean runner. Learner-exercise labs (whose demo fails
+  until the learner finishes) and VM/cloud labs are intentionally left unmarked. Add `.ci-demo` only once
+  `make up && make demo && make down` is green on a Linux runner.
 
-**Trust model (state it honestly):** this is an open repo, so answer keys are visible — a green "VALID" means *tamper-evident and internally consistent*, not proctored. A real anti-cheat credential would need server-side grading behind a private key (out of scope for the open model).
+(The curriculum previously shipped a tamper-evident receipt/certificate scheme; it was deliberately
+removed — this is about learning, not proctoring a credential.)
 
 ## Content structure and authoring rules
 

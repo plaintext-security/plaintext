@@ -81,7 +81,7 @@ This is where you add the most value. Review for **understanding and reproducibi
 **Before you review, the learner should hand you:**
 
 - A **public repo** with a README: what it does, how to run it, what they'd do next.
-- The **`make grade` receipt** (`receipt.json`) where the lab ships one — the green automated check.
+- The **committed deliverable** that meets the lab's **Success criteria** — the artifact is the proof.
 - A clean tree — no captured credentials, keys, PII, memory/disk images, real malware, or client
   data committed (see [the non-negotiables](#the-non-negotiables)).
 
@@ -108,7 +108,7 @@ A lightweight rubric you can adapt:
 | Dimension | Looking for |
 |---|---|
 | Runs from README | Clean clone → up/run with no tribal knowledge |
-| Correctness | Does the thing the lab/capstone asked; `make grade` green where present |
+| Correctness | The committed deliverable meets the lab/capstone's Success criteria |
 | Understanding | Learner explains key decisions and trade-offs unprompted |
 | Automation owned | Reusable script/tool; every line reviewed and understood |
 | Hygiene | No secrets/PII/samples committed; authorization respected |

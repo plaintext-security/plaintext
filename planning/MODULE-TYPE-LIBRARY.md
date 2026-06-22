@@ -183,49 +183,49 @@ rewriting — so we build the right shapes, not just more of the one we have.
 all types: **anchor on something real → make the learner commit a judgment → end in an owned, committed
 artifact.** What changes per type is the anchor, the verb, and the deliverable.*
 
-Each template gives: **Use when · Anchor · Verb · Deliverable · Grades-as** (the `grade.yaml` check type)
+Each template gives: **Use when · Anchor · Verb · Deliverable · Self-check** (the observable signal the learner verifies — honor system, no grader)
 · **Predict** · **README shape** · **Lab shape** · **Copy** (the exemplar to model). New/under-practiced
 types also carry a fill-in **Skeleton**.
 
 ## Family I — Adversarial / Judgment
 
 ### Type 1 · Concept Autopsy
-- **Use when:** a concept module with no single tool, where a real breach lets the learner *derive* the principle. **Anchor:** a public breach · **Verb:** observe/predict · **Deliverable:** a one-page principle/boundary analysis memo · **Grades-as:** `structural` (the memo maps each failure to a principle) + `ai_rubric`.
+- **Use when:** a concept module with no single tool, where a real breach lets the learner *derive* the principle. **Anchor:** a public breach · **Verb:** observe/predict · **Deliverable:** a one-page principle/boundary analysis memo · **Self-check:** (the memo maps each failure to a principle).
 - **Predict:** yes — "with all those controls, what *one* thing failed?" (reveal: none did / all did).
 - **README:** *The case* (the breach, short) → *Your job* → *Call it before you read on* (2–3 predictions) → *The reveal* (the principle, as correction) → lean *Learn* → *Key concepts*.
 - **Lab:** render the autopsy on the (or a comparable) account; the "own it" is a tiny script proving one failure (e.g. a cert-expiry checker).
 - **Copy:** cloud 01, foundations 01/12.
 
 ### Type 2 · Misconception Reveal
-- **Use when:** a beginner/practitioner reliably guesses *wrong* and the correction is load-bearing (base64 ≠ encryption; "encrypted" ≠ safe; delete ≠ gone). **Anchor:** a real artifact/incident exhibiting the misconception · **Verb:** observe/predict · **Deliverable:** the corrected mental model + a hands-on proof · **Grades-as:** `flag`/`artifact_functional` (the learner reproduces the disproof).
+- **Use when:** a beginner/practitioner reliably guesses *wrong* and the correction is load-bearing (base64 ≠ encryption; "encrypted" ≠ safe; delete ≠ gone). **Anchor:** a real artifact/incident exhibiting the misconception · **Verb:** observe/predict · **Deliverable:** the corrected mental model + a hands-on proof · **Self-check:** (the learner reproduces the disproof).
 - **Predict:** yes — the wrong intuition, stated as a confident question.
 - **README:** predict-then-reveal "core idea"; the reveal *names and fixes* the misconception.
 - **Lab:** reproduce the disproof yourself (decode the "secret"; crack the "encrypted" hash).
 - **Copy:** foundations 08/09/11.
 
 ### Type 3 · Blast-Radius Trace
-- **Use when:** an offense/enumeration module — given a foothold, map how far it reaches. **Anchor:** a real intrusion/technique · **Verb:** attack · **Deliverable:** an attack-path note + a guardrail-as-code · **Grades-as:** `target_state` (the reach is demonstrated) + `structural` (the guardrail fails the bad state).
+- **Use when:** an offense/enumeration module — given a foothold, map how far it reaches. **Anchor:** a real intrusion/technique · **Verb:** attack · **Deliverable:** an attack-path note + a guardrail-as-code · **Self-check:** (the reach is demonstrated; the guardrail fails the bad state).
 - **Predict:** yes — "how far does this reach?" (people under-count).
 - **README:** the attacker's mental model (the account-as-graph; the metadata hop); honest about simulator limits.
 - **Lab:** enumerate → prove reach (e.g. `simulate-principal-policy`) → author the cut → re-verify.
 - **Copy:** cloud 02/03.
 
 ### Type 4 · Audit → Build → Verify
-- **Use when:** find a misconfig, *author the fix*, prove it holds (the rebalance "build half"). **Anchor:** the misconfig class behind a real leak · **Verb:** attack→build · **Deliverable:** the authored fix + the proof the path is gone · **Grades-as:** `target_state` + `structural`.
+- **Use when:** find a misconfig, *author the fix*, prove it holds (the rebalance "build half"). **Anchor:** the misconfig class behind a real leak · **Verb:** attack→build · **Deliverable:** the authored fix + the proof the path is gone · **Self-check:** the fix is authored and re-verification proves the path is gone.
 - **Predict:** optional (reachability).
 - **README:** the control's mental model ("a Security Group *is* the host firewall you know").
 - **Lab:** audit → find → **author the corrected config + a default-deny baseline** → re-verify reachability.
 - **Copy:** cloud 04/05.
 
 ### Type 5 · Detonate & Detect
-- **Use when:** a purple-team module — safely fire a real technique, capture telemetry, build the detection. **Anchor:** a real ATT&CK technique/incident · **Verb:** attack · **Deliverable:** the detonation telemetry + a detection (often hands off to a Type 13 eval) · **Grades-as:** `artifact_functional` (rule fires on attack) + held-out benign check.
+- **Use when:** a purple-team module — safely fire a real technique, capture telemetry, build the detection. **Anchor:** a real ATT&CK technique/incident · **Verb:** attack · **Deliverable:** the detonation telemetry + a detection (often hands off to a Type 13 eval) · **Self-check:** (rule fires on attack) + held-out benign check.
 - **Predict:** "which signal is loudest / silent?"
 - **README:** "cloud attacks are API calls, not exploits"; the management-vs-data-plane logging gotcha.
 - **Lab:** detonate (stratus/Pacu/atomic) → map to ATT&CK → capture telemetry → write the detection.
 - **Copy:** cloud 14/15, offensive 15.
 
 ### Type 6 · Reconstruct
-- **Use when:** DFIR — rebuild a timeline/IOC set from an immutable log. **Anchor:** a real incident (two-stage breaches are richest) · **Verb:** observe · **Deliverable:** an IR timeline + IOCs + a triage script · **Grades-as:** `structural` (timeline rows + ATT&CK IDs) + `artifact_functional` (the triage tool).
+- **Use when:** DFIR — rebuild a timeline/IOC set from an immutable log. **Anchor:** a real incident (two-stage breaches are richest) · **Verb:** observe · **Deliverable:** an IR timeline + IOCs + a triage script · **Self-check:** (timeline rows + ATT&CK IDs; the triage tool).
 - **Predict:** "what did the responders miss?"
 - **README:** "cloud IR is reconstruction from a log, not disk forensics"; the super-timeline (time as join key).
 - **Lab:** Predict → reconstruct → corroborate/scope/contain → automate the reconstruction.
@@ -234,20 +234,20 @@ types also carry a fill-in **Skeleton**.
 ## Family II — Engineering / Build
 
 ### Type 7 · Build-&-Operate
-- **Use when:** the module's job is to **ship and run a working system** (pipeline, proxy, RAG, baseline). The anchor is the *toil eliminated* or a *reference architecture*, **not** a breach. **Verb:** build · **Deliverable:** the running, reviewed system · **Grades-as:** `artifact_functional` (`make up`/`make demo` works) + `structural` (review notes on what AI generated vs. corrected).
+- **Use when:** the module's job is to **ship and run a working system** (pipeline, proxy, RAG, baseline). The anchor is the *toil eliminated* or a *reference architecture*, **not** a breach. **Verb:** build · **Deliverable:** the running, reviewed system · **Self-check:** (`make up`/`make demo` works; review notes on what AI generated vs. corrected).
 - **Predict:** rarely; lead with the build. Anchor on a real *engineering disaster* where one fits (Knight Capital, the AWS S3 typo).
 - **README:** *Why this matters* (the toil/incident) → *The core idea* (the architecture & the one judgment that makes it good) → *Learn* → *Build & own it*.
 - **Lab:** build it in ordered stages → operate it (run, observe) → **review the AI-generated parts line by line** → commit with the "what I corrected" note.
 - **Copy:** the python track; automation 02/04.
 
 ### Type 8 · Judgment-as-Code / Gate
-- **Use when:** the deliverable is a **rule that fails-bad / passes-good in CI**. **Anchor:** the misconfig/finding it catches · **Verb:** build · **Deliverable:** the gate, proven both ways · **Grades-as:** `artifact_functional` (gate exits non-zero on the bad fixture, zero on the fix).
+- **Use when:** the deliverable is a **rule that fails-bad / passes-good in CI**. **Anchor:** the misconfig/finding it catches · **Verb:** build · **Deliverable:** the gate, proven both ways · **Self-check:** (gate exits non-zero on the bad fixture, zero on the fix).
 - **README:** "a scanner is a fast junior reviewer with no context — the gate encodes *your* verdict so it can't regress."
 - **Lab:** find → fix → **suppress one true false-positive correctly** → write the gate that blocks merge on the specific finding and passes on the fix.
 - **Copy:** cloud 06, automation 03.
 
 ### Type 9 · Tool-Build
-- **Use when:** the product is a **reusable tool others run** (flags, README, tests, packaging). **Verb:** build · **Deliverable:** the packaged, tested tool · **Grades-as:** `artifact_functional` (CLI runs, tests pass) + `structural` (has `--help`, README).
+- **Use when:** the product is a **reusable tool others run** (flags, README, tests, packaging). **Verb:** build · **Deliverable:** the packaged, tested tool · **Self-check:** (CLI runs, tests pass; has `--help`, README).
 - **README:** the tool's job + the design judgment (what to parameterise, what to keep deterministic); the AI-review stance.
 - **Lab:** spec → build read→parse→filter→output → add flags/tests → **review every AI-drafted line** → package.
 - **Copy:** python track, automation 06/07.
@@ -255,7 +255,7 @@ types also carry a fill-in **Skeleton**.
 ## Family III — Architecture / Design
 
 ### Type 10 · Design → Red-team-your-own-design → Harden  *(under-practiced)*
-- **Use when:** the learner *produces* an architecture/policy from requirements, then **attacks their own design**, then iterates. **Anchor:** a reference architecture (e.g. NIST 800-207) + a breach it would stop · **Verb:** design · **Deliverable:** the design + the attack that failed against it + the hardening diff · **Grades-as:** `target_state` (the attack is blocked by the learner's design) + `structural`.
+- **Use when:** the learner *produces* an architecture/policy from requirements, then **attacks their own design**, then iterates. **Anchor:** a reference architecture (e.g. NIST 800-207) + a breach it would stop · **Verb:** design · **Deliverable:** the design + the attack that failed against it + the hardening diff · **Self-check:** (the attack is blocked by the learner's design).
 - **Predict:** "where would *you* attack this design?"
 - **Skeleton:**
   ```
@@ -270,7 +270,7 @@ types also carry a fill-in **Skeleton**.
 - **Copy:** ztna 05 (the no-inbound-ports step); generalise it.
 
 ### Type 11 · Decision / ADR  *(latent everywhere — seed it early)*
-- **Use when:** a real choice under constraints (local-vs-frontier, self-host-vs-SASE, CIS-vs-STIG, RSA-vs-Ed25519). **Anchor:** the actual options + a constraint set · **Verb:** decide · **Deliverable:** an **Architecture Decision Record** (Nygard format) · **Grades-as:** `structural` (ADR has context, options scored, decision, honest consequences) + `ai_rubric`.
+- **Use when:** a real choice under constraints (local-vs-frontier, self-host-vs-SASE, CIS-vs-STIG, RSA-vs-Ed25519). **Anchor:** the actual options + a constraint set · **Verb:** decide · **Deliverable:** an **Architecture Decision Record** (Nygard format) · **Self-check:** (ADR has context, options scored, decision, honest consequences).
 - **Predict:** optional — "which would you pick before you read the tradeoffs?"
 - **Skeleton (the ADR the lab commits):**
   ```
@@ -284,7 +284,7 @@ types also carry a fill-in **Skeleton**.
 - **Copy:** ztna 04 (the exemplar — copy its scoring table + honest Consequences). Seed the construct at foundations 02.
 
 ### Type 12 · Migration / Brownfield  *(absent — high priority)*
-- **Use when:** move a **running legacy thing** to the new way *incrementally without breakage* (strangler-fig). **Anchor:** the legacy setup + the target architecture · **Verb:** migrate · **Deliverable:** the migration + proof nothing broke at each step · **Grades-as:** `target_state` (new path works AND old path still served during cutover) + `structural` (a rollback plan).
+- **Use when:** move a **running legacy thing** to the new way *incrementally without breakage* (strangler-fig). **Anchor:** the legacy setup + the target architecture · **Verb:** migrate · **Deliverable:** the migration + proof nothing broke at each step · **Self-check:** (new path works AND old path still served during cutover; a rollback plan).
 - **Predict:** "what breaks if you cut over all at once?"
 - **Skeleton:**
   ```
@@ -299,7 +299,7 @@ types also carry a fill-in **Skeleton**.
 - **Build:** ztna VPN→ZTNA (first), automation click-ops→gated-IaC, crypto PQC/crypto-agility, endpoint fleet rollout.
 
 ### Type 13 · Eval Harness  *(THE systemic gap — highest priority)*
-- **Use when:** a **non-deterministic system** (a model, a RAG, a detection, a classifier) is improved by measurement, not vibes. **Anchor:** "you can't improve what you don't measure" + a real labelled corpus · **Verb:** measure · **Deliverable:** **eval-as-code** — a held-out set + a metric + a scorecard + a CI **regression gate** · **Grades-as:** `artifact_functional` (the eval runs and scores) + `target_state` (the gate fails on a planted regression).
+- **Use when:** a **non-deterministic system** (a model, a RAG, a detection, a classifier) is improved by measurement, not vibes. **Anchor:** "you can't improve what you don't measure" + a real labelled corpus · **Verb:** measure · **Deliverable:** **eval-as-code** — a held-out set + a metric + a scorecard + a CI **regression gate** · **Self-check:** (the eval runs and scores; the gate fails on a planted regression).
 - **Predict:** "is this detection/RAG *good*? prove it" (the reveal: you can't, without an eval).
 - **Skeleton:**
   ```
@@ -315,7 +315,7 @@ types also carry a fill-in **Skeleton**.
 - **Build/upgrade:** a dedicated ai-ops "AI Eval & Observability" module (04/05/06 plug in); upgrade-in-place defensive 09, cloud 15, malware 13, AD 09. **Copy:** ai-ops 07 (generalise it).
 
 ### Type 14 · Adversarial Review  *(under-named — generalise it)*
-- **Use when:** the skill is **catching subtly-wrong AI/automation output** and codifying when to trust it. **Anchor:** AI output that is confidently, subtly wrong · **Verb:** review · **Deliverable:** the review findings + a trust policy/checklist · **Grades-as:** `flag` (the learner finds the planted errors) + `structural` (the trust checklist).
+- **Use when:** the skill is **catching subtly-wrong AI/automation output** and codifying when to trust it. **Anchor:** AI output that is confidently, subtly wrong · **Verb:** review · **Deliverable:** the review findings + a trust policy/checklist · **Self-check:** (the learner finds the planted errors; the trust checklist).
 - **Predict:** "this AI analysis looks right — is it?" (it isn't, in N specific ways).
 - **Skeleton:**
   ```
@@ -331,14 +331,14 @@ types also carry a fill-in **Skeleton**.
 ## Family IV/V/VI — Measurement / AI-Adversarial / Operate-over-time
 
 ### Type 15 · Red-team-the-AI
-- **Use when:** attack an LLM·MCP·RAG system the learner built (prompt injection, jailbreak, data-exfil, tool-abuse). **Anchor:** a documented AI incident (Air Canada; the Chevy "$1 car" bot; agentic prompt-injection / MCP tool-poisoning) · **Verb:** attack · **Deliverable:** the working exploit + an eval (Type 13) that catches the regression · **Grades-as:** `target_state` (the exploit works pre-fix, is blocked post-fix).
+- **Use when:** attack an LLM·MCP·RAG system the learner built (prompt injection, jailbreak, data-exfil, tool-abuse). **Anchor:** a documented AI incident (Air Canada; the Chevy "$1 car" bot; agentic prompt-injection / MCP tool-poisoning) · **Verb:** attack · **Deliverable:** the working exploit + an eval (Type 13) that catches the regression · **Self-check:** (the exploit works pre-fix, is blocked post-fix).
 - **Predict:** "just tell it not to — does that work?" (no).
 - **README:** predict-then-reveal on the "just add a system prompt" misconception; the trust-boundary view of tool-calling.
 - **Lab:** build/inherit the AI system → land the injection/jailbreak → harden → re-attack → wire a promptfoo/garak regression eval.
 - **Copy:** ai-ops 09/10; pair with python 09.
 
 ### Type 16 · Drift / Steady-State  *(latent — own it)*
-- **Use when:** the system is correct at t=0 and wrong at t=30; the skill is **detect + reconcile drift**. **Anchor:** a baseline/policy that drifts (config, RBAC, detection decay) · **Verb:** operate · **Deliverable:** the drift detector + the reconciliation · **Grades-as:** `target_state` (drift is introduced, detected, and reconciled back to baseline).
+- **Use when:** the system is correct at t=0 and wrong at t=30; the skill is **detect + reconcile drift**. **Anchor:** a baseline/policy that drifts (config, RBAC, detection decay) · **Verb:** operate · **Deliverable:** the drift detector + the reconciliation · **Self-check:** (drift is introduced, detected, and reconciled back to baseline).
 - **Predict:** "you hardened it last month — is it still hardened?"
 - **Skeleton:**
   ```
