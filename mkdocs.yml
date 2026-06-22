@@ -582,4 +582,7 @@ nav:
       - "10 · Attacking AI Systems":
           - Concept: 12-ai-augmented-ops/modules/10-attacking-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/10-attacking-ai/lab.md
+      - "11 · AI Evaluation & Observability":
+          - Concept: 12-ai-augmented-ops/modules/11-ai-evaluation/README.md
+          - Lab: 12-ai-augmented-ops/modules/11-ai-evaluation/lab.md
   - Glossary: glossary.md

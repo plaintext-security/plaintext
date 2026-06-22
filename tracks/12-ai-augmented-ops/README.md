@@ -24,6 +24,7 @@ attack the AI systems you just built.
 | 08 | [SOAR + AI](modules/08-soar-ai/README.md) | Automated response with a human in the loop | `Shuffle` |
 | 09 | [Securing the AI You Run](modules/09-securing-ai/README.md) | Prompt injection, data exfil, MCP/RAG hardening | — |
 | 10 | [Attacking AI Systems](modules/10-attacking-ai/README.md) | Red-teaming LLM/MCP/RAG applications | `garak`, `promptfoo` |
+| 11 | [AI Evaluation & Observability](modules/11-ai-evaluation/README.md) | Held-out evals, regression gates, observability — eval gates, not vibes | `pytest`, `promptfoo` |
 
 ## Phases & projects
 
