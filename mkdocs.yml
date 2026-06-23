@@ -553,6 +553,12 @@ nav:
       - "09 · Monitoring & Detection":
           - Concept: 11-ztna/modules/09-monitoring-detection/README.md
           - Lab: 11-ztna/modules/09-monitoring-detection/lab.md
+      - "10 · VPN → ZTNA Migration":
+          - Concept: 11-ztna/modules/10-vpn-ztna-migration/README.md
+          - Lab: 11-ztna/modules/10-vpn-ztna-migration/lab.md
+      - "11 · Red-team Your Zero-Trust Deployment":
+          - Concept: 11-ztna/modules/11-redteam-zt-deployment/README.md
+          - Lab: 11-ztna/modules/11-redteam-zt-deployment/lab.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":
