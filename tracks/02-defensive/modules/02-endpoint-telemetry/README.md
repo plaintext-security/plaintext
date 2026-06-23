@@ -18,7 +18,9 @@ here is what makes the later detection and hunting modules possible.
 
 ## Objective
 Deploy Sysmon with a good config, and read the process/network/persistence events that real
-detections are built on — using real attack telemetry.
+detections are built on — using real attack telemetry — then *author* a detection for the attack
+you found and **prove it**: it fires on the malicious chain and stays quiet on benign activity.
+Reading the telemetry and building a verified detection from it are equal halves.
 
 ## The core idea
 The endpoint is where the attack actually executes — a process spawns, injects into another,
@@ -58,6 +60,7 @@ live.
 - Process ancestry and command-line logging
 - Endpoint agents (Sysmon → Wazuh / EDR)
 - Tuning: signal vs volume
+- Author then verify: write the detection (Sigma/predicate) and prove it fires on the malicious chain, quiet on benign — not just "note what it would key on"
 
 ## AI acceleration
 A model explains a Sysmon Event ID or a suspicious command line instantly — a genuine accelerator

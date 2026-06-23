@@ -29,6 +29,7 @@ the cloud the infrastructure *is* code. AWS/GCP/Azure plus containers and Kubern
 | 14 | [Cloud Attack Techniques](modules/14-cloud-attack-techniques/README.md) | Exploiting misconfig; simulating safely | `pacu`, `stratus-red-team` |
 | 15 | [Cloud Logging & Detection](modules/15-cloud-logging-detection/README.md) | Native detectors vs. open tools; tuning signal | `falco`, `sigma`; GuardDuty / Defender for Cloud / GCP SCC |
 | 16 | [Cloud Incident Response](modules/16-cloud-incident-response/README.md) | Investigating and containing in the cloud | `cloudtrail`, `hayabusa` |
+| 17 | [Data Protection & KMS](modules/17-data-protection-kms/README.md) | Envelope encryption; key policies & separation of duties | `aws-kms`, `openssl` |
 
 ## Phases & projects
 

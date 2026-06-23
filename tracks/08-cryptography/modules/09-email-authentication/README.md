@@ -16,7 +16,7 @@ Email spoofing is the enabler of phishing and business email compromise (BEC) �
 
 ## Objective
 
-Configure and validate SPF, DKIM, and DMARC records for a fictional domain using a local DNS environment, understanding what each record does, what failure mode each prevents, and how DMARC brings them together into a policy.
+Configure and validate SPF, DKIM, and DMARC records for a fictional domain using a local DNS environment, understanding what each record does, what failure mode each prevents, and how DMARC brings them together into a policy — then *apply* the fix: edit the live DNS zone to the hardened records (`-all`, `p=reject`, `adkim=s`, `rua=`), reload the resolver, and **prove** with a re-query and a re-run of your validation script that the weaknesses are gone. Finding the misconfiguration and closing it on the live zone are equal halves.
 
 ## The core idea
 
@@ -49,6 +49,7 @@ The operational pattern for DMARC deployment is a staged rollout: start with `p=
 - DMARC ties SPF and DKIM together with alignment checking and sets the policy: none / quarantine / reject.
 - Alignment: the domain in SPF/DKIM must match the visible From domain — this is what prevents From-header spoofing.
 - DMARC rollout: `none` (monitor) → `quarantine` → `reject`; never skip the monitoring phase.
+- Author then verify: apply the hardened records to the live zone, reload, and prove with `dig` + your validator that SPF hardfails and DMARC rejects — the build half, not just a recommendation in a report.
 
 ## AI acceleration
 

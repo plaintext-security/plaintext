@@ -51,6 +51,25 @@ the cloud-native KMS surface (who can use a key, key-policy vs IAM, default-encr
 S3/EBS encryption) is its own thing and is absent. For a cloud-security track this is the most
 defensible gap to fill — and it's almost entirely "build & operate," which also rebalances the track.
 
+## Status (updated 2026-06-11)
+
+Executed on branch `feat/cloud-rebalance` (both repos), each lab `make up`/`make demo` validated:
+- ✅ **07** — operate side added (Vault dynamic DB creds + runtime-fetch app + root rotation +
+  Secrets Manager/IAM variant). New services: Postgres, LocalStack.
+- ✅ **04** — build half added (`check_reachability.py`: author least-priv SGs, prove bad paths denied /
+  good paths intact). Also fixed a pre-existing cloudmapper build break (3.12→3.9 + source install).
+- ✅ **02** — build half added (`check_escalation.py`: author the minimum-cut least-priv policy that
+  closes the PassRole escalation, prove it). 
+- ✅ **17 (new)** — Data Protection & KMS module created: envelope encryption + key-policy separation
+  of duties (`check_keypolicy.py`). Concept + lab + nav + track map + landing counts.
+- ✅ **Minor:** 03 implement+verify the cut-set (`graph-fixed.json` → analyze.py exit 0); 10
+  hardened-rebuild verify (`make harden-verify` gates on MEDIUM+; bad fails with 2 HIGH, hardened
+  passes). Both validated; also fixed pre-existing trivy/grype install break (multi-stage copy from
+  the official tool images).
+
+Not pushed yet (holding per request). Each lab change is in the `plaintext-labs` submodule; the
+`plaintext` feat branch advances the submodule pointer.
+
 ## Rebalance plan (sequenced, smallest-disruption first)
 
 1. **07 — deepen the operate side** *(S, highest value/lowest disruption).* Keep the find half; extend

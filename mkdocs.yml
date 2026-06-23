@@ -32,9 +32,11 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/tour.css
 
 extra_javascript:
   - javascripts/local-progress.js
+  - javascripts/tour.js
 
 markdown_extensions:
   - admonition
@@ -79,6 +81,35 @@ nav:
   - Showcase: showcase.md
   - Office Hours: office-hours.md
   - Instructor & Cohort Guide: instructor-guide.md
+  - "Interactive Tour (Prototype)":
+      - tour/index.md
+      - "Foundations — full track":
+          - "01 · Security First Principles": tour/fnd-01-security-principles.md
+          - "02 · Building a Safe Lab": tour/fnd-02-lab-setup.md
+          - "03 · Docker & Containers": tour/fnd-03-docker.md
+          - "04 · Linux for Security": tour/fnd-04-linux.md
+          - "05 · Windows for Security": tour/fnd-05-windows.md
+          - "06 · Networking Fundamentals": tour/fnd-06-networking.md
+          - "07 · Web & HTTP Fundamentals": tour/fnd-07-web-http.md
+          - "08 · Data & Encoding": tour/fnd-08-data-encoding.md
+          - "09 · Cryptography Basics": tour/fnd-09-cryptography.md
+          - "10 · Scripting & Automation": tour/fnd-10-scripting.md
+          - "11 · Version Control in the Open": tour/fnd-11-version-control.md
+          - "12 · Threat Modeling": tour/fnd-12-threat-modeling.md
+      - "Random sample (one per track)":
+          - "00 · Building Your Lab": tour/02-lab-setup.md
+          - "01 · SSRF & XXE": tour/08-web-ssrf-xxe.md
+          - "02 · Intrusion Detection": tour/05-intrusion-detection.md
+          - "03 · Cloud Log Forensics": tour/10-log-cloud-forensics.md
+          - "04 · Detection & Reporting (YARA)": tour/13-detection-reporting.md
+          - "05 · Posture Auditing (CSPM)": tour/05-posture-auditing.md
+          - "06 · Path to Domain Admin": tour/08-path-to-da.md
+          - "07 · Host Boot Integrity": tour/11-host-boot-integrity.md
+          - "08 · Crypto Primitives": tour/01-primitives-practice.md
+          - "09 · Structured Data → Report": tour/03-structured-data-reporting.md
+          - "10 · SOAR Fundamentals": tour/08-soar-fundamentals.md
+          - "11 · Policy as Code": tour/08-policy-as-code.md
+          - "12 · Building MCP Servers": tour/05-building-mcp-servers.md
   - Foundations:
       - Overview: 00-foundations/README.md
       - "01 · Security First Principles":
@@ -428,6 +459,9 @@ nav:
       - "10 · Detecting Host Compromise":
           - Concept: 07-endpoint-hardening/modules/10-detecting-host-compromise/README.md
           - Lab: 07-endpoint-hardening/modules/10-detecting-host-compromise/lab.md
+      - "11 · Host & Boot Integrity":
+          - Concept: 07-endpoint-hardening/modules/11-host-boot-integrity/README.md
+          - Lab: 07-endpoint-hardening/modules/11-host-boot-integrity/lab.md
   - Cryptography, PKI & Secrets:
       - Overview: 08-cryptography/README.md
       - "01 · Primitives in Practice":
@@ -527,6 +561,9 @@ nav:
       - "11 · Click-ops → IaC Migration":
           - Concept: 10-automation/modules/11-clickops-iac-migration/README.md
           - Lab: 10-automation/modules/11-clickops-iac-migration/lab.md
+      - "12 · Secrets Handling in Pipelines":
+          - Concept: 10-automation/modules/11-pipeline-secrets/README.md
+          - Lab: 10-automation/modules/11-pipeline-secrets/lab.md
   - Zero Trust Network Access:
       - Overview: 11-ztna/README.md
       - "01 · Zero Trust Principles":
@@ -562,6 +599,9 @@ nav:
       - "11 · Red-team Your Zero-Trust Deployment":
           - Concept: 11-ztna/modules/11-redteam-zt-deployment/README.md
           - Lab: 11-ztna/modules/11-redteam-zt-deployment/lab.md
+      - "12 · Workload Identity & mTLS":
+          - Concept: 11-ztna/modules/10-workload-identity-mtls/README.md
+          - Lab: 11-ztna/modules/10-workload-identity-mtls/lab.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":
