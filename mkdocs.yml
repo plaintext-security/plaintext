@@ -254,6 +254,12 @@ nav:
       - "17 · KEV-Driven Defense":
           - Concept: 02-defensive/modules/17-kev-driven-defense/README.md
           - Lab: 02-defensive/modules/17-kev-driven-defense/lab.md
+      - "18 · Detection & Telemetry Drift":
+          - Concept: 02-defensive/modules/18-detection-drift/README.md
+          - Lab: 02-defensive/modules/18-detection-drift/lab.md
+      - "19 · Reviewing AI-Generated Detections":
+          - Concept: 02-defensive/modules/19-reviewing-ai-detections/README.md
+          - Lab: 02-defensive/modules/19-reviewing-ai-detections/lab.md
   - Digital Forensics & IR:
       - Overview: 03-forensics/README.md
       - "01 · Forensic Fundamentals & Evidence Handling":
@@ -298,6 +304,12 @@ nav:
       - "14 · Reporting & Root-Cause Analysis":
           - Concept: 03-forensics/modules/14-reporting-root-cause/README.md
           - Lab: 03-forensics/modules/14-reporting-root-cause/lab.md
+      - "15 · Forensic Eval Harness":
+          - Concept: 03-forensics/modules/15-forensic-eval-harness/README.md
+          - Lab: 03-forensics/modules/15-forensic-eval-harness/lab.md
+      - "16 · Reviewing AI Incident Summaries":
+          - Concept: 03-forensics/modules/16-reviewing-ai-summaries/README.md
+          - Lab: 03-forensics/modules/16-reviewing-ai-summaries/lab.md
   - Malware Analysis:
       - Overview: 04-malware/README.md
       - "01 · Analysis Lab Setup & Safety":
@@ -427,6 +439,12 @@ nav:
       - "11 · Defending Identity":
           - Concept: 06-active-directory/modules/11-defending-identity/README.md
           - Lab: 06-active-directory/modules/11-defending-identity/lab.md
+      - "12 · Tiering a Brownfield Domain":
+          - Concept: 06-active-directory/modules/12-brownfield-tiering/README.md
+          - Lab: 06-active-directory/modules/12-brownfield-tiering/lab.md
+      - "13 · AD Posture Drift & Steady-State":
+          - Concept: 06-active-directory/modules/13-posture-drift/README.md
+          - Lab: 06-active-directory/modules/13-posture-drift/lab.md
   - Endpoint & Host Hardening:
       - Overview: 07-endpoint-hardening/README.md
       - "01 · Endpoint Threat Model":
@@ -462,6 +480,12 @@ nav:
       - "11 · Host & Boot Integrity":
           - Concept: 07-endpoint-hardening/modules/11-host-boot-integrity/README.md
           - Lab: 07-endpoint-hardening/modules/11-host-boot-integrity/lab.md
+      - "12 · Configuration & Posture Drift":
+          - Concept: 07-endpoint-hardening/modules/12-config-drift/README.md
+          - Lab: 07-endpoint-hardening/modules/12-config-drift/lab.md
+      - "13 · Rolling a Baseline Across a Fleet":
+          - Concept: 07-endpoint-hardening/modules/13-fleet-migration/README.md
+          - Lab: 07-endpoint-hardening/modules/13-fleet-migration/lab.md
   - Cryptography, PKI & Secrets:
       - Overview: 08-cryptography/README.md
       - "01 · Primitives in Practice":
@@ -532,6 +556,9 @@ nav:
       - "10 · Packaging, Testing & Owning AI Code":
           - Concept: 09-python-for-security/modules/10-packaging-testing/README.md
           - Lab: 09-python-for-security/modules/10-packaging-testing/lab.md
+      - "11 · Eval Harness for Security Tools":
+          - Concept: 09-python-for-security/modules/11-eval-harness/README.md
+          - Lab: 09-python-for-security/modules/11-eval-harness/lab.md
   - Security Automation:
       - Overview: 10-automation/README.md
       - "01 · The Automation Mindset":
