@@ -1,6 +1,6 @@
 # Module 17 — Reporting & Remediation
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 14 · Adversarial Review — let AI draft the pentest report, then verify every finding, number, and CVE you can't reproduce before you sign it; deliver a report modeled on real public ones. (Secondary: Judgment-as-Code/Gate — a structural validator checks the 11 sections and reference URLs.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

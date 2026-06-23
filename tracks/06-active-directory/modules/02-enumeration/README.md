@@ -1,6 +1,6 @@
 # Module 02 — Enumeration
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — enumerate a live domain with `ldapsearch`, `enum4linux-ng`, and BloodHound CE, then graph how "any authenticated user can read the whole directory" becomes a `jsmith → Domain Admins` shortest path, delivering the imported BloodHound attack-path graph. (Secondary: Detonate & Detect — note the Event 1644 / query-volume signal the enumeration leaves behind.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

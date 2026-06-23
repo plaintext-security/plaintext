@@ -1,6 +1,6 @@
 # Module 09 — Building an MCP Server
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build a `fastmcp` MCP server exposing one tool, `enrich_ip(ip) -> dict`, backed by the module-04 threat-intel API, that speaks the MCP tool protocol and returns LLM-parseable results. (Secondary: Red-team-the-AI — treat every tool argument as untrusted and watch the prompt-injection / untrusted-arg boundary the capstone depends on.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

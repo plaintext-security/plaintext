@@ -1,6 +1,6 @@
 # Module 06 — SIEM Fundamentals
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up an open-source SIEM (Wazuh), ingest real security telemetry, and build a correlation rule plus a dashboard that surface an attack; you commit the running SIEM config, rule, and dashboard. (Secondary: Detonate & Detect — test every rule against data where you already know the answer.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

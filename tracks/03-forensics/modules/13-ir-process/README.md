@@ -1,6 +1,6 @@
 # Module 13 — Incident Response Process
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — dissect the Meridian response against the four phases of NIST SP 800-61, naming the gaps and successes, and produce a structured post-incident analysis a security manager or auditor could act on. (Secondary: Decision/ADR — frame the containment-timing call as a recorded decision.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

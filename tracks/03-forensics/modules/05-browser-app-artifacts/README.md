@@ -1,6 +1,6 @@
 # Module 05 — Browser & Application Artifacts
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct what a user actually did from a Chrome/Chromium SQLite history database with `hindsight` and direct SQL, recovering history, searches, and downloads as artifact-cited findings. (Secondary: Misconception Reveal — show which artifacts survive incognito and disprove "clearing history erases it" via WAL recovery.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

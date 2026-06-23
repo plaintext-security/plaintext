@@ -1,6 +1,6 @@
 # Module 06 — Configuration Management
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — write an idempotent Ansible hardening playbook that applies five CIS-equivalent controls (root SSH, password complexity, auditd, umask, sysctl) and confirms each with a verification task, delivering reusable baseline-as-code. (Secondary: Drift / Steady-State — drifting a setting and catching it with `--check` plus a `drift-check.sh` exercises the steady-state loop.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

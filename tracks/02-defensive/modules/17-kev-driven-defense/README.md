@@ -1,6 +1,6 @@
 # Module 17 — KEV-Driven Defense
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — refresh against the live CISA KEV catalog, select a current entry with a reproducible target, exploit it in a contained lab, and write a detection that fires on the attack while staying quiet on benign traffic; you commit the exploit-and-detect pair. (Secondary: Drift/Steady-State — diff the feed, because a catalog you finished last month is already behind.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

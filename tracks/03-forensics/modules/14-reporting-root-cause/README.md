@@ -1,6 +1,6 @@
 # Module 14 — Reporting & Root-Cause Analysis
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — write a forensic incident report with a root-cause analysis that separates contributing causes from the root cause, then run a structural linting script that gates the report on every required section being present and populated. (Secondary: Reconstruct — assemble the prior modules' findings into one defensible narrative.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

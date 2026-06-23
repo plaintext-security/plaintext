@@ -1,6 +1,6 @@
 # Module 10 — ATT&CK Mapping & Coverage
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 13 · Eval Harness — map your detections to MITRE ATT&CK, visualise coverage and gaps in the Navigator, and prioritise what to build next; you commit a Navigator layer that measures coverage rather than vibing it. (Secondary: Judgment-as-Code/Gate — coverage is not effectiveness, and the gap list is what to enforce next.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

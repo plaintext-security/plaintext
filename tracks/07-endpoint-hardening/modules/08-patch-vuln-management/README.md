@@ -1,6 +1,6 @@
 # Module 08 — Patch & Vulnerability Management
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — inventory installed packages with osquery, scan with grype for CVEs, and turn a triage model (CVSS × KEV × reachability × fix) into a prioritised remediation list — the production vuln-management workflow encoded as repeatable judgment. (Secondary: Audit→Build→Verify — the osquery inventory → CVE-match step is itself an audit feeding the triage.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

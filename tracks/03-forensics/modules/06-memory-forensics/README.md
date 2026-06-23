@@ -1,6 +1,6 @@
 # Module 06 — Memory Forensics
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct attacker behavior from a memory image with Volatility3 — enumerate processes, network connections, and command lines, and find evidence of process injection — producing findings the disk alone could never show. (Secondary: Misconception Reveal — kill "disk analysis sees everything" by surfacing fileless/injected activity that lives only in RAM.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

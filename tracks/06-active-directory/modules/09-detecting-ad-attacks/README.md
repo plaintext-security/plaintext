@@ -1,6 +1,6 @@
 # Module 09 — Detecting AD Attacks
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — write Sigma rules for Kerberoasting (4769), AS-REP roasting (4768), DCSync (4662), and pass-the-hash (4624), validate them against sample EVTX with `chainsaw`, and document the audit policy each rule needs to fire, delivering the validated detection-as-code ruleset. (Secondary: Judgment-as-Code / Gate — score the rules against a test corpus so alert-vs-hunt tiering is measured, not asserted.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

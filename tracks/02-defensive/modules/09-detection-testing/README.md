@@ -1,6 +1,6 @@
 # Module 09 — Detection Testing & Tuning
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — run a real ATT&CK technique with Atomic Red Team, validate your detection catches it, and tune away the false positives; you commit a purple-team loop that emits FIRED/MISSED/FP and a coverage summary. (Secondary: Eval Harness — extend the loop toward a held-out corpus and a gate that fails on regression.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

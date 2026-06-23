@@ -1,6 +1,6 @@
 # Module 11 — Privilege Escalation: Windows
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — enumerate a Windows host and escalate to SYSTEM via a real service-misconfig/potato technique, revealing that the precondition minefield, not an exploit, is the hard part. (Secondary: Blast-Radius Trace — local SYSTEM is a springboard to Domain Admin.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

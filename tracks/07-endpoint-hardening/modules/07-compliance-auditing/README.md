@@ -1,6 +1,6 @@
 # Module 07 — Compliance Scoring & Auditing
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — run OpenSCAP and Lynis against an un-hardened container, remediate a set of 3–5 high-severity findings, and re-score after each so the compliance delta becomes the evidence, encoding the audit-remediate-verify cycle as a repeatable gate. (Secondary: Drift / Steady-State — continuous-compliance and score-drift alerting extend the gate into ongoing monitoring.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

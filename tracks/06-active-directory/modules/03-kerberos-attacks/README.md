@@ -1,6 +1,6 @@
 # Module 03 — Kerberos Attacks
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — execute Kerberoasting (T1558.003) and AS-REP roasting (T1558.004) against a live Samba4 AD domain, crack at least one recovered ticket hash offline, and pin the detection seam (the RC4-downgrade in Event 4769) that explains why the attack is otherwise invisible. (Secondary: Blast-Radius Trace — show which service accounts the roast opens onward.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

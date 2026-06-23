@@ -1,6 +1,6 @@
 # Module 14 — Alert Triage & Incident Response
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — triage a real alert through a structured process and run a lab incident end to end (NIST lifecycle) in a case-management platform; you commit a documented verdict that reconstructs what happened and why. (Secondary: Decision/ADR — the verdict memo is the defend-your-call discipline.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

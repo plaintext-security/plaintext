@@ -1,6 +1,6 @@
 # Module 12 — Pivoting & Lateral Movement
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — pivot from one foothold to an unreachable internal network and move laterally to a second target via the segmentation ladder (port-forward → SOCKS → tunnel), then argue for the segmentation each pivot defeated. (Secondary: Misconception Reveal — every pivot beats a boundary someone drew.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

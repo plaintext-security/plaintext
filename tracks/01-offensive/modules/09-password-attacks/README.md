@@ -1,6 +1,6 @@
 # Module 09 — Password & Credential Attacks
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — crack real hashes hands-on to reveal that encryption isn't hashing and security is cost-per-guess (fast vs slow KDF), and that reuse, not cracking, is the real vector. (Secondary: Tool-Build — the cracking/attack-mode workflow you keep.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

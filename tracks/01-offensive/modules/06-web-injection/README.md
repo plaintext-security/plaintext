@@ -1,6 +1,6 @@
 # Module 06 — Web Attacks: Injection
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — exploit SQL and command injection against a shipped vulnerable app, trace how far untrusted data reaches into the control plane, and end in the structural fix (parameterised queries). (Secondary: Misconception Reveal — injection isn't about SQL or "bad characters," it's data crossing into a control plane.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

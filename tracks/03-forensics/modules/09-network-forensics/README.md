@@ -1,6 +1,6 @@
 # Module 09 — Network Forensics
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct an attack from a Meridian PCAP with Zeek and tshark — trace the suspicious DNS query, rebuild the HTTP session that followed, and extract the transferred payload — into artifact-cited findings. (Secondary: Tool-Build — turn the Zeek-log triage into a reusable script.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 01 — Reconnaissance & OSINT
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — pin down the passive/active boundary by mapping a target's external attack surface from public sources (CT logs, DNS, tech fingerprints) and writing the principle memo that draws the line. (Secondary: Tool-Build — the lab ships a reusable recon/attack-surface harness.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

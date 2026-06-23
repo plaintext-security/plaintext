@@ -1,6 +1,6 @@
 # Module 13 — Command & Control and Post-Exploitation
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — stand up OSS C2 (Sliver), beacon and run post-exploitation, then characterise the telemetry you generate (beacon timing, JA3) as the thing the blue team hunts. (Secondary: Build-&-Operate — the stand-up-and-operate half.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

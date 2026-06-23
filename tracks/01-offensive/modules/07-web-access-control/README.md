@@ -1,6 +1,6 @@
 # Module 07 — Web Attacks: Authentication & Access Control
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — exploit IDOR and privilege escalation, run the every-role × every-endpoint sweep to map the reach, and end in the deny-by-default fix. (Secondary: Misconception Reveal — the root cause is the server trusting the client.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

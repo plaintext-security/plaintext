@@ -1,6 +1,6 @@
 # Module 16 — Response Automation (SOAR)
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — build a SOAR playbook that takes a real alert, enriches it, decides (with optional AI triage), and tickets/contains it; you commit a running trigger→enrich→decide→act playbook with a human approval gate. (Secondary: Judgment-as-Code/Gate — the gate is what stops you automating a wrong decision at machine speed.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

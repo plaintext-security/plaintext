@@ -1,6 +1,6 @@
 # Module 10 — Packaging, Testing & Owning AI Code
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 14 · Adversarial Review — take a deliberately flawed AI-generated security script, hunt the bugs with static analysis and testing, write `pytest` tests that pin each one, and fix until green — the review workflow every AI-authored change must clear before production. (Secondary: Eval Harness — your test suite is the spec, not vibes.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

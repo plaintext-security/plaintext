@@ -1,6 +1,6 @@
 # Module 08 — Detection-as-Code
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — write a Sigma detection for a real ATT&CK technique, convert it to your SIEM's query language, and put it under a git + CI gate that confirms it fires on real attack telemetry and stays quiet on known-good; you commit the rule plus its CI gate. (Secondary: Eval Harness — the known-bad/known-good corpus the gate scores against.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

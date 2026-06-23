@@ -1,6 +1,6 @@
 # Module 05 — Memory Corruption Primer
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — dissect how a stack-based buffer overflow hijacks execution by overwriting the saved return address, demonstrated against a vulnerable program in your lab. (Secondary: Misconception Reveal — ASLR/canary/NX as the arms-race answer, not a cure.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 02 — Acquisition & Imaging
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — image a disk sector-by-sector with `dc3dd`, verify it with inline hash comparison, and operate the acquisition workflow end to end to produce a verified forensic image. (Secondary: Decision/ADR — choose and defend dead-box vs live acquisition for the scenario as a recorded decision.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

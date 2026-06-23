@@ -1,6 +1,6 @@
 # Module 01 — Telemetry & Log Centralisation
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a central log store, ship real log data into it, and reason about which telemetry actually matters for detection; you commit a working ingest-and-query pipeline. (Secondary: Misconception Reveal — a pipeline that runs is not a pipeline that works.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

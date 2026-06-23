@@ -1,6 +1,6 @@
 # Module 09 — Local Privilege-Escalation Defense
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — find a SUID misconfiguration, demonstrate the privilege-escalation path it enables, then close it with file-permission remediation plus AppArmor confinement and re-attempt the attack to confirm it now fails. (Secondary: Detonate & Detect — the lab starts by detonating a real GTFOBins SUID escalation before remediating.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

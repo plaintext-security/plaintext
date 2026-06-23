@@ -1,6 +1,6 @@
 # Module 02 — Windows Hardening to CIS
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — score a Windows host with CIS-CAT Lite, apply a subset of CIS Level 1 controls via version-controlled LGPO, then rescan and diff the before/after JSON to quantify the improvement. The diff, not the raw score, is the deliverable. (Secondary: Build-&-Operate — the controls are applied as reproducible, version-controlled configuration.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

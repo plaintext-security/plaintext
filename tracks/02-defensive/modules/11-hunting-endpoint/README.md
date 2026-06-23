@@ -1,6 +1,6 @@
 # Module 11 — Threat Hunting: Endpoint
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — run a hypothesis-driven hunt across real endpoint data with Velociraptor/osquery and either find the activity or rule it out; you commit the hunt notebook and the detection it turns into. (Secondary: Build-&-Operate — closing the hunt→detection loop into something that keeps running.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

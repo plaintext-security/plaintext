@@ -1,6 +1,6 @@
 # Module 08 — Driving Security Tools
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — drive a MISP/VirusTotal integration with `pymisp`: create an event, add and tag IOC attributes, pull mock-VT enrichment, and attach it back to the event. (Secondary: Tool-Build — the reusable glue script that operates the integration end to end.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 01 — Forensic Fundamentals & Evidence Handling
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — dissect why forensic integrity is the load-bearing concept of the whole track by hashing and verifying evidence, documenting a chain of custody, and producing a defensible record of how the evidence was handled. (Secondary: Misconception Reveal — kill the "hash it later, it's fine" intuition by showing how an image gets excluded.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 15 — Threat Intelligence
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — ingest real indicator feeds into a threat-intel platform (MISP), enrich an indicator and a detection with context, and judge what is worth acting on; you commit a running intel pipeline with aging and confidence applied. (Secondary: Misconception Reveal — intelligence is assessment, not collection.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

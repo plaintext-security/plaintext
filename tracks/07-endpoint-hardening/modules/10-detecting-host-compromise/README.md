@@ -1,6 +1,6 @@
 # Module 10 — Detecting Host Compromise
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — match Sigma rules (via sigma-cli) against Wazuh-shaped alert JSON for lateral movement, credential dumping, and persistence, identify which fire and why, and map coverage to ATT&CK to produce a gap analysis. (Secondary: Judgment-as-Code / Gate — the detection-as-code rules form a coverage gate against compromise indicators.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

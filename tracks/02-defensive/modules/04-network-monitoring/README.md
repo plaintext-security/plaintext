@@ -1,6 +1,6 @@
 # Module 04 — Network Security Monitoring
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — run Zeek over real network traffic, read its protocol logs to find malicious activity, then author and prove a network detection (beaconing, DGA DNS, rare long-lived C2) that fires on the malicious logs and stays quiet on a benign baseline; you commit the Zeek setup plus a verified detection. (Secondary: Reconstruct — reading the attack back off the wire from the logs.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

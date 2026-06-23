@@ -1,6 +1,6 @@
 # Module 07 — Persistence in AD
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — create golden (T1558.001) and silver (T1558.002) tickets and establish DCSync rights (T1003.006) against Meridian, capturing the artefacts each leaves, delivering the executed persistence plus what genuinely removes it. (Secondary: Reconstruct — answer what "fully remediated" actually requires, e.g. rotating krbtgt twice, as an IR reconstruction.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 06 — Lateral Movement
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — enumerate hosts and SMB-signing status with netexec, move laterally via impacket `psexec.py`/`wmiexec.py`, and difference the artefacts each method leaves (service-install 7045 vs process 4688), delivering the executed movement and its detection comparison. (Secondary: Blast-Radius Trace — map how NTLM-relay and missing SMB signing widen reach across the estate.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

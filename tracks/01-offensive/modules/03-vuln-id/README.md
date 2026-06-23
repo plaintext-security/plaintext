@@ -1,6 +1,6 @@
 # Module 03 — Vulnerability Identification
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build `vuln_assess.py` to walk a service/version through CVE→CWE→CVSS→KEV→PoC and emit a prioritised `vuln-assessment.md`. (Secondary: Decision/ADR — defend the P1-vs-P2 ranking against real-world exploitability, not just CVSS.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

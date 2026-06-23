@@ -1,6 +1,6 @@
 # Module 05 — Building CLI Tools
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — wrap the module-04 enrichment function into a production-grade `ioc-check` CLI with `typer`: subcommands, typed arguments, `--help`, exit codes, and clear errors for bad input. The archetypal composable command-line tool. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

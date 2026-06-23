@@ -1,6 +1,6 @@
 # Module 01 — Setup & Security Idioms
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — stand up an isolated Python 3.12 environment and wire `ruff` + `bandit` as your first quality gate, then watch it catch the security anti-patterns AI-generated Python repeats (e.g. `shell=True`). (Secondary: Misconception Reveal — predict what the linter will flag, then see what it actually catches.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

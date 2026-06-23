@@ -1,6 +1,6 @@
 # Module 11 — Host & Boot Integrity
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — build an AIDE file-integrity baseline, plant three realistic tampers (modified binary, new SUID-root file, rogue cron job), and prove AIDE flags every one with the right change attributes, then harden the baseline database itself and map what FIM catches versus what only measured boot, Secure Boot, and FDE cover. (Secondary: Detonate & Detect — the planted tampers are the detonation the integrity control must catch.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

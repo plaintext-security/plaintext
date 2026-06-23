@@ -1,6 +1,6 @@
 # Module 07 — Log Parsing & Normalisation
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — parse a real, messy log into structured fields and normalise it to a common schema (ECS), handling the malformed lines; you commit a reusable parser and its parse-rate verification. (Secondary: Build-&-Operate — the parser is a piece of the data plane that has to keep working.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

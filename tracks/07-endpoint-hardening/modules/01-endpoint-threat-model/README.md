@@ -1,6 +1,6 @@
 # Module 01 — Threat Model of the Endpoint
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — threat-model a representative Meridian endpoint (assets, adversary objectives, attack paths) and map existing vs. recommended mitigations to each path, delivering a prioritised hardening backlog. (Secondary: Decision / ADR — the prioritisation doubles as a defended scoping decision on which controls matter most.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

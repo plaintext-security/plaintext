@@ -1,6 +1,6 @@
 # Module 16 — Cloud & Container Attack Primer
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — exploit cloud/container misconfigs on real targets (flaws.cloud, CloudGoat) and trace the reach: SSRF→metadata→IAM, key→bucket, container-escape→node, revealing that identity is the perimeter. (Secondary: Decision/ADR — a primer that hands off the deeper paths to Track 05.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

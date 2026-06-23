@@ -1,6 +1,6 @@
 # Module 10 — Privilege Escalation: Linux
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — enumerate a Linux host and escalate to root to reveal that privesc is misconfiguration, not exploits — the same list a CIS benchmark audits, read from the attacker's end. (Secondary: Detonate & Detect — that hardening/detection bridge.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

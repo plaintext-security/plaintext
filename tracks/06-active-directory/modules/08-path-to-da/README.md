@@ -1,6 +1,6 @@
 # Module 08 — Path to Domain Admin
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — chain modules 02–07 into one walked, narrated `jsmith → Domain Admins` path on the Meridian BloodHound dataset, mapping each hop to its ATT&CK technique and the artefact it leaves, delivering a client-actionable written attack-path report (the phase project). (Secondary: Blast-Radius Trace — quantify the reach exposed at each hop along the chain.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

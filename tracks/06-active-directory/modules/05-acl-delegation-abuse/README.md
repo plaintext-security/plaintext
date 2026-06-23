@@ -1,6 +1,6 @@
 # Module 05 — ACL & Delegation Abuse
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace — identify and exploit ACL misconfigurations (`GenericWrite`, `WriteDacl`, `WriteOwner`, `AllExtendedRights`) and delegation abuse (unconstrained/constrained) in Meridian, then trace the full "owned in two hops through a legit permission" escalation path as the deliverable. (Secondary: Detonate & Detect — capture the artefacts each ACE write and delegation abuse emit.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
