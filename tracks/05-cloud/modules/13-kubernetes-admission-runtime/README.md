@@ -100,12 +100,12 @@ policy, not a lecture to read first. Skim, then write — return when a `deny` c
 - [Kubernetes docs — Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (~25 min) — the *built-in* controller and the `baseline`/`restricted` profiles. Read this to see exactly which of your four pod specs the standard profiles already forbid — your Kyverno policies are the same verdicts, made explicit and extensible.
 
 **Kyverno — the tool you're writing in (~1 hr)**
-- [Kyverno docs — Writing Policies / Validate Rules](https://kyverno.io/docs/writing-policies/validate/) (~30 min) — the primary reference for `validate`, `deny`, patterns, and `validationFailureAction`. This is the vocabulary for every policy in the lab. <!-- VALIDATE exact path -->
-- [Kyverno policy library — Pod Security](https://kyverno.io/policies/pod-security/) (~30 min) — browsable community policies. Read "Disallow Privileged Containers," "Disallow Host Path," and "Require Run As Non-Root": they are the worked answers to your four predictions. Read them to learn the *shape*, then write your own — don't copy-paste blind. <!-- VALIDATE exact path -->
+- [Kyverno docs — Writing Policies / Validate Rules](https://kyverno.io/docs/policy-types/cluster-policy/validate/) (~30 min) — the primary reference for `validate`, `deny`, patterns, and `validationFailureAction`. This is the vocabulary for every policy in the lab.
+- [Kyverno policy library — Pod Security](https://kyverno.io/policies/?policytypes=Pod+Security+Standards+(Baseline)) (~30 min) — browsable community policies. Read "Disallow Privileged Containers," "Disallow Host Path," and "Require Run As Non-Root": they are the worked answers to your four predictions. Read them to learn the *shape*, then write your own — don't copy-paste blind.
 
 **Runtime — the camera (~45 min)**
-- [Falco docs — Kubernetes deployment](https://falco.org/docs/install-operate/deployment/) (~20 min) — the DaemonSet model and how alerts carry Kubernetes metadata. <!-- VALIDATE exact path -->
-- [Falco docs — Rules / writing a custom rule](https://falco.org/docs/concepts/rules/) (~25 min) — `condition`, `output`, `priority`, and the default `Terminal shell in container` / `Read sensitive file` rules. You'll tune one of these for the runtime gap. <!-- VALIDATE exact path -->
+- [Falco docs — Kubernetes deployment](https://falco.org/docs/setup/kubernetes/) (~20 min) — the DaemonSet model and how alerts carry Kubernetes metadata.
+- [Falco docs — Rules / writing a custom rule](https://falco.org/docs/concepts/rules/) (~25 min) — `condition`, `output`, `priority`, and the default `Terminal shell in container` / `Read sensitive file` rules. You'll tune one of these for the runtime gap.
 
 ## Key concepts
 - Admission control runs on the spec *before* the pod starts (prevention, cheap); runtime detection watches behavior *after* it starts (detection, for the gap) — you need both

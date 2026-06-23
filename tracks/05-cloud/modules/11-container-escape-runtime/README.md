@@ -80,13 +80,13 @@ the difference between a noisy demo and something a SOC would actually keep enab
 - [Linux `capabilities(7)` man page](https://man7.org/linux/man-pages/man7/capabilities.7.html) (~15 min, skim) — skim the list and read `CAP_SYS_ADMIN`. This is the vocabulary behind what `--privileged` actually grants.
 
 **The CVE itself (~1 hr)**
-- [The original disclosure — "CVE-2019-5736: Escape from Docker and Kubernetes containers to root on host" (Adam Iwaniuk / Dragon Sector)](https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html) (~30 min) — the discoverers' own writeup, with the `/proc/self/exe` mechanism. Primary source; read it slowly. <!-- VALIDATE exact URL -->
+- [The original disclosure — "CVE-2019-5736: Escape from Docker and Kubernetes containers to root on host" (Adam Iwaniuk / Dragon Sector)](https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html) (~30 min) — the discoverers' own writeup, with the `/proc/self/exe` mechanism. Primary source; read it slowly.
 - [NVD — CVE-2019-5736](https://nvd.nist.gov/vuln/detail/CVE-2019-5736) (~10 min) — the record and CVSS 8.6 vector; note the affected runc versions you'll pin in the lab.
 - [MITRE ATT&CK T1611 — Escape to Host](https://attack.mitre.org/techniques/T1611/) (~15 min) — the technique your detection maps to; read the detection guidance and note T1610 (Deploy Container).
 
 **Falco runtime detection (~1 hr)**
 - [Falco docs — Rules](https://falco.org/docs/rules/) (~30 min) — the rule language: read **Conditions**, **Output**, **Macros**, and **Exceptions**. This is exactly the vocabulary you tune with.
-- [Falco docs — Event sources / how Falco works](https://falco.org/docs/concepts/event-sources/) (~15 min) — how it taps syscalls via eBPF; builds the mental model before you watch it fire. <!-- VALIDATE exact page -->
+- [Falco docs — Event sources / how Falco works](https://falco.org/docs/concepts/event-sources/) (~15 min) — how it taps syscalls via eBPF; builds the mental model before you watch it fire.
 
 ## Key concepts
 - A container is a host process with namespaces/cgroups/capabilities — **not** a VM; there is no hypervisor boundary

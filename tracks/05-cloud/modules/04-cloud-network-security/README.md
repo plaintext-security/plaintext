@@ -100,17 +100,17 @@ reachability model carries into Kubernetes (Module 12). Read the case first, the
 **VPC and the firewall that isn't (~1.5 hrs)**
 - [AWS — How Amazon VPC works](https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html) (~40 min) — the authoritative tour of subnets, route tables, Internet/NAT gateways, Security Groups and NACLs. Read it for the vocabulary the lab assumes; note which objects are control-plane (API-managed) versus data-plane.
 - [AWS — Security Groups vs Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Security.html) (~20 min) — the stateful-SG vs. stateless-NACL distinction and the default-permit-egress fact. This is the "host firewall, per-ENI, composable" mental model in primary-source form.
-- [AWS — control traffic with VPC Endpoints / PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) (~20 min, skim) — why keeping AWS-service and third-party traffic off the public internet is the egress baseline, not a nicety. <!-- VALIDATE -->
+- [AWS — control traffic with VPC Endpoints / PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) (~20 min, skim) — why keeping AWS-service and third-party traffic off the public internet is the egress baseline, not a nicety.
 
 **The exposure wave, from the source (~1 hr)**
-- [Shodan — exposed databases / industry reports](https://www.shodan.io/) (~20 min, orient) — search Elasticsearch/MongoDB and see the live count of internet-exposed instances; the 2017–19 wave never fully ended. <!-- VALIDATE: link the specific report/search, not the homepage -->
-- [Krebs on Security — the MongoDB ransom wave](https://krebsonsecurity.com/) (~20 min) — contemporaneous reporting on the `0.0.0.0/0`-exposed-DB ransom attacks; corroborate the scale. <!-- VALIDATE: link the specific 2017 post -->
+- [Shodan — Elastic data exposure grows to 3.2 PB](https://blog.shodan.io/elastic-data-exposure-grows-to-3-2-pb/) (~20 min, orient) — Shodan's own 2018→2020 measurement of internet-exposed Elasticsearch/MongoDB/HDFS instances; the 2017–19 wave never fully ended.
+- [Krebs on Security — the MongoDB ransom wave](https://krebsonsecurity.com/2017/01/extortionists-wipe-thousands-of-databases-victims-who-pay-up-get-stiffed/) (~20 min) — contemporaneous reporting on the `0.0.0.0/0`-exposed-DB ransom attacks; corroborate the scale.
 - [US Senate report — Capital One](https://www.hsgac.senate.gov/wp-content/uploads/imo/media/doc/Capital%20One%20Report.pdf) (~20 min, skim the network/WAF section) — re-read the chain with the network-containment lens: which walls were the network's job?
 
 **Mapping reachability (~1.5 hrs)**
 - [cloudmapper — README](https://github.com/duo-labs/cloudmapper) (~30 min) — Duo Labs' topology mapper. Read the `collect → prepare → audit → webserver` workflow; `audit` is what surfaces the `0.0.0.0/0` findings, the graph is what communicates them.
 - [AWS — VPC Flow Logs (record format)](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html) (~30 min) — read the "Flow log records" section; the 5-tuple + ACCEPT/REJECT is how reachability is *observed* after the fact (scans = REJECT storms, exfil = a fat 443 flow to an external IP). You'll parse these in the lab.
-- [Checkov — AWS Security Group policies](https://www.checkov.io/5.Policy%20Index/terraform.html) (~20 min, skim) — find the built-in rules that fail `0.0.0.0/0` on sensitive ports (e.g. CKV_AWS_24/25 for 22/3389); this is the guardrail you'll own. <!-- VALIDATE rule IDs -->
+- [Checkov — AWS Security Group policies](https://www.checkov.io/5.Policy%20Index/terraform.html) (~20 min, skim) — find the built-in rules that fail `0.0.0.0/0` on sensitive ports (e.g. CKV_AWS_24/25 for 22/3389); this is the guardrail you'll own.
 
 ## Key concepts
 - A Security Group **is** the stateful host firewall you know — but per-ENI and composable, so reachability is a graph (follow group-references as edges), not a per-rule table

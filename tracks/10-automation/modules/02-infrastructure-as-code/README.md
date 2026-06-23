@@ -30,11 +30,15 @@ well-documented:
   (`terraform.tfstate`), and that file stores resource attributes — including database passwords, API
   keys, and private keys — in **plaintext**. Researchers scanning public sources have repeatedly found
   exposed `terraform.tfstate` files (committed to public GitHub repos, left in open S3 buckets)
-  handing over live credentials to anyone who looks. <!-- VALIDATE: cite a specific public writeup of exposed tfstate-in-the-wild, e.g. a GitGuardian / Plerion / Firefly state-exposure report, with date -->
+  handing over live credentials to anyone who looks — in Sysdig's [SCARLETEEL operation](https://www.sysdig.com/blog/cloud-breach-terraform-data-theft)
+  (Feb 2023), attackers pulled cleartext IAM access keys straight from a `terraform.tfstate` file
+  in an S3 bucket and used them to pivot into a second AWS account.
 - **A destructive plan applied to prod.** Run `terraform apply` (or worse, `terraform destroy`)
   against the wrong workspace, or merge a refactor that the tool reads as "replace this database," and
-  the apply will do it — fast, in order, with no human in the loop. There are well-known incident
-  writeups of an unreviewed plan tearing down production resources. <!-- VALIDATE: anchor to a specific named public post-mortem of a destructive terraform apply/destroy to prod, with date -->
+  the apply will do it — fast, in order, with no human in the loop. In one widely-read [post-mortem](https://alexeyondata.substack.com/p/how-i-dropped-our-production-database)
+  (Mar 2026), DataTalks.Club's Alexey Grigorev describes how an agent pointed at a stale state file
+  ran `terraform destroy` and wiped 2.5 years of production — RDS database, VPC, ECS cluster, and
+  load balancers — in one unreviewed apply.
 
 Both failures share one root cause: **the apply ran without the diff being read.** That is the
 judgment this module is built around.

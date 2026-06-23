@@ -86,7 +86,7 @@ human verdict wrapped around it.
 
 **Writing the gate — the actual deliverable (~1.5 hrs)**
 - [Checkov — CLI command reference (exit codes, `--soft-fail-on`, `--check`/`--skip-check`)](https://www.checkov.io/2.Basics/CLI%20Command%20Reference.html) (~30 min) — read precisely how Checkov sets its **exit code** and how `--soft-fail-on` / `--hard-fail-on` choose which severities block. The gate lives or dies on this.
-- [`bridgecrewio/checkov-action` (the GitHub Action)](https://github.com/bridgecrewio/checkov-action) (~20 min) — the canonical CI integration; read how `soft_fail_on` and SARIF upload wire into a PR check. <!-- VALIDATE current input names -->
+- [`bridgecrewio/checkov-action` (the GitHub Action)](https://github.com/bridgecrewio/checkov-action) (~20 min) — the canonical CI integration; read how `soft_fail_on` and SARIF upload wire into a PR check.
 - [Checkov — suppressing and skipping checks (inline `checkov:skip`)](https://www.checkov.io/2.Basics/Suppressing%20and%20Skipping%20Policies.html) (~20 min) — the *correct* way to record a true false-positive, with a rationale. This is the judgment move, documented.
 - [Writing a custom Checkov check (Python / YAML)](https://www.checkov.io/3.Custom%20Policies/Python%20Custom%20Policies.html) (~20 min) — skim, for the stretch: when no built-in rule encodes *your* org's verdict, you write the rule.
 
@@ -96,9 +96,11 @@ human verdict wrapped around it.
 
 > **A concrete IaC supply-chain risk, not just config drift:** a vulnerability in a *Terraform provider
 > or shared module* poisons every config that uses it — pinning module/provider versions and scanning
-> the modules you pull is part of IaC security, not separate from it. Track a specific CVE in the AWS
-> provider or a popular community module via [NVD](https://nvd.nist.gov/) and note it in your findings.
-> <!-- VALIDATE: cite a specific Terraform provider/module CVE by ID before publish -->
+> the modules you pull is part of IaC security, not separate from it. A concrete example:
+> [CVE-2025-13357](https://nvd.nist.gov/vuln/detail/CVE-2025-13357) (CVSS 9.8) — the HashiCorp Vault
+> Terraform provider (v4.2.0 to before v5.5.0) defaulted `deny_null_bind` to `false` for the LDAP auth
+> method, so every config using that provider silently allowed anonymous-bind authentication bypass until
+> upgraded to v5.5.0. Track a CVE like this via [NVD](https://nvd.nist.gov/) and note it in your findings.
 
 ## Key concepts
 - A scanner is a fast junior reviewer with no context: it catches the known-bad *pattern* (`encrypted = false`, `0.0.0.0/0`, `*`) but never the bad *decision* (intended vs. catastrophic open port; a secret in a variable; permissions that compose into admin).

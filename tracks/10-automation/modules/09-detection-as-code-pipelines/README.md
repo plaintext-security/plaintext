@@ -91,16 +91,16 @@ detection on a Friday without praying.
 
 **sigma-cli & the rule spec (~45 min)**
 - [sigma-cli — SigmaHQ (README through "Usage")](https://github.com/SigmaHQ/sigma-cli) — understand `sigma check`, `sigma convert`, and pointing it at a rules directory; this is stage one of the gate.
-- [Sigma rule specification — SigmaHQ (the "Detection" section)](https://github.com/SigmaHQ/sigma-specification) — skim what a valid `detection`/`condition` block looks like; knowing what `sigma check` validates helps you write rules that pass it. <!-- VALIDATE: sigma-specification repo moved from the old wiki; confirm this is the current canonical spec home before publish -->
+- [Sigma rule specification — SigmaHQ (the "Detection" section)](https://github.com/SigmaHQ/sigma-specification) — skim what a valid `detection`/`condition` block looks like; knowing what `sigma check` validates helps you write rules that pass it.
 
 **pytest as the intent contract (~45 min)**
 - [pytest — "How to parametrize fixtures and test functions"](https://docs.pytest.org/en/stable/how-to/parametrize.html) — the parametrize pattern *is* the detection test table; read the full section.
-- [Detection testing with pytest — SpecterOps (Kyle Ehmke)](https://posts.specterops.io/detection-testing-with-pytest-ee8e4d58cb0b) — a practical walkthrough of this exact pattern (rule + event + assert); read before the lab. <!-- VALIDATE: confirm this Medium/SpecterOps post still resolves at this slug -->
+- [sigma-test — a test-case runner for Sigma rules (bradleyjkemp)](https://github.com/bradleyjkemp/sigma-test) — a compact tool that embodies this exact pattern: drop example events beside each rule and assert `match: true/false`. Read its examples to see the rule + event + assert contract before you wire it into pytest.
 
 **The eval-harness layer — held-out sets, the metrics, the gate (~1 hr)**
 - [Google ML Crash Course — "Accuracy, recall, precision"](https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall) — the precise definitions your scorecard prints, and *why accuracy misleads on imbalanced classes* — exactly a detection corpus. Short and visual.
 - [Google ML Crash Course — "Thresholding & the confusion matrix"](https://developers.google.com/machine-learning/crash-course/classification/thresholding) — how widening a rule trades recall against false positives; this is the curve you tune.
-- [Sigma rule testing & quality — SigmaHQ rule-creation guide](https://github.com/SigmaHQ/sigma/wiki/Rule-Creation-Guide) — SigmaHQ's own take on false positives and rule quality, from the project that maintains thousands of community rules. <!-- VALIDATE: confirm the Rule-Creation-Guide wiki page still exists at this path -->
+- [Sigma rule testing & quality — SigmaHQ rule-creation guide](https://github.com/SigmaHQ/sigma/wiki/Rule-Creation-High%E2%80%90Level-Guide) — SigmaHQ's own take on false positives and rule quality, from the project that maintains thousands of community rules.
 
 > *Cross-track note:* this is the **Eval Harness** type ([ai-augmented-ops 11 — AI Evaluation](../../../12-ai-augmented-ops/modules/11-ai-evaluation/README.md) is its sibling): a triage model, a RAG, and a detection are all non-deterministic systems improved by *a held-out set + a metric + a regression gate*, not by vibes. Same shape, different classifier.
 

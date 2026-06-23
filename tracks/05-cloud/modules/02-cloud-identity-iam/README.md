@@ -108,8 +108,8 @@ modules, so it's worth the time. Read the case above first, then go deep on the 
 - [BishopFox — cloudfox README (AWS section)](https://github.com/BishopFox/cloudfox) (~20 min) — the enumeration accelerator; skim `permissions`, `role-trusts`, `iam-simulator` so the lab's commands are familiar.
 
 **The federation footnote (~30 min)**
-- [CISA — Emergency Directive 21-01 (SolarWinds / SUNBURST)](https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise) (~15 min, skim) — the federal response; orient on the trust-compromise angle. <!-- VALIDATE -->
-- [CISA — guidance on detecting forged SAML tokens (Golden SAML)](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-008a) (~15 min) — why a stolen signing key defeats the trust wall entirely. <!-- VALIDATE -->
+- [CISA — Emergency Directive 21-01 (SolarWinds / SUNBURST)](https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise-closed) (~15 min, skim) — the federal response; orient on the trust-compromise angle.
+- [CISA — guidance on detecting forged SAML tokens (Golden SAML)](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-008a) (~15 min) — why a stolen signing key defeats the trust wall entirely.
 
 ## Key concepts
 - A key's blast radius is the *transitive closure* of its permissions — including the permissions it can grant itself (`iam:PassRole`, `CreateAccessKey`) — not the label on its policy

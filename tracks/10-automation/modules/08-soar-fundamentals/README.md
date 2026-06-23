@@ -19,7 +19,7 @@ exactly the work that erodes people. **Alert fatigue is not a metaphor** — it 
 condition where a flood of low-context alerts trains analysts to dismiss them, and the one that
 mattered gets dismissed with the rest. The 2013 Target breach is the canonical example: the
 intrusion *did* generate alerts from the deployed tooling, and they were not acted on in time — the
-signal was there, buried in the volume and the manual toil of triaging it. <!-- VALIDATE: anchor the Target 2013 "alerts fired but were missed amid volume" detail to a primary/named source — the U.S. Senate Commerce Committee "Kill Chain" report (March 2014) is the canonical one; confirm the report name + date before shipping -->
+signal was there, buried in the volume and the manual toil of triaging it (the U.S. Senate Commerce Committee's [*A "Kill Chain" Analysis of the 2013 Target Data Breach*](https://www.commerce.senate.gov/wp-content/uploads/media/doc/2014%200325%20Target%20Kill%20Chain%20Analysis.pdf), March 26, 2014, documents how the deployed FireEye and Symantec tooling flagged the intrusion and the warnings went un-actioned).
 
 SOAR — Security Orchestration, Automation, and Response — attacks that toil directly. It connects
 the tools a SOC already runs (SIEM, threat-intel APIs, ticketing, firewalls) into **playbooks** that
@@ -81,14 +81,14 @@ the editor changes.
 ## Learn (~2.5 hrs)
 
 **SOAR concepts — the category and the gate decision (~1 hr)**
-- [What is SOAR? — IBM](https://www.ibm.com/think/topics/security-orchestration-automation-and-response) (~20 min) — a vendor-neutral overview of the category. Read the "How SOAR works" and "SOAR vs SIEM" sections; the rest is marketing. <!-- VALIDATE: confirm this IBM "Think / Topics" SOAR URL still resolves and these section headings exist -->
-- [Palo Alto Cortex — "What is a security playbook?"](https://www.paloaltonetworks.com/cyberpedia/what-is-a-security-playbook) (~15 min) — read for the **playbook anatomy** (trigger, tasks, conditional branches) and, crucially, the framing of *automated vs. analyst-gated tasks* — that's the human-in-the-loop judgment this module is built on. Skim past the product pitch. <!-- VALIDATE: confirm this Palo Alto Cyberpedia playbook URL resolves; if not, substitute another vendor-neutral playbook-anatomy explainer -->
+- [What is SOAR? — IBM](https://www.ibm.com/think/topics/security-orchestration-automation-response) (~20 min) — a vendor-neutral overview of the category. Read the "How SOAR works" and "SOAR vs SIEM" sections; the rest is marketing.
+- [Fortinet — "How to Automate Security Operations With SOAR Playbooks"](https://www.fortinet.com/resources/articles/automate-security-operations-with-soar) (~15 min) — read for the **playbook anatomy** (trigger, tasks, conditional branches) and, crucially, the framing of *automated vs. analyst-gated tasks* — approval gates before disruptive actions like account deactivation or network isolation — that's the human-in-the-loop judgment this module is built on. Skim past the product pitch.
 
 **n8n — enough to build the four nodes (~1.5 hrs)**
 - [n8n — Quickstart](https://docs.n8n.io/try-it-out/quickstart/) (~40 min) — work through it once; you need *workflow*, *node*, and *connection* as working concepts, not mastery.
 - [n8n — Webhook node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/) (~15 min) — the trigger. Understand how to get the webhook URL and how n8n passes the incoming payload to downstream nodes (the `{{$json...}}` expression syntax).
 - [n8n — HTTP Request node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) (~15 min) — the node that calls the threat-intel API and posts the ticket. Note how it handles a non-2xx response — that's your "API is down" branch.
-- [n8n — IF node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) (~10 min) — the decision stage; routes on the enrichment verdict. This is where the escalate-vs-monitor (and, after you extend it, the `unknown`) logic lives. <!-- VALIDATE: confirm the n8n IF-node docs URL/slug is current (n8n renames node docs paths between versions) -->
+- [n8n — IF node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) (~10 min) — the decision stage; routes on the enrichment verdict. This is where the escalate-vs-monitor (and, after you extend it, the `unknown`) logic lives.
 
 ## Key concepts
 - **The playbook architecture: trigger → enrich → decide → respond** — a workflow engine wired to security tools.

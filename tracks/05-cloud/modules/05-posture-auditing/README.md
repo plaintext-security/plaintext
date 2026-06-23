@@ -77,10 +77,10 @@ The mature end-state of posture management isn't a quarterly PDF; it's the same 
 
 **The CIS rulebook and the posture model (~1 hr)**
 - [CIS Amazon Web Services Foundations Benchmark](https://www.cisecurity.org/benchmark/amazon_web_services) (~30 min, skim) — the scored standard `prowler` implements. Read the structure: control families (Identity, Logging, Networking, Monitoring), Level 1 vs. Level 2, scored vs. not-scored. You're learning the *shape* of the rulebook so a finding ID means something.
-- [UpGuard — "the RNC files" / Verizon / Accenture S3 exposure writeups](https://www.upguard.com/breaches) (~25 min) — the discovering researcher's own catalogue of the 2017 wave. Read two of them and notice the pattern is *identical* every time. <!-- VALIDATE: confirm current index URL and that the specific Verizon/Accenture posts are linked from it -->
+- UpGuard — the [Verizon](https://www.upguard.com/breaches/verizon-cloud-leak) and [Accenture](https://www.upguard.com/breaches/cloud-leak-accenture) S3 exposure writeups (~25 min) — the discovering researcher's own accounts of the 2017 wave. Read both and notice the pattern is *identical* every time: a public bucket, terabytes downloadable to anyone with the URL.
 
 **Prowler — the linter (~1.5 hrs)**
-- [Prowler docs — getting started](https://docs.prowler.com/) (~40 min) — install, authenticate, run a scan, and crucially the **filtering** (by severity, by compliance framework, by check). Read "Quick Start" and "Output formats"; filtering is how you turn 400 findings into a triage queue. <!-- VALIDATE current docs root -->
+- [Prowler docs — getting started](https://docs.prowler.com/) (~40 min) — install, authenticate, run a scan, and crucially the **filtering** (by severity, by compliance framework, by check). Read "Quick Start" and "Output formats"; filtering is how you turn 400 findings into a triage queue.
 - [prowler-cloud/prowler — the check library](https://github.com/prowler-cloud/prowler) (~30 min, browse) — open `prowler/providers/aws/services/s3/` and read an actual check's code. This is the fastest way to learn what *good* config looks like and what a check truly tests (so you can judge a false positive).
 
 **ScoutSuite — the second opinion (~45 min)**

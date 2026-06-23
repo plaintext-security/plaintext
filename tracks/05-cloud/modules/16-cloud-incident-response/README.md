@@ -27,7 +27,7 @@ backup storage. They compromised that engineer's **personal home computer** (via
 media-player package), keylogged the master password to a corporate vault, and from there reached the
 **decryption keys for the cloud-based backup buckets** — and copied out customer vault backups and
 configuration data. (LastPass laid the full chain out in its
-[security-incident updates](https://support.lastpass.com/s/document-item?language=en_US&bundleId=lastpass&topicId=LastPassWeb/security-incident-update-faq.html). <!-- VALIDATE exact URL -->)
+[security-incident updates](https://blog.lastpass.com/posts/security-incident-update-recommended-actions).)
 
 So the first incident *was* contained, in the narrow sense — the attacker was evicted from the dev
 environment. And yet it directly enabled the second. Before you read on, this is the question the whole
@@ -112,11 +112,11 @@ corroboration from flow logs** — are the two planes every cloud incident lives
 (02/03), logging (15), and attacker TTPs (14) all at once.*
 
 **The case — read the primary post-mortem (~45 min)**
-- [LastPass — "Notice of Recent Security Incident" + the December update](https://blog.lastpass.com/posts/2022/12/notice-of-recent-security-incident) (~30 min) — the breached company's own disclosure of the two-incident chain. Read it as an IR artifact: notice how the *first* incident's stolen data is named as the *second* incident's recon. This is your anchor; the first-party RCA is the most credible "what failed" source there is. <!-- VALIDATE exact URL -->
-- [LastPass — security-incident update FAQ (the technical detail)](https://support.lastpass.com/s/document-item?language=en_US&bundleId=lastpass&topicId=LastPassWeb/security-incident-update-faq.html) (~15 min, skim) — the engineer's home machine, the keylogger, the four key-holders, the backup decryption keys. The hop-by-hop the verdict rests on. <!-- VALIDATE exact URL -->
+- [LastPass — "Notice of Recent Security Incident" + the December update](https://blog.lastpass.com/posts/2022/12/notice-of-recent-security-incident) (~30 min) — the breached company's own disclosure of the two-incident chain. Read it as an IR artifact: notice how the *first* incident's stolen data is named as the *second* incident's recon. This is your anchor; the first-party RCA is the most credible "what failed" source there is.
+- [UpGuard — The LastPass Data Breach: timeline and key lessons](https://www.upguard.com/blog/lastpass-vulnerability-and-future-of-password-security) (~15 min, skim) — the engineer's home machine, the Plex keylogger, the four key-holders, the backup decryption keys. The hop-by-hop the verdict rests on.
 
 **Cloud IR frameworks (~1 hr)**
-- [AWS Security Incident Response Guide](https://docs.aws.amazon.com/security-ir/latest/userguide/welcome.html) (~40 min) — read **"Detection and Analysis"** and the forensics workflow; skip the org sections. The primary AWS source for how a cloud IR engagement is structured. <!-- VALIDATE -->
+- [AWS Security Incident Response Guide](https://docs.aws.amazon.com/security-ir/latest/userguide/welcome.html) (~40 min) — read **"Detection and Analysis"** and the forensics workflow; skip the org sections. The primary AWS source for how a cloud IR engagement is structured.
 - [CloudTrail — `userIdentity` element reference](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-user-identity.html) (~20 min) — the most forensically rich field in a record. Learn the difference between `IAMUser`, `AssumedRole`, `Root`, and `AWSService` and what each implies — the `IAMUser`→`AssumedRole` transition *is* the privilege-escalation hop in the lab.
 
 **Timeline reconstruction (~1.5 hrs)**

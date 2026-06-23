@@ -106,12 +106,12 @@ it curates the supply-chain spine in depth. Read the case above first.*
 **The breach, from primary sources (~1 hr)**
 - [Mandiant/FireEye — "Highly Evasive Attacker Leverages SolarWinds Supply Chain" (SUNBURST writeup)](https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor/) (~30 min) — the discovering researcher's technical anatomy of the backdoor and the build-time injection. Read for *where* and *how* it went in.
 - [CISA — Emergency Directive 21-01 (Mitigate SolarWinds Orion Code Compromise)](https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise) (~15 min, skim) — the federal response; orient on scope and the "trusted update" framing.
-- [SEC — order/charges re: SolarWinds (litigation release)](https://www.sec.gov/files/litigation/admin/2023/34-98908.pdf) (~15 min, skim) — primary regulatory record of the build-environment failures. <!-- VALIDATE exact current URL -->
+- [SEC — Litigation Release: SolarWinds Corporation and Timothy G. Brown](https://www.sec.gov/enforcement-litigation/litigation-releases/lr-25887) (~15 min, skim) — the primary regulatory record of the alleged build-environment and disclosure failures (the SEC's first cyber-disclosure fraud charges against a company and its CISO).
 
 **The fix — provenance, pinning, OIDC (~2 hrs)**
 - [SLSA v1.0 — "About" and the provenance model](https://slsa.dev/spec/v1.0/about) (~30 min) — the framework that names the missing link: build provenance levels. Read "About" and the provenance concept; that's the WHAT-not-WHO model made concrete.
 - [GitHub — Security hardening for GitHub Actions](https://docs.github.com/en/actions/reference/security/secure-use) (~40 min) — the authoritative guide: expression injection, minimal `permissions`, pinning actions to SHAs, OIDC. Read the whole page; it's the checklist your hardened workflow satisfies.
-- [GitHub — about artifact attestations / build provenance](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) (~20 min) — how Actions emits a signed provenance attestation you can verify before deploy. <!-- VALIDATE exact current URL -->
+- [GitHub — about artifact attestations / build provenance](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) (~20 min) — how Actions emits a signed provenance attestation you can verify before deploy.
 - [trivy — vulnerability scanning + SBOM](https://aquasecurity.github.io/trivy/latest/docs/scanner/vulnerability/) (~20 min) — how trivy scans an image and emits a CycloneDX SBOM; read "Container Image" and SBOM sections.
 
 **Secrets & injection in the pipeline (~1 hr)**

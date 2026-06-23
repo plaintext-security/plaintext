@@ -103,11 +103,11 @@ from modules 02–03; here you apply it to the serverless shape. Read the case f
 - [AWS — official statement quoted in the Cado writeup](https://www.cadosecurity.com/blog/cado-discovers-denonia-the-first-malware-specifically-targeting-lambda) (in the same post) — "relies entirely on fraudulently obtained account credentials." This is the shared-responsibility verdict from module 01, restated for serverless.
 
 **The standing power — execution roles (~1 hr)**
-- [AWS Lambda — security best practices](https://docs.aws.amazon.com/lambda/latest/dg/security-best-practices.html) (~25 min) — read the *execution role least privilege* and *environment variable* sections; this is the official statement of the fix you'll author. <!-- VALIDATE exact slug -->
+- [AWS Lambda — security best practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html) (~25 min) — read the *execution role least privilege* and *environment variable* sections; this is the official statement of the fix you'll author.
 - [BishopFox — cloudfox README (AWS, `permissions` + `role-trusts`)](https://github.com/BishopFox/cloudfox) (~20 min) — the enumeration accelerator; skim so the lab's "what can this role reach" step is familiar. (You used it in module 03 against IAM graphs — same tool, pointed at a Lambda role.)
 
 **Deploy & exploit tooling (~1 hr)**
-- [AWS SAM CLI — what it is, and `sam deploy`](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-deploy.html) (~20 min, skim) — the deploy tool the lab uses; you only need the deploy/redeploy flow. <!-- VALIDATE exact slug -->
+- [AWS SAM CLI — what it is, and `sam deploy`](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-deploy.html) (~20 min, skim) — the deploy tool the lab uses; you only need the deploy/redeploy flow.
 - [Pacu — RhinoSecurityLabs/pacu, the Lambda module list](https://github.com/RhinoSecurityLabs/pacu) (~20 min, orient) — read which Lambda modules exist; you won't drive Pacu here, but it shows how a real operator automates the privesc your cloudfox finding exposes (and you'll use it in module 14).
 
 ## Key concepts

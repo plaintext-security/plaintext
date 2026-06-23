@@ -85,8 +85,8 @@ can defend. The deliverable is that defence.
 ## Learn (~3 hrs)
 
 **The anchor — read the ruling and the analysis (~30 min)**
-- [Moffatt v. Air Canada, 2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html) — the actual decision (short, plain-language). Read paragraphs 24–28 on negligent misrepresentation and the rejected "separate legal entity" argument. This is the load-bearing primary source. <!-- VALIDATE -->
-- [ABA Business Law Today — "BC Tribunal Confirms Companies Remain Liable for Information Provided by AI Chatbot" (Feb 2024)](https://www.americanbar.org/groups/business_law/resources/business-law-today/2024-february/bc-tribunal-confirms-companies-remain-liable-information-provided-ai-chatbot/) — a tight legal read of why deployment, not authorship, decides liability. The "you own the output" half of the reveal. <!-- VALIDATE -->
+- [Moffatt v. Air Canada, 2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html) — the actual decision (short, plain-language). Read paragraphs 24–28 on negligent misrepresentation and the rejected "separate legal entity" argument. This is the load-bearing primary source.
+- [ABA Business Law Today — "BC Tribunal Confirms Companies Remain Liable for Information Provided by AI Chatbot" (Feb 2024)](https://www.americanbar.org/groups/business_law/resources/business-law-today/2024-february/bc-tribunal-confirms-companies-remain-liable-information-provided-ai-chatbot/) — a tight legal read of why deployment, not authorship, decides liability. The "you own the output" half of the reveal.
 
 **Routing and risk framing (~1 hr)**
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — LLM06 (Sensitive Information Disclosure) and LLM09 (Overreliance) are exactly the two risks the routing table manages. Read the descriptions and example scenarios; you'll cite at least one by ID in the ADR.

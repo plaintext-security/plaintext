@@ -78,7 +78,7 @@ Dockerfile.
 **Dockerfile best practices (~1 hr)**
 - [Building best practices — Docker docs](https://docs.docker.com/build/building/best-practices/) — read the full page; covers layer ordering, pinning, multi-stage builds, and keeping images small. The reference for *why* the Dockerfile is shaped the way it is.
 - [Docker security — non-root, secrets, read-only — Docker docs](https://docs.docker.com/engine/security/) — read the "Docker daemon attack surface" and run-as-non-root guidance; this is the runtime side of the hardening the lab applies.
-- [CIS Docker Benchmark — Center for Internet Security](https://www.cisecurity.org/benchmark/docker) — skim sections 4 (container images) and 5 (container runtime); each benchmark item maps to a concrete Dockerfile instruction, so it doubles as your hardening checklist. <!-- VALIDATE: free download requires CIS account -->
+- [CIS Docker Benchmark — Center for Internet Security](https://www.cisecurity.org/benchmark/docker) — skim sections 4 (container images) and 5 (container runtime); each benchmark item maps to a concrete Dockerfile instruction, so it doubles as your hardening checklist.
 
 **Minimal base images & the tool (~1 hr)**
 - [Chainguard Images — "Why distroless?" — Chainguard](https://www.chainguard.dev/containers) — read the "Why distroless?" framing for the concrete argument that fewer packages means fewer CVEs; this is the case for the minimal-base stretch goal.

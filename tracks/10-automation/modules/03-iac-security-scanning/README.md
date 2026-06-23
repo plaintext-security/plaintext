@@ -80,8 +80,8 @@ verdict so it can't regress.
 - [Checkov — Suppressing and Skipping checks (inline `checkov:skip`)](https://www.checkov.io/2.Basics/Suppressing%20and%20Skipping%20Policies.html) (~15 min) — the *correct* way to record a true false-positive, with a rationale. This is the judgment move, documented.
 
 **Writing the gate — the actual deliverable (~45 min)**
-- [Checkov — CLI Command Reference (exit codes, `--soft-fail-on`, `--hard-fail-on`)](https://www.checkov.io/2.Basics/Reviewing%20scan%20results.html) (~20 min) — read precisely how Checkov sets its **exit code** and how `--soft-fail-on` / `--hard-fail-on` choose which severities block. The gate lives or dies on this. <!-- VALIDATE exact page slug for the exit-code reference -->
-- [`bridgecrewio/checkov-action` (the GitHub Action)](https://github.com/bridgecrewio/checkov-action) (~15 min) — the canonical CI integration; read how `soft_fail_on` and SARIF upload wire into a PR check, and pin the action to a commit SHA. <!-- VALIDATE current input names -->
+- [Checkov — Hard and soft fail (exit codes, `--soft-fail-on`, `--hard-fail-on`)](https://www.checkov.io/2.Basics/Hard%20and%20soft%20fail.html) (~20 min) — read precisely how Checkov sets its **exit code** and how `--soft-fail-on` / `--hard-fail-on` choose which severities block. The gate lives or dies on this.
+- [`bridgecrewio/checkov-action` (the GitHub Action)](https://github.com/bridgecrewio/checkov-action) (~15 min) — the canonical CI integration; read how `soft_fail` and SARIF upload (`output_format: cli,sarif` → `github/codeql-action/upload-sarif`) wire into a PR check, and pin the action to a commit SHA.
 - [Writing a custom Checkov check (Python / YAML)](https://www.checkov.io/3.Custom%20Policies/Python%20Custom%20Policies.html) (~10 min) — skim, for the stretch: when no built-in rule encodes *your* org's verdict, you write the rule.
 
 **Why the patterns matter (~15 min)**

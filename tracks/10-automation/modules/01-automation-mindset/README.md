@@ -41,7 +41,7 @@ low, **as fast as the automation could send them.**
 It ran for roughly **45 minutes** before anyone could stop it. In that time Knight executed millions
 of trades, took on billions in unwanted positions, and ended the day **~$440 million** poorer — a
 loss that effectively destroyed the company within days. The sequence is laid out in the
-[SEC's order against Knight Capital (Exchange Act Release No. 70694, Oct. 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) <!-- VALIDATE -->.
+[SEC's order against Knight Capital (Exchange Act Release No. 70694, Oct. 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf).
 
 ## Call it before you read on
 Don't scroll. Write down one answer — being wrong here is the entire point; it's what makes the
@@ -85,7 +85,7 @@ If you want the same lesson with a different villain, look at the **AWS S3 outag
 one argument** to a command. The command was meant to remove a small number of servers; the typo
 removed a much larger set, taking down a core S3 subsystem in **us-east-1** — and with it large
 swaths of the internet that depended on it — for about four hours. AWS's own
-[Summary of the Amazon S3 Service Disruption](https://aws.amazon.com/message/41926/) <!-- VALIDATE -->
+[Summary of the Amazon S3 Service Disruption](https://aws.amazon.com/message/41926/)
 is admirably honest: the runbook was automation that gave one human the reach to break a continent's
 worth of infrastructure with one keystroke, faster than any safeguard could intervene. Their fix was
 not "stop automating" — it was to add a **gate** (the tool now refuses to remove capacity below a
@@ -131,8 +131,8 @@ in production — Knight is what that answer costs.
 relearn it.*
 
 **The disasters, from primary and credible sources (~1 hr)**
-- [SEC order against Knight Capital (Release No. 70694, Oct. 16 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) <!-- VALIDATE --> — the regulator's own account: the eight-server deploy, the dormant "Power Peg" flag, the missing controls. Skim the "Summary" and "Facts" sections (~10 pages) — this is your evidence file for the lab's autopsy paragraph.
-- [AWS — Summary of the Amazon S3 Service Disruption in us-east-1 (Feb 28 2017)](https://aws.amazon.com/message/41926/) <!-- VALIDATE --> — a model post-incident write-up (~5 min). Note what they changed: a *guardrail* on the runbook tool, not the removal of automation.
+- [SEC order against Knight Capital (Release No. 70694, Oct. 16 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) — the regulator's own account: the eight-server deploy, the dormant "Power Peg" flag, the missing controls. Skim the "Summary" and "Facts" sections (~10 pages) — this is your evidence file for the lab's autopsy paragraph.
+- [AWS — Summary of the Amazon S3 Service Disruption in us-east-1 (Feb 28 2017)](https://aws.amazon.com/message/41926/) — a model post-incident write-up (~5 min). Note what they changed: a *guardrail* on the runbook tool, not the removal of automation.
 
 **Where automation pays off, and where it bites (~1 hr)**
 - [Google SRE Book — "Eliminating Toil"](https://sre.google/sre-book/eliminating-toil/) — the SRE definition of *toil* (manual, repetitive, automatable, no enduring value) maps cleanly onto security ops. Read it for the criteria that decide what's worth automating. Free online.

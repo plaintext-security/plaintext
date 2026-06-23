@@ -87,7 +87,7 @@ physical, the lab exercises it via the browser at WebAuthn.io and reasons about 
 
 **Device posture and ZT (~1 hr)**
 - [Cloudflare Zero Trust — Device posture checks](https://developers.cloudflare.com/cloudflare-one/reusable-components/posture-checks/) (~30 min) — how a production product queries CrowdStrike, Intune, and OS-level signals to gate application access. This is what the lab's `device-posture-policy.json` stands in for, and what you cannot self-host for free.
-- [Tailscale — Access controls (ACLs)](https://tailscale.com/kb/1018/acls) (~30 min) — how to express "only devices tagged `corp-managed` can reach service X" in HuJSON. Directly applicable; read it before you extend the lab's ACL. <!-- VALIDATE: confirm current KB URL for the ACL reference -->
+- [Tailscale — Access controls (ACLs)](https://tailscale.com/kb/1018/acls) (~30 min) — how to express "only devices tagged `corp-managed` can reach service X" in HuJSON. Directly applicable; read it before you extend the lab's ACL.
 
 **FIDO2 and passkeys (~1 hr)**
 - [WebAuthn.io](https://webauthn.io/) (~20 min) — browser-based FIDO2/WebAuthn demo; register and authenticate with your built-in authenticator, no hardware needed. Run it to feel the challenge-response flow before the spec.

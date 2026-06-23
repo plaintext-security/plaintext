@@ -20,7 +20,7 @@ let it decide — *and then let it act*. That last step is where the danger live
 
 On **August 1, 2012, Knight Capital deployed automated trading code to its routing servers** and, in
 **45 minutes, sent more than 4 million unintended orders into the market, lost about $440 million, and
-destroyed the firm**. The SEC's [2013 cease-and-desist order](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) <!-- VALIDATE -->
+destroyed the firm**. The SEC's [2013 cease-and-desist order](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)
 found Knight "did not have technology governance controls and supervisory procedures sufficient to
 ensure the orderly deployment of new code or to prevent the activation of code no longer intended for
 use." It is not an AI story, but it is *the* automation story: an autonomous system that could take an
@@ -84,18 +84,18 @@ took its expected branch.
 ## Learn (~2.5 hrs)
 
 **The anchor — automation without a gate (~30 min)**
-- [SEC Order: In the Matter of Knight Capital Americas LLC (Release No. 70694, Oct 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) — the primary source. Read sections III.A–III.C (the deployment and the 45 minutes) and the findings on inadequate controls. The phrase to carry into the lab: *no control prevented the irreversible action.* <!-- VALIDATE -->
+- [SEC Order: In the Matter of Knight Capital Americas LLC (Release No. 70694, Oct 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) — the primary source. Read sections III.A–III.C (the deployment and the 45 minutes) and the findings on inadequate controls. The phrase to carry into the lab: *no control prevented the irreversible action.*
 
 **n8n foundations (~1 hr)**
-- [n8n — Self-hosting with Docker](https://docs.n8n.io/hosting/installation/docker/) — skim the Docker section; `make up` does this for you, but understanding the container setup helps when the workflow breaks. <!-- VALIDATE -->
-- [n8n — HTTP Request node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) — the node that calls the Ollama API from inside the workflow; understand the Request settings and how its errors surface. <!-- VALIDATE -->
-- [n8n — IF node (conditional branching)](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) — the branching logic that splits CRITICAL → auto-escalate vs. HIGH → approval-required vs. LOW/MEDIUM → enrich. <!-- VALIDATE -->
+- [n8n — Self-hosting with Docker](https://docs.n8n.io/hosting/installation/docker/) — skim the Docker section; `make up` does this for you, but understanding the container setup helps when the workflow breaks.
+- [n8n — HTTP Request node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) — the node that calls the Ollama API from inside the workflow; understand the Request settings and how its errors surface.
+- [n8n — IF node (conditional branching)](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) — the branching logic that splits CRITICAL → auto-escalate vs. HIGH → approval-required vs. LOW/MEDIUM → enrich.
 
 **The over-automation risk (~30 min)**
-- [OWASP Top 10 for LLM Applications — LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — the containment node *is* the excessive-agency risk; read the mitigation checklist (least-privilege actions, human-in-the-loop for high-impact operations). You'll cite it in the threshold ADR. <!-- VALIDATE -->
+- [OWASP Top 10 for LLM Applications — LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — the containment node *is* the excessive-agency risk; read the mitigation checklist (least-privilege actions, human-in-the-loop for high-impact operations). You'll cite it in the threshold ADR.
 
 **Error handling in workflows (~30 min)**
-- [n8n — Error handling (Error Trigger & error workflows)](https://docs.n8n.io/flow-logic/error-handling/) — how to make a node failure route somewhere explicit instead of silently dropping to a default. This is the mechanism behind "model fails → escalate." <!-- VALIDATE -->
+- [n8n — Error handling (Error Trigger & error workflows)](https://docs.n8n.io/flow-logic/error-handling/) — how to make a node failure route somewhere explicit instead of silently dropping to a default. This is the mechanism behind "model fails → escalate."
 
 ## Key concepts
 

@@ -99,7 +99,7 @@ capstone, so the time is well spent. Read Rhino's catalogue first — it's the s
 - [MITRE ATT&CK T1548 — Abuse Elevation Control Mechanism: Cloud](https://attack.mitre.org/techniques/T1548/) and [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) (~30 min) — the technique IDs your finding cites; map each lab hop to one.
 
 **The graph model and the tools (~1.5 hrs)**
-- [NCC Group — Mapping AWS IAM Privilege Escalation with PMapper](https://research.nccgroup.com/2018/12/12/aws-iam-escalation-paths/) (~30 min) — the original article that motivated `pmapper`; it explains *why* the graph is the right abstraction and why flat review misses multi-hop chains. <!-- VALIDATE -->
+- [tecRacer — Map out your IAM with PMapper](https://www.tecracer.com/blog/2021/08/map-out-your-iam-with-pmapper.html) (~30 min) — a walkthrough of *why* modeling IAM as a directed graph is the right abstraction: it works a concrete multi-hop chain (a developer edits a Lambda, borrows its existing role, mints an admin policy) that flat, policy-by-policy review would never surface.
 - [pmapper — README (NCC Group)](https://github.com/nccgroup/PMapper) (~40 min) — read "how it works," then `pmapper graph create`, `pmapper analysis`, and `pmapper query`. This is the tool that turns the model above into a query.
 - [BishopFox — cloudfox README (`permissions`, `role-trusts`)](https://github.com/BishopFox/cloudfox) (~20 min) — the enumeration accelerator you'll use to corroborate the graph against the live policies.
 

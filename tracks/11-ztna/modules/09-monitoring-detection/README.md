@@ -42,7 +42,7 @@ This is a build-first module with three staged builds: **the detection** (Type 6
 
 **Eval gates, not vibes — measuring a detection (~45 min)**
 - [Google ML Crash Course — "Classification: Accuracy, recall, precision"](https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall) — the precise definitions your scorecard prints, and crucially *why accuracy misleads on imbalanced data* (a geo-rule that never fires is 99% "accurate" and useless). Short and visual.
-- [Roberto Rodriguez (Cyb3rWard0g) — "Threat Hunter Playbook: testing detections"](https://threathunterplaybook.com/introduction.html) — a practitioner's framing of why detections need a labelled test set and replayable data rather than a one-off "it fired once." Read the introduction and the data-driven testing rationale. <!-- VALIDATE: confirm current URL/section -->
+- [Roberto Rodriguez (Cyb3rWard0g) — "Threat Hunter Playbook: testing detections"](https://threathunterplaybook.com/intro.html) — a practitioner's framing of why detections need a labelled test set and replayable data rather than a one-off "it fired once." Read the introduction and the data-driven testing rationale.
 
 **Posture drift over time (~30 min)**
 - [Google SRE Book — "Configuration Design and Best Practices"](https://sre.google/workbook/configuration-design/) — the declared-state-vs-observed-state mental model the drift detector implements; read the section on configuration as data and reconciliation. The SRE framing of "config drift" transfers intact to ZT posture drift.

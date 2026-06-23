@@ -94,7 +94,7 @@ build-vs-buy call — read them to ship the lab, not to relearn Zero Trust.*
 - [Cloudflare — Argo/Cloudflare Tunnel announcement (2018)](https://blog.cloudflare.com/argo-tunnel/) (~20 min) — the original "no inbound ports" pitch, shorter and clearer than the docs; read it for the security-model argument, then ask where the *dependency* it doesn't mention bites.
 
 **The honest tradeoff (~30 min)**
-- [Gartner — "The Future of Network Security Is in the Cloud" / SASE definition](https://www.gartner.com/en/documents/3956841) (~10 min, the summary is enough) — where SASE comes from and what convergence it claims; read it skeptically, as the vendor-side case you'll weigh against control and lock-in.<!-- VALIDATE: confirm Gartner doc id / public summary URL resolves; if gated, cite the 2019 report title + analysts only -->
+- Gartner, "The Future of Network Security Is in the Cloud" (Lawrence Orans, Joe Skorupa, Neil MacDonald; 30 Aug 2019) — the report that coined SASE (now Gartner-gated; read a summary if you can't access the full note). Where SASE comes from and what convergence it claims; read it skeptically, as the vendor-side case you'll weigh against control and lock-in.
 
 ## Key concepts
 

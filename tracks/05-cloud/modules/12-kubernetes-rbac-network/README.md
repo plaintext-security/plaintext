@@ -83,12 +83,12 @@ Benchmark, section 5 covers RBAC and policies) is the baseline audit and, run in
 (it's IAM again) is above; these carry the mechanism and the breach detail.*
 
 **The anchor (~30 min)**
-- [RedLock CSI / Unit 42 — Tesla cryptojacking incident](https://unit42.paloaltonetworks.com/) (~15 min) — the discovering team's writeup of the open-dashboard → AWS-creds → cryptojacking chain. Read for the *shape*, which you'll rebuild. <!-- VALIDATE exact archived RedLock/Unit42 post URL -->
-- [k8s.af — Kubernetes Failure Stories](https://k8s.af/) (~15 min, browse) — the community catalogue of real K8s post-mortems; skim for how often "open API / over-broad SA / flat network" recurs. <!-- VALIDATE -->
+- [CyberScoop — Tesla falls victim to cryptomining scheme (RedLock's finding)](https://cyberscoop.com/tesla-cryptomining-redlock-cloud-breach/) (~15 min) — reporting on RedLock's discovery: an open Kubernetes console exposed AWS S3 credentials, which attackers used to mine cryptocurrency behind deliberate evasion. Read for the *shape* — open dashboard → cloud creds → abuse — which you'll rebuild.
+- [k8s.af — Kubernetes Failure Stories](https://k8s.af/) (~15 min, browse) — the community catalogue of real K8s post-mortems; skim for how often "open API / over-broad SA / flat network" recurs.
 
 **Kubernetes RBAC (~1.5 hrs)**
 - [Kubernetes docs — Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) (~45 min) — the primary reference; read "Role and ClusterRole", "RoleBinding and ClusterRoleBinding", and "ServiceAccount permissions". The default ClusterRoles table is worth memorising.
-- [NCC Group — "Your K8s Nodes / IAM Clouds in the Sky"](https://research.nccgroup.com/2021/11/10/your-k8s-nodes-iam-clouds-in-the-sky/) (~30 min) — a practitioner read on the exact Tesla chain: how a pod's SA token → API server → cloud metadata compounds RBAC and cloud IAM into one credential path. <!-- VALIDATE -->
+- [NCC Group — Deep Dive into Real-World Kubernetes Threats](https://www.nccgroup.com/research-blog/deep-dive-into-real-world-kubernetes-threats/) (~30 min) — a practitioner walkthrough of the RBAC half of the chain: a compromised pod's service-account token → the API server → namespace traversal → cluster-wide takeover. The mechanics behind "over-broad SA + flat cluster = one credential path."
 
 **Network Policy & kube-bench (~1 hr)**
 - [Kubernetes docs — Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) (~25 min) — read "The NetworkPolicy resource" and "Default policies" for the opt-in / default-deny model.

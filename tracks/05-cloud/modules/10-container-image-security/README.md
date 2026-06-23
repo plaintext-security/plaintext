@@ -113,7 +113,7 @@ orthogonal axes; the rebuild is how you move on the second one without losing th
 - [Codecov — April 2021 post-mortem](https://about.codecov.io/apr-2021-post-mortem/) (~10 min) — first-party RCA; note the entry point was *a credential in a Docker image layer*, and that the remediation was "squash / convert public images to multistage." The fix is this module.
 
 **Scanning: SBOM, severity, and fixability (~1 hr)**
-- [Trivy — Scanning a container image](https://trivy.dev/latest/docs/target/container_image/) (~30 min) — official docs; read the severity and "ignore unfixed" sections so the **fixable-vs-unfixable** judgment is concrete, not abstract. <!-- VALIDATE -->
+- [Trivy — Filtering scan results](https://trivy.dev/docs/latest/configuration/filtering/) (~30 min) — official docs; read the "By Severity" and "By Status" (`--ignore-unfixed`) sections so the **fixable-vs-unfixable** judgment is concrete, not abstract.
 - [Anchore Grype — README & supported ecosystems](https://github.com/anchore/grype) (~15 min) — skim how Grype's DB sources differ from Trivy's; the lab runs both because **one scanner is one opinion.**
 - [NVD — CVSS v3.1 scoring](https://nvd.nist.gov/vuln-metrics/cvss) (~15 min, orient) — read the Base-Score vectors (AV/AC/PR/UI) so you can say "Critical in theory, unreachable in this context."
 
