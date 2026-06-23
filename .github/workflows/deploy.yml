@@ -1,8 +1,15 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
+  # Auto-deploy on push is paused while plaintext-labs is private: the Pages
+  # job clones it as a submodule, and the default GITHUB_TOKEN can't read a
+  # private cross-repo submodule (clone fails with "repository not found").
+  # Build locally instead (`mkdocs build --strict` / `mkdocs serve`).
+  # To restore: make plaintext-labs public (or add a labs-scoped token to the
+  # checkout step), then uncomment the push trigger below.
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
