@@ -83,7 +83,7 @@ work already landed in earlier waves.*
 | **1** | **10 automation** | build/gate spine | 01→Autopsy, 04 drift, 05 running-gate, 09 eval | **click-ops→IaC Migration (#12)** | M | **✅ PROMOTED — live** (`tracks/10-automation`) |
 | **2** | **11 ztna** | design-heavy, healthy | 09 add drift/eval | **VPN→ZTNA Migration (#12)**, **Red-team-your-design (#10)**; ztna 04 = ADR template | M | **✅ PROMOTED — live** (`tracks/11-ztna`) |
 | **3** | **12 ai-augmented-ops** | build-on-vibes | 04/05/06/08 pair an eval; name 01 an ADR | AI Eval & Observability (#13) ✅ | L | **✅ PROMOTED — live** (`tracks/12-ai-augmented-ops`) |
-| 4 | 05 cloud | prototyped in `planning/` | 02/04 build halves, 01 misconception, 15 eval ✅ | KMS module 17 (#7) wire-in + convert | M | pending (2nd prototype) |
+| 4 | 05 cloud | prototyped in `planning/` | 02/04 build halves, 01 misconception, 15 eval ✅ | KMS module 17 (#7) wire-in + convert | M | **✅ PROMOTED — live** (`tracks/05-cloud` + KMS 17) |
 | 5 | 01 offensive | strong spine (#3/#5) | 17→Adv-Review, 01/03→Tool-Build, make detect artifacts deliverables | a light Eval/verify beat | M | |
 | 6 | 02 defensive | strong build/detect | 08/10 → Eval Harness (09 eval ✅) | Detection-Drift (#16), Review-AI-Detections (#14) | L | |
 | 7 | 08 cryptography | misconception spine | 03 add failure anchor | **PQC/crypto-agility Migration (#12)**, a Crypto ADR | M | |
