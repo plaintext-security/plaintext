@@ -62,6 +62,24 @@ a rule that fires precisely. This is the analytical pattern behind most of the h
 detections: not a single event, but a sequence with qualifying conditions. Getting that logic right
 — and encoding it reproducibly in a Sigma rule rather than in someone's head — is the job.
 
+**A detection is a hypothesis on a 99.99%-benign stream — and you can't trust it until you've
+measured it.** A Sigma rule is a binary classifier: for every event sequence it either fires or it
+doesn't, and the ground truth is overwhelmingly *benign*. That imbalance is what makes "it fired in
+the demo" a lie. The demo events are the same ones you wrote the rule against — of course it catches
+them. The honest question is how the rule behaves on sequences it was *never tuned on*: the
+legitimate provisioning that attaches a scoped policy (a near-miss the over-broad rule false-fires
+on), the admin grant 47 minutes later or to a different user (outside the window), the
+`IAMFullAccess` escalation a too-narrow rule goes silent on. The only way to answer is a **held-out
+corpus** — labelled attack and benign cases kept separate from the tuning set — scored as a
+**precision / recall / false-positive-rate** scorecard. Recall is the floor that matters most (a
+missed attack is an undetected breach); the false-positive rate is the *economics* — every benign
+alert costs an analyst minutes, and a rule that floods the queue gets muted, which is its own breach.
+The deliverable that turns this from a one-off study into engineering is a **regression gate**: the
+eval runs in CI, and an edit that drops recall or inflates the FP-rate **fails the build** — exactly
+as a unit test fails on a broken function. A gate you have only ever watched pass is not a gate;
+the proof it works is a planted regression that turns it red. The lab's harness does both: green on
+the good rule, red on an over-broad and a too-narrow regression.
+
 ## Learn (~3.5 hrs)
 
 **CloudTrail and AWS logging architecture (~1 hr)**
@@ -100,12 +118,21 @@ detections: not a single event, but a sequence with qualifying conditions. Getti
 - Sequence detection: why single-event rules generate alert fatigue and how the `followed by` syntax
   fixes it
 - The CreateUser → AttachUserPolicy escalation sequence as a canonical T1098 signature
+- A detection is a classifier on a ~99.99%-benign stream: validate it against a **held-out** set
+  (attack + benign near-misses), not the demo set it was tuned on
+- The scorecard (precision / recall / FP-rate) and false-positive economics: recall is the floor,
+  the FP-rate is the cost that gets a noisy rule muted
+- The regression gate: an eval in CI that fails the build when a rule edit misses an attack or fires
+  on benign — proven by a planted regression that turns it red
 
 ## AI acceleration
 Ask a model to draft a Sigma rule for a CloudTrail sequence you describe in plain English. Models
 know the Sigma syntax and the common CloudTrail field names, and a first draft saves thirty minutes
 of scaffolding. The review work is yours: check that the `logsource` product/service matches the
 CloudTrail Sigma pipeline, that the field references use the correct nested notation, and that the
-`falsepositives` section reflects what your organisation's legitimate automation does. Run the rule
-against the bundled events with the lab's `detect.py` before trusting it — a rule that doesn't fire
-on the data it's designed to catch is not a rule.
+`falsepositives` section reflects what your organisation's legitimate automation does. And do not
+trust a model's rule on the strength of the demo: score it against the lab's **held-out corpus**
+with `make eval` — a model will happily widen a rule "to catch more" and quietly flood the queue, or
+narrow it "to be precise" and go silent on `IAMFullAccess`. The held-out scorecard and the regression
+gate are what catch that; a rule that doesn't fire on the attacks it's designed to catch — or fires
+on the benign near-misses — is not a rule.

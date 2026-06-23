@@ -104,13 +104,13 @@ demo luck.
 - [Google ML Crash Course — "Thresholding and the confusion matrix"](https://developers.google.com/machine-learning/crash-course/classification/thresholding) — how moving the decision threshold trades recall against false positives; this is the curve you tune in step 4.
 
 **LLM / RAG evaluation (~1 hr)**
-- [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) <!-- VALIDATE --> — the standard framing for RAG eval: context precision/recall (retrieval quality) and faithfulness/groundedness (is the answer supported by retrieved context). Read the metric definitions; you reimplement a minimal retrieval@k in the lab.
-- [promptfoo docs — "Assertions & metrics"](https://www.promptfoo.dev/docs/configuration/expected-outputs/) <!-- VALIDATE --> — a production-grade, config-driven eval/regression-gate runner for LLM outputs; read how a test case declares an expected output and how the suite is wired into CI. This is the tool you would reach for instead of hand-rolling `eval.py` in a real shop.
-- [Anthropic — "Create strong empirical evaluations"](https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests) <!-- VALIDATE --> — first-party guidance on building task-specific eval sets, choosing graders (exact-match vs. model-graded), and holding out test data; vendor-neutral on the principles.
+- [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) —  the standard framing for RAG eval: context precision/recall (retrieval quality) and faithfulness/groundedness (is the answer supported by retrieved context). Read the metric definitions; you reimplement a minimal retrieval@k in the lab.
+- [promptfoo docs — "Assertions & metrics"](https://www.promptfoo.dev/docs/configuration/expected-outputs/) — a production-grade, config-driven eval/regression-gate runner for LLM outputs; read how a test case declares an expected output and how the suite is wired into CI. This is the tool you would reach for instead of hand-rolling `eval.py` in a real shop.
+- [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/docs/test-and-evaluate/develop-tests) — first-party guidance on building task-specific eval sets, choosing graders (exact-match vs. model-graded), and holding out test data; vendor-neutral on the principles.
 
 **Why eval is non-negotiable for AI (~30 min)**
 - [OWASP Top 10 for LLM Applications — LLM09 (Overreliance / Misinformation)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the threat the eval mitigates: trusting confident-but-wrong output. Read the description and the "lack of evaluation" mitigations.
-- [Hugging Face — "Evaluating LLMs is a minefield"](https://www.cs.princeton.edu/~arvindn/talks/evaluating_llms_minefield/) <!-- VALIDATE --> — a sharp talk/writeup on how easy it is to fool yourself with a bad eval (contamination, the demo-set trap, cherry-picked examples); the cautionary half of this module.
+- [Princeton (Narayanan & Kapoor) — "Evaluating LLMs is a minefield"](https://www.cs.princeton.edu/~arvindn/talks/evaluating_llms_minefield/) — a sharp talk/writeup on how easy it is to fool yourself with a bad eval (contamination, the demo-set trap, cherry-picked examples); the cautionary half of this module.
 
 ## Key concepts
 - Held-out set vs. demo/tuning set: you tune on one and grade on the other, or every number lies.

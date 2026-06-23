@@ -41,6 +41,20 @@ can help interpret *why* a detection didn't fire and suggest a tweak — but it 
 see your environment's real noise, and a threshold it proposes may look clean while silently dropping
 real detections. You run the test, read the result, and own the tuning.
 
+The deeper reframe is that **a detection is a hypothesis scored on a ~99.99%-benign stream** — and
+"it fired in the demo" is the same trap as a model that aced the examples you tuned it on.
+*Coverage ≠ effectiveness*: that you wrote a rule for T1059 says nothing about whether it catches
+the *next* T1059 variant or how often it screams on benign noise. The honest move is the eval
+harness — the same discipline an ML team uses on a classifier, applied to a rule. Build a **held-out
+corpus**: labelled known-malicious and known-benign events the rule was *never tuned on* (include
+variants it must catch and benign lookalikes it must not fire on). Score the rule against it for the
+metrics that matter — **recall** on the malicious class (caught attacks / all attacks; a miss can be
+a breach) and **false-positive rate** (the analyst-time cost) — not accuracy, which a 95%-benign
+stream makes meaningless. Then **gate it**: wire the eval so a change that drops recall below your
+floor *fails the build*, and prove it by watching it go red on a deliberately-regressed copy of the
+rule. A detection without a held-out eval and a regression gate is a hope with good demo luck; with
+them, it's a measured control that can't silently rot.
+
 ## Learn (~4 hrs)
 
 **Adversary emulation**
@@ -56,6 +70,9 @@ real detections. You run the test, read the result, and own the tuning.
 - True/false positives and negatives
 - Tuning for signal without losing coverage
 - Coverage as a moving target
+- A detection is a hypothesis scored on a ~99.99%-benign stream — coverage ≠ effectiveness
+- The eval harness: score a rule against a **held-out** corpus (recall + FP-rate, not accuracy) and
+  **gate** it so it can't silently regress; prove the gate by watching it go red on a planted regression
 
 ## AI acceleration
 A model helps interpret why a detection didn't fire and suggests tuning — useful. But it can't run the
