@@ -49,7 +49,7 @@ instead **prove who you are at the moment you need access, and get a credential 
 Buildkite) runs its own OpenID Connect identity provider: at job time it mints a short-lived **JWT** that
 *describes this specific run* — signed by the platform's private key, carrying claims like
 `iss` (who issued it), `aud` (who it's for), and `sub` (the exact repo + branch + environment, e.g.
-`repo:meridian/api:ref:refs/heads/main`). The job hands that JWT to **AWS STS** via
+`repo:acme-corp/api:ref:refs/heads/main`). The job hands that JWT to **AWS STS** via
 `AssumeRoleWithWebIdentity`. STS fetches the provider's public keys from its published JWKS endpoint,
 **verifies the signature** (so the token can't be forged), checks the claims against the role's trust
 policy, and — if it all matches — returns **temporary credentials**: an access key, a secret, *and a
@@ -61,9 +61,9 @@ up the IAM OIDC provider establishes *that* you trust GitHub's issuer; the trust
 *which workflows* may assume it, by asserting conditions on the JWT's claims — `aud` must equal
 `sts.amazonaws.com`, and `sub` (via `StringEquals` or a carefully bounded `StringLike`) must match the
 exact repo and ref. Get this wrong and you've rebuilt the very problem you were escaping: a trust policy
-that matches `repo:meridian/*:*` lets *any* branch of *any* fork mint your production credential — the
+that matches `repo:acme-corp/*:*` lets *any* branch of *any* fork mint your production credential — the
 OIDC equivalent of a wildcard IAM grant, and a documented real-world misconfiguration. A `sub` pinned to
-`repo:meridian/api:ref:refs/heads/main` (or to a protected GitHub *environment*) admits only the pipeline
+`repo:acme-corp/api:ref:refs/heads/main` (or to a protected GitHub *environment*) admits only the pipeline
 you meant. The trust policy is the scope, and a loose condition is worth no more than the static key you
 removed.
 
