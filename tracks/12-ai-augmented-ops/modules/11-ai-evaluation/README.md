@@ -1,6 +1,6 @@
 # Module 11 — AI Evaluation & Observability
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 13 · Eval Harness — build a held-out eval set, a scorecard, and a CI regression gate that goes red when a change silently degrades the system; the deliverable is the reusable eval harness, not a one-off accuracy number. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

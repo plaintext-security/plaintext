@@ -1,6 +1,6 @@
 # Module 01 — The Hybrid AI Pattern
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 11 · Decision / ADR — the deliverable is a routing ADR (local model vs frontier vs human-in-the-loop) with the trade-offs made explicit and defensible. (Secondary: Misconception Reveal — model confidence ≠ accuracy.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

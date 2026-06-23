@@ -1,6 +1,6 @@
 # Module 06 — Containerising Tooling
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — package a security tool (trufflehog) as a reusable, hardened container image others can run; the deliverable is the published image with a non-root user, minimal base, and a clean ENTRYPOINT. (Secondary: Build-&-Operate.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

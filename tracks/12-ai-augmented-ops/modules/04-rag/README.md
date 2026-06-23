@@ -1,6 +1,6 @@
 # Module 04 — Retrieval-Augmented Generation
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — build a RAG pipeline over a SOC corpus *and* the retrieval eval that proves it works (recall@k on a labelled query set + a regression gate); the deliverable is the working pipeline and its scorecard, not a vibe. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

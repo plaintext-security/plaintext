@@ -1,6 +1,6 @@
 # Module 04 — Configuration Management & Drift
 
-*Module concept · Type 7 Build-&-Operate + Type 16 Drift/Steady-State · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — write idempotent configuration that converges a host to a known-good state and reconciles drift; the deliverable is the config plus a proven t=0-fine / t=30-drifted / reconcile loop. (Secondary: Drift / Steady-State.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

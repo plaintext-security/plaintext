@@ -1,6 +1,6 @@
 # Module 08 — SOAR + AI
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — wire an AI-assisted SOAR workflow with a human-in-the-loop gate that escalates on low confidence and never auto-acts on a model failure; the deliverable is the running workflow and its proven gate logic. (Secondary: Judgment-as-Code / Gate.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

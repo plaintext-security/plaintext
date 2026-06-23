@@ -1,6 +1,6 @@
 # Module 05 — SASE & Cloud-Delivered Zero Trust
 
-*Module concept · Type 7 Build-&-Operate (+ Type 10 Design→red-team seasoning) · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — publish an app through a SASE tunnel with an identity-aware Access policy and no inbound ports; the deliverable is the working zero-inbound deployment plus a verified unauthenticated-denial check. (Secondary: Design → Red-team-your-own.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
