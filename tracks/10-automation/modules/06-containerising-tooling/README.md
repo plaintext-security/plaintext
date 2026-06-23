@@ -27,6 +27,16 @@ thing you ran last month. When the tool's job is to *find* secrets and vulnerabi
 to be the most boring, reproducible, auditable artifact in your kit — not the one piece you can't
 account for.
 
+This is not hypothetical. Between mid-2017 and 2018 an account named **docker123321** published
+[17 backdoored images on Docker Hub](https://www.bleepingcomputer.com/news/security/17-backdoored-docker-images-removed-from-docker-hub/),
+named to look like ordinary `tomcat`, `mysql`, and `cron` images. They sat on the public registry
+for roughly a year and were pulled around **5 million times** — some images over a million each —
+quietly running XMRig Monero miners and embedded reverse shells on whoever `docker pull`ed them.
+Fortinet and Kromtech traced the campaign back to the single account, and Docker removed the images
+in May 2018; the miner alone netted about $90,000. The lesson is the one this module turns on:
+`docker pull <something>` is "run arbitrary binary data and hope for the best" unless *you* control
+and pin what goes in — which is exactly the discipline you apply when you build the image yourself.
+
 This module's product is that artifact: a security tool packaged as a **reusable image** —
 something an engineer pulls and runs without installing Go, resolving versions, or trusting an
 unpinned script. The deliverable is judged the way a tool is judged: does it have a clear
@@ -82,10 +92,12 @@ Dockerfile.
 
 **Minimal base images & the tool (~1 hr)**
 - [Chainguard Images — "Why distroless?" — Chainguard](https://www.chainguard.dev/containers) — read the "Why distroless?" framing for the concrete argument that fewer packages means fewer CVEs; this is the case for the minimal-base stretch goal.
+- [17 backdoored Docker Hub images removed — BleepingComputer](https://www.bleepingcomputer.com/news/security/17-backdoored-docker-images-removed-from-docker-hub/) (~10 min) — the docker123321 case (Fortinet/Kromtech): legit-looking images, ~5M pulls, cryptominers + reverse shells. Read it for *why* you pin and build, not blindly pull.
 - [trufflehog — GitHub README](https://github.com/trufflesecurity/trufflehog) — the tool you're packaging; read the README's usage and the `git`/`filesystem` source sections so your image's entrypoint and `--help` expose the right surface.
 
 ## Key concepts
 
+- **`docker pull` is running someone else's binary:** the docker123321 images (17 backdoored, ~5M pulls, miners + reverse shells) are why you pin and build rather than trust a legit-looking name.
 - **Pin everything reproducible:** the base image (`ubuntu:22.04`, not `latest`) *and* the tool version (`v3.88.1`) — verify the binary's checksum before install.
 - **Minimal base = fewer CVEs:** prefer distroless/`scratch`/Chainguard where the tool allows it; less software is less attack surface.
 - **Non-root, always:** `useradd` + `USER` before the entrypoint — CIS Docker Benchmark, a `checkov` HIGH if missing.

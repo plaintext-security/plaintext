@@ -12,7 +12,7 @@
 
 ## Why this matters
 
-The hardening you applied in modules 02–04 produces a host that is secure today. Configuration management is what keeps it secure in six months when a new team member applies a one-off change, when a package update resets a sysctl parameter, or when you need to roll the same baseline to 200 new servers. Without configuration management, hardening is a one-time event that drifts; with it, hardening is a continuous commitment that can be audited.
+The hardening you applied in modules 02–04 produces a host that is secure today. Configuration management is what keeps it secure in six months when a new team member applies a one-off change, when a package update resets a sysctl parameter, or when you need to roll the same baseline to 200 new servers. The 2019 Capital One breach — over 100 million applicants' records — came down to a configuration failure, not a software flaw: the bank's regulator (OCC) fined it $80 million for failing to establish effective controls *before* migrating to the cloud, an unsafe configuration that a one-time setup left in place. Without configuration management, hardening is a one-time event that drifts; with it, hardening is a continuous commitment that can be audited.
 
 ## Objective
 
@@ -41,6 +41,9 @@ Drift detection is the operational complement to idempotent application. Ansible
 **Idempotency and testing**
 - [Molecule — Ansible testing framework](https://docs.ansible.com/projects/molecule/) — the standard way to test Ansible roles against Docker containers; read the Getting Started guide for the test-driven hardening pattern.
 
+**When configuration is the breach**
+- [OCC assesses $80M penalty against Capital One (OCC press release, 2020)](https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html) — the regulator's finding on the 2019 breach: a failure to establish effective controls before cloud migration. A misconfiguration, not a CVE — the case for configuration-as-code and drift detection.
+
 ## Key concepts
 
 - Ansible models desired state; idempotency means running the playbook twice is safe and produces no unintended changes.
@@ -48,6 +51,7 @@ Drift detection is the operational complement to idempotent application. Ansible
 - Roles enable variable-parameterised policy: same role, different posture by variable file.
 - `--check` mode as a drift detector: treat pending changes as drift alerts.
 - The `ansible-lockdown` community maintains production-grade CIS roles — adopt before you write.
+- Capital One 2019: a misconfiguration (not a CVE) caused the breach — configuration-as-code and drift detection are the control.
 
 ## AI acceleration
 

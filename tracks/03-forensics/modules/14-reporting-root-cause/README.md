@@ -19,6 +19,16 @@ budget. A report that executives can read but investigators can't reproduce does
 regulatory review or legal proceeding. Writing the report — and particularly the root-cause
 analysis — is the skill that determines whether the investigation was worth doing.
 
+The best free models of this craft are the public writeups from **[The DFIR Report](https://thedfirreport.com/)**.
+Each report is the layered structure this module teaches, done well: a readable summary up top, then
+technical findings where every claim is cited to a specific artifact, and an IOC table at the end.
+Their [IcedID-to-ransomware case](https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware/)
+is a worked example of disciplined scope language and artifact-anchored findings — note how the
+analysts state what they *observed* (a Cobalt Strike beacon at a given time, a specific Rclone
+exfiltration to Mega.io) rather than what they assume, and trace the chain back from the ransomware
+to the initial malicious-ISO click. Reading it as a *writer*, not just an investigator, is the
+fastest way to calibrate what a defensible forensic report reads like.
+
 ## Objective
 
 Write a forensic incident report for the Meridian Financial incident using the provided template
@@ -71,7 +81,8 @@ constrained — because it always is — and prioritise by: (1) closes the initi
 - [NIST SP 800-61 Rev. 2 — Section 3.4: Post-Incident Activity](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf) — the NIST guidance on lessons-learned meetings and the questions to drive toward root cause. Focus on section 3.4.1 — "Lessons Learned."
 - [The "5 Whys" technique](https://en.wikipedia.org/wiki/Five_whys) — the standard structured approach to drilling past proximate causes to root cause. Apply it to the phishing-gateway bypass in the Meridian case as a warm-up.
 
-**Legal and evidence considerations (~0.5 hrs)**
+**A model report to study (~0.5 hrs)**
+- [The DFIR Report — "Malicious ISO File Leads to Domain Wide Ransomware"](https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware/) — read this as a *writer*: note the summary-then-technical-findings layering, the artifact citation behind each claim, the careful scope language ("observed" vs. assumed), and the IOC table. It's a free, professional-grade example of the report you're about to write.
 
 ## Key concepts
 - Layered report structure: Executive Summary → Technical Findings → Appendix
@@ -81,6 +92,7 @@ constrained — because it always is — and prioritise by: (1) closes the initi
 - Scope language: distinguish confirmed access (evidenced) from exposure (reachable but not confirmed)
 - Remediation prioritisation: break the access vector, reduce dwell time, improve detection — in order
 - Report linting: structural completeness (all sections present, IOC table populated) is a minimum bar
+- The DFIR Report's public writeups are free, professional-grade models of layered structure, artifact-cited findings, and disciplined scope language
 
 ## AI acceleration
 

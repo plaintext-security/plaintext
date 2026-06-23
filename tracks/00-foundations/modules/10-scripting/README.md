@@ -29,6 +29,15 @@ reliably do a boring thing ten thousand times, and a computer cannot do anything
 of this module is to take one analysis you already did by hand and turn it into a small tool that does
 it a thousand times, the same way, every time.
 
+The flip side of that power wrote the opening chapter of network security. On 2 November 1988, a
+Cornell graduate student released the [Morris worm](https://st.llnl.gov/news/look-back/1988-morris-worm-internets-first-cyberattack):
+a single self-replicating program that spread by *automating* a handful of Unix exploits, and within
+hours had hit an estimated **6,000 of the roughly 60,000 computers then on the Internet** — about a
+tenth of it. Nobody attacked 6,000 machines by hand; one script did, at machine speed. That is the same
+lever you are about to pick up — the only difference between the worm and your IOC-hunting tool is which
+side of the keyboard the automation serves. Scale cuts both ways, and that is exactly why a defender has
+to script too.
+
 ## The mental model: build a tool, not a throwaway
 
 A good security script is not an "application," but it is also not a one-off you paste into a terminal
@@ -97,9 +106,11 @@ just pasting.** Owning it is the deliverable.
 
 **The data, for real**
 - [CISA Cybersecurity Advisories](https://www.cisa.gov/news-events/cybersecurity-advisories) — open one recent advisory, find its indicators/IOC section, and see the scale problem with your own eyes before you write a line of code.
+- [The 1988 Morris Worm — LLNL "Look Back"](https://st.llnl.gov/news/look-back/1988-morris-worm-internets-first-cyberattack) (~10 min) — the short, primary-source history of the first automation-at-scale attack: one self-replicating program, ~6,000 of ~60,000 hosts in a day. Read it for the lever — the same automation you'll wield as a defender.
 
 ## Key concepts
 - You script when the data outgrows the eyes — not for fun, for scale and repeatability
+- Automation-at-scale is the whole game on both sides — the Morris worm hit ~6,000 hosts in a day with one self-replicating script; defenders script for the same reason
 - The shape of a security tool: **read → parse → filter → output**
 - The four-piece standard library: `pathlib`, `re`, `collections.Counter`, `argparse`
 - **Tool, not throwaway:** flags (not hard-coded paths), a `--help`, a short README, one basic test — so another person can run it

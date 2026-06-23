@@ -20,6 +20,14 @@ in a cloud incident. The practitioner who can reconstruct an attacker's actions 
 evidence — without ever touching the compromised system — is the one who can actually close cloud
 investigations.
 
+On the Windows side, the public reference for what attacker activity looks like *in the logs* is
+**[EVTX-ATTACK-SAMPLES](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES)** — Samir Bousseaden's
+corpus of real `.evtx` files captured while live attack techniques ran, filed by MITRE ATT&CK ID.
+It's the de-facto test set the detection community runs Sigma rules against, which makes it the
+ideal input for tools like Hayabusa and Chainsaw: point them at the `T1078` (Valid Accounts) or
+`T1053` (Scheduled Task) samples and you see the real events those rules are written to catch,
+not synthetic stand-ins. The lab leans on a slice of exactly this corpus.
+
 ## Objective
 
 Use Hayabusa to rapidly triage Windows Event Log (EVTX) files from the Meridian investigation,
@@ -84,6 +92,7 @@ needs them. This is the planning decision that makes or breaks a cloud investiga
 - CloudTrail records API calls: `userIdentity`, `eventName`, `sourceIPAddress`, `requestParameters` are the key investigation fields
 - Cloud forensics: trace compromised credentials forward through the event sequence to find lateral movement and persistence API calls
 - Log availability is a planning decision: CloudTrail data events and VPC Flow Logs must be enabled before they're needed
+- EVTX-ATTACK-SAMPLES is the public ATT&CK-tagged corpus of real Windows event logs to run Hayabusa/Chainsaw against — authentic events, not synthetic ones
 
 ## AI acceleration
 

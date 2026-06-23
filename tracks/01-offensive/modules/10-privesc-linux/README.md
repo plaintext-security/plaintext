@@ -13,9 +13,11 @@
 ## Why this matters
 Initial access usually lands you as a low-privilege user. Privilege escalation — turning that
 foothold into root — is what makes an intrusion serious, and it almost always comes from
-misconfiguration: a writable SUID binary, a permissive sudo rule, a hijackable cron job.
-Finding these systematically (and, as a defender, removing them) is core to both attack and
-hardening.
+misconfiguration: a writable SUID binary, a permissive sudo rule, a hijackable cron job. When it
+isn't a misconfig it's an unpatched local flaw like **PwnKit ([CVE-2021-4034](https://nvd.nist.gov/vuln/detail/CVE-2021-4034))**
+— a memory-corruption bug in polkit's `pkexec` that gives any local user instant root on
+essentially every Linux distro, and sat undiscovered for over a decade. Finding these systematically
+(and, as a defender, removing them) is core to both attack and hardening.
 
 ## Objective
 Enumerate a Linux host for privilege-escalation vectors and exploit one to gain root in your
@@ -31,7 +33,10 @@ writable `PATH` entry. So the workflow is **enumerate first, exploit second**: i
 misconfigurations before you try anything.
 
 GTFOBins makes this concrete — it's the catalog of how ordinary Unix binaries (`find`, `vim`, `tar`)
-become a root shell when they run with privilege in the wrong config. Tools like `linpeas` and `pspy`
+become a root shell when they run with privilege in the wrong config. The other branch is the unpatched
+local exploit: PwnKit (CVE-2021-4034) is the canonical example — a SUID-root binary present by default
+on nearly every distribution, exploitable with no special config, which is why "is this box patched
+against the famous local-root CVEs?" is part of every enumeration. Tools like `linpeas` and `pspy`
 automate the enumeration so you're not checking every vector by hand, but they only *gather* — you
 still read the output and judge which lead is real.
 
@@ -47,6 +52,7 @@ vector against GTFOBins by hand before you pull the trigger.
 **The vectors**
 - [GTFOBins](https://gtfobins.org/) — the canonical catalog of Unix binaries that can be abused to escalate; you'll use this constantly.
 - [Linux Privilege Escalation using `sudo -l` — GTFOBins (video)](https://www.youtube.com/watch?v=HnlYElVhXpo) — a worked example of turning one misconfigured sudo rule into root.
+- [Qualys advisory — PwnKit: local privilege escalation in polkit's pkexec (CVE-2021-4034)](https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt) — the original disclosure; read it for how a SUID binary's argument handling becomes root, the canonical unpatched-local-exploit case.
 
 **Where it sits**
 - [MITRE ATT&CK — Privilege Escalation (TA0004)](https://attack.mitre.org/tactics/TA0004/) — the tactic and its techniques.
@@ -56,6 +62,7 @@ vector against GTFOBins by hand before you pull the trigger.
 - SUID/SGID binaries and GTFOBins
 - sudo misconfigurations
 - Writable cron jobs, PATH, and services
+- Unpatched local-root CVEs (e.g. PwnKit / CVE-2021-4034 in pkexec) vs. misconfiguration
 - Kernel exploits — and why they're the last resort
 
 ## AI acceleration
