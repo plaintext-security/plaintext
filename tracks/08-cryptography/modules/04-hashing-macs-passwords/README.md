@@ -1,6 +1,6 @@
 # Module 04 — Hashing, MACs & Passwords
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict a fast unsalted hash is 'good enough' for passwords, then crack it at scale (the LinkedIn / Adobe reality); the reveal is that a slow, salted KDF is the only fix. (Secondary: Blast-Radius Trace.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

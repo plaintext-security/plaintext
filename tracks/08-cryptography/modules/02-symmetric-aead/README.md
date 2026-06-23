@@ -1,6 +1,6 @@
 # Module 02 — Symmetric & AEAD
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict AES-GCM is foolproof, then see nonce/IV reuse break it worse than CBC (the WEP / PS3 nonce-reuse disaster); the reveal is that the mode is only as safe as its nonce discipline. (Secondary: Blast-Radius Trace.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 09 — Email Authentication
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict SPF stops spoofing, then see it never checks the visible From; DMARC alignment closes the gap, staged none→quarantine→reject. (Secondary: Audit→Build→Verify.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

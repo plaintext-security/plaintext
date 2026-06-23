@@ -1,6 +1,6 @@
 # Module 03 — Asymmetric & Key Exchange
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict where an asymmetric scheme fails, then see it: predictable keys (ROCA / Debian OpenSSL RNG) and reused nonces (PS3 ECDSA) hand over the private key. (Secondary: Concept Autopsy.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

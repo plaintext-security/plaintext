@@ -1,6 +1,6 @@
 # Module 01 — Primitives in Practice
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict 'encrypted = safe,' then watch ECB leak image structure and an unauthenticated-CBC ciphertext flip under a chosen bit-flip; the reveal is confidentiality ≠ integrity. (Secondary: Concept Autopsy.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

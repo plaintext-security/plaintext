@@ -1,6 +1,6 @@
 # Module 10 — Auditing Applied-Crypto Failures
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — audit a crypto config matrix, score it against OWASP/NIST, and deliver a remediation-delta report; the phase-capstone shape. (Secondary: Adversarial Review — AI proposes broken modes, you verify.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

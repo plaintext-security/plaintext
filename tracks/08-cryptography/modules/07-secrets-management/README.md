@@ -1,6 +1,6 @@
 # Module 07 — Secrets Management
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — operate Vault and SOPS for runtime secret delivery behind a least-privilege read; the deliverable is the working secrets backend, not a credential in a config file. (Secondary: Decision/ADR — Vault vs SOPS vs cloud KMS.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

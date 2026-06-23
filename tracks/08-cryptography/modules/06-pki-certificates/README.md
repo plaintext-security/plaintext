@@ -1,6 +1,6 @@
 # Module 06 — PKI & Certificate Management
 
-*Module concept · [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a CA with step-ca, issue and chain certificates, and prove revocation actually works (the soft-fail gotcha); the deliverable is the running PKI and a verified revocation. (Secondary: Concept Autopsy.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
