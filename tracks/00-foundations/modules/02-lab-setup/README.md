@@ -83,8 +83,9 @@ depth, which is exactly the kind of "consequence I accept and mitigate" an ADR e
 - [Containers vs VMs: What's the difference?](https://www.youtube.com/watch?v=cjXI-yxqGTI) — IBM Technology (video, short). A lightboard walkthrough; watch for the one load-bearing fact — containers **share the host kernel**, while each VM runs *its own*. That single difference is why untrusted code goes in a VM.
 - [Containerization vs. Virtualization](https://www.wiz.io/academy/container-security/containerization-vs-virtualization) — Wiz (article, ~6 min). Read it for the security angle the video skips: a kernel bug is a **container-escape blast radius** across every container on the host, whereas a VM gives you hardware-level isolation. (Vendor page with some CTAs, but the isolation framing is exactly right.)
 
-**What you'll point the lab at**
-- [Metasploitable 2 — setup guide](https://docs.rapid7.com/metasploit/metasploitable-2/) — Rapid7 docs (~5 min). The canonical intentionally-vulnerable VM: download the image, import it into VirtualBox, and you have a *legal* target to practise against. Keep it on **host-only or NAT — never bridged** — and remember the standing rule: only ever attack systems you own or are explicitly authorised to test. (Once you outgrow it, [VulnHub](https://www.vulnhub.com/) is a whole library of community vulnerable VMs — but start here.)
+**The ADR — the record you'll write**
+- [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — Michael Nygard (article, ~5 min). The original ADR essay, and the exact **Context · Decision · Status · Consequences** format your lab deliverable uses. Read it for *why* you record the options you rejected and the consequences you accept — that judgment is what this module is really after.
+- [Architecture Decision Record](https://martinfowler.com/bliki/ArchitectureDecisionRecord.html) — Martin Fowler (article, ~5 min). A short, current companion to Nygard: when an ADR is worth writing, and how to keep it honest and brief. Clean on mobile.
 
 ## Key concepts
 
