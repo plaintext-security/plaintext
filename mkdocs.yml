@@ -494,6 +494,12 @@ nav:
       - "10 · Auditing Applied-Crypto Failures":
           - Concept: 08-cryptography/modules/10-auditing-crypto-failures/README.md
           - Lab: 08-cryptography/modules/10-auditing-crypto-failures/lab.md
+      - "11 · Post-Quantum & Crypto-Agility Migration":
+          - Concept: 08-cryptography/modules/11-pqc-migration/README.md
+          - Lab: 08-cryptography/modules/11-pqc-migration/lab.md
+      - "12 · Choosing Your Crypto: an ADR":
+          - Concept: 08-cryptography/modules/12-choosing-crypto/README.md
+          - Lab: 08-cryptography/modules/12-choosing-crypto/lab.md
   - Python for Security:
       - Overview: 09-python-for-security/README.md
       - "01 · Setup & Security Idioms":
