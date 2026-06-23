@@ -81,7 +81,7 @@ the man page. Reading the packets yourself is the skill the model accelerates, n
 - [Cloudflare — What is DNS? / DNS server types](https://www.cloudflare.com/learning/dns/what-is-dns/) — a clean second source on resolvers and record types; skim so "A record" and "CNAME" aren't jargon (~15 min).
 
 **Reading packets (video first, then hands-on)**
-- [Chris Greer — TCP 3-Way Handshake (follow-along, ~13 min)](https://www.youtube.com/watch?v=xePWf8X63Xc) <!-- VALIDATE --> — he reads SYN / SYN-ACK / ACK out of a real Wireshark capture exactly the way you will.
+- [Chris Greer — "How TCP Works: The Handshake"](https://www.youtube.com/watch?v=HCHFX5O1IaQ) — a packet analyst walks through SYN / SYN-ACK / ACK and what each step negotiates, the way you'll read it in your own capture.
 - [Julia Evans — "tcpdump is amazing"](https://jvns.ca/blog/2016/03/16/tcpdump-is-amazing/) — a short, practical on-ramp to the exact tool the lab uses; copy her filters and go.
 
 **The breach, in primary source**

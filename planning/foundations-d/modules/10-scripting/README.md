@@ -1,6 +1,6 @@
 # Module 10 — Scripting & Automation
 
-*Variant D · build-first (the track's automation spine). [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — the product is a reusable tool others run, not a throwaway script (the track's automation spine). [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -10,10 +10,6 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules (esp. 04 Linux, 08 Encoding)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): This is a BUILD-FIRST module — the track's automation
-spine and the on-ramp to the capstone toolkit. There is no predict-then-reveal; the bridge is the
-"automate the toil, never the judgment" mental model plus the AI-review skill, and the deliverable IS
-a reviewable script. Lead with the scale problem and with building the tool. -->
 
 ## The scale problem
 
@@ -33,13 +29,23 @@ reliably do a boring thing ten thousand times, and a computer cannot do anything
 of this module is to take one analysis you already did by hand and turn it into a small tool that does
 it a thousand times, the same way, every time.
 
-## The mental model: automate the toil, never the judgment
+## The mental model: build a tool, not a throwaway
 
-A good security script is not an "application." It is one boring decision, written down so it can be
-re-run: **read input → parse → filter → output a clean result.** Four pieces of Python's standard
-library cover almost all of it — `pathlib` (read a file), `re` (pull a field out of messy text with a
-regular expression), `collections.Counter` (tally), `argparse` (take options from the command line).
-You will not become a software engineer here, and you don't need to.
+A good security script is not an "application," but it is also not a one-off you paste into a terminal
+and lose. It is one boring decision, written down so it can be re-run *by other people*: **read input →
+parse → filter → output a clean result.** Four pieces of Python's standard library cover almost all of
+it — `pathlib` (read a file), `re` (pull a field out of messy text with a regular expression),
+`collections.Counter` (tally), `argparse` (take options from the command line). You will not become a
+software engineer here, and you don't need to.
+
+The distinction this module turns on is **tool vs. throwaway.** A throwaway runs once, on your machine,
+with the path hard-coded, and dies when you close the terminal. A *tool* is the same logic packaged so a
+teammate can pick it up cold: it takes its input as a flag (`--threshold`, `--json`) instead of an edited
+line, it answers `--help`, it ships a short README that says what it does and how to run it, and it has at
+least one basic test that proves it still gives the right answer when you change it later. That packaging
+is not bureaucracy — it is the difference between a result you got once and a *capability you own and can
+hand off*. Everything the automation track later compounds on is this construct: a reusable, reviewable
+tool, not a pile of scratch scripts.
 
 Two ideas make a script worth writing, and both are about trust:
 
@@ -81,12 +87,12 @@ just pasting.** Owning it is the deliverable.
 
 **Python, fast — for people who haven't written one**
 - [Python's own tutorial — sections 3, 4, 6, 7](https://docs.python.org/3/tutorial/) (~90 min) — the official starting point: variables, `if`/`for`, functions, reading files. Type along; skip the rest for now.
-- [Automate the Boring Stuff with Python (free online)](https://automatetheboringstuff.com/) — Al Sweigart's classic; read the **Functions**, **Reading & Writing Files**, and **Command Line Arguments** chapters — the security-automation core. <!-- VALIDATE: chapter titles -->
+- [Automate the Boring Stuff with Python (free online)](https://automatetheboringstuff.com/) — Al Sweigart's classic; read the **Functions**, **Reading and Writing Files**, and **Designing and Deploying Command Line Programs** chapters — the security-automation core.
 
 **The four modules a security script actually uses**
 - [`re` — regular expressions](https://docs.python.org/3/library/re.html) (reference) — the analyst's scalpel for pulling one field out of messy text; you'll reach for it on every log-parsing task.
 - [`argparse` tutorial](https://docs.python.org/3/howto/argparse.html) (~30 min) — how a script takes options (`--threshold`, `--json`) from the command line, like every real CLI tool.
-- [Real Python — Regular Expressions in Python](https://realpython.com/regex-python/) (~40 min) — the `re` module done properly, with worked examples. <!-- VALIDATE -->
+- [Real Python — Regular Expressions in Python](https://realpython.com/regex-python/) (~40 min) — the `re` module done properly, with worked examples.
 - [regex101](https://regex101.com/) (tool) — build and test your pattern interactively (set the flavour to Python) *before* it goes into code. This is where you catch the "matches nothing" bug.
 
 **The data, for real**
@@ -96,6 +102,7 @@ just pasting.** Owning it is the deliverable.
 - You script when the data outgrows the eyes — not for fun, for scale and repeatability
 - The shape of a security tool: **read → parse → filter → output**
 - The four-piece standard library: `pathlib`, `re`, `collections.Counter`, `argparse`
+- **Tool, not throwaway:** flags (not hard-coded paths), a `--help`, a short README, one basic test — so another person can run it
 - A script is a re-runnable hypothesis and a readable artifact a teammate can audit
 - Automate the toil; keep the judgment — never let the tool decide *which* result matters
 - Reviewing AI code: wrong data assumption, silent failure, off-by-one — caught by running against data you understand

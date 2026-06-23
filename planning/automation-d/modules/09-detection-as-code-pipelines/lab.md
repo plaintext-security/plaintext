@@ -2,18 +2,6 @@
 
 *Hands-on lab · [← Back to the module concept](README.md)*
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 8 Gate + Type 13 Eval Harness made EXPLICIT. The lab.md is
-the symlinked source-of-truth in plaintext-labs/automation/09-detection-as-code-pipelines/. The EXISTING
-env already ships: data/rules/ (5 Sigma rules, one deliberately broken), data/tests/conftest.py (the
-match_rule fixture) + event JSONL. The CONVERSION adds, mirroring plaintext-labs/defensive/09-detection-
-testing/: (a) data/heldout/corpus.jsonl — a HELD-OUT labelled set distinct from the pytest tuning events;
-(b) data/heldout/rules-regressed/ — a planted-regression copy of the ruleset (drops the -enc variant +
-over-broadens one selection); (c) eval.py — scorecard (confusion matrix → recall/FP-rate/precision/F1) +
-a fail-closed --gate; (d) Makefile targets `eval` (scorecard+gate on good rules) and `gate` (proves RED on
-the regression). eval.py REUSES the in-process matcher (conftest._matches_rule) — one engine, scored two
-ways — so it's deterministic/offline in CI, no SIEM. VALIDATE the build: `make up && make demo && make eval
-&& make gate` on a Linux runner before adding .ci-demo. Meridian scrubbed throughout. Honor-system: the
-gate guards the author; no grader. -->
 
 ## Setup
 ```bash

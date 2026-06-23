@@ -10,14 +10,6 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 02 — Infrastructure as Code](../02-infrastructure-as-code/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 12 Migration / Brownfield — the curriculum's FIRST Type 12,
-flagged absent by the type pass. Build-first (Family III), NOT predict-then-reveal, with ONE predict beat
-("what breaks if you cut over all at once?") kept short per the template. Anchored on the universal brownfield
-reality (no single breach — the gap between greenfield tutorials and the running estate is the anchor), plus
-the strangler-fig pattern (Fowler, 2001, validated) and `tofu import` / import-block / -generate-config-out
-(OpenTofu docs, validated). Tool consistency with modules 02/03: OpenTofu + the `local` provider, zero cloud
-cost. Honor-system: no grader, no grade.yaml. Neutral framing — no fictional company. Placement note in the
-meta line per the brief: insert after 03 (renumber 04→05…) OR append as 11, decided at promotion. -->
 
 ## Why this matters
 

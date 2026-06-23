@@ -10,18 +10,6 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md) · [Module 05 — CI/CD Pipelines & Gates](../05-cicd-pipelines/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 14 Adversarial Review — the flagship/template exemplar for the
-type (alongside python 10). Per automation-d/DESIGN.md row 10 this is a clean fit; the conversion SHARPENS the
-frame and FIXES the empty "AI code review patterns (~1 hr)" Learn subsection (now real, validated links).
-Build/review-first (Family IV), NOT a long predict-then-reveal essay — but it carries ONE call-it-first prompt
-because a beginner reliably mis-judges fluent AI output. The lab is broadened from a single Terraform/checkov
-pass into multi-domain adversarial review: IAM wildcard, GitHub Actions pull_request_target + secrets,
-unpinned action, destructive terraform — each with the "say HOW you knew (the tell) + verify against the
-PRIMARY source" discipline. Deliverable = corrected artifacts + a reusable review checklist + a trust/suppression
-policy with a MEASURED threshold (not vibes). Anchors validated 2026-06: GitHub Security Lab "Preventing pwn
-requests"; GitHub Actions security-hardening docs; tj-actions/changed-files CVE-2025-30066 (CISA + GHSA) as the
-real unpinned-action disaster; OWASP LLM Top 10 (LLM09 Overreliance) + OpenSSF AI-code-assistant guide for the
-Learn fix. Meridian scrubbed → "a platform team." Honor-system: no grader. -->
 
 ## Why this matters
 

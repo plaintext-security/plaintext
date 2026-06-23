@@ -10,10 +10,6 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): This module keeps a real tool (openssl) but the bridge is
-delivered predict-then-reveal, because a beginner reliably gets one load-bearing thing wrong:
-"encrypted = safe." The reveal installs hashing-vs-encryption, salt, and why ECB leaks structure.
-Define every term (hash, cipher, salt, ECB) on first use; assume no prior crypto. Learn is short. -->
 
 ## Why this matters
 Every trust decision online rests on crypto: that a download wasn't tampered with, that a login is
@@ -38,8 +34,8 @@ with **3DES in ECB mode**, using **one key for every password** and **no salt** 
 shipped a **plaintext password hint** right beside the ciphertext. The result became a textbook
 example (and a viral "crossword" puzzle the community solved collaboratively): millions of passwords
 recovered without anyone ever breaking the cipher's math. The clearest public walk-throughs are
-[Sophos / Naked Security's analysis](https://news.sophos.com/en-us/2013/11/04/anatomy-of-a-password-disaster-adobes-giant-sized-cryptographic-blunder/)
-and [Paul Ducklin's "crossword" follow-up](https://nakedsecurity.sophos.com/2013/11/06/serious-security-how-to-store-your-users-passwords-safely/). <!-- VALIDATE: confirm exact Naked Security URLs/titles -->
+[Paul Ducklin's "Anatomy of a password disaster" on Naked Security](https://nakedsecurity.sophos.com/2013/11/04/anatomy-of-a-password-disaster-adobes-giant-sized-cryptographic-blunder/)
+and his follow-up, ["How to store your users' passwords safely"](https://nakedsecurity.sophos.com/2013/11/20/serious-security-how-to-store-your-users-passwords-safely/).
 
 ## Call it before you read on
 Don't scroll. Write down one answer — being wrong here is the entire point; it's what makes the lesson

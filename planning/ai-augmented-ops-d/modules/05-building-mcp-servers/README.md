@@ -10,11 +10,6 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–5.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 04 — RAG](../04-rag/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 9 Tool-Build (+ Type 7 Build-&-Operate). Build-first,
-NOT predict-then-reveal — the deliverable is a reusable, tested tool with a clear schema/validation/error
-contract, and a test suite that proves a hostile tool argument is rejected, not executed. The forward link
-to module 09 (Red-team-the-AI) names the MCP tool as an attack surface and cites the real tool-poisoning
-disclosure. Honor system — no grade.yaml. See DESIGN.md row 05. -->
 
 ## Why this matters
 A language model alone can reason, but it cannot act — it cannot query a live threat feed, search

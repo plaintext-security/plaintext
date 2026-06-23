@@ -77,8 +77,8 @@ is the skill, and why this module is built on `curl` rather than a browser.
 - [MDN — Using HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies) (~25 min) — exactly how `Set-Cookie`, `Secure`, and `HttpOnly` work. Read the "Restrict access to cookies" section twice: that's the Firesheep fix.
 
 **The security headers**
-- [MDN — Strict-Transport-Security (HSTS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security) (~10 min) — the header that forces HTTPS so a downgrade to plain HTTP can't happen at all. <!-- VALIDATE -->
-- [MDN — Content-Security-Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy) (~15 min, orient only) — skim what it controls; it's the defense against injected scripts (the `HttpOnly`-adjacent threat). <!-- VALIDATE -->
+- [MDN — Strict-Transport-Security (HSTS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security) (~10 min) — the header that forces HTTPS so a downgrade to plain HTTP can't happen at all.
+- [MDN — Content-Security-Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy) (~15 min, orient only) — skim what it controls; it's the defense against injected scripts (the `HttpOnly`-adjacent threat).
 
 **Reference (for the lab, not cover-to-cover)**
 - [curl manual](https://curl.se/docs/manpage.html) — find `-v`, `-X`, `-d`, `-L`, `-c`, `-b`, `-H`. Half the lab is knowing which flag does what.

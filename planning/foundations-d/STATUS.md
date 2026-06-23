@@ -56,7 +56,7 @@ The prose assumes a few artifacts/steps the existing envs don't ship yet — eac
 
 ## Housekeeping before promotion
 
-- READMEs carry an `<!-- AUTHOR'S NOTE … -->` block where used — strip on promotion.
+- READMEs carry an `` block where used — strip on promotion.
 - Lengths are on-target (README ~90–135, lab ~90–123 lines) — tighter than the cloud rewrite.
 - Add pages to `mkdocs.yml` `nav:` (rewrite lives outside `tracks/`, not wired in).
 - Same charter caveat as cloud: the predict-then-reveal/skill-first form needs the CONTRIBUTING.md

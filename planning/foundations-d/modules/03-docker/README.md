@@ -7,7 +7,7 @@
 **Foundations** — *every lab here is Docker-first; this is the literacy that assumes — and the one mental model that keeps it from biting you.*
 
 <!-- module-meta -->
-**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules ([02 — Building a Safe Lab](../02-safe-lab/README.md))
+**Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules ([02 — Building a Safe Lab](../02-lab-setup/README.md))
 { .module-meta }
 
 ## Why this matters
@@ -28,7 +28,7 @@ that mined cryptocurrency on the victim's hardware — **cryptojacking**, at int
 crafted run could mount the host's filesystem into the container, turning "I can run a container" into
 "I am root on the host." Aqua Security, Trend Micro, and Unit 42 all documented campaigns built on this
 exact exposure.
-[Trend Micro — exposed Docker hosts abused for cryptojacking](https://www.trendmicro.com/en_us/research/19/k/more-than-a-thousand-hosts-found-exposing-misconfigured-docker-apis.html) <!-- VALIDATE -->
+[Trend Micro — infected cryptocurrency-mining containers target Docker hosts with exposed APIs](https://www.trendmicro.com/en_us/research/19/e/infected-cryptocurrency-mining-containers-target-docker-hosts-with-exposed-apis-use-shodan-to-find-additional-victims.html)
 
 The control plane was wide open — but the deeper reason it was *so* bad rests on a fact about what a
 container actually is. Before you read on, call it.

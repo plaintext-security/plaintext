@@ -10,14 +10,6 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Red-team-the-AI (+ Audit→Build→Verify) &nbsp;·&nbsp; **Prerequisites:** [05 — Building MCP Servers](../05-building-mcp-servers/README.md), [06 — A SoC Copilot](../06-soc-copilot/README.md), [11 — AI Evaluation & Observability](../11-ai-evaluation/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 15 Red-team-the-AI (+ Type 4 Audit→Build→Verify;
-closes with a Type 13 regression eval that plugs into module 11). Predict-then-reveal the
-"just add a system prompt telling it not to" misconception — this is the ONE place in the build
-spine where the learner's intuition is reliably wrong and the correction is load-bearing.
-Anchored on NAMED incidents (Chevrolet of Watsonville $1-Tahoe bot, Nov 2023; M365-Copilot
-"EchoLeak" CVE-2025-32711, Aim Security, June 2025) — not generic OWASP/ATLAS. The loop is
-attack the module-06 copilot → mitigate → re-attack → wire a promptfoo/garak-style regression
-eval (Type 13) that catches the regression. Honor system — no grade.yaml. See DESIGN.md row 09. -->
 
 ## Why this matters
 Every AI component you've built in this track shipped a new attack surface that did not exist

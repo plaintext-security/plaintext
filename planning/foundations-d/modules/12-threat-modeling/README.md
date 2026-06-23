@@ -10,10 +10,6 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules (you'll model the lab system you built)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Concept-autopsy module, beginner-adapted. The bridge is
-delivered as a predict-then-reveal pair worked *before* the answer, then installed as method. Learn
-is lean on purpose — the spine is here, not outsourced. Define "trust boundary" and every STRIDE
-letter on first use; assume no prior security experience. -->
 
 ## The case
 

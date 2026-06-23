@@ -10,15 +10,6 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~4.5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 01 — Zero Trust Principles](../01-zero-trust-principles/README.md) (the flat-network breach), [Module 06 — Identity-Aware Access](../06-identity-aware-access/README.md) (the proxy you migrate *to*)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 12 Migration / Brownfield — the ZTNA track's confirmed
-missing centerpiece (flagged absent by the type pass; the single most real-world ZTNA task). Build-first
-(Family III), NOT predict-then-reveal, with ONE predict beat ("what breaks if you cut over all at once?")
-kept short per the template. Anchored on the universal brownfield reality (the legacy VPN on a flat network
-from Module 01 — the Colonial Pipeline setup) + the strangler-fig pattern (Fowler, 2001, validated). Tool
-consistency with the rest of the track: migrates TO the Pomerium identity-aware proxy from Module 06; the
-legacy side is a WireGuard/flat-network stand-in. Honor-system: no grader, no grade.yaml. Neutral framing —
-no fictional company; "an organization" only. Placement note in the meta line per the brief: insert between
-06 and 07 (renumber 07→08…) OR as the Phase-3 project, decided at promotion. -->
 
 ## Why this matters
 

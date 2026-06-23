@@ -10,10 +10,6 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Variant-D shape. This is one of the highest-value
-beginner corrections in the track (encoding ≠ encryption), so it is built as predict-then-reveal,
-not a front-loaded essay. The real technical content from the shipped module — hex, base64, URL
-encoding, JSON/jq — is preserved; only the frame changes. Learn is deliberately lean. -->
 
 ## The artifact
 
@@ -98,7 +94,7 @@ the model.*
 - [RFC 4648 — Base16, Base32, Base64 data encodings](https://www.rfc-editor.org/rfc/rfc4648) (~30 min, skim §4 + §8) — the primary source. Read the base64 alphabet table and the padding rules; that's the `==` you predicted, defined by the standard itself.
 - [MDN — Percent-encoding / `encodeURIComponent`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) (~15 min) — why URLs need `%2F`-style escaping and which characters are "unsafe"; the mechanism behind the path-traversal you'll decode.
 - [jq manual](https://jqlang.github.io/jq/manual/) (~30 min, hands-on) — slice and filter JSON from the command line. Don't read it cover to cover; work the "Basic filters" examples, then reach for it during the lab.
-- [CISA — decoding obfuscated PowerShell](https://www.cisa.gov/news-events/cybersecurity-advisories) (~15 min) <!-- VALIDATE: link a current CISA advisory that shows a base64 -EncodedCommand artifact in its IOCs (e.g. an Emotet/loader advisory) --> — see the encoded-PowerShell trick in a real government advisory, with real indicators.
+- [CISA AA25-141B — LummaC2 Malware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-141b) (~15 min) — a real government advisory whose "ClickFix" technique runs a base64-encoded PowerShell command; see the encoded-PowerShell trick with real indicators of compromise.
 - [CyberChef](https://gchq.github.io/CyberChef/) (~15 min, play) — "the cyber swiss-army knife"; build a recipe to peel a layered base64/hex/URL blob and *watch* each layer come off.
 
 ## Key concepts

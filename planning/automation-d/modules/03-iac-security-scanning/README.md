@@ -10,13 +10,6 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Infrastructure as Code](../02-infrastructure-as-code/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 8 Judgment-as-Code / Gate. Per automation-d/DESIGN.md
-row 03 this is a clean fit — the conversion is to SHARPEN the gate framing, not rewrite the tool content.
-Build-first (Family II), NOT predict-then-reveal: the deliverable IS a CI gate proven fail-bad/pass-good
-with one correctly-suppressed true false-positive. The checkov/tfsec exit-code-blocks-apply content and
-suppression-with-justification are preserved from the source module as the judgment. Anchored on the
-real misconfig class (unencrypted S3, 0.0.0.0/0 ingress, * IAM) behind the 2017 public-S3 leaks and the
-Capital One SSRF→over-broad-role breach. Meridian scrubbed → "a platform team." Honor-system: no grader. -->
 
 ## Why this matters
 A misconfigured S3 bucket costs nothing to fix in a `.tf` file before it deploys. After it ships with

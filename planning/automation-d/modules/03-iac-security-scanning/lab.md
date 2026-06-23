@@ -25,13 +25,6 @@ installed.
 > Static-analysis lab — nothing here touches a real account. The authorization rule still stands as a
 > habit: only scan and deploy infrastructure you own or have written permission to change.
 
-<!-- AUTHOR'S NOTE (delete before publish): Env enrichment for promotion. The current data/misconfig.tf
-supports a defensible true false-positive (the logging-bucket "don't log to itself" case in Part 2).
-To make the README's port-443-vs-5432 contrast concrete in the lab, ADD to data/misconfig.tf at
-promotion: (a) a second ingress on port 443 0.0.0.0/0 commented "public ALB — intended", and (b) a
-port-5432 0.0.0.0/0 ingress as a real exposure. Then step 7 proves the intended rule can be suppressed
-without muting the catastrophic one. Until then, the logging-bucket FP carries the judgment beat and
-the lab is complete as written. Verify make up && make demo on a Linux runner before adding .ci-demo. -->
 
 ## Scenario
 The platform team writes Terraform; nobody built security into the pipeline. A developer submitted a PR

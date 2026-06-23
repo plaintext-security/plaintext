@@ -10,15 +10,6 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Red-team-the-AI + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [09 — Securing the AI You Run](../09-securing-ai/README.md), [11 — AI Evaluation & Observability](../11-ai-evaluation/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 15 Red-team-the-AI + Type 13 Eval Harness — the strong
-close of the track. Attack-first; the ONE predict-then-reveal beat is the "just tell it not to" misconception
-(it doesn't generalise). The duality is the whole point: garak = systematic statistical probe coverage
-(red-team), promptfoo = expected-output regression suite (the #13 the build modules lacked) — make it explicit
-that this module pairs the attack WITH the eval-as-regression, and that the promptfoo suite plugs into module
-11's harness/gate. Anchors are NAMED incidents only (Air Canada / Chevy-$1 / EchoLeak), NOT generic OWASP/ATLAS
-(those are vocabulary, used to *tag* findings, not to anchor). Honor system — no grade.yaml. Authorization note
-present (offensive tooling). VALIDATED anchors: Air Canada = Moffatt v. Air Canada 2024 BCCRT 149; EchoLeak =
-CVE-2025-32711, Aim Labs, disclosed June 2025; Chevy = Watsonville Chevrolet bot, Dec 2023. See DESIGN.md row 10. -->
 
 ## Why this matters
 Three incidents, three lessons a system prompt could not have prevented. In *Moffatt v. Air Canada*

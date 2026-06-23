@@ -10,10 +10,6 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** None — start here
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): This is a concept module with no single tool, so the
-bridge is delivered predict-then-reveal: the learner commits to a guess, then the reveal corrects a
-load-bearing misconception ("one thing failed" → "every principle failed in series"). Define all
-jargon (CIA, AAA) on first use; no prior security experience assumed. Learn is short on purpose. -->
 
 ## Why this matters
 Before any tool, before any track, you need the shared language: what security is actually trying to

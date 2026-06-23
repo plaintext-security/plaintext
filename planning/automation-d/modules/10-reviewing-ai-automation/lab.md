@@ -31,25 +31,6 @@ seeded with planted, realistic defects:
 > stands as a habit: only scan, deploy, or run automation you own or have written permission to change. Do **not**
 > run `tofu apply` or trigger any workflow in this lab.
 
-<!-- AUTHOR'S NOTE (delete before publish): Env enrichment needed at promotion. The CURRENT lab env ships only
-data/ai_generated_terraform.tf and a checkov-only container (see plaintext-labs/automation/10-reviewing-ai-automation/).
-To support this broadened Type-14 lab, ADD at promotion:
-  (1) data/ai_generated_workflow.yml — a GitHub Actions workflow with PLANTED defects: (a) `on: pull_request_target`
-      followed by `actions/checkout` of `${{ github.event.pull_request.head.sha }}` (pwn request); (b) a third-party
-      action referenced by mutable tag (e.g. `tj-actions/changed-files@v44` — the CVE-2025-30066 shape) instead of a
-      SHA; (c) `permissions: write-all` (or no top-level permissions block → default broad token); (d) a `run:` step
-      interpolating `${{ github.event.pull_request.title }}` into the shell (script injection); (e) a hardcoded token
-      in `env:` for gitleaks to catch.
-  (2) data/ai_generated_destroy.tf — an aws_s3_bucket with `force_destroy = true` plus a removed/renamed resource
-      that `terraform plan` would show as a destroy (the "destroys on apply" tell). Keep it offline-reviewable via
-      `terraform plan` against a local/null provider stand-in, OR (honest substitute) review the plan text by hand
-      and label it "assessed from config" — state the tooling limit per AUTHORING.md.
-  (3) Container: add tfsec, gitleaks, actionlint (all pinned) to the Dockerfile; extend `make demo` to run actionlint
-      over the .yml and gitleaks over data/, in addition to checkov over the .tf. Provide data/fixed/ as the AFTER dir.
-  (4) The existing ai_generated_terraform.tf already plants the 5 misconfigs (public ACL, wildcard IAM, no IMDSv2,
-      unencrypted EBS, open SSH) + the logging-bucket true-FP — reuse it as-is for the Terraform domain.
-Run make up && make demo on a Linux runner and confirm all four scanners fire before adding .ci-demo. Until the env
-is enriched, this lab.md is the spec the promotion build implements; the Terraform-only half is already runnable. -->
 
 ## Scenario
 

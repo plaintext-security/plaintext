@@ -1,6 +1,6 @@
 # Lab 10 — Build the Tool: A Reviewable Log Parser in Python
 
-*Variant D · build-first. [← Back to the module concept](README.md)*
+*Type 9 · Tool-Build — the deliverable is a packaged, reviewable tool others can run. [← Back to the module concept](README.md)*
 
 ## Setup
 
@@ -62,17 +62,28 @@ data you understand. Don't paste blind.
 7. [ ] **Defend it.** Re-read the regex token by token. Be able to say what every piece matches and what
    it would *miss* (IPv6? a different log format? a trailing space?). If you can't, you don't own it yet.
 
+8. [ ] **Package it as a tool, not a throwaway.** Make it run for someone who isn't you: take the log path
+   and threshold as `argparse` flags (no hard-coded paths), make `--help` describe what it does, write the
+   short `README.md`, and add **one basic test** — even a three-line check that, given a tiny fixture log
+   with a known answer, the tool returns that answer. That single test is what lets you change the tool
+   later and trust it still works.
+
 ## Success criteria — you're done when
-- [ ] The script prints a ranked count of source IPs from the sample.
+- [ ] The tool prints a ranked count of source IPs from the sample.
 - [ ] On a line it can't parse it does something sensible — it does not crash, and it does not *silently*
   drop the line (it tells you how many it skipped).
 - [ ] You can explain every token in the regex, and name one input shape it would miss.
 - [ ] Its output matches your by-hand answer on a handful of lines you checked yourself.
+- [ ] It runs for someone who isn't you: input/threshold are **flags**, `--help` works, a short README
+  exists, and **one basic test passes** against a known-answer fixture.
 
 ## Deliverables
-`topips.py` plus a one-paragraph `README.md`: what it does, how to run it, and **one limitation you'd fix
-next** (naming the limitation is part of owning it). Commit both. Do **not** commit the log file or any
-captured host data — reference the dataset, don't vendor it.
+The **packaged tool**: `topips.py` (with `argparse` flags and a working `--help`), a one-paragraph
+`README.md` (what it does, how to run it, and **one limitation you'd fix next** — naming the limitation is
+part of owning it), and **one basic test** (`test_topips.py`, or a documented manual check) proving it
+returns the known answer on a small fixture. Commit all three. Do **not** commit the real log file or any
+captured host data — reference the dataset, don't vendor it (a tiny known-answer fixture for the test is
+fine to commit).
 
 ## Automate & own it
 **Required — this is the whole module.** `topips.py` *is* your artifact. To prove it's a tool and not a

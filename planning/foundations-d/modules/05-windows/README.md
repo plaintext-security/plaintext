@@ -83,7 +83,7 @@ re-learn the model.*
 - [Microsoft — Event 4688: A new process has been created](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4688) (~15 min, skim) — the primary source for the event that carries the command line. Read the field list and note that **Process Command Line** is off by default — a real gap.
 - [MITRE ATT&CK — T1543.003: Windows Service](https://attack.mitre.org/techniques/T1543/003/) and [T1059.001: PowerShell](https://attack.mitre.org/techniques/T1059/001/) (~15 min) — the two techniques you'll name in the lab, with real detection guidance. Read the *Detection* rows.
 - [MITRE ATT&CK — Emotet (S0367)](https://attack.mitre.org/software/S0367/) (~10 min) — the techniques this real malware actually uses, by ID. Corroborates the case above.
-- [CISA AA20-280A — Emotet Malware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-280a) (~15 min, skim) — the primary advisory for the anchor; skim the technical detail and IOCs. <!-- VALIDATE: confirm AA20-280A is the live Emotet advisory URL -->
+- [CISA AA20-280A — Emotet Malware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-280a) (~15 min, skim) — the primary advisory for the anchor; skim the technical detail and IOCs.
 
 ## Key concepts
 - The registry and the event log are Windows's ground truth — persistence and execution both leave specific, named traces there.

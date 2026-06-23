@@ -10,19 +10,6 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Type:** Gate + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md)
 { .module-meta }
 
-<!-- AUTHOR'S NOTE (delete before publish): Type 8 Judgment-as-Code/Gate + Type 13 Eval Harness — per
-automation-d/DESIGN.md row 09, the job is to MAKE #13 EXPLICIT. The source module already had the gate
-bones (sigma check + a pytest (rule,event,expected) table + mandatory should-not-match FP cases + a CI
-gate). The conversion adds the eval-harness layer ON TOP, in the SAME language as ai-ops 11 and the
-Wave-2 defensive-09 upgrade: a HELD-OUT corpus distinct from the tuning set, a SCORECARD (precision /
-recall / FP-rate over a confusion matrix), and a REGRESSION GATE that fails a degraded/over-broad rule.
-This is automation's canonical #13 exemplar. Build-first (Families II/IV), NOT predict-then-reveal — the
-deliverable is eval-as-code proven GREEN-on-good / RED-on-planted-regression. Anchored on detections that
-ROT/REGRESS SILENTLY in production (a refactor that drops a CommandLine variant; an over-broad selection
-that floods the queue) — neutral, no breach-horror, no fictional company (Meridian scrubbed → "a
-detection-engineering team" / "your repo"). Tool rigor preserved verbatim: sigma-cli, pytest.parametrize,
-the in-process matcher, the held-out corpus + eval.py + gate shipped in plaintext-labs. Honor-system: the
-gate guards the author against regressions; there is NO grader. -->
 
 ## Why this matters
 Track 02 (Defensive) taught you to write a Sigma rule and purple-team it: fire the technique, confirm
