@@ -36,32 +36,35 @@ Harness, Migration, ADR, Adversarial Review) are present everywhere the type pas
 
 ### Wave 0 — Foundation ✅ (this branch)
 - Branches in both repos · the filled-out **type library** (16 templates) · **`AUTHORING.md`** (v2 guide)
-  · this roadmap · the completed **type pass** (`type-pass/`). **Next:** amend `CONTRIBUTING.md` to point
-  module-shape questions at `AUTHORING.md` (one paragraph).
+  · this roadmap · the completed **type pass** (`type-pass/`) · `CONTRIBUTING.md` pointed at `AUTHORING.md`
+  · the **grade system fully removed** (honor-system; no receipts/credentials). **✅ DONE.**
 
 ### Wave 1 — Land the two prototypes (prove the promotion pipeline end-to-end)
-The cloud (`cloud-track-d/`) and foundations (`foundations-d/`) Verdict rewrites are prose-complete in
-`planning/`. Promote them into `tracks/` and build their labs:
-- Resolve all `VALIDATE` links; strip `AUTHOR'S NOTE` blocks.
-- Apply the foundations retrofits the type pass found: **02 → Decision/ADR**, **10 → Tool-Build** (name them).
-- Build/validate the lab backfills listed in each `STATUS.md` (cloud 02/04/07/11/12/15 targets; foundations
-  01 cert-check, 06 beacon capture, 09 ECB step) in `plaintext-labs`.
-- Add the cloud **KMS/Data-Protection** module (the one real topical hole; Type 7+3).
-- `mkdocs build --strict` green; nav updated. **Outcome:** two fully-converted tracks + a repeatable promotion checklist.
+- **Foundations: ✅ DONE.** Promoted into `tracks/00-foundations` — 02→ADR & 10→Tool-Build retrofits applied,
+  all VALIDATE links web-verified, AUTHOR'S NOTE stripped, 4 lab backfills built (cert-check, encoded-PS
+  4688 event, SUNBURST beacon capture, ECB-vs-salt step), `mkdocs --strict` green. (Also: the two labs
+  clones were consolidated — `cloud-rebalance` merged in, so the **KMS module 17 lab** is already on the
+  branch; both clones + the submodule point at `feat/verdict-redesign`.)
+- **Cloud: ⏳ pending.** `cloud-track-d/` is prose-complete in `planning/`; promote it (same pipeline) —
+  resolve VALIDATE, strip notes, build the cloud lab backfills, and convert/wire the already-merged KMS
+  module 17 (currently an orphan lab in the old form). **Folded into Wave 3** now that Wave 3 leads with the build tracks.
 
-### Wave 2 — The four systemic constructs (the prioritized roadmap, construct-driven)
-Highest leverage; each spans tracks. Build the construct once, apply it everywhere flagged.
-1. **Eval Harness (#13)** — *the #1 gap.* Build a dedicated **ai-ops "AI Eval & Observability" module**
-   (shared held-out set + scorecard + regression gate that 04/05/06 plug into; add an eval row to the
-   ai-ops capstone). Then **upgrade-in-place**: defensive 09, cloud 15, malware 13, AD 09 each gain a
-   held-out corpus + regression gate. Generalise ai-ops 07 as the template.
-2. **Migration (#12)** — build the **ZTNA VPN→ZTNA** module (the missing centerpiece) first; then
-   **automation click-ops→gated-IaC**, **cryptography PQC/crypto-agility**, **endpoint fleet-rollout**.
-3. **Decision/ADR (#11)** — seed the construct at **foundations 02** (done in Wave 1), then retrofit the
-   latent ones: automation 01, ai-ops 01, a cryptography "choosing your crypto", endpoint 01/03. Copy
-   ztna 04's format.
-4. **Adversarial Review (#14)** — generalise **python 10**'s pattern into a real lab beat at **offensive
-   17 (reporting)**, **defensive (review AI detections)**, **forensics (trust the AI summary?)**, **malware**.
+### Wave 2 — The systemic constructs
+- **Eval Harness (#13): ✅ DONE** — *the #1 gap.* Built the flagship **ai-ops 11 · AI Evaluation &
+  Observability** module (held-out corpus + `eval.py` + a CI regression gate; `make demo` goes GREEN on a
+  good system and RED on a planted regression where accuracy hides the recall collapse) and
+  **upgraded-in-place** the four detection modules — **defensive 09, cloud 15, malware 13,
+  active-directory 09** — each now ships a held-out corpus + precision/recall/FP scorecard + a regression
+  gate (RED on a too-broad or too-narrow rule). `mkdocs --strict` green; both repos committed.
+
+The other three constructs are **built during their track conversions in Wave 3** (where they belong),
+not as a separate construct-only push:
+- **Migration (#12)** → built in the ztna (VPN→ZTNA), automation (click-ops→IaC), cryptography (PQC), and
+  endpoint (fleet-rollout) conversions.
+- **Decision/ADR (#11)** → seeded at **foundations 02 (✅ done)**; retrofit automation 01, ai-ops 01,
+  cryptography, endpoint during their conversions. **ztna 04 is the template.**
+- **Adversarial Review (#14)** → added as a lab beat in offensive 17, defensive, forensics, malware during
+  their conversions. **python 10 is the template.**
 
 ### Wave 3 — Full track conversion, ordered by leverage × mismatch-load
 Each track gets the proven pipeline (DESIGN spine → author to types → build/validate labs → STATUS).
@@ -71,26 +74,30 @@ Order and per-track scope below.
 
 *Health = how close the shipped track already is. Size = S/M/L. "Already-coherent" tracks are light.*
 
-| Order | Track | Type health | Fix (mismatches) | Add (gap modules) | Size | Wave |
-|---|---|---|---|---|---|---|
-| — | 05 cloud | prototyped | 02/04 build halves, 01 misconception, 15 eval | KMS (#7) | M | 1 |
-| — | 00 foundations | prototyped | 02→ADR, 10→Tool-Build | — | S | 1 |
-| 1 | 01 offensive | strong spine (#3/#5) | 17→Adv-Review, 01/03→Tool-Build, make detect artifacts deliverables | a light Eval/verify beat | M | 3 |
-| 2 | 02 defensive | strong build/detect | 08/09/10 → Eval Harness | Detection-Drift (#16), Review-AI-Detections (#14) | L | 3 |
-| 3 | 12 ai-augmented-ops | build-on-vibes | 04/05/06/08 pair an eval; name 01 an ADR | **AI Eval & Observability (#13)** | L | 2→3 |
-| 4 | 11 ztna | design-heavy, healthy | 09 add drift/eval | **VPN→ZTNA Migration (#12)**, promote red-team-your-design (#10) | M | 2→3 |
-| 5 | 10 automation | build/gate spine | 01→Autopsy, 04 drift, 05 running-gate, 09 eval | **click-ops→IaC Migration (#12)** | M | 2→3 |
-| 6 | 08 cryptography | misconception spine | 03 add failure anchor | **PQC/crypto-agility Migration (#12)**, a Crypto ADR | M | 3 |
-| 7 | 04 malware | reconstruct spine | 13→Eval Harness, 01→ADR | named-family Autopsy opener, Review-AI-analysis (#14) | M | 3 |
-| 8 | 03 forensics | reconstruct spine | 02→Build/ADR, 13 worksheet→hands-on | Forensic Eval Harness (#13), Trust-the-AI-summary (#14) | M | 3 |
-| 9 | 06 active-directory | clean (all ✓) | (light) | AD Detection Eval (#13), Brownfield Tiering (#12), Posture Drift (#16) | M | 3 |
-| 10 | 07 endpoint | clean (all ✓) | Windows coverage past 02 | Drift module (#16), Fleet-Migration (#12); 01/03 → ADR | M | 3 |
-| 11 | 09 python | cleanest Tool-Build | 09→exercise Red-team-AI | name an Eval Harness; optional async build | S | 3 |
+*Order reflects the maintainer's Wave-3 priority: **automation, ztna, ai-augmented-ops first.** ✅ marks
+work already landed in earlier waves.*
 
-*Rationale for the order: most-mismatched/highest-leverage and most-marketable first (offensive,
-defensive, ai-ops), the Migration-dependent build tracks next (ztna, automation, crypto), then the
-already-coherent tracks last with light retrofits. ai-ops/ztna/automation/crypto conversions consume the
-Wave-2 constructs they need.*
+| Order | Track | Type health | Fix (mismatches) | Add (gap modules) | Size | Status |
+|---|---|---|---|---|---|---|
+| ✅ | 00 foundations | **converted** | 02→ADR ✅, 10→Tool-Build ✅ | — | S | **done (Wave 1)** |
+| **1** | **10 automation** | build/gate spine | 01→Autopsy, 04 drift, 05 running-gate, 09 eval | **click-ops→IaC Migration (#12)** | M | **next** |
+| **2** | **11 ztna** | design-heavy, healthy | 09 add drift/eval | **VPN→ZTNA Migration (#12)**, promote red-team-your-design (#10); ztna 04 = ADR template | M | **next** |
+| **3** | **12 ai-augmented-ops** | build-on-vibes | 04/05/06/08 pair an eval; name 01 an ADR | AI Eval & Observability (#13) ✅ | L | **next** |
+| 4 | 05 cloud | prototyped in `planning/` | 02/04 build halves, 01 misconception, 15 eval ✅ | KMS module 17 (#7) wire-in + convert | M | pending (2nd prototype) |
+| 5 | 01 offensive | strong spine (#3/#5) | 17→Adv-Review, 01/03→Tool-Build, make detect artifacts deliverables | a light Eval/verify beat | M | |
+| 6 | 02 defensive | strong build/detect | 08/10 → Eval Harness (09 eval ✅) | Detection-Drift (#16), Review-AI-Detections (#14) | L | |
+| 7 | 08 cryptography | misconception spine | 03 add failure anchor | **PQC/crypto-agility Migration (#12)**, a Crypto ADR | M | |
+| 8 | 04 malware | reconstruct spine | 13→Eval Harness ✅, 01→ADR; scrub Meridian | named-family Autopsy opener, Review-AI-analysis (#14) | M | |
+| 9 | 03 forensics | reconstruct spine | 02→Build/ADR, 13 worksheet→hands-on | Forensic Eval Harness (#13), Trust-the-AI-summary (#14) | M | |
+| 10 | 06 active-directory | clean (all ✓) | (light); 09 eval ✅ | Brownfield Tiering (#12), Posture Drift (#16) | M | |
+| 11 | 07 endpoint | clean (all ✓) | Windows coverage past 02 | Drift module (#16), Fleet-Migration (#12); 01/03 → ADR | M | |
+| 12 | 09 python | cleanest Tool-Build | 09→exercise Red-team-AI | name an Eval Harness; optional async build | S | |
+
+*Rationale: the maintainer prioritized the **build/design/AI tracks (automation, ztna, ai-augmented-ops)**
+first — they're where the new constructs (Migration, ADR, Build-&-Operate, the Eval Harness already
+landed) do the most work and the curriculum is least mature. Cloud (the second prototype, already
+prose-drafted) and the analysis tracks follow; the already-coherent tracks (AD, endpoint, python) come
+last with light retrofits. Each conversion builds its own Migration/ADR/Adversarial-Review pieces.*
 
 ## Per-module conversion workflow (reuse the proven pipeline)
 
@@ -113,4 +120,6 @@ Wave-2 constructs they need.*
   especially the new Eval Harness and Migration labs (corpora, multi-state environments).
 - **Keep `main` shippable.** Convert on `feat/verdict-redesign`; merge track-by-track once each is green,
   so the live site never regresses.
-- **CONTRIBUTING.md amendment is a prerequisite** for promotion (so the new shapes pass review) — do it in Wave 1.
+- **CONTRIBUTING.md** points module-shape questions at `AUTHORING.md` (✅ Wave 0) so the new shapes pass review.
+- **Honor system** — no grading/receipts/credentials anywhere (✅ Wave 0); a lab is "done" by observable,
+  self-verified Success criteria, not a grader.
