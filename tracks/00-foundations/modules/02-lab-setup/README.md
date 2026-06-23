@@ -73,17 +73,18 @@ device almost no one even uses. The takeaway isn't fear; it's *why you don't bet
 axis.* The VM boundary can fail, so you also wall off the network and keep snapshots — defence in
 depth, which is exactly the kind of "consequence I accept and mitigate" an ADR exists to record.
 
-## Learn (~2 hrs)
+## Learn (~1 hr)
 
 **Virtualization & isolation**
-- [VirtualBox Manual — *Snapshots*](https://www.virtualbox.org/manual/UserManual.html#ct_snapshots) (~20 min) — the free, cross-platform hypervisor. Read this section for *how* take/restore works; snapshots are your undo button and the whole reason you can break things fearlessly.
-- [VirtualBox Manual — *Virtual Networking*](https://www.virtualbox.org/manual/topics/networkingdetails.html) (~25 min) — read the **NAT** and **Host-Only** sections and contrast them with **Bridged**. This is the difference between a walled-off lab and one that's quietly on your home LAN.
+- [VirtualBox: How to Use Snapshots](https://www.youtube.com/watch?v=Qte4X-rdr2Q) — Corey Schafer (video, short). Watch him take a clean baseline and roll back to it in one action. *That* is the undo button that lets you break things fearlessly — and the one thing to do before any detonation.
+- [VirtualBox Networking Modes, Explained](https://www.ubuntumint.com/virtualbox-networking/) — UbuntuMint (article, ~10 min, updated 2023). Read the **NAT**, **Host-Only**, and **Bridged** sections holding one question: *can this VM reach my real network?* That answer is the whole difference between a walled-off lab and one quietly sitting on your home LAN.
 
-**VM vs. container — the boundary**
-- [Docker — *What is a container?*](https://www.docker.com/resources/what-container/) (~15 min) — read it asking one question: where does the isolation actually come from? The answer (shared host kernel) is exactly why a container is *not* where you detonate malware.
+**VM vs. container — where the wall actually is**
+- [Containers vs VMs: What's the difference?](https://www.youtube.com/watch?v=cjXI-yxqGTI) — IBM Technology (video, short). A lightboard walkthrough; watch for the one load-bearing fact — containers **share the host kernel**, while each VM runs *its own*. That single difference is why untrusted code goes in a VM.
+- [Containerization vs. Virtualization](https://www.wiz.io/academy/container-security/containerization-vs-virtualization) — Wiz (article, ~6 min). Read it for the security angle the video skips: a kernel bug is a **container-escape blast radius** across every container on the host, whereas a VM gives you hardware-level isolation. (Vendor page with some CTAs, but the isolation framing is exactly right.)
 
 **What you'll point the lab at**
-- [VulnHub — getting started](https://www.vulnhub.com/) (~15 min, orient) — free, intentionally-vulnerable VMs to practise on, plus the standing rule restated: only attack targets you own or are explicitly authorised to test.
+- [Metasploitable 2 — setup guide](https://docs.rapid7.com/metasploit/metasploitable-2/) — Rapid7 docs (~5 min). The canonical intentionally-vulnerable VM: download the image, import it into VirtualBox, and you have a *legal* target to practise against. Keep it on **host-only or NAT — never bridged** — and remember the standing rule: only ever attack systems you own or are explicitly authorised to test. (Once you outgrow it, [VulnHub](https://www.vulnhub.com/) is a whole library of community vulnerable VMs — but start here.)
 
 ## Key concepts
 
