@@ -57,4 +57,4 @@ The pre-commit hook is the most important control in this module. A hook that ru
 
 ## AI acceleration
 
-Ask an AI to generate a custom gitleaks rule for detecting Meridian Financial's internal API key format (e.g. `meridian-[a-z0-9]{32}`). Verify the regex matches your planted credential and does not match the benign strings in the repository. Then add the rule to `data/gitleaks.toml` and confirm gitleaks detects the custom pattern.
+Ask an AI to generate a custom gitleaks rule for detecting Corp's internal API key format (e.g. `corp-[a-z0-9]{32}`). Verify the regex matches your planted credential and does not match the benign strings in the repository. Then add the rule to `data/gitleaks.toml` and confirm gitleaks detects the custom pattern.

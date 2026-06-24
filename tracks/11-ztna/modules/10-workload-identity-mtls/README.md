@@ -36,7 +36,7 @@ the mTLS handshake, demonstrating that identity — not network position — is 
 
 The move to internalize is that **a workload's identity should be a credential it can prove, not a
 secret it holds.** SPIFFE (Secure Production Identity Framework For Everyone) gives every workload a
-**SPIFFE ID** — a URI like `spiffe://meridian.local/ledger` — and a **SVID** (SPIFFE Verifiable Identity
+**SPIFFE ID** — a URI like `spiffe://corp.local/ledger` — and a **SVID** (SPIFFE Verifiable Identity
 Document), which is just that ID wrapped in a short-lived X.509 certificate signed by the trust domain's
 CA. When the ledger service connects to the database, it presents its SVID; the database presents its
 own; each validates the other's certificate against the same trust bundle and reads the peer's SPIFFE ID
@@ -53,8 +53,8 @@ workload its first credential without already trusting it?** SPIRE solves it wit
 token in a lab). Then, when a local workload calls the agent's Workload API asking for its SVID, the agent
 **attests the workload** by inspecting properties it can observe but the workload cannot forge from the
 outside — its Unix UID, its Kubernetes service account, its Docker labels or image. The agent matches those
-*selectors* against the **registration entries** the operator created (`spiffe://meridian.local/ledger` is
-issued only to a process whose selectors say `docker:label:com.meridian.svc:ledger`) and hands back exactly
+*selectors* against the **registration entries** the operator created (`spiffe://corp.local/ledger` is
+issued only to a process whose selectors say `docker:label:com.corp.svc:ledger`) and hands back exactly
 the right SVID. No bootstrap secret is ever shipped to the workload — its identity is *derived from what it
 demonstrably is*, which is why a workload with no matching entry simply gets nothing.
 
@@ -65,7 +65,7 @@ equivalent of a wildcard IAM policy. The discipline is to pin each entry to sele
 hard to spoof in your environment (an image digest, a Kubernetes service account bound to a namespace) and
 to keep SVID TTLs short so a leaked credential expires in minutes, not months. And note the boundary of what
 this gives you: SPIFFE proves *which workload* is calling and encrypts the channel — it is **authentication**,
-not **authorization**. Deciding whether `spiffe://meridian.local/web` may call `spiffe://meridian.local/ledger`
+not **authorization**. Deciding whether `spiffe://corp.local/web` may call `spiffe://corp.local/ledger`
 is a policy question, which is exactly the handoff to Module 08: the proxy/mesh authenticates with the SVID,
 and OPA evaluates the SPIFFE ID against the access policy. Identity here, decision there.
 

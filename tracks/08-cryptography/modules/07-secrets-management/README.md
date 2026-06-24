@@ -55,7 +55,7 @@ The common mistake organisations make is treating secrets management as a one-ti
 
 ## AI acceleration
 
-Ask an AI to generate a Vault policy HCL file that grants read access to `secret/meridian/app/*`
+Ask an AI to generate a Vault policy HCL file that grants read access to `secret/corp/app/*`
 but not write or delete access. Then verify the policy against the [Vault policy documentation](https://developer.hashicorp.com/vault/docs/concepts/policies) —
 does the capability list match the intended permissions? Apply the policy and confirm a token
 with that policy can read but not write the secret.
