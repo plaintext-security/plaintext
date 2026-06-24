@@ -19,7 +19,7 @@ the enrichment function you've already written.
 
 ## Objective
 Build a `fastmcp` MCP server that exposes one tool — `enrich_ip(ip: str) -> dict` — backed by
-the local mock threat-intel API from module 04. The server should start, respond to the MCP tool
+the local threat-intel API from module 04 (real abuse.ch feeds: Feodo Tracker + URLhaus). The server should start, respond to the MCP tool
 protocol, and return enriched results in a format an LLM client can parse.
 
 ## The core idea

@@ -1,6 +1,6 @@
 # Module 08 — Driving Security Tools
 
-*Type 7 · Build-&-Operate — drive a MISP/VirusTotal integration with `pymisp`: create an event, add and tag IOC attributes, pull mock-VT enrichment, and attach it back to the event. (Secondary: Tool-Build — the reusable glue script that operates the integration end to end.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — drive a MISP/VirusTotal integration with `pymisp`: create an event, add and tag IOC attributes, pull VT-shaped enrichment backed by real abuse.ch threat intel, and attach it back to the event. (Secondary: Tool-Build — the reusable glue script that operates the integration end to end.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -14,12 +14,13 @@
 Security platforms — MISP, VirusTotal, TheHive, Shodan — all have APIs. The analyst who uses
 them through a browser clicks through one IOC at a time. The engineer who scripts them processes
 hundreds of IOCs in the same time, logs every action, and can replay the run next week with the
-same inputs. At Meridian scale, the difference is incident closure time.
+same inputs. At enterprise scale, the difference is incident closure time.
 
 ## Objective
-Use `pymisp` (the official MISP Python library) and direct HTTP to interact with a local mock
-MISP instance: create an event, add attributes (IOCs), tag them, and then query a mock
-VirusTotal API to pull enrichment and attach it back to the event.
+Use `pymisp` (the official MISP Python library) and direct HTTP to interact with a local MISP
+instance (your system-of-record): create an event, add attributes (IOCs), tag them, and then
+query a VirusTotal-shaped API — backed by **real abuse.ch threat intel** (Feodo Tracker +
+URLhaus) — to pull enrichment and attach it back to the event.
 
 ## The core idea
 `pymisp` is a thin wrapper around the MISP REST API — every operation it exposes is a structured
@@ -70,5 +71,5 @@ that is hard to undo.
 Ask a model to write the MISP event creation and attribute-adding code. It will get the
 `pymisp` API mostly right but will often confuse `event.add_attribute()` with
 `misp.add_attribute(event)` — one modifies the in-memory object, the other sends an API call.
-Run its code against the mock MISP and check whether the event actually appears in the MISP UI.
+Run its code against the local MISP and check whether the event actually appears in the MISP UI.
 If it doesn't, read the traceback — it will tell you exactly which API call failed.

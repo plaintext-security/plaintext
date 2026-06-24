@@ -1,6 +1,6 @@
 # Module 08 — Path to Domain Admin
 
-*Type 6 · Reconstruct — chain modules 02–07 into one walked, narrated `jsmith → Domain Admins` path on the Meridian BloodHound dataset, mapping each hop to its ATT&CK technique and the artefact it leaves, delivering a client-actionable written attack-path report (the phase project). (Secondary: Blast-Radius Trace — quantify the reach exposed at each hop along the chain.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — chain modules 02–07 into one walked, narrated `jsmith → Domain Admins` path on the Corp BloodHound dataset, mapping each hop to its ATT&CK technique and the artefact it leaves, delivering a client-actionable written attack-path report (the phase project). (Secondary: Blast-Radius Trace — quantify the reach exposed at each hop along the chain.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -16,7 +16,7 @@ A penetration tester who runs BloodHound and hands over the raw JSON hasn't done
 
 ## Objective
 
-Given the pre-generated BloodHound attack-path dataset for Meridian Financial, trace the complete multi-hop path from `jsmith` to `Domain Admins`, map each hop to its ATT&CK technique, document the artefact each hop leaves, and produce a written attack path report a client could act on.
+Given the pre-generated BloodHound attack-path dataset for Corp, trace the complete multi-hop path from `jsmith` to `Domain Admins`, map each hop to its ATT&CK technique, document the artefact each hop leaves, and produce a written attack path report a client could act on.
 
 ## The core idea
 
@@ -31,10 +31,10 @@ The closing exercise — mapping mitigations — is where the red and blue persp
 ## Learn (~3 hrs)
 
 **BloodHound path analysis**
-- [BloodHound CE — Cypher query reference (GitHub)](https://github.com/SpecterOps/BloodHound/wiki) — the canonical query reference. The most important query: `MATCH p=shortestPath((u:User {name:'JSMITH@MERIDIAN.LOCAL'})-[*1..]->(g:Group {name:'DOMAIN ADMINS@MERIDIAN.LOCAL'})) RETURN p`.
+- [BloodHound CE — Cypher query reference (GitHub)](https://github.com/SpecterOps/BloodHound/wiki) — the canonical query reference. The most important query: `MATCH p=shortestPath((u:User {name:'JSMITH@CORP.LOCAL'})-[*1..]->(g:Group {name:'DOMAIN ADMINS@CORP.LOCAL'})) RETURN p`.
 
 **ATT&CK mapping**
-- [MITRE ATT&CK — Enterprise matrix, Credential Access + Lateral Movement](https://attack.mitre.org/matrices/enterprise/) — review the full matrix for Windows; every hop in the Meridian path maps to a technique here. Know the sub-technique IDs.
+- [MITRE ATT&CK — Enterprise matrix, Credential Access + Lateral Movement](https://attack.mitre.org/matrices/enterprise/) — review the full matrix for Windows; every hop in the Corp path maps to a technique here. Know the sub-technique IDs.
 
 **Report writing**
 - [SpecterOps — How to Write an AD Assessment Report (blog)](https://posts.specterops.io/attack-path-analysis-for-defenders-part-1-665f0e8a4c72) — the defenders' framing of attack path analysis; explains how to translate a BloodHound graph into a prioritised client deliverable.

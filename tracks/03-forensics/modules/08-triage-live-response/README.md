@@ -1,6 +1,6 @@
 # Module 08 — Triage & Live Response
 
-*Type 7 · Build-&-Operate — stand up a Velociraptor server and endpoint agent in Docker and operate it to collect processes, connections, and recently modified files via VQL, interpreting the output against the Meridian investigation. (Secondary: Tool-Build — package the VQL into a reusable triage artifact pack.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a Velociraptor server and endpoint agent in Docker and operate it to collect processes, connections, and recently modified files via VQL, interpreting the output against the running investigation. (Secondary: Tool-Build — package the VQL into a reusable triage artifact pack.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -31,7 +31,7 @@ ransomware fires — the exact triage question this module is about.
 
 Deploy a Velociraptor server and endpoint agent in a local Docker environment, collect running
 processes, active network connections, and recently modified files via VQL, and interpret the
-output in the context of the Meridian Financial investigation.
+output in the context of the running investigation.
 
 ## The core idea
 
@@ -58,7 +58,7 @@ and drown in data for weeks. VQL artifacts let you ask crisp questions — persi
 scheduled tasks, suspicious parent-child process relationships — and stop when you have enough to
 triage, not when you've collected everything.
 
-In the Meridian investigation, the compromised developer account triggered alerts on one endpoint,
+In this investigation, the compromised developer account triggered alerts on one endpoint,
 but the IR team needs to know whether the attacker moved laterally. Live response can answer that
 question across fifty hosts in ten minutes; disk imaging those fifty hosts would take two days. The
 answers shape every subsequent step: which hosts go into the imaging queue, which users get password

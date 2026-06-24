@@ -13,7 +13,7 @@
 ## Why this matters
 
 In Module 11 you wrote a Python detector that flags timestomping by comparing NTFS `$STANDARD_INFORMATION`
-against `$FILE_NAME` timestamps. In Module 12 you authored a YARA rule that matched the Meridian dropper.
+against `$FILE_NAME` timestamps. In Module 12 you authored a YARA rule that matched the Latrodectus loader.
 Both worked — on the one file that prompted them. That is exactly the trap. A detection rule validated
 only against the sample it was written from tells you nothing about how it behaves on the next thousand
 files an investigation hands you: the benign installer that also touches file times, the packed-but-legitimate
@@ -33,7 +33,7 @@ choose and justify a metric, score your Module 11/12 detector against it into a 
 
 ## The core idea
 
-> **Your timestomp detector and your YARA rule both fired on the Meridian sample. Are they actually *good*?
+> **Your timestomp detector and your YARA rule both fired on the loader sample. Are they actually *good*?
 > Prove it.** Before reading on, write down how you would convince a skeptical lead — with evidence, not
 > adjectives — that your Module 11 detector is safe to run unattended across an enterprise disk image of
 > 200,000 files.

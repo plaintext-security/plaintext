@@ -54,8 +54,9 @@ The starter scaffold and acceptance checks live in
 
 ### Capstone rubric
 
-It must be a **genuinely useful tool you own** — tested, documented, and reviewed line by line.
-**Proficient is the bar to ship.**
+It must be a **genuinely useful tool you own** — tested, documented, reviewed line by line, and
+**fed real data, not synthetic stand-ins** (a free threat feed like abuse.ch URLhaus/Feodo, a
+public log/PCAP corpus, or a real CVE record). **Proficient is the bar to ship.**
 
 | Dimension | Developing | Proficient | Exemplary |
 |---|---|---|---|
@@ -63,6 +64,7 @@ It must be a **genuinely useful tool you own** — tested, documented, and revie
 | **Code quality** | Monolithic script; no error handling | Structured, handles malformed input, passes `ruff`; has a `--help` | Idiomatic, typed, packaged installable; clean separation of concerns |
 | **Tests** | None, or they only test the happy path | `pytest` covering core logic *and* edge/malformed input | Meaningful coverage incl. failure modes; tests run in CI |
 | **Robustness** | Crashes on bad input or API errors | Fails gracefully; rate-limits/retries where it talks to APIs | Handles secrets safely (env, not hardcoded); no injection of unvalidated input |
+| **Real data** | Toy/synthetic inputs the tool invents | **Required:** consumes a real feed or dataset (e.g. abuse.ch URLhaus/Feodo, a public log/PCAP corpus, a real CVE/NVD record), with provenance noted | Wires the tool to a live feed with a cached offline fallback so it runs with no network |
 | **Ownership of AI code** | Pasted AI output unread | Write-up names what AI generated and what you changed and why | Demonstrates a caught bug/risk in the generated code that you fixed and explained |
 
 ## AI & automation

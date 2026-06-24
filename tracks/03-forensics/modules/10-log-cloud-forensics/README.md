@@ -30,7 +30,7 @@ not synthetic stand-ins. The lab leans on a slice of exactly this corpus.
 
 ## Objective
 
-Use Hayabusa to rapidly triage Windows Event Log (EVTX) files from the Meridian investigation,
+Use Hayabusa to rapidly triage Windows Event Log (EVTX) files from the investigation,
 use Chainsaw for a complementary pass, and parse a set of simulated AWS CloudTrail events with a
 Python script to identify the sequence of API calls that preceded the developer account compromise.
 
@@ -76,7 +76,7 @@ needs them. This is the planning decision that makes or breaks a cloud investiga
 **Hayabusa and Chainsaw (~1.5 hrs)**
 - [Hayabusa GitHub — README](https://github.com/Yamato-Security/hayabusa) — start here: the installation, rule sources, and output modes. Run `hayabusa --help` to see the full option surface; focus on the `csv-timeline` and `json-timeline` output modes.
 - [Chainsaw GitHub — README and documentation](https://github.com/WithSecureLabs/chainsaw) — covers Chainsaw's own grammar (`chainsaw search`) and Sigma integration (`chainsaw hunt`). The "Usage" section shows how to search for specific account activity.
-- [EVTX Attack Samples (GitHub)](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES) — a large repository of real Windows attack event logs, categorised by ATT&CK technique. Browse the `T1078` (Valid Accounts) and `T1053` (Scheduled Task) samples — these are the techniques active in the Meridian scenario.
+- [EVTX Attack Samples (GitHub)](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES) — a large repository of real Windows attack event logs, categorised by ATT&CK technique. Browse the `T1078` (Valid Accounts) and `T1053` (Scheduled Task) samples — these are the techniques active in this scenario.
 
 **AWS CloudTrail forensics (~1 hr)**
 - [AWS CloudTrail — Log Event Reference](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-events.html) — the field definitions: `userIdentity`, `eventSource`, `eventName`, `sourceIPAddress`, `requestParameters`. These are the fields you parse in the lab.

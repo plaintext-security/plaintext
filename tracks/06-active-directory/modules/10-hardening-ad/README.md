@@ -1,6 +1,6 @@
 # Module 10 — Hardening AD as Code
 
-*Type 4 · Audit→Build→Verify — audit Meridian's ACL posture with `dacledit.py` into a CIS-aligned scored report, codify the key remediations as an idempotent Ansible playbook, then apply the two highest-value fixes to the live DC and prove them: the AS-REP roast against `svc-legacy` now fails and the HIGH findings re-score clear. (Secondary: Judgment-as-Code / Gate — frame the score as a held baseline so "did we improve or regress?" is gated.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — audit Corp's ACL posture with `dacledit.py` into a CIS-aligned scored report, codify the key remediations as an idempotent Ansible playbook, then apply the two highest-value fixes to the live DC and prove them: the AS-REP roast against `svc-legacy` now fails and the HIGH findings re-score clear. (Secondary: Judgment-as-Code / Gate — frame the score as a held baseline so "did we improve or regress?" is gated.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -16,7 +16,7 @@ Security hardening that lives in a checklist in a SharePoint site will drift. Gr
 
 ## Objective
 
-Audit the Meridian domain's ACL posture using `dacledit.py`, produce a scored hardening report against a CIS-aligned checklist, and write an Ansible playbook that codifies the key remediations as idempotent, reviewable tasks — then *apply* the two highest-value fixes to the live DC and **prove** them: re-run the attack (the AS-REP roast against `svc-legacy` now fails) and re-score to show the HIGH findings cleared. Auditing/authoring the remediation and proving it closes the path on the live domain are equal halves.
+Audit the Corp domain's ACL posture using `dacledit.py`, produce a scored hardening report against a CIS-aligned checklist, and write an Ansible playbook that codifies the key remediations as idempotent, reviewable tasks — then *apply* the two highest-value fixes to the live DC and **prove** them: re-run the attack (the AS-REP roast against `svc-legacy` now fails) and re-score to show the HIGH findings cleared. Auditing/authoring the remediation and proving it closes the path on the live domain are equal halves.
 
 ## The core idea
 

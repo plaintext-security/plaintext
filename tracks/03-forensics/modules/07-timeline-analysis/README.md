@@ -1,6 +1,6 @@
 # Module 07 — Timeline Analysis
 
-*Type 6 · Reconstruct — build a multi-source super-timeline from mixed artifacts with `log2timeline.py`/`psort`, pivot to the key events in the Meridian incident, and produce a timeline extract that anchors the incident report. (Secondary: Misconception Reveal — surface timezone-error and timestomp caveats that quietly corrupt a timeline.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — build a multi-source super-timeline from mixed artifacts with `log2timeline.py`/`psort`, pivot to the key events in the incident, and produce a timeline extract that anchors the incident report. (Secondary: Misconception Reveal — surface timezone-error and timestomp caveats that quietly corrupt a timeline.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -16,7 +16,7 @@ Forensic artifacts are evidence, but they don't become a case until they're corr
 For a concrete sense of what a finished timeline buys you, read a published intrusion writeup like The DFIR Report's **["Malicious ISO File Leads to Domain Wide Ransomware"](https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware/)** — a real case reconstructed almost entirely as a time-ordered narrative: an IcedID payload executes, discovery and Cobalt Strike follow, ZeroLogon (CVE-2020-1472) escalates, and domain-wide Quantum ransomware fires roughly 78 hours after initial access. Every one of those claims is anchored to a timestamped artifact, and the "78 hours" figure — the answer to "how long did it take?" — only exists because someone merged endpoint, network, and log sources onto one clock. That is the deliverable this module teaches you to build.
 
 ## Objective
-Build a multi-source forensic timeline using `log2timeline.py` (plaso) from a set of mixed artifact inputs; filter and pivot the timeline with `psort`; identify the key events in a Meridian Financial incident scenario; and produce a timeline extract that could form the basis of an incident report.
+Build a multi-source forensic timeline using `log2timeline.py` (plaso) from a set of mixed artifact inputs; filter and pivot the timeline with `psort`; identify the key events in an incident scenario; and produce a timeline extract that could form the basis of an incident report.
 
 ## The core idea
 Think of a super-timeline as a database index on time. Plaso's `log2timeline.py` is a parser engine — it ingests almost any forensic artifact (disk images, EVTX files, browser history, prefetch, registry hives, system logs, web server logs) and emits a normalized stream of timestamped events in a standard format (Plaso's storage format, exportable to CSV, JSONL, or Timesketch). Each event has a source type, a timestamp, a description, and a set of attributes. The power is that all sources are normalized to UTC and sorted together, so the chain of events — attacker logged in at 02:10, browser search at 02:05, file access at 02:15, log cleared at 02:31 — becomes visible in one view instead of requiring you to correlate six separate tool outputs manually. The practitioner translation: a super-timeline is the `JOIN` you'd otherwise do by hand across six tables, except the join key is *time* and plaso has already reconciled every source's clock to it.

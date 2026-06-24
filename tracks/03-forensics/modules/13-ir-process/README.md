@@ -1,6 +1,6 @@
 # Module 13 — Incident Response Process
 
-*Type 1 · Concept Autopsy — dissect the Meridian response against the four phases of NIST SP 800-61, naming the gaps and successes, and produce a structured post-incident analysis a security manager or auditor could act on. (Secondary: Decision/ADR — frame the containment-timing call as a recorded decision.) [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — dissect the incident response against the four phases of NIST SP 800-61, naming the gaps and successes, and produce a structured post-incident analysis a security manager or auditor could act on. (Secondary: Decision/ADR — frame the containment-timing call as a recorded decision.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -31,7 +31,7 @@ and these reports are the realistic raw material for it.
 
 ## Objective
 
-Map the Meridian Financial incident to the four phases of NIST SP 800-61, identify gaps and
+Map the incident to the four phases of NIST SP 800-61, identify gaps and
 successes in the simulated response, and produce a structured post-incident analysis that a
 security manager or auditor could use.
 
@@ -58,8 +58,8 @@ removing the backdoor is the obvious step; equally important are: rotating all c
 that touched the compromised host or used by the compromised account, revoking and reissuing
 any secrets or certificates the host had access to, auditing all systems the compromised account
 could reach, and confirming that the initial access vector is closed. An eradication that misses
-the AWS access key that was exfiltrated and used to create a backdoor IAM user — as in the
-Meridian case — is not eradication. It's cleanup theater.
+the AWS access key that was exfiltrated and used to create a backdoor IAM user — as in this
+case — is not eradication. It's cleanup theater.
 
 **Post-Incident Activity** is where institutional learning happens, and most teams do it
 badly or not at all. A post-incident review that is only a timeline ("what happened") instead
