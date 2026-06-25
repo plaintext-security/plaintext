@@ -35,8 +35,9 @@ behaviour of any real threat-intel API under load. Build for them from the start
 support is built in (which matters when you need to enrich 1000 IOCs in parallel), and it has
 better defaults for connection pooling and timeouts. In synchronous mode (`httpx.get(...)`) it is
 a drop-in replacement. Set an explicit `timeout=` on every call; the default is no timeout, which
-means a hung API call hangs your whole script. `timeout=httpx.Timeout(connect=5.0, read=30.0)` is
-a reasonable starting point.
+means a hung API call hangs your whole script. `timeout=httpx.Timeout(10.0, connect=5.0, read=30.0)`
+is a reasonable starting point — `httpx.Timeout` needs either a default (the first positional) or all
+four of `connect`/`read`/`write`/`pool` set explicitly.
 
 Authentication to threat-intel APIs is almost always via a header: `X-API-Key: <value>` or
 `Authorization: Bearer <token>`. Load the key from the environment, never from the source file.

@@ -26,7 +26,7 @@ protocol, and return enriched results in a format an LLM client can parse.
 MCP is a JSON-RPC protocol over standard I/O or HTTP. A server declares a set of **tools** —
 functions with typed input schemas and structured return values — and a client (Claude, Cursor,
 or any MCP-aware host) can call those tools by name. The `fastmcp` library is to MCP what
-`FastAPI` is to REST: you write a Python function with type hints, decorate it with `@mcp.tool`,
+`FastAPI` is to REST: you write a Python function with type hints, decorate it with `@mcp.tool()`,
 and `fastmcp` generates the schema and handles the protocol. From the LLM's perspective, the
 tool looks like a typed function in the tool list it was given.
 
@@ -61,14 +61,14 @@ status. The MCP server is a trust boundary: treat every tool argument as untrust
 
 ## Key concepts
 - MCP tool schema: name, description, input schema (JSON Schema), return value
-- `@mcp.tool` decorator: function signature → tool schema automatically
+- `@mcp.tool()` decorator: function signature → tool schema automatically
 - Read-only vs write tools: the security boundary and why it matters
 - Input validation as a trust boundary: every argument is untrusted
 - Prompt injection risk: data your tool reads can contain instructions to the LLM
 
 ## AI acceleration
 `fastmcp` is new enough that models sometimes get the decorator syntax slightly wrong. Write the
-server function first, then ask a model to add the `@mcp.tool` decorator and the `fastmcp.FastMCP`
+server function first, then ask a model to add the `@mcp.tool()` decorator and the `fastmcp.FastMCP`
 initialization. Test it by running the server and calling the tool directly — does it respond
 with valid JSON that matches the schema? The model will get you 80% there; the remaining 20% is
 usually the return type annotation and the error handling.
