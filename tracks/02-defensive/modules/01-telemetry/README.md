@@ -16,7 +16,9 @@
     shipper/agent on the source, a transport, and a central indexed store you can search. The
     interchangeable part is the product; the real skill is deciding *what is worth shipping*, working
     backward from the techniques you care about. The trap is that a pipeline which *runs* is not a
-    pipeline that *works* — verify what actually lands in the index.
+    pipeline that *works* — verify what actually lands in the index. The lab builds the pipeline as a
+    legible ingest-and-query script over real `sshd` logs; the Elastic/Kibana backend is the optional
+    real-world target you point it at.
 
 ## Why this matters
 Detection, hunting, and response all start with data. Before you can write a single detection you

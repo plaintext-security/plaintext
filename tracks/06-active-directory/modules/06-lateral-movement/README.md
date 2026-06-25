@@ -1,6 +1,6 @@
 # Module 06 — Lateral Movement
 
-*Type 5 · Detonate & Detect — enumerate hosts and SMB-signing status with netexec, move laterally via impacket `psexec.py`/`wmiexec.py`, and difference the artefacts each method leaves (service-install 7045 vs process 4688), delivering the executed movement and its detection comparison. (Secondary: Blast-Radius Trace — map how NTLM-relay and missing SMB signing widen reach across the estate.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — enumerate hosts and SMB-signing status with netexec, execute lateral movement via impacket `psexec.py`/`smbexec.py`/`wmiexec.py` against the lab's SMB hosts, then document the Windows artefact profile each method *would* leave on a real target (service-install 7045 vs process 4688), delivering the executed movement and its detection comparison. (Secondary: Blast-Radius Trace — map how NTLM-relay and missing SMB signing widen reach across the estate.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -56,6 +56,15 @@ A standalone vulnerability can hand an attacker the same remote code-execution p
     domain-joined host *including DCs*, so a spooler RCE is a "one service, everywhere, runs as
     SYSTEM" primitive — exactly the shape that turns one foothold into estate-wide reach. Mitigation
     is blunt: patch, and disable the spooler where it isn't needed.
+
+!!! note "What the lab emits vs. what you document"
+    The lab's domain controller and workstations are **Linux Samba** containers — they run real SMB
+    and accept the impacket techniques, so you *execute* the movement for real, but they do **not**
+    emit the Windows Security/System event log (no 7045, 4688, or 4624 lands anywhere). The event-ID
+    profile in this module is therefore a *documented* comparison: you cross-reference the impacket
+    source and Microsoft's event-ID docs to record what each technique *would* leave on a Windows
+    target. To see those events for real, pair this with the Sysmon/EVTX detection labs (Defensive
+    track), which fetch genuine Windows event samples.
 
 **CrackMapExec (netexec)** is the operational tool for lateral movement at scale. It wraps the underlying impacket protocols into a single interface, accepts multiple target formats (CIDR ranges, host lists), and supports credential spraying, hash-based authentication, module execution (running commands, dumping SAM, executing BloodHound collection) across dozens of hosts simultaneously. A single `nxc smb 10.10.0.0/24 -u jsmith -p Welcome1!` tells you which hosts are alive, their OS version, their domain membership, and whether they have SMB signing enabled. This is the operational scanning pattern a real attacker uses to map the environment quickly after initial access.
 

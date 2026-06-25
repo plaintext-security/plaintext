@@ -1,6 +1,6 @@
 # Module 06 — SIEM Fundamentals
 
-*Type 7 · Build-&-Operate — stand up an open-source SIEM (Wazuh), ingest real security telemetry, and build a correlation rule plus a dashboard that surface an attack; you commit the running SIEM config, rule, and dashboard. (Secondary: Detonate & Detect — test every rule against data where you already know the answer.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — operate a minimal SIEM harness over real multi-source telemetry, write a correlation rule that turns scattered events into one alert, and triage the alert queue; you commit the rule and the triage verdict. (Secondary: Detonate & Detect — test every rule against data where you already know the answer.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -26,8 +26,9 @@ specifically to stay under the radar (US GAO, GAO-18-559). The telemetry to catc
 certainly existed; what was missing was the centralised correlation and alerting that turns scattered,
 low-value events into one high-value "this is exfiltration" alert. A SIEM is the analyst's workbench —
 it ingests everything (modules 01–05), lets you search and pivot across sources, correlates events
-into alerts, and drives the SOC workflow. Wazuh gives you a complete open-source SIEM/XDR to learn on
-for free.
+into alerts, and drives the SOC workflow. The lab runs that whole loop on a minimal SQLite-backed
+harness so you write real correlation logic without a multi-GB cluster; the durable skill transfers
+to any product (Wazuh, Elastic, Splunk).
 
 ## Objective
 Stand up an open-source SIEM, ingest real security telemetry, and build a correlation rule and a
@@ -46,8 +47,10 @@ leap beyond a log store is **correlation**: turning many low-value events into o
     whichever your shop runs, but the durable skill is knowing *what behaviour is worth alerting on*
     and expressing it so it fires on the real thing without burying the analyst.
 
-Wazuh gives you a complete open-source SIEM/XDR — decoders, rules, dashboards, alerting — to learn
-the whole loop for free, no licence.
+The lab makes that loop legible on a minimal harness — ingest/normalise → correlate → alert → query
+over a SQLite event store — so you can read every line of the correlation logic instead of fighting a
+cluster. Wazuh is the open-source SIEM/XDR you'd run this on for real (decoders, rules, dashboards,
+alerting, free, no licence); the Learn path points you there, and the correlation skill is identical.
 
 !!! warning "The gotcha"
     The thing that separates a working SOC from a dashboard nobody reads is **alert fatigue.** A

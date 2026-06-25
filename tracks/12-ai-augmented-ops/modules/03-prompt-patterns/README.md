@@ -120,7 +120,7 @@ plus held-out injection cases in the scored set, so a prompt that starts obeying
 
 **Prompting fundamentals (~45 min)**
 - [Prompt Engineering Guide (DAIR.AI)](https://www.promptingguide.ai/) — the canonical community reference; read "Zero-Shot," "Few-Shot," and "Chain of Thought." These three are the patterns you will score, so know *why* each one shifts output before you measure it. Skip the fine-tuning material.
-- [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/docs/test-and-evaluate/develop-tests) — first-party guidance on building a task-specific eval set and choosing graders (exact-match vs. model-graded) and holding out test data; vendor-neutral on the principle that you grade against data the prompt never saw. ~20 min, read the "graders" and "hold out test data" parts.
+- [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) — first-party guidance on building a task-specific eval set and choosing graders (exact-match vs. model-graded) and holding out test data; vendor-neutral on the principle that you grade against data the prompt never saw. ~20 min, read the "graders" and "hold out test data" parts.
 
 **Prompt injection — the adversarial half (~1 hr)**
 - [Simon Willison, "Prompt injection attacks against GPT-3" (2022)](https://simonwillison.net/2022/Sep/12/prompt-injection/) — the original framing from the person who named the problem; short, and it makes the data-is-not-instructions boundary concrete. Read it first.

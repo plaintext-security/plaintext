@@ -1,6 +1,6 @@
 # Module 14 — Alert Triage & Incident Response
 
-*Type 6 · Reconstruct — triage a real alert through a structured process and run a lab incident end to end (NIST lifecycle) in a case-management platform; you commit a documented verdict that reconstructs what happened and why. (Secondary: Decision/ADR — the verdict memo is the defend-your-call discipline.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — triage a real alert through a structured process and run a lab incident end to end (NIST lifecycle), driving the case through a minimal triage harness; you commit a documented verdict that reconstructs what happened and why. (Secondary: Decision/ADR — the verdict memo is the defend-your-call discipline.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -26,11 +26,14 @@ and 70 million customer records walked out the door anyway (US Senate Commerce "
 report, 2014). A detection is worthless if no one triages it. A SOC lives or dies on a repeatable
 process: triage the alert (real or noise?), and when it's real, run a disciplined incident response —
 contain, eradicate, recover, learn — without missing steps under pressure. The NIST lifecycle is the
-backbone, and TheHive gives you a free, real case-management platform to run it in.
+backbone; the lab runs an incident end to end through a small Python triage harness, and TheHive is
+the free, open-source case-management platform you'd run the same workflow in for real (the Learn path
+walks it).
 
 ## Objective
 Triage a real alert through a structured process, and run a lab incident end to end (NIST lifecycle)
-in a case-management platform, to a documented verdict.
+on a triage harness — the same workflow a case-management platform externalises — to a documented
+verdict.
 
 ## The core idea
 An alert is a question, not a verdict: "is this real, and if so, how bad?" **Triage** is the fast

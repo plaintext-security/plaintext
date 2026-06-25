@@ -1,6 +1,6 @@
 # Module 15 — Threat Intelligence
 
-*Type 7 · Build-&-Operate — ingest real indicator feeds into a threat-intel platform (MISP), enrich an indicator and a detection with context, and judge what is worth acting on; you commit a running intel pipeline with aging and confidence applied. (Secondary: Misconception Reveal — intelligence is assessment, not collection.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — ingest a real indicator feed (abuse.ch ThreatFox), build an enrichment pipeline that adds context to an indicator and a detection, and judge what is worth acting on; you commit a running enrich script with aging and confidence applied. (Secondary: Misconception Reveal — intelligence is assessment, not collection.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
@@ -13,10 +13,11 @@
 !!! abstract "In 60 seconds"
     An IP in a log is *data*; "that IP is a known Cobalt Strike C2 node hitting your sector this
     week" is *intelligence*. The difference — context and assessment on a raw indicator — is what
-    lets a SOC prioritise and keeps detections current. **MISP** is the open standard for storing
-    and sharing CTI; abuse.ch and CISA give you real feeds. The judgment is that intelligence is
-    **assessment, not collection**: a stale indicator manufactures false positives and an
-    over-trusted feed poisons your detections. Garbage intel, automated, is worse than none.
+    lets a SOC prioritise and keeps detections current. You build the enrichment pipeline yourself
+    over a real abuse.ch feed; **MISP** is the open standard you'd store and share the result in at
+    scale. The judgment is that intelligence is **assessment, not collection**: a stale indicator
+    manufactures false positives and an over-trusted feed poisons your detections. Garbage intel,
+    automated, is worse than none.
 
 ## Why this matters
 An IP in a log means nothing until you know it's a known C2 node. When Mandiant disclosed the
@@ -25,21 +26,22 @@ backdoored thousands of organisations — they didn't just publish a report; the
 Snort signatures, and IOCs to a public GitHub repo so every defender could immediately hunt for the
 SUNBURST DLL and its C2 in their own telemetry. That hand-off — *here are the indicators, go look* —
 is threat intelligence doing its job. Threat intelligence — managing indicators, enriching them with
-context, and sharing them — is what lets a SOC prioritise and a detection stay current. MISP is the
-open standard for storing and sharing CTI, and real, free indicator feeds (abuse.ch, CISA) let you
-work with genuine threat data.
+context, and sharing them — is what lets a SOC prioritise and a detection stay current. In the lab you
+build the enrichment step over a real, free abuse.ch ThreatFox feed; MISP is the open standard you'd
+store and share that intel in across a team.
 
 ## Objective
-Ingest real indicator feeds into a threat-intel platform, enrich an indicator and a detection with
-context, and understand what intelligence is worth acting on.
+Ingest a real indicator feed, build an enrichment pipeline that adds context to an indicator and a
+detection, and understand what intelligence is worth acting on.
 
 ## The core idea
 An IP in a log is *data*; "that IP is a known Cobalt Strike C2 node seen hitting your sector this
 week" is *intelligence*. The difference — context and assessment layered onto a raw indicator — is
 what lets a SOC prioritise and keeps detections current. CTI is the practice of collecting indicators,
 enriching them into decisions, and sharing them so the whole community isn't independently
-rediscovering the same attacker. MISP is the open standard for storing and exchanging it; abuse.ch and
-CISA give you real, free, high-quality feeds to work with genuine threat data rather than toy IOCs.
+rediscovering the same attacker. The lab has you build the enrichment-and-scoring step over a real,
+free abuse.ch ThreatFox feed rather than toy IOCs; MISP is the open standard you'd store and exchange
+the result in at scale.
 
 !!! note "The mental model"
     The recurring **Pyramid of Pain** pays off again here: not all indicators are equal. Hashes and

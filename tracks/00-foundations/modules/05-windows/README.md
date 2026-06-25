@@ -85,6 +85,7 @@ centralises into are the registry and the event log, and those two are your grou
   | **4624 / 4625** | Logon success / failure | who got in, from where, what *type* (10 = RDP, 3 = network) |
   | **4688** | A new process was created | the **full command line** — where you read the `-EncodedCommand` |
   | **4104** | PowerShell script-block logged | the *decoded* PowerShell, if script-block logging is on |
+  | **4657** | A registry value was modified | the **Run-key write** — persistence, if registry auditing is on (T1547.001) |
   | **7045** | A new service was installed | Emotet's persistence — fires **once**, easy to spot |
 
 !!! tip "AI caveat"
