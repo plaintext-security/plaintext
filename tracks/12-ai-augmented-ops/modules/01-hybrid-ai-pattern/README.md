@@ -10,6 +10,14 @@
 **Type:** Decision / ADR (Family III) &nbsp;·&nbsp; **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The first architectural decision in AI-augmented operations isn't *which model* — it's *what runs
+    where*. Each security task gets routed to **local**, **frontier**, or **human-in-the-loop** along
+    three axes: sensitivity, reasoning complexity, and recoverability of a wrong answer. *Moffatt v.
+    Air Canada* is the anchor: confidence is not accuracy, and you own the output your model emits.
+    The deliverable is an **ADR** — the routing decision written down and defended, with honest
+    consequences.
+
 ## Why this matters
 
 Security teams are under constant pressure to do more with less, and AI promises relief. But the
@@ -58,6 +66,12 @@ anchor for the whole AI-augmented track:
    "the AI said it, not us" defence. In a SOC, that means a hallucinated containment recommendation
    acted on is *your* incident, not the model's.
 
+!!! note "The mental model"
+    Stop asking "which model is smarter." Ask "given that *any* model's output is a confident draft I
+    am accountable for, where does this task's blast radius let me put it?" A 7B local model is a
+    fast first-tier analyst; a frontier model is a brilliant, expensive, rate-limited outside
+    consultant; a human is who you keep for the irreversible call.
+
 So the routing decision is not "which model is better." It's: **given that any model's output is a
 confident draft you are accountable for, where does each task's blast radius let you put it?** Three
 axes drive the call:
@@ -78,6 +92,19 @@ summary — medium-sensitivity, recoverable, high-complexity — earns **frontie
 to pay a ransom — maximal stakes, irrecoverable — stays **human**, with the model preparing the
 briefing, never making the call. The hard part isn't the routing logic; it's writing down *why*,
 and being honest about what you accept when you're wrong.
+
+!!! warning "The gotcha"
+    The seductive default is frontier-for-everything — it reasons best, so why not? Because every
+    such call sends data over the boundary, adds a hard dependency on a vendor API being reachable
+    mid-incident, and caps nothing on recoverability. Data residency is a *compliance posture*, not a
+    latency preference; the routing table that ignores it is the one *Moffatt* punishes.
+
+!!! tip "AI caveat"
+    Let a model draft the ADR scaffold and the scoring table — it knows the local-vs-frontier
+    landscape well — but a model lists mostly upside. Make it populate the *negative* consequences
+    and the attack-path/liability note explicitly, then verify each against your real constraint set.
+    A model that tells you frontier has no data-residency downside is doing the exact thing *Moffatt*
+    punishes: sounding confident about something it doesn't own.
 
 This is a **Decision / ADR** module. There is no single right routing table — there's the one you
 can defend. The deliverable is that defence.
@@ -116,3 +143,8 @@ liability note for your chosen routing, then verify each against the actual cons
 that tells you frontier-for-everything has no data-residency downside is doing the exact thing
 *Moffatt* punishes: sounding confident about something it doesn't own. You own this policy — draft
 with the model, defend it yourself.
+
+!!! question "Check yourself"
+    - Name the three routing axes — and which one *Moffatt v. Air Canada* most directly demonstrates the cost of getting wrong.
+    - "Confidence ≠ accuracy" and "you own the output" are the two findings from *Moffatt*. Why does the second one kill the "the AI said it, not us" defence outright?
+    - Which task type stays **human-only** no matter how good the model gets, and what is the model still allowed to do for it?

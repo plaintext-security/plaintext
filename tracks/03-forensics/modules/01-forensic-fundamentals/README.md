@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every conclusion you draw in forensics is downstream of one act: fixing the evidence at a moment
+    in time and proving it didn't change. That means **hashing before you work** (SHA-256 minimum,
+    inline during imaging), a **chain of custody** an opposing examiner could re-verify, and a
+    **forensic image** you analyse instead of the original. Write-blocking is mandatory; collection
+    order follows volatility (RAM first). Get the first five minutes wrong and everything after is
+    tainted.
+
 ## Why this matters
 Forensic work is downstream of trust: a timeline reconstruction, a root-cause verdict, a legal hold — all of it is only as reliable as the chain of custody that precedes it. Get the fundamentals wrong and every artifact you surface later is tainted. Courts have excluded forensic evidence because the examiner couldn't prove the image matched the original; IR reports have been challenged because the hash wasn't taken before first access. This module is the foundation everything else is built on, and it pays forward to every subsequent module in the track.
 
@@ -21,13 +29,34 @@ Explain why forensic integrity matters, compute and verify hashes with `sha256su
 ## The core idea
 The foundational move in digital forensics is the same one accountants call "closing the books": you fix a moment in time, prove that your record of it is accurate, and then never touch the original again. In practice that means **hashing before you work**. A cryptographic hash (SHA-256 is the minimum today; MD5 alone is no longer sufficient) is a fingerprint for a file or disk. If the hash you take at collection matches the hash you recompute before analysis, nothing changed in between — not your hand, not a bad cable, not a malware dropper that woke up mid-collection. If the hashes diverge, you have a broken chain and your findings are uncorroborated.
 
+!!! note "The mental model"
+    Forensic integrity is "closing the books": fix a moment in time, prove your record of it is
+    accurate, then never touch the original again. A hash is the tamper-evident seal; a matching
+    hash at analysis time means *nothing* changed between collection and now.
+
 **Chain of custody** is the paper trail that proves who had possession of the evidence and when. In a court context that means a physical form (or its digital equivalent) that travels with the evidence: received from, transferred to, stored at, each signed and timestamped. In an enterprise IR context it means the same thing in your ticketing system or evidence management tool — an audit trail that shows no unauthorized hand touched the evidence. The chain isn't bureaucracy; it is the mechanism by which anyone — including an adversary's attorney — can verify that you didn't plant, alter, or misinterpret what you found.
 
 **Forensic imaging** is the discipline of capturing evidence *before* analysis, not during. You never analyze the original — you work on a verified copy of a verified image. This matters most for storage media: a forensic duplicate is a sector-by-sector copy that includes deleted space, slack space, and unallocated areas, not just the files the OS presents. Tools like `dc3dd` (a forensic-purpose fork of GNU `dd`) compute and log the hash *during* the imaging pass, which proves the image was accurate at the moment of capture — not "I hashed it later and it happened to match." The hash happens inline, not as an afterthought.
 
-The practical corollary is **write-blocking**: you must prevent any write to the source media before or during acquisition. Hardware write blockers are the gold standard; software alternatives (Linux's `blockdev --setro`) exist but require discipline. Mounting evidence media without a write block — even read-only — can update access timestamps, modify journal entries, and alter metadata you needed to preserve. The cardinal sin is mounting the original without a blocker, running an antivirus scan "to check," and then trying to explain to opposing counsel why dozens of metadata fields changed.
+!!! warning "The gotcha"
+    The cardinal sin is touching the original without a write blocker. Mounting evidence media —
+    even read-only, even just to "run an AV scan to check" — updates access timestamps, modifies
+    journal entries, and alters metadata you needed. Now explain to opposing counsel why dozens of
+    fields changed. Write-block *before* any contact with source media; "I hashed it later and it
+    matched" is not the same proof as an inline hash.
 
-Finally, understand the difference between **volatile and non-volatile evidence**, because volatility determines collection order. RAM is volatile — it disappears the moment the machine loses power, and it contains process state, decrypted keys, running network connections, and injected code that never touches disk. Disk artifacts are non-volatile. The forensic principle is: collect in order of volatility, highest first. That said, a live system's volatile state is also a *live system* — active network connections, running malware, processes modifying disk. The decision of whether to pull the power (dead-box acquisition) or work live is one of the first judgment calls you'll make in a real IR, and there is no universally right answer.
+??? note "Go deeper: dead-box vs. live, and the volatility order"
+    Volatility determines collection order: RAM disappears the moment power is cut, and it holds
+    process state, decrypted keys, live connections, and injected code that never touched disk — so
+    collect highest-volatility first. But a live system *is* live: running malware, active
+    connections, processes writing to disk. Whether to pull the power (dead-box) or work live is one
+    of the first judgment calls in a real IR, and there is no universally right answer — it depends
+    on what the investigation needs most.
+
+!!! tip "AI caveat"
+    Let a model draft the chain-of-custody log and the report scaffold — never let it stand in for
+    running the hash. Computing the hash is the tool's job, not the model's; the dead-box-vs-live
+    call is your judgment, not a model's.
 
 ## Learn (~3 hrs)
 
@@ -55,3 +84,8 @@ Finally, understand the difference between **volatile and non-volatile evidence*
 
 ## AI acceleration
 AI is most useful here as a chain-of-custody drafter and report scaffolder: describe what you collected and when, and a model will produce a formatted evidence log you then verify and sign. Where AI is *not* useful: computing hashes (trust the tool, not the model), and deciding whether to pull power (that judgment is yours, not a model's). Use AI to draft; never use it to substitute for running the actual hash command and comparing the output yourself.
+
+!!! question "Check yourself"
+    - Why is a hash computed *inline* during imaging (e.g. by `dc3dd`) stronger evidence than one you compute after the fact?
+    - You mounted the original drive read-only "just to look." What did you potentially destroy, and what should you have done instead?
+    - In what order do you collect RAM, disk, and offline backups — and what single property drives that order?

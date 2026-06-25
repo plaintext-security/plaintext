@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Type:** Gate + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A detection is a non-deterministic classifier you ship and re-tune for years, and it **rots
+    silently** — a widened selection floods the queue, a cosmetic refactor drops the `-enc` short form,
+    a field rename makes it match nothing, and git still *looks* fine. The fix is "eval gates, not
+    vibes": score every rule against a **held-out, labelled corpus** it was never tuned on, print a
+    scorecard (recall first — accuracy lies on imbalanced data), and wire a CI **regression gate** that
+    fails the build when the numbers drop. The deliverable is the contrast — GREEN on the good ruleset,
+    RED on a planted regression.
 
 ## Why this matters
 Track 02 (Defensive) taught you to write a Sigma rule and purple-team it: fire the technique, confirm
@@ -48,6 +56,13 @@ module install or a signed updater writing a Run key is what separates a precise
 fatigue. Those FP rows are scar tissue — each documents a false positive you already investigated and
 refuse to see again. The CI gate `&&`-chains the two stages so either failure blocks the merge.
 
+!!! note "The mental model"
+    A detection is a non-deterministic classifier, and you make it trustworthy the same way you make an
+    AI system trustworthy: **score it against data it was never tuned on.** The `pytest` intent table
+    is the tuning set; the held-out corpus is the test set. This is the standard train/dev/test split
+    from machine learning, applied to a rule that was never "trained" in the gradient sense — the
+    discipline transfers intact.
+
 But the `pytest` table has a quiet flaw, and naming it is the whole reason this module exists: **it grades
 the rules on the same handful of events you tuned them against.** That is a memorised exam. A rule passes
 its own test table the way a model "passes" on the five demo alerts it was prompted with — of course it
@@ -74,6 +89,12 @@ imbalanced and the costs are asymmetric, so a rule that ignores the rare attack 
 while missing every intrusion. Watch recall first; then push the FP-rate down without losing recall. (Precision
 and F1 are reported too, but recall + FP-rate are the pair a detection engineer actually defends.)
 
+!!! warning "The gotcha"
+    Two traps sink detection eval. **Grading on the tuning set** — the `pytest` table you built the rules
+    against — is a memorised exam: passing it is an *anecdote* the rule works, not a *measurement*.
+    And **accuracy is deceptive** on a wildly imbalanced corpus with asymmetric costs: a rule that ignores
+    the rare attack still posts 90%+ accuracy while missing every intrusion. Watch recall, on a held-out set.
+
 **Coverage ≠ effectiveness.** A 200-event corpus is not better than a 22-event one if all 200 are easy. What
 earns the corpus its keep is the hard cases — the benign event crafted to look malicious, the malicious
 variant phrased unusually. Counting events is vanity; deliberately sampling the failure modes is the work.
@@ -86,6 +107,13 @@ over-broad selection that now fires on benign traffic) that must turn the scorec
 gate you have only ever watched pass is not a gate — you have not shown it can catch anything. The contrast —
 GREEN on the good rules, RED on the regressed ones — *is* the lesson, and it is what lets a team refactor a
 detection on a Friday without praying.
+
+!!! tip "AI caveat"
+    A model writes the mechanical parts well (syntax, the `pytest` skeleton, the confusion-matrix
+    arithmetic) and quietly gets the judgment wrong. It hands back "benign" FP-test events that *still
+    match the rule*; it defaults to **accuracy** where you need recall; and — the contamination this
+    whole module warns against — it will happily score the rules on the very events it tuned them on.
+    A model labelling its own test set is exactly the wall you must enforce.
 
 ## Learn (~2.5 hrs)
 
@@ -125,3 +153,8 @@ its own test set is the contamination this whole module warns against*. Fourth, 
 it fail *closed* when the score is missing or `eval.py` errors, or does a broken eval silently "pass"?
 Ask the model for *adversarial* held-out events — benign activity crafted to look malicious — then label
 each one yourself against the technique it mimics.
+
+!!! question "Check yourself"
+    - Your ruleset passes its full `pytest` intent table. Why is that an anecdote rather than a measurement of how it will perform?
+    - A detection posts 94% accuracy on the corpus. Why might that be worthless, and which metric do you defend instead?
+    - What makes a CI gate you've only ever watched pass *not* a gate — and what single artifact proves it can actually catch a regression?

@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    MCP is the emerging standard for giving an LLM access to tools — it's JSON-RPC over stdio or HTTP,
+    where a server declares typed functions the model can call by name. `fastmcp` is to MCP what
+    FastAPI is to REST: decorate a typed Python function with `@mcp.tool()` and it generates the schema
+    and speaks the protocol. The security disciplines are non-negotiable: build read-only tools first,
+    and treat every tool argument as untrusted — an LLM can pass malformed input or values injected by
+    a prompt from an adversarial document.
+
 ## Why this matters
 The Model Context Protocol (MCP) is the emerging standard for giving LLMs access to tools and
 data sources. A security team that exposes their threat-intel enrichment, SIEM search, and asset
@@ -30,6 +38,12 @@ or any MCP-aware host) can call those tools by name. The `fastmcp` library is to
 and `fastmcp` generates the schema and handles the protocol. From the LLM's perspective, the
 tool looks like a typed function in the tool list it was given.
 
+!!! note "The mental model"
+    A server declares **tools** — typed functions with input schemas and structured returns — and any
+    MCP-aware host calls them by name. `@mcp.tool()` turns a function signature into that schema
+    automatically, so from the model's side your enrichment function is just one more typed entry in
+    the tool list. You're not building an integration; you're publishing a callable contract.
+
 The security use case is concrete: an analyst prompts Claude with "Is this IP malicious?" and
 Claude calls `enrich_ip("185.220.101.1")`, gets back `{"verdict": "malicious", "abuse_score":
 95, "asn": "AS4444 TOR Exit"}`, and explains the result in plain English. The analyst never
@@ -48,6 +62,19 @@ malformed input — a partial IP, a domain where an IP was expected, or a value 
 prompt from an adversarial document (prompt injection). Validate the IP format before calling
 the API; return a clear error message rather than letting the API call fail with a cryptic
 status. The MCP server is a trust boundary: treat every tool argument as untrusted input.
+
+!!! warning "The gotcha"
+    An MCP tool argument is untrusted input twice over: the LLM can hallucinate a malformed value, and
+    a prompt-injection payload in a document the model *read* can steer what it passes you. A read-only
+    `enrich_ip` is safe; a `block_ip` tool that writes a firewall rule can cause an outage on a
+    misunderstood prompt. Validate every argument, return clear errors, and build write tools only
+    behind a designed-in human-approval step.
+
+!!! tip "AI caveat"
+    `fastmcp` is new enough that models sometimes get the decorator syntax slightly wrong. Write the
+    server function first, then have a model add the `@mcp.tool()` decorator and `FastMCP` init — the
+    last 20% (return-type annotation, error handling) is where its draft tends to slip. Test by running
+    the server and calling the tool: does it return valid JSON matching the schema?
 
 ## Learn (~2 hrs)
 
@@ -72,3 +99,8 @@ server function first, then ask a model to add the `@mcp.tool()` decorator and t
 initialization. Test it by running the server and calling the tool directly — does it respond
 with valid JSON that matches the schema? The model will get you 80% there; the remaining 20% is
 usually the return type annotation and the error handling.
+
+!!! question "Check yourself"
+    - What does the `@mcp.tool()` decorator generate from a typed function, and what does the LLM see?
+    - Why build read-only tools before write tools — what's the failure mode of an unguarded `block_ip`?
+    - In what two distinct ways can a tool argument be "untrusted," and what does prompt injection have to do with it?

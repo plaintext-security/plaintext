@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), and Module 06 (Identity-Aware Access) for the access-log structure
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Eliminating implicit trust doesn't make detection matter less — it's a windfall: every access
+    request is authenticated, authorized, *and logged* with full context. But a detection that fires in
+    the demo is an anecdote, not a measured control, and "trust nothing" is a posture you hold over
+    time, not a switch you flip once. You'll write a Sigma rule, **measure** it on a held-out corpus
+    into a precision/recall scorecard wired to a regression gate, then build a **drift detector** that
+    catches the ZT posture rotting — token-lifetime creep, accreted exceptions, disabled posture checks.
+
 ## Why this matters
 
 A common misconception about Zero Trust is that by eliminating implicit trust you eliminate attack surface, so detection matters less. The opposite is true. Because every access request is authenticated and authorized at the proxy, every request is also *logged* — with full context: who, what device, from where, to which service, at what time, with what result. ZT moves you from "we log what crosses the perimeter" to "we have an audit trail for every lateral and north-south access." That is a detection windfall — but only if you write rules against it, and only if you can *prove* those rules actually catch attacks without drowning the SOC in false positives.
@@ -22,13 +30,43 @@ Write a Sigma rule that detects a successful login from an unexpected country in
 
 ## The core idea
 
+!!! note "The mental model"
+    A detection is a **hypothesis on a benign stream**, not a rule you hope works: most traffic is
+    legitimate, and the rule's whole job is separating the rare true anomaly from benign lookalikes. And
+    "trust nothing" is a posture you *hold over time*, not a switch flipped once — so the module pairs a
+    detection you can *measure* (against data it never saw) with a drift detector that watches the
+    posture itself for the silent erosion that throws no alarm.
+
 This is a build-first module with three staged builds: **the detection** (Type 6 — write it, fire it), **the eval** (Type 13 — prove it on data it has never seen), and **the drift detector** (Type 16 — prove the posture itself still holds). Each anchors on something real and ends in a committed artifact.
 
 **The detection: ZT logs invert the perimeter problem.** In a traditional perimeter model a SOC analyst sees firewall allow/deny logs and maybe some RADIUS records — usually with no context about the user's device, session history, or what they did after authenticating. An attacker who gets past perimeter authentication is largely invisible in the east-west logs. ZT access logs invert this: every request carries identity claims (user, IdP subject, groups, device posture) and a session ID, so the record is already annotated at the access layer. The `event_type` (`access_allowed`, `access_denied`, `auth_failed`) gives you the decision in a machine-readable field, and `access_allowed` events carry the country, device, and data-volume fields that make behavioral rules (unexpected country, bulk export) possible at all. The signal value differs by type: an `auth_failed` in ZT means a *token* failed validation (the IdP already screened the obvious noise) — far higher fidelity than the bot-hammered login failures of a perimeter; an `access_denied` is the proxy enforcing policy against a *valid* identity, which is excellent insider-threat and compromised-credential signal. The detection you write — successful access from a country outside the operating set — is a single `selection and not filter` rule, but it is also a **hypothesis on a benign stream**: most events are legitimate, and your rule's whole job is to separate the rare true anomaly from the benign traffic that looks like it.
 
 **The eval: a detection you can't measure is a detection you can't trust.** Before you ship that rule, ask the question this module is really about: *is it good?* The honest answer is that you cannot know from the demo set — the events you watched it fire on are the same events you tuned it against, a memorised exam. The move that makes a detection trustworthy is measurement against data it was never tuned on: a **held-out corpus**, distinct from the demo set, deliberately stocked with the cases that *break* a geo-rule. On the malicious side: the credential-compromise login from a country you don't operate in, but also the harder variants — a session that *starts* in-country and continues from abroad, an impossible-travel pair. On the benign side, the near-misses that a naive rule fires on and shouldn't: an executive legitimately traveling (a real trip, logged in HR), a developer whose corporate VPN egresses through a different country, a cloud job whose source geolocates to a datacenter region. You score the rule into a scorecard — **precision** (of what it flagged, how much was real), **recall** (of the real anomalies, how many it caught), and **FP-rate** (the benign events it fired on, the analyst-time cost) — and the load-bearing metric for a leading-indicator detection is **recall**: a missed credential-compromise can be a breach, while a false positive costs an analyst a few minutes. Then you wire the **regression gate**: the eval runs in CI and a rule that drifts *too narrow* (recall drops — it stopped catching a variant) or *too broad* (FP-rate climbs — it now fires on legit travel) **fails the build**. The proof the gate works is the contrast: GREEN on the good rule, RED on a deliberately over-broad or over-narrow copy. A gate you have only ever seen pass is not a gate. (Coverage is not effectiveness: a 500-event corpus of easy traffic is worse than a 30-event one that includes the VPN-egress near-miss and the impossible-travel pair. Sample the failure modes, don't count items.)
 
+!!! warning "The gotcha"
+    A detection measured only on the **demo set** is a memorised exam — the events you watched it fire on
+    are the same ones you tuned against. The number only means something on a *held-out* corpus the rule
+    never saw, deliberately stocked with the cases that break a geo-rule: the in-country-then-abroad
+    session, the impossible-travel pair, the executive on a real trip, the VPN-egress that looks foreign.
+    And a regression gate you have only ever seen *pass* is not a gate — prove it goes RED on a too-broad
+    or too-narrow copy.
+
 **The drift detector: "trust nothing" is an over-time posture.** The detection above watches the *traffic*. The drift detector watches the *posture* — because the Zero Trust property you proved at deployment is not self-sustaining. The pattern is the steady-state loop: **declare** the intended baseline as data (max token lifetime, the set of allowed policy exceptions, which posture checks must be enforced), **observe** the running configuration, **diff** the two, **report** the delta, and **reconcile** back to the baseline. The three drifts to catch are real and silent: *token-lifetime creep* (a 15-minute access token quietly bumped to 8 hours to stop re-auth complaints — every stolen token now lives 32× longer), *accreted allow-exceptions* (the temporary "let the contractor reach the DB" rule that outlived the contractor), and *silently-disabled posture checks* (device-compliance enforcement flipped to "log only" and never flipped back). None of these throw an error; the system keeps working, just less Zero-Trust each week. The detector's deliverable is the same honor-system artifact pattern as the eval: a baseline declared as code, a diff that exits non-zero when observed ≠ declared, and a reconciliation step that restores it — so "is it still Zero Trust?" becomes a number CI can answer, not a hope.
+
+??? note "Go deeper: the three silent drifts"
+    The ZT property you proved at deployment is not self-sustaining. *Token-lifetime creep* — a
+    15-minute access token quietly bumped to 8 hours to stop re-auth complaints, so every stolen token
+    now lives 32× longer. *Accreted allow-exceptions* — the temporary "let the contractor reach the DB"
+    rule that outlived the contractor. *Silently-disabled posture checks* — device-compliance flipped to
+    "log only" and never flipped back. None throw an error; the system keeps working, just less
+    Zero-Trust each week. The detector is the steady-state loop: declare → observe → diff → reconcile.
+
+!!! tip "AI caveat"
+    AI drafts the mechanical parts well — the Sigma rule, the confusion-matrix arithmetic, the JSON
+    diffing. What you own is what it quietly gets wrong: it defaults the metric to *accuracy* (override
+    to recall-on-anomalies); it will happily generate the held-out corpus *and* score against it (the
+    exact contamination this module warns against — *you* label each near-miss by hand); and for the
+    drift detector, the baseline is *your* judgment from the threat model, not a model's plausible default.
 
 ## Learn (~3 hrs)
 
@@ -59,3 +97,8 @@ This is a build-first module with three staged builds: **the detection** (Type 6
 ## AI acceleration
 
 AI drafts the mechanical parts well — give it one log line and the field names and it produces a working `selection and not filter` rule fast; it writes the confusion-matrix arithmetic, the scorecard table, and the JSON diffing for the drift detector competently. **What you must own is everything a model quietly gets wrong here.** The metric: a model defaults to accuracy — you override it to recall-on-anomalies and justify it. The **held-out wall**: a model will happily generate the test corpus *and* score against it, which is the contamination this whole module warns against — have it *draft* adversarial near-misses (a VPN-egress event that looks like a foreign login), then **you label each one yourself** against the real behavior it mimics. The gate direction: does it fail *closed* when the score is missing or the eval errors, or does a broken eval silently pass? And for the drift detector, the baseline is *your* judgment, not the model's — a model asked "what should the token lifetime be?" will give a plausible default; you set the baseline from the threat model and let the detector flag deviations from *that*. AI rules nail the hit case and miss the filter edge cases far more often than the reverse — the near-misses are the thing to verify by hand.
+
+!!! question "Check yourself"
+    - Why is a detection that fires correctly on the demo set still untrustworthy — and what does a held-out corpus prove that the demo set can't?
+    - For a leading-indicator geo-detection, why is recall the load-bearing metric over accuracy?
+    - Name the three silent posture drifts the drift detector catches — and why does none of them set off an alarm on its own?

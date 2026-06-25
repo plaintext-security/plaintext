@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Recon is building the map of a target's externally-visible footprint — and the size of that map
+    sets the size of your opportunity. The discipline that separates a pro from a tool-runner is the
+    **passive/active line**: passive recon (CT logs, DNS, public records) never touches the target;
+    active recon makes contact and can put you out of scope. The attack surface is almost always
+    bigger than the target believes, because nobody keeps an accurate inventory — and the assets that
+    fell off it are exactly where the critical bugs live.
+
 ## Why this matters
 You can't attack what you can't see. Recon — passive OSINT and active mapping — is where
 every real engagement and bug-bounty hunt begins, and the operators who find the most
@@ -30,23 +38,31 @@ scope — or into legal trouble. The mental model: you're reconstructing an orga
 externally-visible footprint *the way the organisation itself has lost track of it* — forgotten
 subdomains, shadow IT, the dev box someone exposed "just for a minute" in 2023.
 
-That last point is the whole game. The attack surface is almost always bigger than the target
-believes, because nobody keeps an accurate inventory of what they expose — asset management is a
-genuinely hard problem on the defensive side too. Recon is the hunt for the assets that fell off the
-inventory. Certificate Transparency is the cheat code here: every TLS certificate is logged publicly,
-so every subdomain anyone ever got a cert for is discoverable without sending the target a single
-packet. And the assets that fall off the inventory are exactly where the critical bugs live: the
-forgotten edge device — a FortiGate, a Jira instance, a VPN appliance — running a version vulnerable
-to something like **FortiOS [CVE-2024-21762](https://nvd.nist.gov/vuln/detail/CVE-2024-21762)** (a
-CVSS 9.8 pre-auth RCE in the SSL-VPN, on CISA's Known Exploited Vulnerabilities list). Recon that
-finds and fingerprints that box is the whole engagement; everything after is just walking through the
-door it left open.
+!!! note "The mental model"
+    You're reconstructing an organisation's externally-visible footprint the way the organisation
+    itself has lost track of it. The attack surface is almost always bigger than the target believes,
+    because nobody keeps an accurate inventory of what they expose — recon is the hunt for the assets
+    that fell off it. Certificate Transparency is the cheat code: every TLS certificate is logged
+    publicly, so every subdomain anyone ever got a cert for is discoverable without sending a single
+    packet.
 
-The judgment that matters: **scope is what turns recon from a skill into a liability.** "Passive"
-does not automatically mean "in scope," and a model will happily synthesise a tidy attack-surface map
-that includes a hallucinated subdomain or one outside your authorisation. Treat AI output as *leads
-to verify* — does it resolve? is it in scope? — never as confirmed assets. Anyone can run `amass`;
-the value is the operator who confirms, contextualises, and stays in bounds.
+That last point is the whole game. The assets that fall off the inventory are exactly where the
+critical bugs live: the forgotten edge device — a FortiGate, a Jira instance, a VPN appliance —
+running a version vulnerable to something like **FortiOS
+[CVE-2024-21762](https://nvd.nist.gov/vuln/detail/CVE-2024-21762)** (a CVSS 9.8 pre-auth RCE in the
+SSL-VPN, on CISA's Known Exploited Vulnerabilities list). Recon that finds and fingerprints that box
+is the whole engagement; everything after is just walking through the door it left open.
+
+!!! warning "The gotcha"
+    **Scope is what turns recon from a skill into a liability.** "Passive" does not automatically mean
+    "in scope" — and a subdomain you find passively may belong to someone else entirely. Confirm it
+    resolves *and* that it's in your authorisation before you touch it.
+
+!!! tip "AI caveat"
+    A model will happily synthesise a tidy attack-surface map that includes a hallucinated subdomain
+    or one outside your authorisation. Treat AI output as *leads to verify* — does it resolve? is it
+    in scope? — never as confirmed assets. Anyone can run `amass`; the value is the operator who
+    confirms, contextualises, and stays in bounds.
 
 ## Learn (~3 hrs)
 
@@ -70,3 +86,8 @@ the value is the operator who confirms, contextualises, and stays in bounds.
 A model will synthesise scattered recon output into a tidy attack-surface map fast — and
 just as fast hallucinate a subdomain that doesn't resolve. Treat its output as leads to
 verify, never as confirmed assets, and never let it talk you out of scope.
+
+!!! question "Check yourself"
+    - Where exactly is the line between passive and active recon, and why does it matter legally?
+    - How does Certificate Transparency let you enumerate subdomains without sending the target a packet?
+    - You find a live host via OSINT that resolves cleanly — what must you confirm before probing it?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    One foothold is a beachhead, not the objective. Real networks are segmented: the box you popped can
+    reach internal systems you can't touch from outside. **Pivoting** routes *your* traffic *through*
+    that foothold so the internal network treats you as if you were inside it — a ladder of increasing
+    reach: port-forward → SOCKS proxy → full tunnel interface. Every pivot defeats a boundary someone
+    deliberately drew, which is exactly how you argue for the segmentation that would have contained
+    you. And pivoting is unforgiving — a wrong route can sever the very foothold you're tunnelling through.
+
 ## Why this matters
 Real targets are segmented: the host you compromise can usually reach internal systems you
 can't touch directly. Pivoting — routing your traffic *through* a foothold — and lateral
@@ -29,16 +37,20 @@ a ladder of increasing reach: a single **port-forward** (reach one internal serv
 (reach many, via proxychains), or a full **tunnel interface** (ligolo-ng gives your machine an actual
 route into the internal subnet). You climb that ladder as you need more.
 
-For the network engineer this is the offensive mirror of segmentation: every pivot defeats a boundary
-someone deliberately drew — and understanding the tunnel is exactly how you argue for the segmentation
-that *would* have contained you. A double pivot (through segment A to reach segment B) is just the same
-move stacked, and it's how a single foothold becomes domain-wide compromise.
+!!! note "The mental model"
+    For the network engineer this is the offensive mirror of segmentation: every pivot defeats a
+    boundary someone deliberately drew — and understanding the tunnel is exactly how you argue for the
+    segmentation that *would* have contained you. A double pivot (through segment A to reach segment B)
+    is just the same move stacked, and it's how a single foothold becomes domain-wide compromise.
 
-The judgment: pivoting is unforgiving. A wrong route, a mistyped subnet, or a routing loop can sever the
-very foothold you're tunnelling through and end the engagement. So you **map the network first** — which
-subnets exist, which host can reach what — *before* you build the tunnel. A model will generate the
-tunnel commands, but it can't see your topology; understand each hop yourself, because losing the
-foothold is expensive to recover.
+!!! warning "The gotcha"
+    Pivoting is unforgiving. A wrong route, a mistyped subnet, or a routing loop can sever the very
+    foothold you're tunnelling through and end the engagement. So you **map the network first** — which
+    subnets exist, which host can reach what — *before* you build the tunnel.
+
+!!! tip "AI caveat"
+    A model will generate the tunnel commands, but it can't see your topology; understand each hop
+    yourself, because losing the foothold is expensive to recover.
 
 ## Learn (~4 hrs)
 
@@ -60,3 +72,8 @@ foothold is expensive to recover.
 A model explains a tunneling setup and generates the commands — but pivoting is unforgiving of
 a wrong route or a misread subnet, and you can lose your foothold. Map the network yourself and
 understand each hop before you build the tunnel.
+
+!!! question "Check yourself"
+    - Climb the pivoting ladder — when do you reach for a port-forward, a SOCKS proxy, and a full tunnel interface?
+    - What does a pivot actually defeat, and how does that connect to the case for network segmentation?
+    - Why must you map the network before building a tunnel, and what happens if you don't?

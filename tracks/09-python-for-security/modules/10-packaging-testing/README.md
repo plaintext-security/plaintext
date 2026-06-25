@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    AI writes the script; that's no longer the skill. What ships reliable tooling is the review-and-test
+    loop: a five-pass review (bandit/ruff, input validation, SQL/shell/path injection, network error
+    handling, secrets) catches ~80% of the production bugs in a typical AI-generated security script.
+    Then test-driven debugging — write the failing test *first*, confirm it fails, fix, confirm green —
+    proves you fixed the bug rather than masking the symptom. `pyproject.toml` entry points turn the
+    proven script into an installable command.
+
 ## Why this matters
 AI will write the script. That is no longer the differentiating skill. What separates an engineer
 who ships reliable security tooling from one who ships interesting demos is the review-and-test
@@ -31,6 +39,12 @@ a missing `try/except` around the network call that will kill the process on the
 and a hardcoded credential in the test fixture that will end up in git. None of these are obvious
 from a casual read. All of them are obvious from a systematic review.
 
+!!! warning "The gotcha"
+    The most dangerous property of AI-generated code is that it *looks right* — idiomatic structure,
+    sensible names, coherent comments — with a string-concatenated SQL query or a missing timeout
+    buried inside. None of it survives a systematic review; almost none of it is caught by a casual
+    read. Reading the code is not reviewing it.
+
 The review checklist is not long: (1) run `bandit` and `ruff`; read every finding; don't dismiss
 MEDIUM findings. (2) Check every function that takes user input — does it validate before using?
 (3) Find every SQL query, shell command, and file path that involves user-provided data — is it
@@ -45,12 +59,23 @@ the broken behavior, confirm it fails, fix the code, confirm it passes. This seq
 you actually fixed the bug and not just made the symptom disappear. A fix that makes the test
 pass is a fix you can trust.
 
+!!! note "The mental model"
+    Write the failing test *before* the fix. If you fix first and the test passes, you've proven
+    nothing — you can't tell a real fix from a coincidence. The test that you watched fail, then watched
+    pass, is the one that pins the bug shut against the next refactor.
+
 Packaging with `pyproject.toml` is the final step that makes a script into a distributable tool.
 `[project]` section declares the name, version, dependencies, and entry points; `pip install .`
 installs it. The entry point `[project.scripts] ioc-check = "ioc_check.cli:app"` is what turns
 `python ioc_check.py` into the command `ioc-check`. This matters for security tools that get
 installed on jump servers and shared via internal package mirrors — the install process is the
 same as any other Python package, with a pinned `requirements.txt` and a known version.
+
+!!! tip "AI caveat"
+    Use a model to draft the tests — it covers the happy path and stops. Push it: "test the API
+    timeout," "test the empty-string input," "test for SQL injection." Each prompt surfaces a test it
+    didn't write spontaneously, which usually means the code doesn't handle that case either. The gaps
+    in the test suite are a map of the bugs.
 
 ## Learn (~2.5 hrs)
 
@@ -78,3 +103,8 @@ test for when the API call times out." "Write a test for when the input is an em
 "Write a test for SQL injection." Each of those prompts uncovers a test the model didn't write
 spontaneously, which usually means the code doesn't handle it correctly either. The gaps in
 the test suite are a map of the bugs.
+
+!!! question "Check yourself"
+    - Name the five passes of the AI-code review and roughly what fraction of production bugs they catch.
+    - In test-driven debugging, why write the test *before* the fix instead of after?
+    - What does a `[project.scripts]` entry point in `pyproject.toml` actually do to a script?

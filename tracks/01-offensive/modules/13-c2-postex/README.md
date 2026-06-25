@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A raw shell is fragile and loud — one dropped connection and you're out. A **C2 framework** is the
+    upgrade: a managed, encrypted, resilient session where an implant beacons back, reconnects, and
+    survives a reboot. **Post-exploitation** is the tradecraft of doing useful work through that
+    channel without getting caught. The mental model is a constant tradeoff between **control and
+    noise** — everything you do leaves telemetry. OSS C2 like Sliver is used by real red teams *and*
+    real threat actors, which is why studying it serves attack and detection equally.
+
 ## Why this matters
 A raw shell is fragile and loud. Real operations run over a command-and-control (C2) framework
 that gives reliable, encrypted, resilient control — and post-exploitation is the tradecraft of
@@ -28,17 +36,22 @@ resilient session, where an implant beacons back on a schedule, reconnects, and 
 persist, move — *without getting caught*. Open-source C2 like Sliver is used by real red teams and real
 threat actors alike, which is exactly why understanding it serves attack and detection equally.
 
-The mental model is a constant tradeoff between **control and noise.** Everything you do leaves
-telemetry: the beacon has a timing signature (the entire premise of the defensive network-hunting
-module), commands spawn child processes the endpoint records, collection touches files. The craft of
-post-ex is minimising that footprint — which is why "beaconing" here is the same word the defenders are
-hunting on. You are, deliberately, the thing the blue team is looking for.
+!!! note "The mental model"
+    C2 is a constant tradeoff between **control and noise.** Everything you do leaves telemetry: the
+    beacon has a timing signature (the entire premise of the defensive network-hunting module),
+    commands spawn child processes the endpoint records, collection touches files. The craft of
+    post-ex is minimising that footprint — which is why "beaconing" here is the same word the defenders
+    are hunting on. You are, deliberately, the thing the blue team is looking for.
 
-The judgment, and why this is tradecraft rather than tooling: C2 is largely about *what not to do* — the
-noisy command that burns your access, the persistence mechanism that trips an alert. A model accelerates
-building post-ex commands and parsing what you collect, but it won't weigh operational risk for you;
-that judgment is yours. And studying C2 closely is the only way to detect it well, which is why this
-sits directly opposite the defensive track's C2-detection content.
+!!! warning "The gotcha"
+    C2 is largely about *what not to do* — the noisy command that burns your access, the persistence
+    mechanism that trips an alert. This is tradecraft, not tooling: standing up Sliver is the easy part;
+    operating it quietly is the skill.
+
+!!! tip "AI caveat"
+    A model accelerates building post-ex commands and parsing what you collect, but it won't weigh
+    operational risk for you — that judgment is yours. Studying C2 closely is also the only way to
+    detect it well, which is why this sits directly opposite the defensive track's C2-detection content.
 
 ## Learn (~4 hrs)
 
@@ -60,3 +73,8 @@ sits directly opposite the defensive track's C2-detection content.
 A model accelerates building post-ex commands and parsing collected data — but C2 tradecraft is
 largely about *what not to do* (noisy commands that burn your access), which the model won't
 weigh. You own the operational judgment.
+
+!!! question "Check yourself"
+    - What does a C2 framework give you that a raw reverse shell doesn't?
+    - Name three kinds of telemetry your post-exploitation activity generates, and who's hunting each.
+    - Why is C2 "largely about what not to do," and why does studying it sharpen your detection skills?

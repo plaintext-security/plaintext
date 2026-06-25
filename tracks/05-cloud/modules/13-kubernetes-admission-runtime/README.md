@@ -11,6 +11,14 @@
 
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Graboid spread because clusters would *admit and run whatever they were handed*. Two controls close
+    that, and you need both because each is blind to what the other catches. **Admission control** is the
+    bouncer: Kyverno `ClusterPolicy` YAML denies dangerous specs — `privileged`, `hostPath: /`,
+    `hostNetwork`/`hostPID`, and the silent default of running as root — at the door, before any container
+    starts. **Runtime detection** is the camera: Falco watches syscalls and fires on what slips past (an
+    `exec` into a pod, a process from `/tmp`). Roll policy out in `Audit` first, then `Enforce`.
+
 ## The case
 
 In October 2019, Palo Alto's Unit 42 published
@@ -80,6 +88,16 @@ catch worth memorizing: roll out in **`Audit`** first (log violations, don't blo
 Reports for how many existing workloads would fail, remediate, *then* flip to **`Enforce`**. Jumping
 straight to `Enforce` on a live cluster is how a CronJob can't start at 2 AM.
 
+!!! note "The mental model"
+    The bouncer reads the *spec before* anyone enters; the camera watches *behavior after* they're in.
+    Admission is cheap prevention that runs once against the manifest; runtime detection is the
+    backstop for everything the manifest never reveals. Neither replaces the other.
+
+!!! warning "The gotcha"
+    "Obviously dangerous" and "actually blocked" are two different states — prevention only exists if
+    someone *encoded* the verdict. And the most common bad spec isn't `privileged`; it's the silent
+    default of nothing set at all, which runs your workload as root (UID 0).
+
 **Runtime detection is the camera inside.** The bouncer reads the *spec*; it cannot see what an admitted
 container *does*. A pod that passed every policy can still be `exec`'d into, can still spawn a shell from
 `/tmp`, can still read a credential file — and an image that was already running before you wrote the
@@ -89,6 +107,13 @@ reason this is one module, not two — is that **prevention without detection is
 Admission tells you what *could* run; it cannot tell you that the one thing that slipped past is, right
 now, reading `/etc/shadow`. You write the policy to make the door narrow, and the Falco rule to watch
 the gap the door can't close.
+
+!!! tip "AI caveat"
+    A model is a fine first-draft author of a Kyverno `ClusterPolicy` and good at matching a spec to the
+    "never admit" patterns. The danger: it can't tell you whether the policy is in `Audit` or `Enforce`
+    (`kubectl get clusterpolicy` does), and it will confidently write a `deny` whose path is subtly wrong
+    so the policy *admits the bad pod while looking correct*. A policy that doesn't block is worse than
+    none — prove every one by applying the bad pod and watching it get rejected for the right field.
 
 ## Learn (~3 hrs)
 
@@ -125,3 +150,8 @@ silent failure is the danger — a policy that doesn't block is worse than none,
 **AI drafts the policy; you prove it** by applying the bad pod and watching the API server reject it for
 the *right* field. Same for the Falco rule: the model drafts the `condition`, you confirm it fires on the
 exec and not on every benign process. You direct it; you own the door.
+
+!!! question "Check yourself"
+    - Why do you need both admission control and runtime detection — what is each one blind to?
+    - Of the four "never admit" specs, which is the most common and why is "nothing set" dangerous?
+    - Why roll a Kyverno policy out in `Audit` before `Enforce`, and how do you prove a `deny` actually blocks the right field?

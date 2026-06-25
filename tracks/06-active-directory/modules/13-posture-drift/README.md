@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 08 — Path to Domain Admin](../08-path-to-da/README.md) (the path you keep closed), [Module 10 — Hardening AD as Code](../10-hardening-ad/README.md) (the posture audit + baseline this re-runs)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Modules 10–12 hardened the domain *at t=0* — but AD decays back toward exploitable the moment
+    people administer it again: a new auto-registered SPN, a re-added `GenericWrite`, an aging
+    krbtgt. The fix is the config-management loop ported to AD security facts: **declare the hardened
+    baseline in version control, then detect → diff → reconcile on a schedule.** A nightly re-audit
+    diffs observed state against the committed baseline and alerts on the *specific facts* that
+    changed — and every delta is adjudicated: bless it into the baseline (with a who/why commit) or
+    re-enforce. Never ignore.
+
 ## Why this matters
 
 Module 10 ends with a score that climbed and a HIGH finding that cleared; Module 11 ends with PATH-001 dead against the tiered design; Module 12 ends with that design deployed on the live domain without an outage. Every one of those is a **t=0** result — the posture *at the moment you finished*. The uncomfortable truth that every AD operator learns is that the domain does not stay there. AD hardening famously **decays**, and not because anyone is malicious: a DBA gets a new service account and the installer auto-registers an SPN, making it Kerberoastable again; a helpdesk ticket grants `GenericWrite` on a group "just to unblock someone" and nobody removes it; an admin is added to `Domain Admins` for a migration and never taken back out; the krbtgt password silently ages past the point where a stolen hash from two years ago still mints golden tickets. The domain you hardened in Module 10 is, thirty days later, quietly exploitable again — and the BloodHound graph you proved empty now has a fresh edge to Domain Admin that nobody decided to create.
@@ -20,11 +29,43 @@ The correct posture is **declare the baseline, then detect → diff → reconcil
 
 ## The core idea: declared baseline vs. observed state — detect, diff, reconcile, on a schedule
 
+!!! note "The mental model"
+    Borrow it straight from infrastructure-as-code: **declared state vs. observed state.** The
+    declared state is the hardened baseline you committed; the observed state is today's re-audit;
+    **drift is the diff**. The whole discipline is one loop — **detect** (re-audit on a schedule),
+    **diff** (observed vs. declared), **reconcile** (bless-into-baseline or re-enforce) — the same
+    loop Terraform runs as `plan`/`apply`, built for AD security facts. It must be *scheduled*: a
+    property that holds at t=0 and fails at t=30 is only caught by sampling between them.
+
 The mental model is borrowed straight from configuration management and infrastructure-as-code: **declared state vs. observed state.** The declared state is what you *committed* as correct — the hardened posture baseline from Modules 10–12, expressed as data in version control (a JSON/YAML snapshot of the security-relevant facts: Kerberoastable accounts, no-preauth accounts, unconstrained-delegation principals, dangerous ACEs, privileged-group rosters, krbtgt age). The observed state is what the domain *actually is right now*, captured by re-running the audit. Drift is simply the **diff** between them, and the entire discipline reduces to a loop: **detect** (re-audit on a schedule), **diff** (observed vs. declared), **reconcile** (sanction-into-baseline or re-enforce-to-baseline), repeat. This is the same loop Terraform runs as `plan`/`apply` and Ansible runs in `--check` mode — you are building it for AD security facts. The reason it must be *scheduled* and not on-demand is the whole point of the type: a property that holds at t=0 and fails at t=30 can only be caught by sampling *between* those points, so the detector runs nightly (cron / a scheduled job / a CI cron), not "when someone remembers."
 
 The mechanism that makes the diff meaningful is **choosing the right unit and making the baseline diffable.** A naive re-audit prints today's findings; a drift detector prints *what's different from the committed baseline*, which means the baseline has to be stored as **stable, sorted, normalized data** so that a `git diff` (or a structured diff in code) shows real changes and not noise from reordering or formatting. The unit you diff on matters: you don't alert on "the score changed by 2 points" (a score is a lossy summary that hides *which* control moved); you alert on the **specific security facts** — *this SPN appeared, this ACE was re-added, this account joined Domain Admins, krbtgt crossed your age threshold*. Each is a concrete, actionable delta a defender can reason about and trace to a cause. Several of these map directly to MITRE ATT&CK persistence techniques — a re-added dangerous ACE or a new privileged-group membership is **Account Manipulation (T1098)**, and an un-rotated krbtgt is what keeps a **Golden Ticket (T1558.001)** valid — so the drift detector is not just hygiene, it's a persistence-detection control: an attacker who established a foothold *creates exactly the drift you're watching for*.
 
+!!! warning "The gotcha"
+    The loop is **not** "drift detected → auto-revert" — auto-reverting a *sanctioned* change is its
+    own outage and fights the business. Reconcile is a human adjudication: **bless it into the
+    baseline (commit, with the reason) or re-enforce — never ignore.** The killer failure is alert
+    fatigue from a baseline nobody updates: if every sanctioned change fires an unactioned alert,
+    people stop reading them, and the one that matters drowns.
+
+??? note "Go deeper: diff the facts, not the score — and why drift is a persistence surface"
+    A naive re-audit prints today's findings or a score delta; a *drift detector* prints what's
+    different from the committed baseline, which means storing it as **stable, sorted, normalized
+    data** so a `git diff` shows real change, not reordering noise. Alert on the **specific facts**
+    (this SPN appeared, this ACE was re-added, this account joined Domain Admins, krbtgt crossed its
+    threshold), not a lossy number. Several map straight to MITRE ATT&CK: a re-added ACE or new
+    privileged-group member is **Account Manipulation (T1098)**, an un-rotated krbtgt keeps a
+    **Golden Ticket (T1558.001)** alive — so the detector is a persistence-detection control, because
+    an attacker's foothold *creates exactly the drift you're watching for*.
+
 The reconcile step is where judgment lives, and where the honest gotcha is: **not all drift is bad, but all drift must be *adjudicated*.** A new SPN might be a legitimate new application; a new `Domain Admins` member might be a sanctioned hire; krbtgt aging is expected until it crosses your threshold. So the loop is not "drift detected → auto-revert" (that would fight the business and break things — auto-reverting a sanctioned change is its own outage). The loop is **drift detected → adjudicate → either bless it into the baseline (commit, with the reason) or re-enforce the baseline (remediate, and re-prove steady-state).** Blessing a change *updates the declared state* and is the mechanism by which the baseline stays current and honest — every change to it carries a commit message saying who decided and why, so the baseline doubles as the **decision log** for the domain's security posture. The failure mode to avoid is **alert fatigue from a baseline that's never updated**: if every sanctioned change fires an unactioned alert, people stop reading the alerts, and the one that matters drowns. A drift detector is only as good as the discipline of reconciling *every* delta — bless it or fix it, never ignore it. That discipline is what turns "we hardened it once" into "it has provably stayed hardened, and here's the dated trail to prove it."
+
+!!! tip "AI caveat"
+    Ask a model to "build an AD drift detector" and it reliably (1) **diffs the score instead of the
+    facts**, (2) proposes **auto-revert on any drift** — collapsing the human reconcile step into a
+    blind `apply` — and (3) **inverts the krbtgt-age and ACL checks** (flagging a freshly-rotated
+    krbtgt, or an *absent* dangerous ACE). Let it write the queries, the diff, and the cron; *you*
+    set the thresholds, read every delta, and decide bless-or-enforce.
 
 ## Learn (~3 hrs)
 
@@ -55,3 +96,8 @@ The reconcile step is where judgment lives, and where the honest gotcha is: **no
 ## AI acceleration
 
 A model is genuinely useful for the *mechanical* half of a drift detector — drafting the LDAP queries for each posture fact, the diff logic that compares two JSON baselines and emits a structured delta, the cron wiring, and the report formatting that turns a raw diff into a readable "what changed since last week." That is real leverage. But the posture is strict, and the failure modes here are specific: **AI drafts the detector → you own the baseline, the thresholds, and the adjudication.** Ask a model to "build an AD drift detector" and it will reliably (1) **diff the score instead of the facts** — because a single number is easy to compare and it doesn't grasp that the score is exactly the lossy summary that hides *which* control moved; (2) propose **auto-revert on any drift** — which is dangerous, because auto-reverting a *sanctioned* change is its own outage and fights the business; the reconcile step is a *human adjudication* the model must not collapse into a blind `apply`; and (3) **invert the krbtgt-age and ACL checks** — scoring a freshly-rotated krbtgt as "drift" or treating an *absent* dangerous ACE as a finding. The judgment the model cannot do for you is deciding *what belongs in the baseline and at what threshold* (is 180 days the krbtgt limit, or 90? is this new SPN sanctioned?), and *adjudicating each delta* — bless it (and commit the reason) or fix it. Make the model write the queries, the diff, and the schedule; **you** set the thresholds, you read every delta, and you decide bless-or-enforce. AI builds the detector; you own steady-state.
+
+!!! question "Check yourself"
+    - Why must the drift detector run on a schedule rather than on-demand?
+    - Why do you diff specific posture *facts* rather than the posture score?
+    - When the detector flags a new `Domain Admins` member, why isn't "auto-revert" the right response — and what are the only two acceptable outcomes?

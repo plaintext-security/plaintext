@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 02 — Infrastructure as Code](../02-infrastructure-as-code/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every greenfield IaC tutorial starts from an empty account; the real job is **brownfield** — a
+    running estate clicked together by people who left, existing in exactly one place with no version
+    history. The naive "just write the HCL and `apply`" is the dangerous move: an empty state means
+    Terraform thinks the resource doesn't exist and creates a duplicate or destroy-recreates it — the
+    outage you were hired to avoid. The correct path is **import, not recreate**, one resource at a time
+    (strangler-fig), driving `plan` to **`No changes`** — zero drift — by editing the *code* to match
+    reality, never the reverse. The deliverable is the runbook + the zero-drift proof + a rollback note.
 
 ## Why this matters
 
@@ -49,6 +57,13 @@ shrinks toward zero while the thing never stops serving. Big-bang migration is t
 pattern exists to prevent: a single `apply` that reconciles a whole estate at once is a single blast
 radius with no incremental rollback.
 
+!!! note "The mental model"
+    Strangler fig: don't tear down the click-ops estate and rebuild from clean HCL in one cutover —
+    grow code *around* the running resources, importing them under management one at a time, so the
+    un-coded surface shrinks toward zero while the thing never stops serving. Import touches *only*
+    state, so backing one resource out is `tofu state rm` and the resource keeps running exactly as
+    it was — every step's rollback is small and honest.
+
 The mechanism that makes this possible is **`terraform import` / `tofu import`** (and its modern,
 reviewable form, the **`import` block**). Importing does exactly one thing: it writes a mapping into the
 state file binding a resource *address in your code* (`local_file.config`) to a resource *that already
@@ -75,6 +90,22 @@ next resource. The rollback at every step is correspondingly small and honest: b
 touches *state*, backing a single resource out is `tofu state rm <address>` — the state forgets the
 resource, the resource keeps running exactly as it was, and you're back to where you started for that
 slice with the old path never having stopped serving.
+
+!!! tip "AI caveat"
+    A model is useful at the tedious half — drafting the matching HCL block, or cleaning up
+    `-generate-config-out` output — and that's exactly where the brownfield danger lives. It doesn't
+    know which attributes the *real* resource has, so its draft looks complete and `plan` still shows
+    drift; the skill it can't do is reading that diff and deciding, per line, "edit the code" vs. "this
+    would mutate the resource." Worse, asked to "make the plan clean," it cheerfully suggests `apply`-ing
+    its guesses onto the running resource — the precise move that causes the outage.
+
+!!! warning "The gotcha"
+    The naive move causes the outage: write fresh HCL describing an existing resource and `apply`, and
+    an empty state means Terraform tries to *create a duplicate*, errors on a name collision, or
+    "adopts" by destroy-and-recreate. And after import, when `plan` shows a diff, you close it by
+    **editing the code to match the resource — never by applying changes to the resource** (and never by
+    asking a model to "make the plan clean," which suggests exactly that). `No changes` must mean the
+    code matched reality, not that you bent reality to the code.
 
 ## Learn (~2 hrs)
 
@@ -114,3 +145,8 @@ reconciliation is a code edit, that no step applies changes to the live resource
 `plan` says `No changes` because the code matched reality — not because you bent reality to the code.
 And once it's imported and at zero drift, the resource is finally scannable by the Module 03 gate —
 brownfield infrastructure that was invisible to your security pipeline is now governed code.
+
+!!! question "Check yourself"
+    - You write fresh HCL for a running bucket and `apply`. Why is that the dangerous move, and what does an empty state file make Terraform believe?
+    - After importing, `plan` shows a diff. Which side do you edit to close it, and why is doing it the other way the outage you were hired to prevent?
+    - Why is rollback cheap at every step of a strangler-fig migration — what does `tofu state rm` touch, and what does it leave alone?

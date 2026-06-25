@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every detection, hunt, and investigation is ultimately a *query* — and a query can only return
+    what you collected. This module builds the data plane the rest of the track runs on: a
+    shipper/agent on the source, a transport, and a central indexed store you can search. The
+    interchangeable part is the product; the real skill is deciding *what is worth shipping*, working
+    backward from the techniques you care about. The trap is that a pipeline which *runs* is not a
+    pipeline that *works* — verify what actually lands in the index.
+
 ## Why this matters
 Detection, hunting, and response all start with data. Before you can write a single detection you
 need the right telemetry — host, network, identity — shipped reliably into one searchable place.
@@ -24,23 +32,36 @@ matters for detection.
 Detection is a data problem before it's a logic problem. Every detection, every hunt, every
 investigation is ultimately a *query* — and a query can only return what you collected. So the
 first question of a SOC isn't "what rules do we have," it's "what can we actually see?" — and the
-honest answer is almost always *less than you think*. Anyone who has run firewalls knows the shape
-of this: logging "permit/deny" is not the same as logging the session, and you cannot investigate
-what you never recorded — telemetry can't be turned on retroactively after the incident starts.
+honest answer is almost always *less than you think*.
 
-The architecture is the same three moves regardless of vendor: a shipper/agent on the source
-(fluent-bit, Vector, Beats) → a transport → a central, indexed store you can search
-(Elasticsearch/OpenSearch, Splunk, Loki). The product is interchangeable; the actual skill is
-deciding *what is worth shipping*. This is where ATT&CK Data Sources earns its keep: rather than
-"collect everything" — which bankrupts you on storage and buries the signal — you work backward
-from the techniques you care about to the minimum telemetry that reveals them.
+!!! note "The mental model"
+    Anyone who has run firewalls knows the shape of this: logging "permit/deny" is not the same as
+    logging the session, and you cannot investigate what you never recorded — telemetry can't be
+    turned on retroactively after the incident starts. The architecture is the same three moves
+    regardless of vendor: a shipper/agent on the source (fluent-bit, Vector, Beats) → a transport →
+    a central, indexed store you can search (Elasticsearch/OpenSearch, Splunk, Loki). The product is
+    interchangeable; the actual skill is deciding *what is worth shipping*.
 
-The gotcha that bites everyone: a pipeline that *runs* is not a pipeline that *works*. Configs
-silently drop fields, mangle timestamps (so events sort wrong and correlation quietly breaks), or
-parse the wrong format — and you discover it mid-incident, when the field you need is null. Treat
-timestamps and field mappings as first-class, verify what actually lands in the index against what
-the source emitted, and accept that retention vs. volume vs. cost is a *security* decision, not just
-an ops one.
+This is where ATT&CK Data Sources earns its keep: rather than "collect everything" — which
+bankrupts you on storage and buries the signal — you work backward from the techniques you care
+about to the minimum telemetry that reveals them.
+
+!!! warning "The gotcha"
+    A pipeline that *runs* is not a pipeline that *works*. Configs silently drop fields, mangle
+    timestamps (so events sort wrong and correlation quietly breaks), or parse the wrong format —
+    and you discover it mid-incident, when the field you need is null. Treat timestamps and field
+    mappings as first-class, and verify what actually lands in the index against what the source
+    emitted.
+
+??? note "Go deeper: retention is a security decision"
+    Retention vs. volume vs. cost is a *security* decision, not just an ops one — every day you
+    don't keep is a day of an investigation you can't run. Decide it deliberately, with the incident
+    you might one day need to reconstruct in mind, not as a line item someone in finance trims.
+
+!!! tip "AI caveat"
+    A model drafts your shipper config and an ingest pipeline in seconds — and just as easily
+    produces one that silently drops fields or mis-parses timestamps. Verify what actually lands in
+    the index, not what the config claims.
 
 ## Learn (~4 hrs)
 
@@ -62,3 +83,10 @@ an ops one.
 A model drafts your shipper config and an ingest pipeline in seconds — and just as easily produces
 one that silently drops fields or mis-parses timestamps. Verify what actually lands in the index,
 not what the config claims.
+
+!!! question "Check yourself"
+    - Why is "what rules do we have?" the wrong first question for a SOC, and what should you ask
+      instead?
+    - A teammate says the pipeline is healthy because the agent is running and CI is green — what
+      would you actually check before believing the telemetry is usable?
+    - Why is "collect everything" a worse strategy than working backward from ATT&CK Data Sources?

@@ -10,6 +10,13 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Red-team-the-AI + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [09 — Securing the AI You Run](../09-securing-ai/README.md), [11 — AI Evaluation & Observability](../11-ai-evaluation/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Module 09 taught you to land attacks by hand; this is the **systematic** complement. You stop
+    testing manually and stand up a repeatable red-team: **garak** for broad statistical probe
+    coverage (it reports a *pass rate*, not a verdict — LLM red-teaming is statistical), **promptfoo**
+    for an expected-output regression suite wired into CI so a model swap can't silently reopen a hole.
+    garak *finds* the EchoLeak-shaped hole; promptfoo proves it *stays* closed. The deliverable is the
+    scans, a **threat model** anchored on the real incidents, and the promptfoo suite as a CI gate.
 
 ## Why this matters
 Three incidents, three lessons a system prompt could not have prevented. In *Moffatt v. Air Canada*
@@ -55,6 +62,12 @@ the prompt — it is **out-of-band controls** (input/output filtering, privilege
 what tools can do, human-in-the-loop on irreversible actions) **plus a way to keep measuring whether
 they hold.** This module builds the measuring.
 
+!!! note "The mental model"
+    **garak is the systematic red-team; promptfoo is the red-team frozen into a regression gate.**
+    garak gives breadth — *where* the model is weak across a huge probe space. promptfoo gives
+    depth-over-time — the *specific* attacks that matter to your copilot, asserted to stay blocked
+    across every change. One finds the hole; the other proves it stays shut.
+
 **Red-teaming an LLM is statistical, not binary.** A CVE scanner either finds the bug or doesn't;
 the same prompt sent to the same model at the same temperature can succeed on one run and fail on the
 next. So you don't ask "did the jailbreak work?" — you ask "what is its **pass rate** over N runs?"
@@ -66,6 +79,12 @@ successful. The discipline is to run each class many times, report the rate, and
 is noise; one that fires eighty times is a vulnerability. For a SOC copilot the operationally
 relevant classes are jailbreaks that could override the analyst-role instruction and `leakage` that
 hands an attacker your prompt structure for a more targeted injection.
+
+!!! warning "The gotcha"
+    A CVE scanner finds the bug or doesn't; the same jailbreak at the same temperature can succeed on
+    one run and fail on the next. So don't ask "did it work?" — ask "what's its **pass rate** over N
+    runs?" A probe that fires once in a hundred is noise; one that fires eighty times is a
+    vulnerability. Call a finding only above a threshold you declare *in advance*.
 
 **Coverage finds the holes; a regression suite keeps them shut.** `garak` is breadth — it tells you
 *where* the model is weak across a huge probe space. But breadth is the wrong shape for the thing you
@@ -94,6 +113,14 @@ attack surface (prompt input, tool results, RAG context, the model API), and whi
 each risk to an acceptable residual — with the garak rates and the promptfoo scorecard as its
 evidence. **That document, not the raw tool output, is what a CISO reads to decide whether the
 copilot ships.**
+
+!!! tip "AI caveat"
+    Let a model draft the mechanical parts — promptfoo assertion YAML, the grep/jq that extracts
+    failing probes from garak's report, the threat-model scaffold. What you must own: an assertion
+    that *always passes* regardless of output is not a test (review every one). A model asked "is the
+    copilot safe?" will reassure you — so make it adversarial instead (*"generate ten injection
+    payloads that ride in via a retrieved alert, and ten ATLAS techniques my threat model misses"*),
+    then verify each lands against the real surface and label the threats yourself.
 
 [CVE-2025-32711]: https://nvd.nist.gov/vuln/detail/CVE-2025-32711
 
@@ -135,3 +162,8 @@ is RAG + MCP + Ollama, generate ten injection payloads that would carry in via a
 and ten ATLAS techniques my threat model doesn't address."* Then verify each suggestion lands against
 the real surface, and label the threats yourself — a model grading its own attack list is the
 contamination module 11 warns about.
+
+!!! question "Check yourself"
+    - Why is an LLM red-team result a *pass rate over N runs* rather than a yes/no, and how does that change what counts as a "finding"?
+    - garak and promptfoo both attack the copilot — what distinct job does each do, and which one belongs in CI?
+    - In the threat model, are OWASP-LLM and ATLAS IDs the anchor or the labels — and what *is* the anchor?

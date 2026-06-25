@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 01 — Shared Responsibility](../01-cloud-fundamentals/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    "Is it encrypted at rest?" is the question auditors ask; "who can use the key?" is the control that
+    actually decides a breach — Capital One's 100M records were encrypted and read in plaintext anyway.
+    You'll build real envelope encryption (KMS wraps a *data key*, never your files) and author the key
+    policy that decides who can decrypt. The load-bearing gotcha: a key has **two doors** — the
+    principal's IAM policy *and* the key's own resource policy, which for KMS is the root of authority — so
+    a perfect IAM policy still leaks the key if the key policy left a second door open. A good policy
+    enforces separation of duties: admins manage but can't decrypt; the app decrypts but can't destroy.
 
 ## Why this matters
 
@@ -45,6 +53,12 @@ one key. Revoke decrypt and the data is gone-to-them without touching a single f
 guarantee than deleting files, and it's the mental model to keep: **the key, not the file, is the thing
 you actually control.**
 
+!!! note "The mental model"
+    The key, not the file, is the thing you control. Envelope encryption means every object — and *every
+    backup of it* — is unreadable without `kms:Decrypt` on one key, so revoking decrypt is a stronger
+    off-switch than deleting files. Which reframes data protection entirely: it isn't "is it encrypted,"
+    it's *the exact set of principals who can use the key.*
+
 **Two doors lead to a key, and people only guard one.** Access to a KMS key is governed by *both* the
 principal's **IAM policy** *and* the key's own **key policy** (a resource policy attached to the key
 itself). This is the load-bearing gotcha and where intuition from Module 02 needs an update: for most
@@ -56,6 +70,20 @@ failed," it was that *something with a door to the key walked through it.* Audit
 means auditing **both** doors — the IAM policy and the key policy — for every key. (See AWS's own
 [Key policies in AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html) and
 [Key policies vs. IAM policies](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html).)
+
+!!! warning "The gotcha"
+    KMS breaks the intuition you built in Module 02. For most resources IAM is the whole story — but for
+    KMS the **key policy is the root of authority**, and an IAM grant only reaches the key if the key
+    policy also delegates to IAM. So you can write a flawless least-privilege IAM policy and still leak the
+    key, because a permissive key policy opened a second door you never audited. Audit *both* doors, every
+    key.
+
+??? note "Go deeper: default encryption and rotation are baseline, not the control"
+    Turn on default encryption for S3/EBS/snapshots so nothing lands unencrypted by accident — it's free
+    and you should — but it defends only against the stolen-disk threat. Rotation is the same shape:
+    enabling it re-wraps *future* data keys under new material but does **not** re-encrypt data already at
+    rest, so it limits the exposure window without undoing a leak. The control that decides a breach
+    remains: who can use the key.
 
 **Grants are the third, temporary door — scoped to who can *use* the key.** Beyond the two static
 policies, KMS [**grants**](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html) hand a
@@ -79,6 +107,13 @@ snapshots so nothing lands unencrypted by accident — it's free and you should 
 threat and nothing else. Rotation is the same shape: enabling rotation re-wraps *future* data keys
 under new key material but does **not** re-encrypt data already at rest, so it limits exposure window,
 it doesn't undo a leak. The control that decides a breach remains: who can use the key.
+
+!!! tip "AI caveat"
+    A model is good at the obvious collapse — flagging a principal that can both `Decrypt` and
+    `ScheduleKeyDeletion`, or `kms:*` on an app role. Two things it can't do: it sees one document, so it
+    can't tell whether an IAM policy or a grant opens a *second* door (the whole point of this module), and
+    it doesn't know your org's intended roles — *should* this principal manage the key or use it? Treat
+    every flag as a hypothesis; confirm against who-should-do-what, then prove the fix with the checker.
 
 ## Learn (~3 hrs)
 
@@ -116,3 +151,8 @@ IAM policy or a grant opens a *second* door to the key (the whole point of this 
 know your org's intended roles — *should* this principal manage the key, or use it? Treat every flag as a
 hypothesis, confirm it against who-should-do-what, and run `check_keypolicy.py` to prove the fix. You
 direct it; you own the verdict on who can use the key.
+
+!!! question "Check yourself"
+    - Capital One's records were encrypted at rest and read in plaintext anyway. In one sentence, what was the actually-failed control — and why was the cipher irrelevant?
+    - You've written a flawless least-privilege IAM policy for a KMS key. Why might the data still be reachable, and where's the door you forgot to check?
+    - What separation-of-duties split must a good key policy enforce, and what single-credential disaster does collapsing it (granting `kms:*`) invite?

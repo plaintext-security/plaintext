@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules (you'll model the lab system you built)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    This is the last skill before the capstone: finding the bugs on the whiteboard, before you touch
+    a tool. A **trust boundary** is any place a request crosses from less-trusted to more-trusted —
+    and that's where most bugs live, because that's where someone decided "this side is safe" and
+    stopped checking. **Target (2013, 40M cards)** lost it at an unguarded boundary — an HVAC
+    vendor's login into a flat internal network — which a passing PCI audit never asked about.
+    Threat modeling is four questions; **STRIDE** makes "what can go wrong" systematic at each
+    crossing, and maps straight back to the first principles from Module 01.
 
 ## The case
 
@@ -62,6 +70,18 @@ function, from a third party's network to yours. It's the moment something cross
 treated as more legitimate than it was a second before. **Most security bugs live exactly on these
 crossings**, because that's where someone decided "this side is safe" and stopped checking.
 
+!!! note "The mental model"
+    A **trust boundary** is any place a request moves from less-trusted to more-trusted, and *most
+    bugs live exactly on these crossings* — because that's where someone decided "this side is safe"
+    and stopped checking. Threat modeling is asking, methodically, what could go wrong at each line
+    data crosses, *before* you reach for a tool.
+
+!!! warning "The gotcha"
+    A compliance checklist asks "do you have a firewall?" — yes. It never asks "draw every place data
+    crosses from less-trusted to more-trusted, and prove you defend each one." Target was
+    PCI-compliant with firewalls and antivirus; the boundary it had on paper and never *watched or
+    segmented* — the vendor connection — is the one that cost 40M cards.
+
 Target's spending defended the boundaries it had drawn: the internet versus its perimeter (firewalls),
 files versus the host (antivirus), the audit's checklist of controls. But there was a boundary it had
 on paper and never treated as one: **the vendor connection.** Fazio Mechanical sat *outside* Target,
@@ -101,9 +121,13 @@ and the method are the same idea — one stated, one applied.
 
 The judgment to carry: **model the system before you touch a tool.** A scanner finds the bug that
 already shipped; a threat model finds the one still on the whiteboard, which is the cheapest one there
-is to fix. And when you use AI to help (you will), a model is a fast brainstorming partner for the
-STRIDE pass — but the skill is **pruning**: cut the irrelevant, add the threats specific to *your*
-system that a model can't know, and own the final page.
+is to fix.
+
+!!! tip "AI caveat"
+    A model is a fast brainstorming partner for a STRIDE pass — but it hands you a confident draft of
+    *plausible* threats, not a model. The skill is **pruning**: cut the irrelevant, add the threats
+    specific to *your* system that a model can't know (your real boundaries, your business logic),
+    and own the final page. An unpruned threat list is noise.
 
 ## Learn (~2.5 hrs)
 
@@ -129,3 +153,8 @@ of plausible threats. That draft is a brainstorming partner, not a model. The sk
 can't know (your real trust boundaries, your business logic), and own the final one-pager. An unpruned
 threat list is noise; judgment is what turns it into a model. Note in your deliverable what you cut and
 what you added — that record *is* the evidence you did the thinking.
+
+!!! question "Check yourself"
+    - What is a trust boundary, and why do most bugs live *on* them rather than inside a component?
+    - Target passed its PCI audit. What question does a threat model ask that a compliance checklist doesn't?
+    - Pick two STRIDE letters and name the first principle (from Module 01) each one defends.

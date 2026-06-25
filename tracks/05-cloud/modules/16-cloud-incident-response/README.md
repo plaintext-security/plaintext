@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 14 — Cloud Attack Techniques](../14-cloud-attack-techniques/README.md) · [Module 15 — Logging & Detection](../15-cloud-logging-detection/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Cloud incident response has no disk to image and no memory to dump — the entire crime scene is an
+    immutable, structured API log. The job is reconstruction: merge CloudTrail, flow logs, and findings
+    on the one field they share (*time*), tag each event by kill-chain phase, and turn thousands of
+    authenticated calls into a narrative a CISO or a court will accept. Two truths drive every verdict:
+    **containment is not eradication** (exfiltrated data is a permanent capability gain — LastPass's first
+    breach was the recon for its second), and **encryption at rest is silent against a principal you
+    authorized** (the attacker steals the key-holder, not the cipher).
 
 ## The case
 
@@ -75,6 +83,13 @@ LastPass first-incident response answered the small question. (This is the same 
 gap that lets ransomware actors who were "kicked out" return through a backdoor they planted — the eviction
 was real; the eradication was not.)
 
+!!! warning "The gotcha"
+    "We evicted the attacker, saw no further activity, closed the incident" answers a smaller question
+    than the one that matters. You cannot revoke information once it's copied out — so scope your response
+    to what the stolen data *enables next*, not to where the attacker currently sits. LastPass's
+    first-incident team answered the small question; the stolen source code became the recon for a second
+    intrusion three months later.
+
 **Q2 — encryption at rest is silent against an authorized principal.** You met this exact lesson in
 Module 01 with Capital One, and it recurs here because it is the most expensive misconception in cloud:
 encryption protects data from people *without* the key. The attacker didn't break the encryption — they
@@ -100,11 +115,31 @@ report; the log records are the evidence under it. The methodology is exactly wh
 **hayabusa** do for Windows event logs (ingest, sort, tag, output a sorted timeline) — the source changes,
 the move doesn't.
 
+!!! note "The mental model"
+    The log is the crime scene. Cloud IR is reconstruction from an immutable API record, not disk
+    forensics — so the first question is always "is the trail intact?" (a `StopLogging` gap is itself
+    evidence: its start, end, and duration are data). Then build the super-timeline: merge every
+    heterogeneous source on *time*, sort, tag by phase, filter to the attacker — that ordered narrative
+    *is* the incident report, and the raw records are the evidence beneath it.
+
+??? note "Go deeper: why two planes beat one"
+    Control plane (CloudTrail) tells you *what API was called by whom*; data plane (flow logs) tells you
+    *how many bytes left, to where*. Either alone is a lead. An `AssumeRole` + mass `GetObject` in
+    CloudTrail that lines up with a hundreds-of-megabyte outbound flow to an external IP is a *defensible
+    exfiltration verdict* — corroboration across planes is what turns a hunch into a finding that holds up.
+
 The two halves you'll reconstruct in the lab — the **timeline from CloudTrail** and the **exfil
 corroboration from flow logs** — are the two planes every cloud incident lives on. Control plane tells you
 *what API was called by whom*; data plane tells you *how many bytes left, to where*. An `AssumeRole` + mass
 `GetObject` in CloudTrail that lines up with a hundreds-of-megabyte outbound flow to an external IP is a
 **defensible exfiltration finding.** Either alone is a lead; together they're a verdict.
+
+!!! tip "AI caveat"
+    A model is a useful first-pass tagger — map a sequence of API calls to ATT&CK-for-Cloud techniques,
+    flag order anomalies. But IR judgment lives exactly where models are weak: *temporal reasoning and
+    attribution.* A model will happily call a key used six hours later "the same session" when it's the
+    persistence mechanism, and it can't tell an attacker covering tracks from a benign trail rotation.
+    Draft the tags with it; own the sequencing, the gap analysis, and the verdict.
 
 ## Learn (~3.5 hrs)
 
@@ -141,3 +176,8 @@ later "the same session" when it's the persistence mechanism, and it cannot tell
 is an attacker covering tracks or a benign trail rotation — that's the call you're paid to make. Use it to
 draft the phase tags and technique IDs; you own the sequencing, the gap analysis, and the verdict on what
 the stolen data *enables next*. The timeline you commit is your professional analysis, not the model's.
+
+!!! question "Check yourself"
+    - The first-incident responders removed the attacker's access and saw no further activity. Why was that not eradication — what survives an eviction?
+    - You're handed a raw CloudTrail export of an incident. What is the first question you ask of it, before reading a single event, and why?
+    - Why does an `AssumeRole` + mass `GetObject` in CloudTrail become a *defensible* exfiltration finding only when paired with a flow-log observation?

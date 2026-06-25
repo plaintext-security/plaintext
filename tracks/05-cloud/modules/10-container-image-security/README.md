@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 08 — CI/CD Pipeline Security](../08-cicd-security/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A container image is a tarball of someone else's decisions: the moment you write `FROM`, their CVEs
+    become your CVEs. "It works" and "it's clean" are orthogonal — a working image can hide a miner, a
+    reverse shell, or a secret baked into a layer that `docker history` reveals but running the container
+    never would. Scan with `trivy` and `grype`, but triage by **fixability, not count**: fixable
+    HIGH/CRITICAL = rebuild now, unfixed = track. The fix is a **multi-stage rebuild** to a minimal,
+    pinned base — ship the artifact, not the toolchain.
 
 ## The case
 
@@ -75,6 +82,10 @@ version — and matching it against CVE feeds (NVD, GitHub Advisory, distro advi
 base and package layers you *didn't* write, and a typical slim base will surface **dozens** of CVEs on
 a fresh scan. You're not auditing your code; you're auditing **someone else's decisions, inherited.**
 
+!!! note "The mental model"
+    An image is a stack of inherited decisions, not your code. You don't audit what you wrote — you audit
+    everything above you in the `FROM` chain, pinned to a digest so the bits can't drift out from under you.
+
 **Q2 — "no fixable HIGH/CRITICAL" is the answer, and even that isn't "safe."** Two traps live here.
 First, the count is a distraction; **fixability is the verdict.** A Critical CVE with no patch yet
 available is something you *track*, not something you can fix today — gating your pipeline on it just
@@ -97,12 +108,29 @@ non-root `USER`; is the base pinned to a digest you can audit, not `latest`; are
 attacker could pivot through? `trivy config` and `hadolint` catch this configuration class that a CVE
 scan walks right past.
 
+!!! warning "The gotcha"
+    "It scanned clean" is not "it's clean." A CVE scan answers *"are the packages patched"* — it says
+    nothing about an embedded miner, a planted reverse shell, a secret in a layer, or a container running
+    as root with a debug port open. Counting CVEs while ignoring hygiene and provenance is the trap.
+
+??? note "Go deeper: fixability is the verdict, not the count"
+    A Critical with no patch yet is something you *track*, not fix — gating the pipeline on it just blocks
+    every build for no action. A High with a fixed version in the distro repo means **rebuild now**. So the
+    right gate is severity-*and*-fixable (`--exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed`), and
+    one scanner is one opinion — run `trivy` *and* `grype` and reconcile.
+
 **The fix is a rebuild, not a patch.** You can't `apt upgrade` your way out of an inherited base — you
 **rebuild from a minimal, current, pinned base.** A multi-stage build does the work in a fat "builder"
 stage and copies *only the artifact* into a tiny final stage (distroless or `-slim`), so the build
 tools, package manager, and shell that an attacker would use never ship. Fewer packages → smaller SBOM
 → fewer inherited CVEs → smaller blast radius, all at once. **"It works" and "it's clean" are
 orthogonal axes; the rebuild is how you move on the second one without losing the first.**
+
+!!! tip "AI caveat"
+    A model is a strong first-pass triage of `trivy --format json` + `docker history` — it orders findings
+    by fixability and proposes the minimum base bump. But it sees the SBOM, not the call graph: it can't
+    tell you whether the vulnerable path is *reachable* in your app, and it won't flag a planted miner or a
+    secret-in-a-layer no CVE feed lists. Its ranking is a hypothesis; you own the reachability call.
 
 ## Learn (~3 hrs)
 
@@ -141,3 +169,8 @@ code path is actually reachable** from your application, and it will not flag a 
 secret-in-a-layer that a CVE feed doesn't list. Treat its ranking as a hypothesis; you own the
 reachability call before you file a remediation ticket, and you own the rebuild. AI drafts → you review
 → you ship it.
+
+!!! question "Check yourself"
+    - Your `FROM python:3.8-slim` base "just works" — whose CVEs are you shipping, and why doesn't writing clean code reduce that count?
+    - A `trivy image` scan is clean of fixable HIGH/CRITICAL. Name two dangerous things that report still does not rule out.
+    - Why is the fix a multi-stage rebuild rather than `apt upgrade`, and what does the final stage *not* contain?

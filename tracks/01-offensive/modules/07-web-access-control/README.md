@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Authentication is "who are you"; **authorization** is "what are you allowed to do" — and broken
+    access control tops the OWASP Top 10 because it's everywhere and trivially exploited. The mechanism
+    is almost embarrassing: most apps enforce access at the *UI* (hide the button) but not at the *API*
+    (the server still answers if you ask directly). So the attack is just *asking* — change `id=123` to
+    `124` and read someone else's record. It's the same disease as injection: **the server trusting the
+    client.** Finding it is won by discipline, not cleverness.
+
 ## Why this matters
 Most web apps get the flashy bugs right and the boring ones wrong: weak authentication,
 broken session handling, and — above all — broken access control, where you simply ask for
@@ -28,17 +36,21 @@ but not at the *API* (the server still answers if you ask directly). So the atta
 change `id=123` to `124` and read someone else's record (IDOR), call the admin endpoint as a normal
 user (vertical escalation), or reach a peer's data (horizontal). No payload, no cleverness.
 
-Seen through the lens of the injection module, this is the same disease in a new organ: **the server
-trusting the client.** Injection is the server trusting client *input*; broken access control is the
-server trusting the client to *only ask for what it should*. Both fixes are therefore structural and
-identical in spirit — never trust the client: enforce authorization server-side, deny-by-default, on
-*every* request, not by hiding options the user can still call.
+!!! note "The mental model"
+    Seen through the lens of injection, this is the same disease in a new organ: **the server trusting
+    the client.** Injection is the server trusting client *input*; broken access control is the server
+    trusting the client to *only ask for what it should*. Both fixes are structural and identical in
+    spirit — never trust the client: enforce authorization server-side, deny-by-default, on *every*
+    request, not by hiding options the user can still call.
 
-The judgment: this finding is won by **discipline, not brilliance.** You check every action as every
-role — admin, normal user, other user, no auth — and diff what comes back. It's tedious, which is
-exactly why it's the #1 risk: the boring enumeration gets skipped by developers and testers alike. A
-model helps brainstorm which IDs or roles to try, but it won't methodically walk every endpoint × every
-role for you — that disciplined sweep is the job.
+!!! warning "The gotcha"
+    This finding is won by **discipline, not brilliance.** You check every action as every role —
+    admin, normal user, other user, no auth — and diff what comes back. It's tedious, which is exactly
+    why it's the #1 risk: the boring enumeration gets skipped by developers and testers alike.
+
+!!! tip "AI caveat"
+    A model helps brainstorm which IDs or roles to try, but it won't methodically walk every endpoint
+    × every role for you — that disciplined sweep is the job.
 
 ## Learn (~4 hrs)
 
@@ -60,3 +72,8 @@ role for you — that disciplined sweep is the job.
 A model helps you reason about which object IDs or roles to try — but access-control testing
 is about methodically checking *every* action as *every* role, which a model won't do for
 you. Use it to brainstorm; you do the disciplined enumeration.
+
+!!! question "Check yourself"
+    - What's the difference between authentication and authorization, and which one fails in broken access control?
+    - Distinguish IDOR, vertical escalation, and horizontal escalation with an example of each.
+    - Why does hiding a button in the UI not constitute access control, and what does the real fix look like?

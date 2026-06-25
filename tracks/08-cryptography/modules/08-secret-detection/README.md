@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Git is an append-only log: deleting a secret in a later commit does *not* remove it — it lives in
+    every clone of the history. The fix is never a deletion commit; it's revoke-and-rotate (assume
+    compromised) plus a pre-commit/CI gate so the next one never lands. gitleaks scans full history with
+    regex + entropy; trufflehog adds live verification, where "Verified: true" means the credential
+    actually works and warrants immediate rotation. Toyota (a key public on GitHub for ~5 years) is why
+    you scan history, not just the current tree.
+
 ## Why this matters
 
 In 2022, **Toyota** disclosed that an access key to a customer-data server had sat in a **public GitHub repository for nearly five years** — from December 2017 until it was caught in September 2022 — exposing data for roughly **296,000** customers ([BleepingComputer — "Toyota discloses data leak after access key exposed on GitHub"](https://www.bleepingcomputer.com/news/security/toyota-discloses-data-leak-after-access-key-exposed-on-github/)). A subcontractor had committed a fragment of the T-Connect source containing the key; nobody noticed for half a decade. That is the exact failure this module's tooling exists to catch — and it is why scanning *history*, not just the current tree, matters: secret leakage in git repositories is one of the most consistently exploited entry points in cloud breaches. The pattern is predictable: a developer accidentally commits an AWS key or database password, catches it and deletes the file in the next commit — but the secret remains in the git history, accessible to anyone who clones the repository. Tools like gitleaks and trufflehog are designed specifically for this problem, scanning the full commit history rather than just the current state. Running them in CI is the control that catches secrets before they land in the remote; running them retrospectively is how you audit repositories that predate the control.
@@ -20,13 +28,37 @@ Use gitleaks and trufflehog to scan a seed git repository with planted credentia
 
 ## The core idea
 
+!!! note "The mental model"
+    Treat a committed secret as *disclosed the instant it was pushed* — not as something you can quietly
+    take back. The only question that matters is "this credential is now public; what does that let an
+    attacker do?", which makes rotation the first action and history surgery a distant, optional second.
+
 The core misconception that makes git secret leakage persistent is treating "I deleted the file" as equivalent to "I removed the secret." Git is an append-only log — it retains every version of every file in every commit. Removing a file in a new commit creates a new tree object without the file, but the old tree object (with the file) is still reachable from the previous commit's hash. Any clone of the repository, any CI/CD system that ran against an earlier commit, and any mirror or fork made before the deletion all retain the secret — and as Toyota's five-year exposure shows, a key that is never noticed is never even "deleted," it simply stays live and reachable. The remediation for a committed secret is not a deletion commit — it is a credential rotation (assume the secret is compromised) followed by a history rewrite (`git filter-repo`) if access to the git host is needed for compliance, combined with the understanding that every clone made before the rewrite still has the old history.
+
+!!! warning "The gotcha"
+    A deletion commit makes the secret *invisible in the working tree* while leaving it fully reachable
+    in history — arguably worse than doing nothing, because it creates false confidence. And a history
+    rewrite doesn't reach the clones, forks, and CI caches made before it. There is no "un-leak"; there
+    is only rotate.
 
 gitleaks is a purpose-built git history scanner. It uses a rule set of regular expressions and entropy analysis to identify secrets in commits, file contents, and diff output. Its default ruleset covers AWS access keys (AKIA...), GitHub personal access tokens (ghp_...), private keys (BEGIN RSA/EC PRIVATE KEY), Stripe keys, Slack tokens, and hundreds of other patterns. gitleaks can scan a local repository, a remote URL, a specific commit range, or even a GitHub organisation's repositories in bulk. The key operational use is pre-commit hooks (catching secrets before they reach the remote) and CI checks (failing a pull request if a secret is detected).
 
 trufflehog takes a different approach. Rather than relying primarily on regex patterns, trufflehog uses entropy analysis (identifying strings with high randomness — characteristic of keys and passwords) combined with verification: it attempts to call the relevant API with the detected credential to confirm it is a live, valid secret rather than a false positive. A trufflehog finding with "Verified: true" means the tool confirmed the credential works — this is a critical severity finding that warrants immediate rotation. A finding with "Verified: false" is a candidate false positive worth reviewing but not necessarily a live credential.
 
+??? note "Go deeper: gitleaks vs trufflehog — regex+entropy vs verification"
+    The two tools fail in opposite directions, which is why teams run both. gitleaks leans on a regex
+    ruleset plus entropy — fast and great in pre-commit, but it flags anything *shaped* like a secret, so
+    its findings need triage. trufflehog leans on entropy plus *live verification*: it calls the
+    credential's API to confirm it works, so "Verified: true" is a confirmed live key (rotate now) while
+    "Verified: false" is a candidate. Use gitleaks at the commit gate for speed; use trufflehog's
+    verification to prioritise what to rotate first in a retrospective audit.
+
 The pre-commit hook is the most important control in this module. A hook that runs gitleaks before every commit catches secrets at the developer workstation before they touch the remote. Configured organisation-wide via `.pre-commit-config.yaml` and enforced in CI (where commits that bypass local hooks can still be scanned), it creates a defence-in-depth posture: local hooks catch most secrets, CI is the backstop, and periodic retroactive scans of the full history find anything that slipped through before the controls were in place.
+
+!!! tip "AI caveat"
+    An AI writes a custom gitleaks regex quickly, but a regex bug fails both ways — silently missing the
+    real key (under-match) or burying the signal in false positives (over-match). Test the generated rule
+    against your planted credential *and* against the benign strings in the repo before trusting it.
 
 ## Learn (~3 hrs)
 
@@ -58,3 +90,8 @@ The pre-commit hook is the most important control in this module. A hook that ru
 ## AI acceleration
 
 Ask an AI to generate a custom gitleaks rule for detecting Corp's internal API key format (e.g. `corp-[a-z0-9]{32}`). Verify the regex matches your planted credential and does not match the benign strings in the repository. Then add the rule to `data/gitleaks.toml` and confirm gitleaks detects the custom pattern.
+
+!!! question "Check yourself"
+    - A developer commits an AWS key, notices, and deletes the file in the next commit. Why is the secret still exposed, and what is the correct first remediation step?
+    - A trufflehog finding says "Verified: true." What does that mean and what does it warrant compared to "Verified: false"?
+    - Describe the defence-in-depth layering for secret leakage and what each layer catches that the others miss.

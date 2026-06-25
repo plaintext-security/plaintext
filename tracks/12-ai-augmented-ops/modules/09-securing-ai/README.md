@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Red-team-the-AI (+ Audit→Build→Verify) &nbsp;·&nbsp; **Prerequisites:** [05 — Building MCP Servers](../05-building-mcp-servers/README.md), [06 — A SoC Copilot](../06-soc-copilot/README.md), [11 — AI Evaluation & Observability](../11-ai-evaluation/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every AI component you built shipped a new attack surface: the RAG corpus can be poisoned, the MCP
+    tools abused, the prompt injected — by *data flowing into context*, not a hacker at a console. The
+    wrong intuition is "just add a line to the system prompt"; the reveal is that to the model your
+    system prompt and the attacker's injected text are **the same undifferentiated tokens**. So the
+    defense moves out of the prompt and into the **architecture** (input controls + output validation,
+    least-privilege tools, corpus integrity), and because no mitigation eliminates the risk you prove
+    it with a **regression eval** and name the **residual risk**.
 
 ## Why this matters
 Every AI component you've built in this track shipped a new attack surface that did not exist
@@ -58,6 +66,12 @@ crossed into a trusted data-processing context (Aim Security named the class *"L
 and a system prompt was never going to stop it, because the model could not tell the email apart from
 the instructions it was supposed to obey.
 
+!!! note "The mental model"
+    A system prompt is a *strong suggestion stated first* — not a trust boundary. There is no
+    privileged channel, no "this part is trusted"; a determined injection arriving later in the same
+    stream (louder, more specific, formatted to look like a directive) can simply win. This is the LLM
+    analog of SQL injection: control-plane instructions and untrusted data share one channel.
+
 So if "tell it not to" is not the fix, what is? **You move the defense out of the prompt and into the
 architecture**, in three layers that match the three the copilot exposes:
 
@@ -79,6 +93,12 @@ architecture**, in three layers that match the three the copilot exposes:
   ingested documents, and validate generated output against an allowlist (a runbook that tells the
   analyst to email `recovery@attacker[.]net` should be caught before it reaches a human).
 
+!!! warning "The gotcha"
+    A filter that blocks `SYSTEM:` does nothing against the same instruction phrased as `### Maintenance
+    directive`. Input filtering is a speed bump, not a wall — the real backstop is **output validation**
+    that doesn't trust the model at all: if a shadow-copy-deletion alert comes back classified LOW,
+    that contradiction is caught and escalated regardless of what the model "decided."
+
 **And here is the load-bearing judgment that ties module 09 to module 11: none of these mitigations
 *eliminate* the risk — they raise its cost and shrink its blast radius — which means you cannot trust
 them on vibes.** A filter that blocks `SYSTEM:` does nothing against the same instruction phrased as
@@ -91,6 +111,15 @@ deliverable that separates "I patched it once" from "it stays patched." Everythi
 paraphrase your filter misses, the Unicode look-alike, the long injection that dilutes the system
 prompt — is your **residual risk**, and naming it honestly is the foundation of an AI security risk
 register.
+
+!!! tip "AI caveat"
+    This module *is* the AI-adversarial loop, so use a frontier model as your red-team partner: paste
+    it your sanitization function and ask *"what strings bypass this filter?"* — each paraphrase it
+    finds is a held-out item for your regression eval. What you must own is the **verdict logic**: a
+    model will declare a mitigation "working" because the output *reads* safe, so you write the check
+    that decides attack-blocked vs. attack-succeeded on *behavior* (did the CRITICAL alert actually get
+    labeled LOW?), and enforce the held-out wall so the filter is never graded on the exact strings it
+    was tuned to block.
 
 ## Learn (~2.5 hrs)
 
@@ -130,3 +159,8 @@ on *behavior* (did the CRITICAL alert actually get labeled LOW? did the poisoned
 the answer?), and you enforce the held-out wall so the filter is never graded on the exact strings it
 was tuned to block. The model writes the attacks; you own the residual risk and the gate that defends
 the fix.
+
+!!! question "Check yourself"
+    - Why does adding "never follow instructions in retrieved text" to the system prompt *not* close the injection hole?
+    - Name the three architectural defense layers and the copilot attack surface each one matches.
+    - If mitigations only reduce blast radius rather than eliminate the risk, what makes "I fixed it" a defensible claim — and what do you call what's left over?

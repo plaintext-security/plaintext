@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Hardening that lives in a SharePoint checklist drifts; if it isn't in version control, it isn't
+    real. This module turns the mitigations from the attack path into **code**: audit Corp's ACL
+    posture with `dacledit.py` into a CIS-aligned scored report, then codify the key fixes as an
+    idempotent Ansible playbook. The non-negotiable second half is *proving it on the live DC* — apply
+    the two highest-value fixes, watch the AS-REP roast against `svc-legacy` now fail, and re-score to
+    show the HIGH findings clear. A playbook never tested against the domain is documentation, not a
+    control.
+
 ## Why this matters
 
 Security hardening that lives in a checklist in a SharePoint site will drift. Group Policy changes made in the console are unversioned. An AD hardening posture that cannot be measured cannot be improved. The principle is the same as detection-as-code: if the hardening isn't in version control, it isn't real. This module operationalises the mitigations from the attack path — GPO settings, ACL corrections, account attribute changes — as Ansible tasks and scored checks that can be run on a schedule.
@@ -22,11 +31,37 @@ Audit the Corp domain's ACL posture using `dacledit.py`, produce a scored harden
 
 The gap between "we know what to fix" and "it's actually fixed" in an AD environment is bridged by two practices: **automated posture measurement** and **configuration-as-code**. Automated posture measurement means running a script that queries the domain for known-bad configurations (Kerberoastable service accounts, accounts without pre-auth, unconstrained delegation, ACL misconfigurations, missing GPO settings) and produces a score. Configuration-as-code means expressing the remediations as idempotent scripts or playbooks that can be applied, reviewed in pull requests, and re-run to verify they took effect.
 
+!!! note "The mental model"
+    This is detection-as-code pointed at hardening: **measure posture as data, express fixes as
+    idempotent code, re-run to prove.** A fix you applied by clicking through a console is
+    unversioned and unrepeatable; the same fix as an Ansible task with a human-readable `name:` is
+    reviewable in a PR, runnable with `--check`, and its own audit trail.
+
 Tools like PingCastle (Windows-only, freemium) do automated AD posture scoring; for a Linux-friendly, open-source equivalent, `dacledit.py` (from impacket) reads object ACLs, and `ldapsearch`-based scripts can audit the user attributes that expose the domain to attack. The posture audit is not a one-time engagement deliverable — it should run on a schedule (weekly or after any significant change) and generate a delta report: "we had three Kerberoastable accounts last week; we have one now." That delta is how you demonstrate progress.
 
 The Ansible approach works because AD objects are ultimately LDAP objects, and Ansible's `community.windows` collection has modules for GPO management (`win_gpo`), AD user manipulation (`win_user`, `microsoft.ad.user`), and group membership (`microsoft.ad.group`). An Ansible task that reads "ensure svc-legacy has DONT_REQUIRE_PREAUTH=False" is precise, reviewable by a security team, and verifiable by re-running with `--check`. The same playbook that applies the hardening can document it — each task's `name:` field is the human-readable audit trail.
 
 The CIS Benchmark for Active Directory covers hundreds of controls, but the 20 that matter most in a typical environment are all in the same territory as the attacks you've learned: service account password age, SPN hygiene, delegation settings, privileged group membership, GPO audit policy coverage, and SMB signing. Hardening-as-code that covers those 20 controls, deployed and running in CI, is more valuable than a 200-item checklist nobody re-checks.
+
+!!! warning "The gotcha"
+    A hardening playbook that has never been run against the domain is documentation, not a control.
+    The half teams skip is the *proof*: apply the fix to the live DC, **re-run the attack** (the
+    AS-REP roast against `svc-legacy` must now fail) and **re-score** to show the HIGH finding
+    cleared. Authoring the remediation and proving it closes the path are equal halves — assert
+    neither without the other.
+
+??? note "Go deeper: a score is a priority guide, not the deliverable"
+    PingCastle-style scoring (0–100, lower is riskier) is genuinely useful for *triage* — it tells
+    you which control category to attack first. But a single number hides *which* control moved, and
+    a point-in-time score says nothing about next month. Treat the score as a baseline to trend
+    (this week vs. last week is how you show progress) and as the input to module 13's drift
+    detector, not as the thing you hand the client.
+
+!!! tip "AI caveat"
+    A model drafts Ansible YAML well but reaches for **deprecated module names** (`win_ad_user`
+    instead of `microsoft.ad.user`) and wrong parameters. Validate every module name and parameter
+    against the Galaxy docs and run `--check` before you ever `apply`; the draft is a starting point,
+    not a finished playbook.
 
 ## Learn (~3 hrs)
 
@@ -52,3 +87,8 @@ The CIS Benchmark for Active Directory covers hundreds of controls, but the 20 t
 ## AI acceleration
 
 Ask a model to generate an Ansible playbook from the mitigation list in module 08. The model is good at Ansible YAML structure but will often use deprecated module names (e.g., `win_ad_user` instead of `microsoft.ad.user`) or incorrect parameter names. Validate every module name and parameter against the Galaxy docs before running `--check`. The draft is a starting point, not a finished playbook.
+
+!!! question "Check yourself"
+    - Why is "we have a hardening checklist" weaker than "the hardening is in version control"?
+    - What proves a remediation actually worked, beyond the playbook reporting success?
+    - Why diff posture facts over time (this week vs. last week) rather than just reporting today's score?

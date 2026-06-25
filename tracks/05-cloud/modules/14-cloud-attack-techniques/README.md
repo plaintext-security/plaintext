@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md) · [Module 03 — IAM Attack Paths](../03-iam-attack-paths/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A cloud attack isn't an exploit — it's a login. The LastPass attacker logged in with valid
+    credentials, assumed a role, pulled customer vault backups from S3, and staged them to an
+    external account: every step a signed, authorized API call. This module is purple-team
+    detonation — you fire T1078.004, T1530, and T1537 in a safe range and capture the telemetry
+    each leaves. The payoff hinges on one split: management-plane calls are in CloudTrail by
+    default, data-plane reads are silent unless you turned on S3 data events. That gap is the
+    whole story, and the telemetry you capture is the literal input to modules 15 and 16.
 
 ## The case
 
@@ -78,6 +86,25 @@ and the analytical edge in each is never one field. T1530 isn't "a `GetObject` h
 constantly); it's the *combination*: which identity, what rate, which user-agent, how broad the object
 spread. Capturing that combination cleanly is the whole job of this module.
 
+!!! note "The mental model"
+    A detonation is only worth running if it produces a *detection spec*, not a story. "I ran some S3
+    commands" is useless downstream; "T1530, `GetObject`, 47 calls in 30s, assumed-role identity,
+    non-app user-agent" is something module 15 can build a rule on. You are manufacturing telemetry
+    for the defender across the hall.
+
+!!! warning "The gotcha"
+    The technique that did the most damage (T1530's bulk download) is the one your default log is
+    *silent* on — data-plane `GetObject` isn't recorded unless S3 data events are enabled. "I didn't
+    see it in CloudTrail" almost always means "the log was never collected," not "it didn't happen."
+    Detonate it anyway, so the defender can discover the blind spot before an attacker does.
+
+!!! tip "AI caveat"
+    A model is a strong first-pass classifier on known technique signatures, but it makes two errors
+    this module trains you to catch: it **hallucinates CloudTrail field names** that aren't in the
+    real event, and it scores fields independently, so it misses **combination logic** (event A then
+    B from the same identity in a window). Validate every claimed field against the *actual* captured
+    event — a hallucinated field becomes a module-15 detection that never fires.
+
 ## Learn (~3 hrs)
 
 *Richer than a foundations module — this is the purple-team craft, and the tool docs are genuinely the
@@ -116,3 +143,8 @@ detection engineer, it will happily call a *data-plane* event "detected" without
 never collected. Use it to triage; validate every claimed field against the *actual* captured event and
 every technique against its ATT&CK card. You own the final mapping — module 15 builds detections on top
 of it, so a hallucinated field becomes a detection that never fires.
+
+!!! question "Check yourself"
+    - Why is a cloud attack described as "a login, not an exploit" — what was *not* present in any step of the LastPass chain?
+    - Of T1078.004 (`AssumeRole`), T1530 (`GetObject`), and T1537 (`PutBucketReplication`), which is nearly silent in a default account, and why?
+    - What turns a raw detonation log into a "detection spec" that module 15 can actually use?

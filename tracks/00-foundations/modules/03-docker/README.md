@@ -10,6 +10,15 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules ([02 — Building a Safe Lab](../02-lab-setup/README.md))
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A container is **not** a sealed little VM — it's an ordinary process running on the host's *own*
+    kernel, with a narrowed view (namespaces = what it can see) and a budget (cgroups = what it can
+    use). That shared kernel is the load-bearing fact: a "container escape" isn't breaking out of a
+    box, it's removing restrictions on a process that was on the host all along. `--privileged` or a
+    `-v /:/host` mount is roughly root on the host — which is exactly what the 2018 exposed-daemon
+    cryptojacking wave turned into profit. Containers are an *isolation* mechanism, not a security
+    boundary by default.
+
 ## Why this matters
 Containers are how modern software ships — and how every lab in this curriculum runs, because
 they're reproducible, disposable, and zero-cost. You need to read a `docker run` line, build an
@@ -63,6 +72,18 @@ gets compromised still has a kernel and a hypervisor between it and the host. A 
 compromised is already a process *on the host's kernel* — the only thing keeping it boxed in is those
 namespace and cgroup restrictions. Weaken them and the box opens.
 
+!!! note "The mental model"
+    A container is a *process with a restricted view of the system, not a machine.* Namespaces are
+    what it can **see**; cgroups are what it can **use**; the host's single kernel is shared. So a
+    "container escape" isn't breaking out of a box — it's removing restrictions on a process that
+    was on the host the whole time.
+
+!!! warning "The gotcha"
+    "A container is a sealed little VM" is the intuition the 2018 exposed-daemon wave fed on, and
+    it's false. The moment you add `--privileged`, a broad `-v /:/host` mount, or expose the daemon
+    socket, you've punched a hole straight back to the host — a container is **not a security
+    boundary by default.**
+
 **Q2 — `--privileged` is, roughly, root on the host.** This is Q1's consequence made concrete.
 `--privileged` strips away the restrictions: it hands the container nearly all kernel capabilities and
 access to the host's devices. A `-v /:/host` mount drops the host's entire filesystem inside the
@@ -77,6 +98,12 @@ This is why "a container is not a security boundary by default" is the sentence 
 *isolation* mechanism, a good one for reproducibility and blast-radius — but the moment you add
 `--privileged`, a broad volume mount, or expose the daemon, you've punched a hole straight back to the
 host. You'll *see* the namespaces and cgroups in the lab, and see exactly where they stop.
+
+!!! tip "AI caveat"
+    A model writes a `docker run` line or Dockerfile instantly — and that's exactly where the holes
+    from this module ride in looking innocent: a stray `--privileged`, an over-broad `-v /:/host`,
+    `EXPOSE`-ing the daemon, no non-root `USER`. Review every generated flag against this module's
+    list; a capability or mount you didn't intend is a real path back to the host.
 
 ## Learn (~3 hrs)
 
@@ -107,3 +134,8 @@ the daemon, or no non-root `USER`. Have the model draft your Dockerfile, then **
 flag against this module's list** — a capability or mount you didn't intend is a real path back to the
 host. The standing posture: AI drafts → you review every line → you own it. Catching the over-broad
 default in generated infrastructure is the same reflex that *is* the job in the cloud track.
+
+!!! question "Check yourself"
+    - In one sentence, why is a container *not* a sealed VM — what does it share with the host?
+    - Namespaces vs. cgroups: which governs what a container can *see*, and which what it can *use*?
+    - Why does `--privileged` (or `-v /:/host`) effectively hand over root on the host?

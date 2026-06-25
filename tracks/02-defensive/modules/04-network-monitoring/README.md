@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Endpoints can be blinded, but traffic still crosses the wire — and the wire doesn't lie.
+    **Zeek** is the translator that turns raw packets into structured, protocol-aware logs
+    (`conn.log`, `dns.log`, `http.log`, `ssl.log`) you query like a database. What the network sees
+    that the endpoint can't is the *shape* of behaviour: beaconing timing, absurd DNS query lengths,
+    bytes-out dwarfing bytes-in — visible even through TLS. The judgment is that Zeek tells you what
+    happened on the wire but not what's *normal for your wire*; that baseline is yours to build.
+
 ## Why this matters
 Endpoints can be blinded, but traffic still crosses the wire. Network Security Monitoring with Zeek
 turns raw packets into rich, structured protocol logs — connections, DNS, HTTP, TLS, files — that
@@ -30,20 +38,31 @@ protocol-aware logs — one `conn.log` line per connection, plus `dns.log`, `htt
 `files.log` — turning a capture into something you query like a database. That shift, from packets
 to typed protocol records, *is* Network Security Monitoring.
 
-What the network sees that the endpoint can't is the *shape* of behaviour. Beaconing C2 shows up as
-suspiciously regular connection timing in `conn.log` even when the payload is encrypted; DNS
-tunnelling shows up as absurd query lengths and volumes in `dns.log`; exfiltration shows up as
-bytes-out dwarfing bytes-in. You often can't read the content (TLS), but the metadata — JA3
-fingerprints, SNI, certificate details, timing, volume — is frequently enough. For the network
-engineer this is the familiar instinct of reading flow logs for "who talked to whom, how much, how
-often" — now with full protocol context attached.
+!!! note "The mental model"
+    What the network sees that the endpoint can't is the *shape* of behaviour. Beaconing C2 shows up
+    as suspiciously regular connection timing in `conn.log` even when the payload is encrypted; DNS
+    tunnelling shows up as absurd query lengths and volumes in `dns.log`; exfiltration shows up as
+    bytes-out dwarfing bytes-in. You often can't read the content (TLS), but the metadata — JA3
+    fingerprints, SNI, certificate details, timing, volume — is frequently enough. For the network
+    engineer this is the familiar instinct of reading flow logs for "who talked to whom, how much,
+    how often" — now with full protocol context attached.
 
-The judgment: Zeek tells you *what happened on the wire*; it cannot tell you what's *normal for your
-wire*. "Rare external destination," "new JA3," "this host is beaconing" all need a baseline you
-build — which is why a model summarising a `conn.log` is useful triage but no substitute for knowing
-your environment. And there's an architecture tradeoff to make deliberately: Zeek metadata is cheap
-and searchable for a long time; full-packet capture (Arkime) is gold for investigations but
-expensive to store — most shops keep metadata long and full packets briefly.
+!!! warning "The gotcha"
+    Zeek tells you *what happened on the wire*; it cannot tell you what's *normal for your wire*.
+    "Rare external destination," "new JA3," "this host is beaconing" all need a baseline you build —
+    which is why a model summarising a `conn.log` is useful triage but no substitute for knowing
+    your environment.
+
+??? note "Go deeper: metadata vs. full-packet capture"
+    There's an architecture tradeoff to make deliberately: Zeek metadata is cheap and searchable for
+    a long time; full-packet capture (Arkime) is gold for investigations but expensive to store.
+    Most shops keep metadata long and full packets briefly — decide the retention split before the
+    incident, not during it.
+
+!!! tip "AI caveat"
+    A model summarises a Zeek `conn.log` or explains a suspicious DNS pattern fast — useful triage.
+    But it can't see your network's baseline, so it'll flag normal-for-you traffic or miss a subtle
+    beacon. Confirm against the logs and the known-bad write-up.
 
 ## Learn (~4 hrs)
 
@@ -66,3 +85,10 @@ expensive to store — most shops keep metadata long and full packets briefly.
 A model summarises a Zeek `conn.log` or explains a suspicious DNS pattern fast — useful triage. But
 it can't see your network's baseline, so it'll flag normal-for-you traffic or miss a subtle beacon.
 Confirm against the logs and the known-bad write-up.
+
+!!! question "Check yourself"
+    - The C2 payload is fully TLS-encrypted — name three things Zeek can still tell you that would
+      surface the beacon.
+    - Why is "this host is beaconing" a claim Zeek alone can't make, and what do you have to supply?
+    - When would you keep full-packet capture rather than just Zeek metadata, and why isn't the
+      answer "always"?

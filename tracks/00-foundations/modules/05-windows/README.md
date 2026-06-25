@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 04 — Linux for Security](../04-linux/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The enterprise runs on Windows, and so do most attacks — and Windows is *loud*: where Linux
+    scatters logs and config, Windows **centralises** into two ground-truth stores, the **registry**
+    and the **event log**. Persistence and execution both leave specific, *named* traces there: a
+    Run key or a service install (7045) for persistence, an `-EncodedCommand` PowerShell launch
+    captured in a 4688 process-creation event. You'll triage a real event-log sample for Emotet-style
+    moves by their Event ID — and learn that on Windows you filter by *number*, not by grepping text.
+
 ## Why this matters
 Most organisations are Windows shops, and most commodity malware lands on a Windows desktop
 first. If your comfort stops at the Linux shell, half the job — and half of every real
@@ -49,6 +57,18 @@ On Linux you learned that logs scatter across `/var/log` and config scatters acr
 shift for Windows is that **it centralises where Linux scatters — and the two places it
 centralises into are the registry and the event log, and those two are your ground truth.**
 
+!!! note "The mental model"
+    Windows *centralises where Linux scatters.* The **registry** is one giant config/runtime
+    database (the attacker's favourite hiding spot and the defender's first stop); the **event log**
+    is `/var/log`'s answer, except every event carries a numeric **Event ID** that names exactly what
+    happened. On Windows you don't grep for a phrase — you filter for an ID.
+
+!!! warning "The gotcha"
+    The full process command line — where the `-EncodedCommand` actually shows up — is logged in
+    Event 4688 only if you turn it on; **it's off by default.** "I checked the event log" means
+    nothing if the one field that carries intent was never being recorded. Know what your auditing is
+    actually capturing before you trust an absence of evidence.
+
 - **The registry** is one giant hierarchical database of configuration and runtime state
   (`HKLM` for the machine, `HKCU` for the current user). Because so much "run this automatically"
   config lives there, it's both the attacker's favourite hiding spot and the defender's first
@@ -67,11 +87,12 @@ centralises into are the registry and the event log, and those two are your grou
   | **4104** | PowerShell script-block logged | the *decoded* PowerShell, if script-block logging is on |
   | **7045** | A new service was installed | Emotet's persistence — fires **once**, easy to spot |
 
-**The judgment:** PowerShell runs with real privilege and is the exact surface attackers abuse —
-signed, everywhere, often fileless. So whether you're reading attacker PowerShell or running an
-AI-drafted one-liner, read every line before it executes, especially anything touching the
-registry, services, or `Invoke-*`. "I ran the command without reading it" is how you damage a
-host or trip the very telemetry the blue team is watching.
+!!! tip "AI caveat"
+    PowerShell runs with real privilege and is the exact surface attackers abuse — signed,
+    everywhere, often fileless. Whether you're reading attacker PowerShell or running an AI-drafted
+    one-liner, read every line before it executes, especially anything touching the registry,
+    services, or `Invoke-*`. "I ran the command without reading it" is how you damage a host or trip
+    the very telemetry the blue team is watching.
 
 ## Learn (~3 hrs)
 
@@ -101,5 +122,10 @@ hand you cmdlets that *change* the system, not just read it. Your job: review ev
 command before running it — especially anything touching the registry, services, or `Invoke-*` —
 and confirm its triage verdict against the actual Event IDs rather than taking its word. You draft
 with it; you own what runs.
+
+!!! question "Check yourself"
+    - On Windows you *filter by Event ID* instead of grepping text — which IDs would you pull for "a new service installed" and "a process with its full command line"?
+    - Why can an empty 4688 command-line field be a *gap in your auditing* rather than evidence of innocence?
+    - Emotet runs encoded PowerShell to make a human skimming the logs miss it — where does the launch still land in plain view?
 
 [T1547.001]: https://attack.mitre.org/techniques/T1547/001/

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–5.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 04 — RAG](../04-rag/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    MCP is the open protocol that lets an AI agent call tools you expose — write a Python function,
+    decorate it with `@mcp.tool()`, and any compliant client can call it. The flip side is the whole
+    module: **the moment you expose a tool you've handed a non-deterministic model a button, with
+    arguments it chooses** — and those arguments can be steered by text the model read from an
+    untrusted source. So the tool is a **trust boundary** with three explicit contracts (schema,
+    validation, structured errors), and the deliverable is the packaged server *plus* tests that prove
+    it rejects a hostile argument instead of executing it.
 
 ## Why this matters
 A language model alone can reason, but it cannot act — it cannot query a live threat feed, search
@@ -47,6 +55,12 @@ string parameter the model sees in the manifest). Code and schema can't drift be
 same source. (Recent MCP revisions lift `inputSchema`/`outputSchema` to full JSON Schema 2020-12, so
 the contract you can express is richer than "a flat bag of strings.")
 
+!!! note "The mental model"
+    The model never executes code — it *requests*, the server *runs*, the model *reads the output as
+    text*. Because `fastmcp` derives the schema from your type annotations and docstring, code and
+    schema can't drift. So the tool description is API docs for a caller who has never seen your code
+    (because it hasn't): a precise description yields precise calls; a vague one yields vague calls.
+
 **Treating a tool as a build means three contracts have to be explicit, not incidental.** *Schema:*
 the parameter types and the docstring are what the model reads to decide how to call you — a vague
 description (`search(query: str)`) yields vague calls; a precise one
@@ -56,6 +70,13 @@ engineer who has never seen your code — because the model hasn't. *Validation:
 **untrusted input from a non-deterministic caller**. *Errors:* a tool must fail as a structured
 result (`{"error": "..."}`), never as an unhandled exception that crashes the server mid-session or
 leaks a stack trace into the model's context.
+
+!!! warning "The gotcha"
+    Every argument is **untrusted input from a non-deterministic, injectable caller** — not from code
+    you reviewed. The server, not the model, owns access control, bounds, and sanitisation. And the
+    *kind* of tool matters: a read-only `get_threat_intel(ioc)` can be called freely; an
+    action-taking `isolate_host(hostname)` is irreversible and must require out-of-band confirmation.
+    The model has no inherent sense of that difference — you encode it.
 
 **The load-bearing judgment: a tool is a trust boundary, so validate every argument as hostile.**
 This is not the abstract caution it sounds like. In April 2025, [Invariant Labs disclosed *tool
@@ -76,6 +97,13 @@ suite you write in the lab is how you prove you made it.
 > three attack layers: a hostile `ioc` or `query` argument can inject into the model's context, and a
 > loosely scoped action tool can be abused. The validation tests you write now are the regression
 > suite that proves those attacks stay blocked.
+
+!!! tip "AI caveat"
+    A model drafts `fastmcp`/JSON-RPC tool bodies well — but you own the **contract and the tests**.
+    Review the input validation, the error handling (does a missing data file return a dict, or a
+    stack trace into the model's context?), and the descriptions. Then have it draft the test suite
+    *including the hostile-argument cases* and check every assertion: a test that "passes" because it
+    never exercised the rejection path is worse than no test.
 
 ## Learn (~2.5 hrs)
 
@@ -110,3 +138,8 @@ enough for a model to call correctly?). Then have the model help draft the *test
 the hostile-argument cases — and review every assertion: a test that "passes" because it never
 actually exercised the rejection path is worse than no test. **The model writes the function; you own
 the security boundary, and the tests are how you prove you own it.**
+
+!!! question "Check yourself"
+    - Why is every argument an MCP tool receives untrusted input, even when the calling model is "yours"?
+    - Name the three contracts a tool must make explicit, and what each one protects against.
+    - Why should `get_threat_intel(ioc)` and `isolate_host(hostname)` be treated differently — and where does that decision get enforced?

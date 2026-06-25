@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every network security tool — scanner, banner grabber, sniffer — sits on raw sockets. A TCP port
+    scanner is thirty lines (`connect_ex`, a short timeout, record the result); banner grabbing reads
+    the first bytes a service announces; `scapy` lets you forge, send, and parse packets layer by
+    layer. The code is the easy part. The discipline is operational: scan only what you own or have
+    written permission to test, and understand that *filtered* ≠ *closed* ≠ *open* — each response is
+    information.
+
 ## Why this matters
 Security tools that manipulate the network — scanners, banner grabbers, sniffers, honeypot
 detectors — are all built on raw socket operations. Understanding how `socket` and `scapy` work
@@ -31,6 +39,11 @@ targets you own or have written permission to test, set a short timeout (`socket
 so the scan doesn't hang indefinitely, and understand that a filtered port (firewall drops the
 packet) behaves differently from a closed port (RST returned) — which is information in itself.
 
+!!! note "The mental model"
+    The scanner code is trivial; the value is reading the *responses*. A `RST` means closed, a
+    `SYN-ACK` means open, and silence (the packet dropped) means filtered — and that silence is itself
+    intel about a firewall. You're not running a tool, you're interrogating a host one packet at a time.
+
 Banner grabbing is the step after port enumeration: once you know a port is open, send a probe
 and read the first bytes the service returns. Most services announce themselves — SSH says
 `SSH-2.0-OpenSSH_8.9`, HTTP says the server header, SMTP says `220 mail.example.com`. You do
@@ -46,10 +59,18 @@ a stack of layers — `Ether / IP / TCP / Raw` — and you can read or set any f
 tcpdump. The power and the risk are the same: `scapy` will send what you tell it to send,
 including malformed packets — there is no safety net.
 
-The authorization rule matters especially here. A port scanner running against the wrong subnet
-is an incident. Every exercise in this module runs against the compose-provided echo server or
-loopback — never against external hosts. In the real world, you scan within a defined scope
-authorized in writing; everything outside that scope is illegal regardless of intent.
+!!! warning "The gotcha"
+    A port scanner pointed at the wrong subnet is an incident, and `scapy` will send whatever you tell
+    it — malformed packets included — with no guardrail. Scan only systems you own or have written
+    permission to test; every exercise here runs against the compose echo server or loopback, never an
+    external host. Outside an authorized scope, scanning is illegal regardless of intent.
+
+??? note "Go deeper: the scapy layer model and recv-first services"
+    Every packet is a stack of layers — `Ether / IP / TCP / Raw` — and you read or set any field at
+    any layer with the `/` operator; `sniff(filter="tcp port 22")` and `rdpcap()`/`wrpcap()` let you
+    capture and post-process traces from Wireshark or tcpdump. Note that some services don't announce
+    until you speak first: FTP is prompt-first, and raw `recv` on an HTTPS port returns TLS hello
+    bytes, not plaintext.
 
 ## Learn (~3 hrs)
 
@@ -74,3 +95,13 @@ Ask a model to write a port scanner. It will produce a working one. Then ask it 
 `--timeout` argument and handle the `ConnectionRefusedError`, `TimeoutError`, and
 `OSError` cases explicitly. The error handling is where the model's first draft usually
 has gaps — and a scanner that crashes on a filtered port is not a scanner.
+
+!!! tip "AI caveat"
+    A model produces a working scanner immediately, but its first draft typically skips the error
+    cases — `ConnectionRefusedError`, `TimeoutError`, `OSError` on a filtered port. Push it to handle
+    each explicitly; a scanner that crashes on the first filtered port can't survive a real subnet.
+
+!!! question "Check yourself"
+    - On the wire, how do *open*, *closed*, and *filtered* ports differ — and why is "filtered" still useful intel?
+    - Why set `socket.settimeout()` on a scan, and what breaks if you don't?
+    - In `scapy`, what does the `/` operator do when you write `IP()/TCP()`?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–5 hrs (study + lab) &nbsp;·&nbsp; **Type:** Eval Harness &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A local model does first-pass alert triage — severity, technique, recommended action — to compress
+    the queue so analysts spend judgment on the 20% that needs it. But "right enough" is a *measured*
+    claim or a wish: a model that quietly starts marking criticals "all clear" hides the one alert that
+    mattered. So you score classifications against a **held-out** label file into a **confusion
+    matrix**, and the load-bearing metric is **recall on the critical class** (not accuracy), re-run on
+    a cadence so a regression is caught by a number rather than by a breach.
+
 ## Why this matters
 A modern SOC generates hundreds to thousands of alerts per shift. The majority are low-confidence,
 familiar-pattern events that a skilled analyst evaluates in seconds — but seconds times thousands
@@ -50,6 +58,12 @@ never tuned on.** The five demo alerts the model classifies cleanly are the same
 against; a demo is a memorised exam. The number that means anything is the score on the *held-out*
 set — the same train/dev/test wall Module 11 makes explicit.
 
+!!! note "The mental model"
+    Triage is a classification problem — the most legible AI security task, and the distributed
+    exemplar of the **eval-harness** shape (held-out set + scorecard + threshold gate) that Modules
+    04, 06, and 11 all reuse. Build it here in the small and you have the shape every other AI system
+    in the track plugs into.
+
 **The metric is a judgment, and accuracy is the wrong one.** In a SOC the classes are imbalanced and
 the costs are asymmetric, so a single accuracy number hides the failure that matters. A false
 negative (model classifies a CRITICAL alert as MEDIUM) has a very different cost than a false
@@ -61,18 +75,25 @@ uncertain, output HIGH rather than MEDIUM) is the right choice for security tria
 classification tasks where class balance matters. The confusion matrix is what lets you *see* the
 recall/false-positive tradeoff and pick the knee deliberately instead of by feel.
 
+!!! warning "The gotcha"
+    A single **accuracy** number hides the failure that matters: in a SOC the classes are imbalanced
+    and the costs are asymmetric. A missed critical (CRITICAL scored MEDIUM) can cost a breach; a
+    false alarm costs an analyst minutes. So the metric is **recall on the critical class** and its
+    complement the false-negative rate — and biasing the prompt toward *over*-classification is the
+    right call, the opposite of most classification tasks.
+
 The output format discipline from Module 03 is non-negotiable here: the triage script parses the
 model's output, and a malformed response must be handled explicitly rather than propagated to the
 analyst queue as garbage. The right failure mode is "parsing failed → flag this alert for direct
 human review → log the raw model output for debugging." A pipeline that silently drops alerts or
 logs errors to /dev/null is more dangerous than no pipeline at all.
 
-Throughput constraints make this concrete. If a shift generates 800 alerts and the model processes
-5 per minute on the available hardware, the pipeline takes 160 minutes — longer than a shift. The
-architectural response is batching and async processing: run the model on the previous hour's
-alerts at the start of each hour, so the analyst arrives at a pre-classified queue rather than a
-raw feed. The triage pipeline isn't real-time; it's background batch processing, which changes
-what "acceptable latency" means.
+??? note "Go deeper: why triage is batch, not real-time"
+    Throughput makes this concrete. If a shift generates 800 alerts and the model processes 5/min on
+    the available hardware, the pipeline takes 160 minutes — longer than a shift. The architectural
+    response is batching: run the model on the previous hour's alerts at the start of each hour, so
+    the analyst arrives at a pre-classified queue rather than a raw feed. The pipeline isn't
+    real-time; it's background batch processing, which changes what "acceptable latency" means.
 
 **Quality control means tracking accuracy over time, not just at initial validation — this is the
 regression gate, run on a schedule.** Models don't drift (fixed weights), but alert distributions
@@ -82,6 +103,14 @@ fresh human-labelled alerts and flag the model for prompt review the moment reca
 declared threshold (e.g. 80%). That monthly re-eval *is* the offline version of Module 11's CI
 regression gate: a number that must hold, checked on a cadence, so a degradation is caught by the
 scorecard instead of by an analyst missing the one alert that mattered.
+
+!!! tip "AI caveat"
+    A model writes the parsing and confusion-matrix code well. What it gets quietly wrong: it
+    **defaults to accuracy** (you override to recall-on-critical and justify it), it will **score
+    against the labels you tuned on** (you enforce the held-out wall), it leaves the **parse-failure
+    path** implicit (a failed parse gets flagged for human review, never silently dropped), and it
+    won't bias the prompt toward HIGH on uncertainty unless you tell it to. You own the failure
+    semantics and the gating number.
 
 ## Learn (~2 hrs)
 
@@ -113,3 +142,8 @@ enforce the wall), the failure-handling logic (an alert where parsing fails gets
 review, not silently dropped), and the bias direction in the prompt (does it err toward HIGH on
 uncertainty?). The model writes the plumbing; you own the failure semantics and the number that
 gates the system.
+
+!!! question "Check yourself"
+    - Why does a single accuracy number lie for SOC triage, and which metric replaces it?
+    - The model classifies all five demo alerts correctly. Why is that not evidence it's ready to route real alerts?
+    - When the triage script can't parse a model response, what must happen — and what is the dangerous thing teams do instead?

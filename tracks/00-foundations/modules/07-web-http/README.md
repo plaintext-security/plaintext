@@ -10,6 +10,15 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Almost every web attack and defense is just manipulating fields you can read in plain text. HTTP
+    is **stateless** — the server forgets you the instant it answers — so "being logged in" is faked
+    by a **session cookie** the browser re-sends on every request. That cookie is, functionally, *a
+    temporary password*: whoever holds it is you, no password required. **Firesheep** (2010) made
+    stealing it off open wi-fi a one-click button, which shamed the industry into HTTPS-everywhere
+    and the `Secure` / `HttpOnly` cookie flags. You'll read these fields by hand with `curl` — because
+    a header's presence in *advice* is not its presence on the *actual response*.
+
 ## The hook
 
 In October 2010, a developer named Eric Butler released a Firefox extension called **Firesheep**. It
@@ -45,6 +54,11 @@ answer is below, and it's smaller and scarier than that.
 
 They need **nothing from you but proximity.** Here's the model to carry for the rest of the curriculum.
 
+!!! note "The mental model"
+    HTTP is **stateless**, so "logged in" is faked: the server hands your browser a random **session
+    cookie** and the browser re-sends it on every request. That cookie is *functionally a temporary
+    password the browser keeps typing for you* — whoever holds it is you, with no password needed.
+
 HTTP is **stateless**: the server forgets you the instant it answers a request. So "being logged in"
 can't live on the server as a memory of you — it's *faked*. When you log in, the server generates a
 random **session cookie** (e.g. `Set-Cookie: session=8f3a...`) and your **browser** stores it and
@@ -64,9 +78,11 @@ security cares about three things you'll touch by hand in the lab:
 - **The `HttpOnly` cookie flag:** hides the cookie from page JavaScript, so a script injected into the
   page can't read it either (a different theft path, same prize).
 
-The judgment to keep: a security header or cookie flag being *present in best-practice advice* is not
-the same as it being *present on the actual response*. You verify by reading the real exchange — which
-is the skill, and why this module is built on `curl` rather than a browser.
+!!! warning "The gotcha"
+    A security header or cookie flag being *present in best-practice advice* is not the same as it
+    being *present on the actual response*. The whole skill is verifying by reading the real exchange
+    — which is why this module is built on `curl` rather than a browser. "It should have `Secure`"
+    and "it does have `Secure`" are different claims, and only one of them defends the cookie.
 
 ## Learn (~3 hrs)
 
@@ -97,3 +113,8 @@ headers a response should have." The judgment to keep: that's the *should*, not 
 the real response headers from your lab and ask which cookie flag is missing and what attack that
 enables — then verify its answer against the raw `Set-Cookie` line yourself. The model drafts the
 checklist; you confirm it against ground truth. You own the verdict.
+
+!!! question "Check yourself"
+    - HTTP is stateless, yet the site "remembers" you're logged in. How — and what does the attacker actually need to become you?
+    - What does the `Secure` flag stop that `HttpOnly` doesn't, and vice versa?
+    - Why isn't "the docs say this response should send HSTS" enough — how do you confirm it's true?

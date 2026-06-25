@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), and Module 04 (you'll wire HTTP/REST calls between services)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A SOC analyst's first five minutes on most alerts are the same five minutes — copy the IP, look it
+    up, check the asset DB, open a ticket — and that toil is what trains analysts to dismiss the alert
+    that mattered (the 2013 Target breach is the canonical un-actioned warning). SOAR wires the tools
+    into **playbooks**: trigger → enrich → decide → respond. You build one in n8n and run real alerts
+    through it. The one load-bearing judgment is the **human-in-the-loop gate** — what auto-contains
+    vs. what waits, drawn by blast radius and reversibility — and you prove it against four scenarios,
+    not one.
+
 ## Why this matters
 
 A SOC analyst's first five minutes on most alerts are the same five minutes, every time: copy the
@@ -39,6 +48,12 @@ the event. The *decision* logic checks whether the enriched event meets the esca
 *response* creates a ticket, sends a notification, or (with the right authority) takes a containment
 action. You will build exactly this, as a real workflow in **n8n**, and run real alerts through it.
 
+!!! note "The mental model"
+    A playbook is four stages — trigger → enrich → decide → respond — wired to the tools a SOC already
+    runs. The analyst stops arriving to a raw alert and a list of tabs; they arrive to a pre-enriched,
+    pre-triaged event with a recommended action. What's left is the *judgment*, which is the work you
+    actually want a human doing.
+
 **The one load-bearing judgment is the human-in-the-loop gate: what auto-contains versus what waits
 for a human.** This is the whole design, and it's a blast-radius-versus-speed tradeoff. Fully
 automated response is *fast* — auto-block any IP whose abuse score is over 90 and the attacker is cut
@@ -54,6 +69,14 @@ ticket, notify) auto-execute; the irreversible, high-blast-radius step (block, i
 waits for a human. That line — drawn by reversibility and blast radius, not by what's technically
 possible to automate — is the design judgment you're committing to.
 
+!!! warning "The gotcha"
+    Fully automated containment executes a mistake at machine speed and scale — *automation makes you
+    faster, including at being wrong* — and fully human-gated response is how the alert that mattered
+    sits in a queue. Resolve it by where you draw the line: automate the reversible, low-blast-radius
+    steps (look up, ticket, notify); stop at the irreversible, high-blast-radius one (block, isolate,
+    disable) and make it a one-click human decision. Draw the line by reversibility, not by what's
+    *technically* automatable.
+
 **A playbook is only as good as its failure handling, which is why you operate it against four
 scenarios, not one.** A workflow that handles a clean, well-formed alert and crashes on a null field
 will fail *precisely when you need it* — during a live incident, when payloads are malformed and
@@ -63,13 +86,14 @@ field, (3) an alert where the enrichment API is down, and (4) an alert whose ver
 event, never crash. Getting the happy path working is the easy 80%; the error branches are where the
 real engineering — and the real reliability — live.
 
-> **Where this goes next.** This module ships an *operating* playbook tested against four hand-picked
-> scenarios — enough to prove it doesn't crash, *not* enough to prove it's accurate. A playbook makes
-> verdict-shaped decisions, and "does it decide correctly across a labelled set of alerts?" is a
-> *measurement* question, not a build question. Scoring the playbook against a held-out, labelled
-> corpus of alerts (precision/recall on its escalate-vs-monitor calls, a regression gate that fails a
-> degraded version) is a **Type 13 Eval Harness** — the natural stretch once the thing runs. Module 09
-> builds exactly that discipline for detections; the same shape applies here.
+??? note "Go deeper: operate ≠ evaluate"
+    This module ships an *operating* playbook tested against four hand-picked scenarios — enough to
+    prove it doesn't crash, *not* enough to prove it's accurate. A playbook makes verdict-shaped
+    decisions, and "does it decide correctly across a labelled set of alerts?" is a *measurement*
+    question, not a build question. Scoring the playbook against a held-out, labelled corpus of alerts
+    (precision/recall on its escalate-vs-monitor calls, a regression gate that fails a degraded version)
+    is a **Type 13 Eval Harness** — the natural stretch once the thing runs. Module 09 builds exactly
+    that discipline for detections; the same shape applies here.
 
 n8n is the right learning platform because its workflow is **human-readable JSON**: nodes map
 directly onto the REST calls you already understand from Module 04, the file is version-controllable
@@ -77,6 +101,13 @@ and diffable (a playbook *is* an artifact, not a screenshot), and it runs locall
 cost. The production platforms — Splunk SOAR, Palo Alto XSOAR, Tines, Shuffle (open-source), Torq —
 share the identical mental model: triggers, nodes, conditions, actions. Learn the model here and only
 the editor changes.
+
+!!! tip "AI caveat"
+    A model drafts the verbose n8n workflow JSON well — and **almost always handles the happy path and
+    misses the failure branches**: no "enrichment API is down" path, no missing-`source_ip` handling,
+    no `unknown`-verdict route. The gaps in its workflow *are* the gaps in its model of how things fail
+    in production, and closing them (and proving it by running all four scenarios) is the actual
+    learning.
 
 ## Learn (~2.5 hrs)
 
@@ -111,3 +142,8 @@ testable shape: the gaps in the model's workflow *are* the gaps in its model of 
 production, and closing them (the error branches you add and test) is the actual learning. The model
 gets you the 80% that was tedious; you supply the 20% that makes it reliable, and you prove it by
 running the four scenarios.
+
+!!! question "Check yourself"
+    - You can technically automate a firewall-block response. Why is "what's automatable" the wrong axis for the gate, and what are the right two?
+    - Why test the playbook against the missing-field, API-down, and `unknown`-verdict scenarios rather than just the well-formed alert?
+    - Your playbook never crashes across all four scenarios. Why does that *still* not prove it's a good playbook, and what would?

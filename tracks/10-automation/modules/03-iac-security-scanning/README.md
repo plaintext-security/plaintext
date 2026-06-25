@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Infrastructure as Code](../02-infrastructure-as-code/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The misconfiguration that becomes a breach ships first as a line of Terraform. A static scanner
+    (`checkov`, `tfsec`) catches the known-bad *pattern* — `public-read`, `0.0.0.0/0`, wildcard IAM —
+    in the PR diff, milliseconds instead of months. But a scanner is a fast junior reviewer with no
+    context: it can't tell the open port you meant from the one that's a breach. The deliverable isn't
+    the scan; it's the **CI gate** that encodes your verdict so it can't regress, with true
+    false-positives suppressed *with a rationale*, never silenced.
 
 ## Why this matters
 A misconfigured S3 bucket costs nothing to fix in a `.tf` file before it deploys. After it ships with
@@ -42,6 +49,12 @@ one on 5432 is a database you just exposed to the internet — because both are 
 difference is a *decision* the scanner can't see. It pattern-matches; it cannot read intent, business
 context, or the blast radius two resources away.
 
+!!! note "The mental model"
+    A scanner is a brilliant, tireless junior reviewer who has memorized every known-bad pattern and
+    understands none of your intentions. It catches the pattern every time, instantly, across ten
+    thousand files — and *never* tells you that the open port 443 is the load balancer you need and the
+    open 5432 is a database you just exposed. The pattern is the same; the difference is your judgment.
+
 So the scanner splits the world cleanly into two halves, and your job is different in each:
 
 - **The known-bad pattern** — unencrypted storage, public ACL, wildcard IAM, SSH open to the world,
@@ -61,6 +74,13 @@ whole codebase, or with no rationale, is how the junior gets ignored entirely an
 anyway. **A suppression is an audit trail, not a mute button.** Getting that distinction right is the
 judgment this module is about.
 
+!!! warning "The gotcha"
+    Suppression is where the gate quietly fails. Silencing a *true* false-positive inline, with a
+    check-ID and a defensible reason, is a senior move. Blanket-skipping a check across the codebase,
+    or suppressing a *real* exposure as if it were noise, is how the bad decision ships with a paper
+    trail that makes it look reviewed. And calibrate strict-first: start permissive and "tighten
+    later" never happens.
+
 `checkov` (Bridgecrew / Palo Alto Networks) and `tfsec` (Aqua Security) cover overlapping but not
 identical rule sets — running both is common because each catches what the other misses. The choice
 between them matters far less than the **habit of running one consistently in CI as a gate**: `checkov
@@ -69,6 +89,12 @@ exit code means the misconfig never reaches `tofu apply`. The calibration skill 
 strict and every PR fails on noise, too loose and real misconfigs slip through. **Start strict, suppress
 with justification, never start permissive and tighten later.** The gate is where you encode that
 verdict so it can't regress.
+
+!!! tip "AI caveat"
+    AI is excellent at writing Terraform that *passes a scanner* — and just as good at hiding an IAM
+    over-grant behind it. It will "fix" a finding by moving a wildcard from `Action` to `Resource`
+    (still broken) or suppress a real exposure as if it were a false-positive. Let it draft and run the
+    scanner; *you* confirm each suppression has a real rationale and the gate fails for the right reason.
 
 ## Learn (~2 hrs)
 
@@ -107,3 +133,8 @@ scanner's blind spot: it will happily "fix" a finding by moving a wildcard from 
 leaving a secret in a variable. Make the model draft the gate and the suppressions; **you** confirm each
 suppression has a real rationale, that the gate fails the *original* config for the *right* reason, and
 that it passes only the genuinely-fixed one. AI authors, you review, you own the verdict.
+
+!!! question "Check yourself"
+    - A scanner flags two open security groups identically. What can it never tell you about them, and whose job is that?
+    - When is suppressing a finding a senior move, and when is it how the bad decision ships "reviewed"?
+    - Why "start strict and suppress" rather than "start permissive and tighten later"?

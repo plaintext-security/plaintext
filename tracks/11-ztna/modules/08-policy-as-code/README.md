@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · Module 06 (Identity-Aware Access) for the OIDC/JWT claims a policy reads
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Policy as code puts authorization logic in a version-controlled file — surrounded by tests, deployed
+    through a pull request, auditable as a `git blame` — so it stops drifting the way a UI checkbox
+    does. You describe the logic in Rego, OPA returns a structured decision, and your infrastructure
+    enforces it. But the expressiveness hides one failure mode this module is built around: **a rule you
+    never wrote is an allow.** A policy that fails *open* looks like a control while granting everything.
+    The deliverable is a CI gate that catches exactly that — proven both ways.
+
 ## Why this matters
 
 When access policy lives in a UI — a checkbox in your IdP, a firewall rule buried in a vendor portal — it drifts. The person who enabled the exception three years ago is gone. The audit log says the rule changed but not why. The quarterly access review catches it eventually, maybe. Policy as code puts the same authorization logic in a version-controlled file, surrounded by tests, deployed through a pull request, and auditable as a `git blame`. The same engineering practices that keep application code from regressing keep your policy from drifting.
@@ -18,11 +26,39 @@ In a Zero Trust architecture this matters more than in a perimeter model, becaus
 
 ## The core idea: the gate is the deliverable, and the dangerous default is *allow*
 
+!!! note "The mental model"
+    OPA is a policy engine **decoupled from enforcement** — it doesn't sit in the data path. You feed it
+    a JSON `input` describing the request; it returns a structured decision (`{"allow": true}` or
+    `{"deny": [...]}`); *your* proxy, admission webhook, or app acts on it. Because policy and
+    enforcement are separate, you can test the policy in milliseconds without the whole stack — which is
+    precisely what makes it gate-able in CI. That gate is the deliverable.
+
 Open Policy Agent is a general-purpose policy engine. You describe your authorization logic in **Rego** (a declarative, logic-programming query language built for policy), feed it a JSON document representing the request (`input`), and OPA returns a structured decision — `{"allow": true}` or `{"deny": ["pod runs as root"]}` — which *your* infrastructure then enforces. The design insight is that OPA is **decoupled from enforcement**: it doesn't sit in the data path. Your app, your Kubernetes admission webhook, or your identity-aware proxy (module 06) *calls* OPA and acts on the answer. Because the policy and the enforcement point are separate, you can test the policy in milliseconds without standing up the whole stack — which is precisely what makes it gate-able in CI. **That gate is the deliverable of this module:** the verdict encoded so it can't regress when someone copies the policy next quarter.
 
 Now the centerpiece gotcha, and the reason this is a *judgment-as-code* module and not a "learn Rego" page. Rego is declarative: you write *what must be true* for a rule to fire, not a sequence of if-statements. A rule that is never satisfied is not an error — it is **silently absent**. So if you write a `deny` rule but a condition inside it is never true (a typo'd field, a `==` that should be `!=`, an `input.user.role` that the request actually spells `input.user.roles`), the rule simply never fires, *no deny is produced, and the default applies.* If your evaluation is structured so that "no deny" means "allow," you have just shipped a policy that **fails open**: it denies nothing, passes every test you only wrote for the allow path, and grants access to exactly the case you thought you'd blocked. This is the single most dangerous class of OPA mistake, and the worst part is that it is invisible — the policy looks complete, the demo is green, and the hole is the rule you *meant* to write. **The skill is testing the deny path explicitly, and structuring the query so absence-of-decision means deny, not allow.**
 
+!!! warning "The gotcha"
+    Rego is declarative — a rule whose condition is never satisfied is not an error, it is **silently
+    absent**. A typo'd field, a `==` that should be `!=`, an `input.user.role` the request actually
+    spells `roles` — the `deny` simply never fires, no decision is produced, and the default applies. If
+    your query treats "no deny" as "allow," you've shipped a policy that **fails open**: it denies
+    nothing, passes every test you wrote for the allow path, and grants exactly the case you meant to block.
+
 A scanner — or OPA itself — is a fast junior reviewer with no context: it evaluates exactly the rules you wrote, instantly, every time, and tells you *nothing* about the rule you forgot. That blind spot is where you add the value the tool can't. So the lab's rhythm is: write the policy → run the case that *must* be denied → confirm you got `{"deny": [...]}` and not `{}` (empty — no rule fired) → wire it into a gate that exits non-zero on the bad input and zero on the good one. The two scenarios — **role-based data access** (analyst reads, can't write; deny overrides allow) and **Kubernetes admission** (reject any pod running as root, including the one that *omits* `runAsUser`, which is also root by default) — are deliberately small so the mechanism is legible. AI will draft both Rego files in seconds and they will look correct; the question that separates a control from a liability is whether *you* ran the deny case and proved the gate flips.
+
+??? note "Go deeper: the two deliberately small scenarios"
+    The lab's two scenarios are kept tiny so the mechanism is legible. **Role-based data access**: an
+    analyst reads but can't write, and deny overrides allow. **Kubernetes admission**: reject any pod
+    running as root — *including* the one that omits `runAsUser` entirely, which is also root by default
+    and the case AI drafts most often miss. The lab uses raw `opa eval` for legibility; Gatekeeper
+    (`ConstraintTemplate` + `Constraint`) is the production path that wraps the same engine in CRDs.
+
+!!! tip "AI caveat"
+    AI is fluent at Rego and drafts both policies correct-*looking* in seconds — the hazard, because it
+    writes the *allow* path it was asked for and rarely the *deny* path you need proven. The
+    non-negotiable follow-up: run `opa eval` against an input that **must** be denied and confirm you get
+    `{"deny": [...]}`, **not** `{}`. An empty result means no rule fired — which a poorly-structured
+    query reads as allow. That's the one thing the model won't warn you about, and the one you own.
 
 ## Learn (~3 hrs)
 
@@ -52,3 +88,8 @@ A scanner — or OPA itself — is a fast junior reviewer with no context: it ev
 ## AI acceleration
 
 AI is fluent at Rego for common patterns — RBAC, Kubernetes pod security, JWT claim checks — and will draft both of this lab's policies correctly-looking in seconds. That fluency is exactly the hazard, because the model writes the *allow* path it was asked for and rarely the *deny* path you actually need proven. The non-negotiable follow-up after every AI-drafted policy: run `opa eval` against an input that **must** be denied and confirm you get `{"deny": [...]}` (or `{"allow": false}` for an allow-shaped query) — **not** `{}`. An empty result means no rule fired, which in a poorly-structured query reads as allow: the policy "passes" because nobody checked whether the rule was evaluated at all. The model will not warn you about this; it is the one thing you own. Make AI draft the policy, the tests, and the CI workflow; **you** write the deny-case input, confirm the gate fails the bad state for the *right* reason, and confirm it passes only the genuine fix. AI authors, you review every line, you own the verdict — and you own the rule it forgot to write.
+
+!!! question "Check yourself"
+    - Why does decoupling OPA from the enforcement point make the policy gate-able in CI?
+    - In a poorly-structured query, why does an empty `{}` result read as *allow* — and what does that mean for a `deny` rule whose condition never fires?
+    - For the Kubernetes admission policy, why is rejecting `runAsUser: 0` not enough — what second case must the rule also catch?

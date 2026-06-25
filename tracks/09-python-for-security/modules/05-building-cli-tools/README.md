@@ -10,6 +10,13 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A script with hardcoded paths is a personal tool; a CLI with `--help`, typed arguments, clean
+    errors, and honest exit codes is a team asset. `typer` makes the function signature *be* the
+    argument parser — type hints drive the validation and the help text. The design rule for security
+    CLIs is be explicit about failure, never silent: say what failed and which value, exit non-zero
+    when you fail, and keep subcommands composable so they pipe together like Unix tools.
+
 ## Why this matters
 A script with hardcoded paths and no usage string is a personal tool. A CLI with documented
 arguments, sensible defaults, `--help` output, and clean error messages is a team asset.
@@ -29,6 +36,11 @@ automatically, much less boilerplate). Both are correct choices; `typer` is the 
 for new tools because the function signature *is* the argument parser — you add a type hint, and
 `typer` adds the validation, the help text, and the error message automatically.
 
+!!! note "The mental model"
+    In `typer` the function signature *is* the argument spec — add a type hint and you get validation,
+    help text, and the error message for free. `argparse` is the always-available standard-library
+    fallback for when you can't add a dependency; both are correct, `typer` is the modern default.
+
 The design principle for security CLI tools is: **be explicit about failure modes, never silent.**
 If an argument is missing, say what is missing. If a file doesn't exist, say the file path and
 why. If the API returns an error, print the status code and the URL. A tool that exits with `1`
@@ -36,11 +48,13 @@ and an unhelpful empty error message is harder to debug than one that exits with
 returned 429 for 8.8.8.8 — you've hit the rate limit."` The extra line of error handling is an
 hour saved the next time someone runs the tool in a hurry.
 
-Exit codes matter. `0` = success; `1` = usage error or runtime failure. Any script that exits
-`0` when it failed silently is a lie to the caller. In shell pipelines and CI jobs, exit codes
-are the interface — a failed enrichment that exits `0` will not fail the CI gate that runs it.
-Use `raise typer.Exit(code=1)` or `sys.exit(1)` explicitly; do not rely on exceptions propagating
-to the top level and causing a non-zero exit by accident.
+!!! warning "The gotcha"
+    A script that exits `0` when it failed is a lie to the caller — and in shell pipelines and CI,
+    exit codes *are* the interface. A failed enrichment that exits `0` will not fail the CI gate that
+    runs it. Use `raise typer.Exit(code=1)` or `sys.exit(1)` explicitly; never rely on an exception
+    accidentally propagating to a non-zero exit.
+
+Exit codes matter. `0` = success; `1` = usage error or runtime failure.
 
 Subcommands are the pattern for tools that do related but distinct things: `ioc-check enrich
 8.8.8.8`, `ioc-check report --input enriched.json`, `ioc-check version`. `typer` handles this
@@ -48,6 +62,12 @@ with `app.command()` decorators. Keep subcommands composable — each should rea
 stdin and write to files or stdout, so they can be piped together in a shell one-liner. This is
 the Unix philosophy applied to security tooling, and it is why `grep | awk | sort | uniq -c`
 still beats most GUI dashboards for exploratory analysis.
+
+!!! tip "AI caveat"
+    Ask a model to wrap your `enrich.py` in a `typer` app and it nails the structure instantly. Check
+    the three things it tends to skip: does it validate the IOC format before calling the API, does it
+    exit `1` on API failure, and does `--help` actually describe what the tool does? Those cover most
+    of what makes a CLI usable under pressure.
 
 ## Learn (~2 hrs)
 
@@ -73,3 +93,8 @@ structure right instantly. Check the error handling: does it validate the IOC fo
 calling the API? Does it exit `1` on API failure? Does the `--help` output actually describe
 what the tool does? These three questions cover most of what makes a CLI tool usable under
 pressure.
+
+!!! question "Check yourself"
+    - In `typer`, what supplies the argument validation and the `--help` text?
+    - Why is a tool that exits `0` after a failed run actively dangerous in a CI pipeline?
+    - What does it mean for subcommands to be "composable," and why does it matter?

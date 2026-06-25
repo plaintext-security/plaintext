@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    An attacker who lands code execution is usually a low-privileged user; privilege escalation is how
+    they reach root, and closing those paths is the line between a contained incident and a full host
+    compromise. Linux privesc is a taxonomy problem — roughly six categories (SUID/SGID, sudo rules,
+    writable PATH, root cron with writable scripts, kernel bugs, capabilities), each with its own
+    defensive control. This module detonates a real GTFOBins SUID escalation, then closes it with
+    permission remediation plus AppArmor confinement and re-attempts to prove the path is gone.
+
 ## Why this matters
 
 Track 01 (Offensive) covered local privilege escalation as an attacker technique. This module closes the loop from the defender's side. An attacker who lands code execution on a Linux host — through a phishing payload, a web shell, or a supply chain compromise — will typically be running as a low-privileged user. Their next move is privilege escalation: abusing a SUID binary, a writable sudo rule, a misconfigured service, or a world-writable PATH entry to reach root. Closing these paths is the difference between a containable incident and a full host compromise.
@@ -22,11 +30,29 @@ Identify a SUID binary misconfiguration in a container, demonstrate the privileg
 
 Linux privilege escalation is a taxonomy problem. There are roughly six categories of local privesc path, each requiring a different defensive control. SUID/SGID misconfigurations (binaries that run as root regardless of who executes them) are closed by auditing the SUID set with `find / -perm -4000` and removing the bit from any binary that doesn't legitimately require it. Sudo misconfigurations (`(ALL) NOPASSWD: ALL` or a binary with a known GTFOBin) are closed by auditing `/etc/sudoers` with `visudo -c` and applying the principle of least privilege. Writable PATH entries allow an attacker to substitute their own binary for one a SUID or sudo rule calls — closed by enforcing a controlled PATH in sudo rules. Cron jobs running as root with world-writable scripts are closed by auditing `crontab -l` and file permissions together. Kernel vulnerabilities are closed by patching (module 08) and by namespace/capability restrictions.
 
+!!! note "The mental model"
+    Privesc defense is a taxonomy, not a single control: six path categories, each with its own
+    audit-and-close move. And the attacker's knowledge *is* the defender's — the same GTFOBins
+    catalogue that tells an attacker which binary to abuse tells you which SUID binaries to strip the
+    bit from. Audit with the attacker's reference and the dangerous subset falls out in under a minute.
+
 [GTFOBins](https://gtfobins.org/) is the reference database for this category. It lists every standard Unix binary with a known privilege escalation, shell escape, or file read technique. The attacker-side knowledge — which binaries can be abused — is the same knowledge the defender uses to audit the SUID set. A defender who hasn't read GTFOBins is auditing blindly; a defender who has can enumerate the dangerous subset of SUID binaries on a system in under a minute.
+
+!!! warning "The gotcha"
+    Removing the SUID bit is one layer, and a layer alone is brittle — a binary you can't strip
+    (it legitimately needs the bit) is still an open path. Defense-in-depth means the MAC profile is
+    the second layer: an AppArmor profile on `/usr/bin/find` denying writes to `/etc/` means even an
+    abused SUID `find` can't write the files the escalation needs.
 
 AppArmor and `fapolicyd` (module 04) complement permission remediation by adding a second layer: even if a SUID binary is present, a mandatory access control profile can constrain what it can do. An AppArmor profile on `/usr/bin/find` that denies write access to `/etc/` means that even if an attacker finds a way to abuse `find`'s SUID bit, they cannot write the files they'd need to complete the escalation. This is defense-in-depth: the SUID bit removal is the first layer; the MAC profile is the second.
 
 The audit workflow for a hardened host follows a checklist pattern: enumerate SUID/SGID with `find`, cross-reference with GTFOBins, remove unnecessary bits, audit sudoers for broad grants, audit cron for world-writable scripts, check PATH in privileged contexts, review installed kernel version against known local privesc CVEs. This checklist should run as part of the compliance scan (module 07) so that a newly-added SUID binary triggers an alert rather than waiting for the next manual audit.
+
+!!! tip "AI caveat"
+    A model will flag which binaries in your `find / -perm -4000` output have known GTFOBins
+    techniques — fast cross-reference. But its training data lags the live catalogue, so it misses
+    recently-added entries; cross-check against gtfobins.org directly before you treat its list as
+    complete.
 
 ## Learn (~4 hrs)
 
@@ -52,3 +78,8 @@ The audit workflow for a hardened host follows a checklist pattern: enumerate SU
 ## AI acceleration
 
 Give an AI the output of `find / -perm -4000 2>/dev/null` from a system and ask it to flag which binaries have known GTFOBins techniques. Cross-check against [gtfobins.org](https://gtfobins.org/) directly — the model's training data may be out of date for recently-added entries. AI accelerates the cross-reference; GTFOBins is the authority.
+
+!!! question "Check yourself"
+    - Name three of the six local-privesc categories and the audit command or control that closes each.
+    - Why is GTFOBins as useful to the defender as to the attacker?
+    - You can't remove the SUID bit from a binary that legitimately needs it — what's the second layer that still closes the path?

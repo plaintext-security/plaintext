@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A pile of detections isn't a strategy — it's inventory. **MITRE ATT&CK** is the shared
+    coordinate system that turns "we have 200 rules" into "we cover *these* techniques and we're
+    blind to *those*," which is how you prioritise and state posture to leadership. The Navigator
+    makes coverage and gaps visual. The trap: coverage maps are trivial to inflate, so **coverage ≠
+    effectiveness** — a rule mapped to T1059 that catches one variant, or doesn't fire at all, still
+    shows green. Weight by what actually targets you, not raw technique count.
+
 ## Why this matters
 A pile of detections isn't a strategy. Mapping every detection to MITRE ATT&CK turns "we have 200
 rules" into "we cover these techniques and we're blind to those" — which is how you prioritise what to
@@ -22,25 +30,32 @@ to build next.
 
 ## The core idea
 A pile of detections isn't a strategy — it's inventory. **MITRE ATT&CK** is the shared map that turns
-"we have 200 rules" into "we cover *these* techniques and we're blind to *those*." The mental model:
-ATT&CK is a coordinate system for attacker behaviour — tactics are the goal (*why*: persistence,
-exfiltration), techniques are the method (*how*), sub-techniques the specific variant. Plot each
-detection and data source onto that grid with the Navigator and your coverage — and your gaps —
-become *visible*, which is how you prioritise what to build next and how you state posture to
-leadership in language they can act on.
+"we have 200 rules" into "we cover *these* techniques and we're blind to *those*."
 
-The trap, and why this module has teeth: coverage maps are seductive because they're trivial to
-inflate. A green Navigator is **not** the same as being defended. A detection mapped to T1059 that
-only catches one variant — or that doesn't actually fire (module 09) — still shows green. So
-**coverage ≠ effectiveness**, and "do we have a rule" is not "would we catch it." The honest version
-weights by *threat relevance* — what actually targets you (intel, module 15) — rather than raw
-technique count; total coverage of techniques nobody uses against you is wasted effort dressed up as
-progress.
+!!! note "The mental model"
+    ATT&CK is a coordinate system for attacker behaviour — tactics are the goal (*why*: persistence,
+    exfiltration), techniques are the method (*how*), sub-techniques the specific variant. Plot each
+    detection and data source onto that grid with the Navigator and your coverage — and your gaps —
+    become *visible*, which is how you prioritise what to build next and how you state posture to
+    leadership in language they can act on.
 
-The judgment: a model speeds mapping and drafting Navigator layers, but it will confidently map a
-rule to the wrong technique or overstate what a detection really catches — and an inflated coverage
-map is *worse* than none, because it manufactures false confidence. Verify every mapping against what
-the detection actually matches.
+!!! warning "The gotcha"
+    Coverage maps are seductive because they're trivial to inflate, and a green Navigator is **not**
+    the same as being defended. A detection mapped to T1059 that only catches one variant — or that
+    doesn't actually fire (module 09) — still shows green. So **coverage ≠ effectiveness**, and "do
+    we have a rule" is not "would we catch it."
+
+??? note "Go deeper: weight by threat relevance, not technique count"
+    The honest version of a coverage map weights by *threat relevance* — what actually targets you
+    (intel, module 15) — rather than raw technique count. Total coverage of techniques nobody uses
+    against you is wasted effort dressed up as progress; a smaller map aligned to your real
+    adversaries beats a greener one full of irrelevant wins.
+
+!!! tip "AI caveat"
+    A model speeds mapping and drafting Navigator layers, but it will confidently map a rule to the
+    wrong technique or overstate what a detection really catches — and an inflated coverage map is
+    *worse* than none, because it manufactures false confidence. Verify every mapping against what
+    the detection actually matches.
 
 ## Learn (~4 hrs)
 
@@ -62,3 +77,9 @@ the detection actually matches.
 A model speeds mapping detections to techniques and drafting a Navigator layer — but it'll confidently
 map a rule to the wrong technique or overstate coverage. Verify each mapping against what the detection
 actually matches; an inflated coverage map is worse than none.
+
+!!! question "Check yourself"
+    - What's the difference between a tactic, a technique, and a sub-technique in ATT&CK?
+    - Two detections both map to T1059 and show green on the Navigator — why might one of them be
+      worthless?
+    - Why is total technique coverage a poor target, and what should you weight by instead?

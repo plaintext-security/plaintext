@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Type:** Build-&-Operate + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    RAG grounds a model in *your* corpus: embed the documents, embed the query, retrieve the closest
+    chunks, stuff them into context. The build (nomic-embed → ChromaDB → Ollama) is the easy half.
+    The hard half is that **RAG fails at retrieval, not generation, and retrieval failure is silent** —
+    the wrong chunks still produce a fluent, confident, wrong answer. So the deliverable is the
+    pipeline *plus* a retrieval eval: a labelled query set, **recall@k** and **groundedness**, and a
+    regression gate that catches a chunking/embedding change before it tanks recall.
+
 ## Why this matters
 A base language model knows only what was in its training data — a fixed cutoff, and nothing
 proprietary: none of your runbooks, none of your past incident timelines, none of your internal
@@ -44,6 +52,12 @@ and does the nearest-neighbour search. A **generation model** (served by Ollama)
 chunks plus the question and writes the answer. Swap ChromaDB for Qdrant or `nomic-embed` for
 `all-minilm` and the rest of the pipeline is unchanged. That is the build, and it is the easy half.
 
+!!! note "The mental model"
+    RAG is three independently swappable parts: an **embedder** maps text to points in semantic space,
+    a **vector store** does nearest-neighbour search, a **generation model** writes the answer from
+    the retrieved chunks. The talking layer is visible and the retrieval layer underneath is invisible
+    — which is exactly why teams grade the prose and miss the failure.
+
 The hard half — and the one load-bearing judgment of this module — is that **RAG fails at retrieval,
 not generation, and retrieval failure is silent.** Three failure modes hide under a good-looking
 answer. A **retrieval miss**: the relevant document exists but the retrieved chunks don't contain
@@ -53,6 +67,12 @@ superseded chunks surface alongside current ones in an uncurated corpus. **Hallu
 the model fabricates a detail that wasn't in the retrieved chunks at all. In every case the
 generation step papers over the gap with fluent prose. The reviewer who only reads the answer is
 grading the system's *handwriting*, not its *sources*.
+
+!!! warning "The gotcha"
+    A RAG that retrieves the *wrong* chunks still produces a confident, well-written, completely wrong
+    answer — and you will never notice from the prose. "It answered my demo question" is an anecdote,
+    not a measurement. Score retrieval directly (recall@k, groundedness) on a held-out query set, or
+    you are grading the system's handwriting instead of its sources.
 
 This is precisely the trap Module 11 names: a non-deterministic system that performs on the handful
 of inputs you happened to try is not a measured system — it is one you have an anecdote about. So the
@@ -72,6 +92,13 @@ incident summaries, surfacing runbook steps, finding precedent for a detection r
 tool for real-time data (threat feeds, current CVEs); that's a tool call, not a retrieval (Module 05).
 The two combine in the SoC copilot of Module 06 — and that copilot is only trustworthy if its
 retrieval is *measured*, which is the harness you build here generalised one module up.
+
+!!! tip "AI caveat"
+    A model writes the chunk-split-embed-store loop and the recall@k arithmetic well. What it gets
+    wrong: the **chunking judgment** (does a chunk bracket a whole procedure step for *your* document
+    lengths?), the **labels** (it may *propose* candidate queries, but you confirm which chunk is
+    genuinely relevant against the source — a model labelling its own query set is contamination), and
+    the **gate direction** (it must fail *closed* — an errored or missing metric fails the build).
 
 ## Learn (~3 hrs)
 
@@ -107,3 +134,8 @@ source document; (2) the **metric direction and gate** — it must **fail closed
 an errored eval fails the build, never silently passes); and (3) the **held-out wall** — a model will
 happily score against the demo question, and the whole point is grading queries the pipeline never
 saw. The model writes the loops; you own the labels, the metric, and the gate.
+
+!!! question "Check yourself"
+    - Why is retrieval the silent failure mode, and what does reading only the answer actually grade?
+    - What does **recall@k** measure, and what distinct failure does **groundedness** catch that recall@k misses?
+    - When is RAG the *wrong* tool — and what do you reach for instead?

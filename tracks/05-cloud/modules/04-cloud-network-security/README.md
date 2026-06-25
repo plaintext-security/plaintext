@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 01 — Shared Responsibility](../01-cloud-fundamentals/README.md) · [Module 02 — Identity & IAM](../02-cloud-identity-iam/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A Security Group is the stateful host firewall you've written for years — but applied per-interface
+    and composable, so reachability is a *graph*, not a table you read top to bottom. The 2017–19 wave of
+    `0.0.0.0/0`-exposed MongoDB/Elasticsearch instances, and the network half of Capital One, were
+    failures of containment, not exploits. A per-rule audit calls a private DB "clean" while it sits one
+    `ssh` hop from the internet, because reach is transitive. And VPC egress is open by default — locking
+    ingress does nothing about exfiltration. The fix is a default-deny baseline authored as code, with a
+    scanner rule that re-checks it, because anyone with `ec2:AuthorizeSecurityGroupIngress` can re-punch
+    the hole.
 
 ## The case
 
@@ -72,6 +81,17 @@ table.** You don't read down the rules; you ask "what can the internet touch, an
 following group-references like edges. People reliably under-count this, and the under-count is how a
 "locked-down" database ends up one `ssh` away from `0.0.0.0/0`.
 
+!!! note "The mental model"
+    A Security Group is the stateful host firewall you already know — but per-network-interface and
+    composable. So reachability is a graph: don't read down the rules, follow group-references as edges
+    and ask "what can the internet touch, and what can *that* touch?"
+
+!!! warning "The gotcha"
+    "Ingress is locked down, so we're secure" misses two things. Reach is transitive — a private DB that
+    only trusts `app-sg` is internet-reachable the moment `app-sg` is. And VPC **egress is open by
+    default**: a clean ingress audit does nothing about a foothold calling the metadata service or
+    shipping data out on 443.
+
 **Q2 — ingress is half the wall; the cloud's default egress is open.** On-prem, a default-deny
 perimeter means nothing leaves unless you allow it. In a VPC, **all outbound traffic is permitted by
 default** — an intentional developer-experience choice that means the exfiltration path Capital One's
@@ -91,6 +111,19 @@ explicitly allows it, so least privilege means *only the rules the architecture 
 "just in case." And because Security Groups are IAM-controlled API objects (Module 02), anyone with
 `ec2:AuthorizeSecurityGroupIngress` can re-punch the hole — so the baseline only stays true if a guardrail
 re-checks it. That guardrail is this module's deliverable.
+
+??? note "Go deeper: the attack surface is a union, and it lives in the composition"
+    No single group in the lab is catastrophic alone — which is exactly why per-group review passes all
+    of them. The exposure is the *union*: `app-sg`'s open `:22` plus `db-sg`'s trust of `app-sg` is the
+    chain; the public ALB plus a missing egress rule is the exfil path. The fix isn't "delete the worst
+    rule" but author a default-deny baseline where only the rules the architecture provably needs exist —
+    no "just in case."
+
+!!! tip "AI caveat"
+    A model is a strong first-pass — it'll flag `0.0.0.0/0` on `:22` instantly. But it reads rules as a
+    list, so it routinely misses the *transitive* hop (internet → `app-sg` → the DB that trusts
+    `app-sg`) and can't know whether a route table or private subnet makes a path live. Confirm each path
+    against `cloudmapper`'s graph; you own the baseline.
 
 ## Learn (~4 hrs)
 
@@ -129,3 +162,8 @@ private subnet actually makes a path live. Treat its output as a hypothesis and 
 the topology — `cloudmapper`'s graph and your reachability check are ground truth, the model is the
 draft. The skill it can't do for you is **authoring the minimum default-deny baseline** that closes the
 reachable paths without breaking the app, and proving the cut. You direct it; you own the baseline.
+
+!!! question "Check yourself"
+    - `app-sg` allows `:22` from `0.0.0.0/0`; `db-sg` allows `:5432` only from `app-sg`, and the DB has no public IP. Is the database reachable from the internet, and why does a per-rule audit miss it?
+    - Your ingress audit is clean. Why does that leave you exposed to an attacker who already has a foothold, and what does a real baseline scope that you didn't?
+    - Across six "mostly fine" Security Groups, where does the real attack surface live — and why does that make "author a default-deny baseline" the fix rather than "delete the worst rule"?

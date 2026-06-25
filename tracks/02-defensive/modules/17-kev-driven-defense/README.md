@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A defender drowning in CVEs patches the wrong thing. CISA's **KEV catalog** is the best free
+    signal for "this is being exploited against real organisations *right now*" — and it changes
+    every few days. The job is to make the feed *operational*: pull the catalog, diff what's new,
+    cross-reference against a reproducible [Vulhub](https://github.com/vulhub/vulhub) target, exploit
+    it, then write the detection that would have caught you. This closes the offense↔defense loop
+    from the inside — and field coverage (URI vs. header vs. User-Agent) is where detections quietly
+    miss.
+
 ## Why this matters
 A defender drowning in CVEs is a defender who patches the wrong thing. CISA's Known Exploited
 Vulnerabilities (KEV) catalog is the single best free signal for "this is being used against real
@@ -26,10 +35,14 @@ benign traffic.
 ## The core idea
 Module 03 (offensive vuln-id) taught the triage call: KEV beats raw CVSS because "confirmed exploited
 in the wild" outranks "theoretically severe." This module takes the *defensive* consequence of that
-call and makes it a loop. KEV is not a static list you read once — it is a feed with a `catalogVersion`
-and a `dateAdded` on every entry, and CISA adds to it continuously. So the first skill is mechanical
-and underrated: **pull the current catalog, diff it against last time, and know what's new.** A
-detection programme that was "complete" last month is already behind if three KEV entries landed since.
+call and makes it a loop.
+
+!!! note "The mental model"
+    KEV is not a static list you read once — it is a feed with a `catalogVersion` and a `dateAdded`
+    on every entry, and CISA adds to it continuously. So the first skill is mechanical and
+    underrated: **pull the current catalog, diff it against last time, and know what's new.** A
+    detection programme that was "complete" last month is already behind if three KEV entries landed
+    since.
 
 The bridge most learners miss is between *"it's on the KEV list"* and *"I have a target I can actually
 work."* Not every KEV entry is reproducible — a Chrome V8 bug or a Cisco appliance RCE has no friendly
@@ -41,13 +54,25 @@ never seen fire.
 
 Then comes the half that pays the rent: **detection.** Exploiting the bug proves it's real; shipping
 the detection is the deliverable. The discipline is to write the rule against *the same traffic your
-exploit produced*, then prove it stays silent on benign requests. Log4Shell (CVE-2021-44228, KEV-listed,
-ransomware-flagged) is the cleanest teaching case: the `${jndi:ldap://…}` lookup string lands in the URI,
-a header, or the User-Agent, and a detector that only checks the URI misses the User-Agent variant — a
-concrete lesson in why field coverage matters. The judgment to carry: KEV tells you it's exploited and
-Vulhub tells you it's reproducible, but both are *leads* — you still read the advisory and the PoC before
-you run anything, and a model that "summarises today's KEV adds" will cheerfully invent a CVE ID or a
-wrong `dateAdded`. Verify against CISA every time.
+exploit produced*, then prove it stays silent on benign requests.
+
+!!! warning "The gotcha"
+    Log4Shell (CVE-2021-44228, KEV-listed, ransomware-flagged) is the cleanest teaching case: the
+    `${jndi:ldap://…}` lookup string lands in the URI, a header, *or* the User-Agent, and a detector
+    that only checks the URI misses the User-Agent variant. Field coverage — checking every place
+    the payload can land — is where detections quietly miss the real attack.
+
+??? note "Go deeper: KEV and Vulhub are leads, not gospel"
+    KEV tells you it's exploited and Vulhub tells you it's reproducible, but both are *leads* — you
+    still read the advisory and the PoC before you run anything. Treat each as a pointer into the
+    primary sources (the vendor advisory, the CVE record), not a substitute for them.
+
+!!! tip "AI caveat"
+    A model is genuinely useful for turning a fresh KEV entry into a starting detection — but it
+    hallucinates here readily: a wrong affected-version range, an invented CVE ID, or a `dateAdded`
+    that doesn't match the catalog. Verify every claim against the CISA entry and the vendor
+    advisory, watch the rule actually fire on your captured exploit traffic, and confirm it stays
+    quiet on benign requests.
 
 ## Learn (~3 hrs)
 
@@ -77,3 +102,11 @@ affected-version range, an invented CVE ID, or a `dateAdded` that doesn't match 
 draft as a lead: verify every claim against the CISA entry and the vendor advisory, watch the rule
 actually fire on your captured exploit traffic, and confirm it stays quiet on benign requests. AI drafts
 the rule; you make it fire, you map it, you own the alert.
+
+!!! question "Check yourself"
+    - Why is KEV a better prioritisation signal than raw CVSS for a defender, and why does diffing
+      the feed matter?
+    - Not every KEV entry is workable in a lab — what makes one reproducible, and how do you find
+      the runnable ones?
+    - With Log4Shell, why does a detector that only inspects the URI miss real exploitation, and
+      what's the general lesson?

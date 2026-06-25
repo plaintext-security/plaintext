@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    An alert is a question, not a verdict: "is this real, and how bad?" **Triage** is the fast
+    filter; **incident response** is the disciplined sequence you run when triage says "real," so
+    you don't improvise under pressure. The backbone is the **NIST lifecycle** (prep →
+    detection/analysis → containment/eradication/recovery → post-incident). The order isn't
+    bureaucracy — it makes you contain before you eradicate and capture the lesson after. The most
+    undervalued phase is the post-incident review, where an incident becomes a new detection.
+
 ## Why this matters
 Detections fire; now what? In the 2013 Target breach, the FireEye malware-detection system *did its
 job* — it fired urgent alerts as the attackers installed exfiltration malware — but Target's security
@@ -28,23 +36,31 @@ in a case-management platform, to a documented verdict.
 An alert is a question, not a verdict: "is this real, and if so, how bad?" **Triage** is the fast
 filter — true/false positive, severity, scope — and **incident response** is what you run when triage
 says "real": a disciplined sequence so you don't improvise under pressure and skip a step that matters.
-The backbone is the **NIST lifecycle** (prep → detection/analysis → containment/eradication/recovery →
-post-incident), the same shape as SANS's PICERL mnemonic. The order isn't bureaucracy — it exists so
-that mid-crisis you contain *before* you eradicate, and you actually capture the lesson *after*.
+!!! note "The mental model"
+    The backbone is the **NIST lifecycle** (prep → detection/analysis →
+    containment/eradication/recovery → post-incident), the same shape as SANS's PICERL mnemonic. The
+    order isn't bureaucracy — it exists so that mid-crisis you contain *before* you eradicate, and
+    you actually capture the lesson *after*. A case-management platform like TheHive externalises
+    the discipline — observables, timeline, and verdict in one place, so nothing critical lives only
+    in one analyst's head.
 
-The point of a process is precisely that it holds when you're stressed and the clock is running. The
-classic failures here are emotional, not technical: eradicating before you understand scope (so the
-attacker simply walks back in), or containing so abruptly that you destroy the evidence you needed to
-answer "how did they get in?" A case-management platform like TheHive exists to externalise the
-discipline — observables, timeline, and verdict in one place, so nothing critical lives only in one
-analyst's head.
+!!! warning "The gotcha"
+    The classic failures here are emotional, not technical: eradicating before you understand scope
+    (so the attacker simply walks back in), or containing so abruptly that you destroy the evidence
+    you needed to answer "how did they get in?" The process exists precisely so it holds when you're
+    stressed and the clock is running.
 
-The judgment: the most undervalued phase is the **post-incident review** — it's where an incident
-turns into a new detection, a hardening change, or a hunt, which is the only way a SOC gets better
-instead of just busier. A model drafts timelines and summaries from your notes fast (a genuine
-time-saver under pressure), but it will state a conclusion your evidence doesn't support, and in IR a
-wrong verdict has consequences. AI drafts the narrative; you verify every step against the evidence
-and own the call.
+??? note "Go deeper: the post-incident review is where a SOC improves"
+    The most undervalued phase is the **post-incident review** — it's where an incident turns into a
+    new detection, a hardening change, or a hunt, which is the only way a SOC gets better instead of
+    just busier. Skip it and you re-fight the same incident; the 2013 Target breach (detection fired
+    and was ignored) is the canonical reminder that the missing piece is process, not telemetry.
+
+!!! tip "AI caveat"
+    A model drafts timelines and summaries from your notes fast (a genuine time-saver under
+    pressure), but it will state a conclusion your evidence doesn't support, and in IR a wrong
+    verdict has consequences. AI drafts the narrative; you verify every step against the evidence
+    and own the call.
 
 ## Learn (~4 hrs)
 
@@ -70,3 +86,11 @@ and own the call.
 A model drafts incident timelines and summaries from your notes fast — a real time-saver under
 pressure. But it'll also state a conclusion your evidence doesn't support; in IR a wrong verdict has
 consequences. AI drafts the narrative; you verify every step against the evidence and own the call.
+
+!!! question "Check yourself"
+    - Why does the NIST order put containment *before* eradication — what goes wrong if you reverse
+      them?
+    - The Target detection system fired correctly and the breach still happened — what does that
+      tell you about where SOCs actually fail?
+    - Which IR phase is most often skipped, and why is skipping it the reason a SOC stays busy
+      without getting better?

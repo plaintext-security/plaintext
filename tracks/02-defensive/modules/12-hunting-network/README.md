@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The network-side counterpart to endpoint hunting rests on one fact: **machines are rhythmic and
+    humans aren't.** An attacker can blend C2 *content* into normal web traffic, but the implant
+    still calls home on a schedule — beaconing — with a tell-tale interval no human browsing
+    produces. So network hunting looks for statistical *tells* (beacons, abnormally long-lived
+    connections, rare destinations) rather than signatures. **RITA** automates the maths over Zeek's
+    `conn.log`. The skill is separating mechanical-benign (a CDN that also polls) from
+    mechanical-malicious — which needs your environment's baseline.
+
 ## Why this matters
 Attackers blend C2 into normal web traffic, but the *rhythm* gives them away — regular, repeated
 callbacks (beaconing) that no human browsing produces. Network threat hunting looks for these
@@ -29,17 +38,24 @@ network hunting looks for statistical *tells* across connection logs rather than
 RITA, running over Zeek's `conn.log`, automates the beacon, long-connection, and rare-destination
 maths.
 
-For the network engineer this is the familiar habit of reading flow data for "who talks to whom,"
-sharpened into "*how regularly* does this internal host talk to that external one — and is that
-rhythm human or mechanical?" Beaconing, abnormally long-lived connections, and rare destinations are
-the three classic shapes; DNS gets its own attention because it's so often allowed straight out, which
-makes it a favourite tunnelling and exfil channel.
+!!! note "The mental model"
+    For the network engineer this is the familiar habit of reading flow data for "who talks to
+    whom," sharpened into "*how regularly* does this internal host talk to that external one — and
+    is that rhythm human or mechanical?" Beaconing, abnormally long-lived connections, and rare
+    destinations are the three classic shapes; DNS gets its own attention because it's so often
+    allowed straight out, which makes it a favourite tunnelling and exfil channel.
 
-The judgment: this is statistical, not signature — and statistics without a baseline lie. The
-textbook false positive is a CDN, NTP source, or telemetry agent that *also* polls on a fixed
-interval; RITA will surface it and a model will gladly label it "C2." The actual skill is separating
-mechanical-benign from mechanical-malicious, which needs your environment's context — verify every
-candidate against the data and the known-bad write-up.
+!!! warning "The gotcha"
+    This is statistical, not signature — and statistics without a baseline lie. The textbook false
+    positive is a CDN, NTP source, or telemetry agent that *also* polls on a fixed interval; RITA
+    will surface it and a model will gladly label it "C2." The actual skill is separating
+    mechanical-benign from mechanical-malicious, which needs your environment's context — verify
+    every candidate against the data and the known-bad write-up.
+
+!!! tip "AI caveat"
+    A model explains a suspicious connection pattern and drafts analysis of Zeek logs — but
+    beaconing detection is statistical, and the model can't see your baseline; it'll call a CDN's
+    regular polling "C2." Verify candidates against the data and the known-bad write-up.
 
 ## Learn (~4 hrs)
 
@@ -61,3 +77,10 @@ candidate against the data and the known-bad write-up.
 A model explains a suspicious connection pattern and drafts analysis of Zeek logs — but beaconing
 detection is statistical, and the model can't see your baseline; it'll call a CDN's regular polling
 "C2." Verify candidates against the data and the known-bad write-up.
+
+!!! question "Check yourself"
+    - Why does beaconing show up even when the C2 channel is fully encrypted?
+    - A host calls one external destination every 60 seconds, all day — what benign explanations
+      must you rule out before calling it C2?
+    - Why is "statistical, not signature" both the strength and the weakness of this kind of
+      hunting?

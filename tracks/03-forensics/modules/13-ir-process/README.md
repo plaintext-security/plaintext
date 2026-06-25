@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Technical forensic skill without a process produces findings that go nowhere. NIST SP 800-61's
+    four phases — Preparation, Detection & Analysis, Containment/Eradication/Recovery, Post-Incident
+    — are the skeleton most regulated IR programs run on, and they're cyclical, not linear. The phase
+    teams botch most is **Containment** (too early loses scope, too late lets the attacker run) — and
+    it's a *business* decision informed by technical findings, not a technical one. Eradication that
+    misses the exfiltrated key is cleanup theater; post-incident review must find *why*, not just
+    *what*.
+
 ## Why this matters
 
 Technical forensic skill without a process framework produces findings that go nowhere. A
@@ -44,6 +53,11 @@ new hosts are scoped in — but as an analytical frame, they give you a consiste
 any incident response: what did the team know and when, what decisions were made, what was
 contained and when, and what was learned.
 
+!!! note "The mental model"
+    The four NIST phases aren't a checklist you walk once — they're an analytical frame and a *cycle*
+    you re-enter as new hosts are scoped in. Use them to audit a response: what did the team know and
+    when, what was decided, what was contained, what was learned.
+
 The phase that responders most consistently execute poorly is **Containment**, and the failure
 mode is almost always one of two things: containing too early (before scoping is complete, so
 the attacker pivots to a host you haven't identified yet) or containing too late (waiting for
@@ -52,6 +66,12 @@ never "do we have enough evidence?" — it's "does the evidence we have change t
 of waiting?" A live attacker with persistence on two hosts is a different calculation than a
 months-old compromised account with no evidence of recent activity. **Containment is a
 business decision informed by technical findings, not a technical decision.**
+
+!!! warning "The gotcha"
+    Containment fails in both directions: too early and the attacker pivots to a host you hadn't
+    scoped; too late and they keep operating while you chase certainty. The question is never "do we
+    have enough evidence?" — it's "does the evidence we have change the cost-benefit of waiting?"
+    That makes containment a *business* call informed by technical findings, not a technical one.
 
 **Eradication** is the phase most organisations underestimate in complexity. Identifying and
 removing the backdoor is the obvious step; equally important are: rotating all credentials
@@ -68,6 +88,21 @@ but not an improvement. The two questions worth forcing: "what was the first det
 *could* have fired, and why didn't it?" and "what single control, if implemented, would have
 had the highest probability of stopping or detecting this earlier?" Those two answers drive the
 remediation roadmap more than any checklist.
+
+??? note "Go deeper: why eradication is harder than it looks"
+    Removing the backdoor is the obvious step and the easy half. The complete job: rotate every
+    credential that touched the compromised host or account, revoke and reissue any secrets or certs
+    it could reach, audit all systems the account could access, and confirm the *initial access
+    vector* is closed. An eradication that removes the implant but misses the exfiltrated AWS key
+    used to create a backdoor IAM user is not eradication — it's cleanup theater, and the attacker
+    walks back in.
+
+!!! tip "AI caveat"
+    The synthesis in post-incident review — read a long timeline, name causal factors, draft
+    remediation — suits AI well. Feed it the merged timeline and ask "earliest point this was
+    detectable? what control would have stopped it?" But a model answers from generic knowledge: it
+    recommends controls you may already have and misses gaps specific to *your* configuration. The
+    review judgment stays yours.
 
 ## Learn (~2 hrs)
 
@@ -99,3 +134,8 @@ could have been detected? What controls, if present, would have stopped it?" Use
 as a starting point; the output must be reviewed against your actual environment and organisational
 context. A model answering from a generic knowledge base will recommend controls you may already
 have and miss gaps specific to your configuration. The review judgment is yours.
+
+!!! question "Check yourself"
+    - Why is containment timing a business decision rather than a technical one — what's the actual question being weighed?
+    - An eradication removed the backdoor but the incident recurred a week later. Name a likely step that was skipped.
+    - What distinguishes a post-incident review that drives improvement from one that just produces a report?

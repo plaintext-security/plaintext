@@ -10,6 +10,13 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A bare IP tells you nothing; the same IP with its ASN, abuse score, and malware history tells you
+    whether to escalate. Enrichment is querying threat-intel APIs to make that call — and the HTTP
+    layer is the easy part. What makes it a *tool* rather than a demo is the error handling: explicit
+    timeouts, `429` retry honouring `Retry-After`, exponential backoff on `5xx`, a max-retry cap, and
+    skip-don't-crash on `404`. You prove it with a test that pins the retry and the verdicts.
+
 ## Why this matters
 A bare IP address tells you nothing. An IP address with its ASN, abuse-report count, country,
 and known-malware association tells you whether to escalate or deprioritize. Threat-intel
@@ -31,6 +38,11 @@ with exponential backoff on `503`, logs and skips on `404` (unknown IOC), and ti
 than hanging forever is production-ready. These cases are not rare — they are the normal
 behaviour of any real threat-intel API under load. Build for them from the start.
 
+!!! note "The mental model"
+    A script that prints the result on success is a demo. A *tool* assumes the API will rate-limit,
+    time out, and 404 on you — because under real load it will — and decides up front what to do in
+    each case. The error paths are the product; the happy path is the part that writes itself.
+
 `httpx` is the modern replacement for `requests` for security tooling: same interface, but async
 support is built in (which matters when you need to enrich 1000 IOCs in parallel), and it has
 better defaults for connection pooling and timeouts. In synchronous mode (`httpx.get(...)`) it is
@@ -38,6 +50,11 @@ a drop-in replacement. Set an explicit `timeout=` on every call; the default is 
 means a hung API call hangs your whole script. `timeout=httpx.Timeout(10.0, connect=5.0, read=30.0)`
 is a reasonable starting point — `httpx.Timeout` needs either a default (the first positional) or all
 four of `connect`/`read`/`write`/`pool` set explicitly.
+
+!!! warning "The gotcha"
+    `httpx`'s default is *no* timeout — one hung API call hangs your whole enrichment run with no
+    error and no progress. Set an explicit `timeout=` on every call (or on the `Client`); a tool that
+    can wait forever is a tool that will, on the worst possible night.
 
 Authentication to threat-intel APIs is almost always via a header: `X-API-Key: <value>` or
 `Authorization: Bearer <token>`. Load the key from the environment, never from the source file.
@@ -52,6 +69,18 @@ retry once. If there is no `Retry-After`, use exponential backoff: wait 1 s, the
 up to a cap. Do not retry indefinitely — set a max retry count (three is usually right) and then
 log and skip the IOC. An enrichment script that hangs or crashes on rate-limiting is worse than
 one that skips a few IOCs and finishes.
+
+??? note "Go deeper: why a session, not per-call headers"
+    `httpx.Client(headers={"X-API-Key": os.environ["VT_API_KEY"]})` sets auth once for every request
+    in the session and reuses the connection. That connection reuse matters for rate-limiting — a
+    single persistent session respects the same-connection queue better than a fresh connection per
+    request — and loading the key from the environment (never the source file) keeps it out of git.
+
+!!! tip "AI caveat"
+    A model writes the query loop fast; the hidden bugs are all in the error cases. Run its code
+    against an API that returns `429`, `503`, and `404` in sequence: does it retry the 429, give up
+    gracefully on repeated 503, skip the 404? Those few lines of test coverage are the whole difference
+    between a script and a tool.
 
 ## Learn (~2.5 hrs)
 
@@ -79,3 +108,8 @@ A model writes the API query loop quickly. The hidden bugs are in the error case
 against the local API that returns `429`, `503`, and `404` in sequence. Does the model's code retry
 the 429? Does it give up gracefully on repeated 503? Does it skip the 404 or crash? Those three
 lines of test coverage are the difference between a script and a tool.
+
+!!! question "Check yourself"
+    - What is `httpx`'s default timeout, and why is that the most dangerous default in the library?
+    - On a `429`, what's the correct response — and how does that differ from a `503`?
+    - Why set the auth header on the `Client` once rather than on every individual request?

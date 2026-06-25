@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~3.5–5 hrs (study + lab) &nbsp;·&nbsp; **Type:** Adversarial Review &nbsp;·&nbsp; **Prerequisites:** [13 — Incident Response Process](../13-ir-process/README.md), [14 — Reporting & Root-Cause Analysis](../14-reporting-root-cause/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every prior module ended with "the AI output is a lead, not evidence." This is where that becomes
+    the work. You're handed a fluent, confident, complete-looking AI incident summary — and it
+    contains fabricated events, a nonexistent CVE, an ATT&CK ID under the wrong tactic, and a root
+    cause the artifacts contradict. None of it is visible from a careful *read*; fluency is not
+    accuracy. The skill isn't prompting — it's rigorous, artifact-anchored review, and the
+    deliverable is a reusable **trust policy/checklist**, not a rewrite.
+
 ## Why this matters
 
 Every prior module in this track ends with the same advisory note: feed your timeline to a model, but the
@@ -43,6 +51,13 @@ The reveal: it is wrong in several specific, load-bearing ways, and **the reason
 are the characteristic failure modes of a language model asked to narrate forensic evidence.** Naming those failure
 modes is the heart of this module, because once you know the shapes, you know where to look.
 
+!!! note "The mental model"
+    A confident AI summary is the most dangerous kind of wrong, because fluency short-circuits the
+    scrutiny you'd apply to a hesitant answer. The failures aren't random — they're three predictable
+    shapes (hallucinated specifics, plausible-but-wrong structured fields, a smooth-but-contradicted
+    root cause). Knowing the shapes tells you where to look; the one governing rule is *every claim
+    traces to an artifact, or it's a hypothesis, not a finding*.
+
 **Hallucinated specifics.** A model abhors a gap. Asked for a root cause when the evidence is ambiguous, it will
 not say "unknown" — it will invent the most *plausible* answer: a CVE ID that fits the software version (but
 doesn't exist or doesn't apply), a precise exploitation timestamp the logs never recorded, a phishing email no one
@@ -56,6 +71,13 @@ or a technique that sounds right for the behaviour but isn't what the artifact s
 and wrong value. These pass a skim precisely because the *shape* is perfect; they fail the instant you check the ID
 against the actual ATT&CK page or recompute the hash. Structured fields are where the model's fluency most outruns
 its grounding, and where verification is cheapest — so check them first.
+
+!!! warning "The gotcha"
+    The most dangerous error isn't the obvious fabrication — it's the *smooth* one. A wrong root
+    cause that connects the events coherently (brute-force when the logs show a valid credential from
+    a new location; "initial access via RDP" when the first malicious artifact predates any RDP
+    session) is seductive precisely because it reads well, and a model is built to produce smooth
+    stories. Test the *causal chain* against the timeline; never reward a story for being coherent.
 
 **The wrong root cause stated confidently.** The most dangerous error is the narrative one: a causal story that
 connects the events smoothly and is contradicted by the evidence — attributing the breach to a brute-force login
@@ -108,3 +130,8 @@ separately, which ones" — to build your own practice corpus, which is exactly 
 Module 15 applied to review. The judgment that stays yours: every CVE checked against the primary source, every
 ATT&CK ID against MITRE, every causal claim against the timeline — and the explicit decision about what the AI is
 permitted to assert in a report that carries your name.
+
+!!! question "Check yourself"
+    - The summary reads like a senior analyst wrote it. Why does that fluency make it *more* dangerous to trust, not less?
+    - Which class of claim do you verify first, and why is it both the cheapest to check and the most likely to be wrong?
+    - Why is the deliverable a reusable trust policy/checklist rather than a corrected version of the summary?

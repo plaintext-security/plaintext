@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The browser is the densest diary of what a user actually did — Chrome stores history, searches,
+    and downloads in SQLite databases in the user profile, going back months. `hindsight` parses
+    those profiles into a structured timeline, and crucially reads the Write-Ahead Log, which often
+    still holds rows from *before* the user cleared history. The artifacts are redundant (history,
+    DNS cache, downloads, network flows), and the recurring trap is Chrome's timestamp epoch:
+    microseconds since 1601, not Unix — get it wrong and every time shifts 369 years.
+
 ## Why this matters
 Web browsers and desktop applications are the primary interface for most modern work — and most modern threats. A user who was phishing-targeted clicked something in a browser. An insider who exfiltrated data probably navigated to a cloud storage service or a webmail provider. A compromised machine is often first accessed via a malicious payload downloaded by a browser. Understanding what the browser recorded — and that it recorded far more than the visible history — is essential for reconstructing user activity during an incident.
 
@@ -21,13 +29,36 @@ Extract browsing history, search terms, download records, and cached credentials
 ## The core idea
 Every major browser stores its state in a collection of SQLite databases and JSON files on the local filesystem. Chrome and its derivatives (Edge, Brave, Arc) store history in `~/.config/google-chrome/Default/History` on Linux, `%LOCALAPPDATA%\Google\Chrome\User Data\Default\History` on Windows. This SQLite file contains tables for `urls` (every URL visited, visit count, last visit time), `visits` (each individual visit with transition type and referrer chain), `downloads` (filename, URL, byte count, state), and `keyword_search_terms` (search queries typed in the address bar). This is not a redacted log — it is a dense, timestamped audit trail of everything the browser navigated to, going back months or years unless manually cleared.
 
+!!! note "The mental model"
+    A browser profile is not a redacted log — it's a dense, timestamped audit trail of everything
+    the browser navigated to, and it's *redundant by design*. The same activity is recorded in the
+    history DB, the WAL, the DNS cache, the download directory, and network flows. Knock out one and
+    the others still testify.
+
 **What makes browser artifacts forensically rich** is that they are redundant. Clearing browser history removes the `urls` and `visits` table rows, but it does not clear the browser's DNS cache, the OS's DNS cache, the network flow data, or the download directory. More usefully for the forensic investigator: browser databases maintain a Write-Ahead Log (`History-wal`) and a journal file that often contain rows from before a clear was issued, because SQLite's WAL is not synchronously pruned when transactions commit. `hindsight` — a forensic tool purpose-built for Chrome-family browsers — understands this and reads both the main database and the WAL.
 
 **Application-specific databases** follow the same pattern: Slack stores its workspace message history in a LevelDB database. Teams stores logs and media in `%APPDATA%\Microsoft\Teams`. Outlook stores email, contacts, and calendar in `.ost` (offline store) files — structured data formats that forensic tools can parse without a running application. The investigator's job is to know that "the user says they didn't download the file" is a testable claim, and that the SQLite download table, the `$MFT`, the prefetch, and the browser cache collectively either corroborate or contradict it.
 
 **Hindsight** is a Python-based forensic tool from Google's internal DFIR team, released as open-source. It parses Chrome-family browser profile directories and produces structured output (XLSX, JSONL, HTML) of everything it finds: visited URLs sorted by timestamp, download records with source URLs, search terms, cookies, form autofill data, and extension state. For the forensic investigator, it provides a first-pass timeline of browser activity that can be fed directly into the super-timeline built in Module 07.
 
-**Timestamps in browser databases** require care. Chrome's native timestamp format is the number of microseconds since January 1, 1601 UTC (Windows FILETIME epoch) — not the Unix epoch. Hindsight handles the conversion automatically; raw SQL queries require the manual conversion `datetime(visit_time / 1000000 - 11644473600, 'unixepoch')`. Getting the epoch wrong shifts all timestamps by 369 years in the wrong direction — a mistake that has produced confused forensic reports. Always verify a known timestamp (e.g., the last visit to a well-known site) against the expected value before trusting a conversion.
+!!! warning "The gotcha"
+    Chrome's native timestamp is microseconds since **1601-01-01 UTC** (Windows FILETIME), not the
+    Unix epoch. Hindsight converts automatically; raw SQL needs
+    `datetime(visit_time / 1000000 - 11644473600, 'unixepoch')`. Get the epoch wrong and *every*
+    timestamp shifts 369 years — a mistake that has shipped in real reports. Always sanity-check one
+    known timestamp before trusting the conversion.
+
+??? note "Go deeper: application artifacts beyond the browser"
+    The same pattern recurs across desktop apps: Slack stores workspace history in a LevelDB
+    database, Teams keeps logs and media in `%APPDATA%\Microsoft\Teams`, and Outlook stores mail,
+    contacts, and calendar in `.ost` files — all parseable offline without the app running. "The
+    user says they didn't download the file" is a testable claim: the SQLite download table, `$MFT`,
+    prefetch, and browser cache collectively corroborate or contradict it.
+
+!!! tip "AI caveat"
+    A model is handy for converting a raw Chrome microsecond value or drafting SQL against the
+    browser schema — but it guesses at schema details and sometimes confuses the Chrome epoch with
+    Unix. Always verify a timestamp conversion against a known event before trusting AI-generated SQL.
 
 ## Learn (~3 hrs)
 
@@ -57,3 +88,8 @@ Every major browser stores its state in a collection of SQLite databases and JSO
 
 ## AI acceleration
 AI is useful for translating Chrome's timestamp format (feed it a raw microsecond value, get a human-readable datetime) and for drafting SQL queries against the browser schema. Where it's not reliable: it will guess at SQLite schema details and sometimes confuse the Chrome epoch with the Unix epoch. Always verify a timestamp conversion against a known event before trusting AI-generated SQL output.
+
+!!! question "Check yourself"
+    - A suspect cleared their browser history. Name two places the visited URLs may still survive, and why.
+    - Your SQL converts a Chrome `visit_time` to a date in the year 1601. What did you forget, and what's the fix?
+    - Incognito mode left no rows in `urls`/`visits`. What artifacts can still place the user on a given site?

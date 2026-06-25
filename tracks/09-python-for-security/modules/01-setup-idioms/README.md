@@ -10,6 +10,13 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The first hour of a Python security project decides how much debt it carries: global installs,
+    hardcoded keys, a linter never switched on. A `venv` is your dependency boundary; `ruff` catches
+    style and bug-level mistakes; `bandit` catches the security-specific ones — `shell=True`,
+    `eval()`, secrets in source. Wire all three as a quality gate up front, point it at AI-generated
+    Python, and watch it flag the anti-patterns models repeat by default.
+
 ## Why this matters
 The first week of a new Python project usually carries the most technical debt. Dependencies get
 installed globally, credentials get hardcoded to "test quickly," and the linter never gets turned
@@ -31,6 +38,11 @@ month. `venv` gives you an isolated interpreter; `pip freeze > requirements.txt`
 runs in production. Think of it as the security hygiene equivalent of least-privilege: the tool
 only has access to what you deliberately gave it.
 
+!!! note "The mental model"
+    A `venv` is least-privilege for dependencies, and the linter pair is your pre-flight gate: `ruff`
+    for style and common bugs, `bandit` for security anti-patterns. A clean `bandit` run doesn't mean
+    safe — it means the obvious landmines are gone. It's the floor, not the ceiling.
+
 The security anti-patterns that matter most are not exotic. **Hardcoded credentials** (`API_KEY =
 "abc123"` at module level) are the single most common finding in security-team code repositories —
 they end up in git, and they stay there forever in the history even after you delete the line. The
@@ -39,17 +51,27 @@ turns a string into a shell invocation and opens the door to injection the momen
 that string is user-controlled; prefer a list argument and `shell=False`. **`eval()` and
 `exec()`** are almost never necessary in a security tool and are instant red flags in code review.
 
+!!! warning "The gotcha"
+    Hardcoded credentials don't go away when you delete the line — they live in git history forever.
+    The fix is `os.environ.get("API_KEY")` plus a `.env` you gitignore *from day one*. Undoing this
+    later means rotating the leaked secret, not just editing a file.
+
 `bandit` is the static analyzer that catches these patterns automatically. It is not a substitute
 for code review, but it is the first gate — the equivalent of running `checkov` before you
-`terraform apply`. A clean `bandit` run does not mean the code is safe; it means the obvious
-landmines are gone. `ruff` handles style and common bugs (shadowed builtins, unused imports,
+`terraform apply`. `ruff` handles style and common bugs (shadowed builtins, unused imports,
 mutable defaults) faster than `flake8` + `isort` combined. Running both before every commit is
-the floor, not the ceiling.
+the discipline.
 
-Secrets management in practice: production tools use environment variables or a secrets manager
-(Vault, AWS Secrets Manager, Azure Key Vault) — never the source file. For local lab work, a
-`.env` file loaded by `python-dotenv` is acceptable, provided the file is in `.gitignore` from
-day one. Get into this habit on the first script; undoing it later is painful.
+??? note "Go deeper: secrets management in practice"
+    Production tools use environment variables or a secrets manager (Vault, AWS Secrets Manager,
+    Azure Key Vault) — never the source file. For local lab work, a `.env` file loaded by
+    `python-dotenv` is acceptable, provided the file is in `.gitignore` from day one. Get into this
+    habit on the first script; retrofitting it after a leak is far more expensive.
+
+!!! tip "AI caveat"
+    AI-generated Python passes syntax checks while routinely shipping `shell=True`, raw `os.system()`,
+    and API keys in string literals. The model drafts; `ruff` formats; `bandit` gates; you read and
+    own every line it flags.
 
 ## Learn (~2 hrs)
 
@@ -76,3 +98,8 @@ AI generates Python code that passes syntax checks but routinely includes `shell
 `os.system()`, and API keys in strings. Ask a model to write a script, then immediately feed
 the output to `bandit -r .` — you will find something on the first try. The workflow: model
 drafts, `ruff` formats, `bandit` gates, you read and own it.
+
+!!! question "Check yourself"
+    - Why is a virtual environment a security boundary, not just a convenience?
+    - What does a clean `bandit` run actually prove — and what does it not?
+    - You deleted a hardcoded API key from your script. Why isn't the secret safe yet?

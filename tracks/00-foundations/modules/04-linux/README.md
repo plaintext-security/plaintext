@@ -10,6 +10,15 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Most of what you'll defend, attack, or investigate runs on Linux — and an investigation is just
+    reading its files and logs well. Two mental models carry nearly all of Linux security:
+    **everything is a file** (accounts, privilege, processes, logs are all text the same handful of
+    tools read), and **permissions are the whole access-control story in a few bits** (`rwx` for
+    user/group/other, plus the outsized **SUID** bit). You'll investigate a Mirai-style compromised
+    host — *who got in, how, what they can now reach* — using the `grep | awk | cut | sort` pipeline,
+    then fold the hunt into a reusable triage script.
+
 ## The hook — how a worm ate the internet with one password
 
 In October 2016, a botnet called **Mirai** knocked a chunk of the US internet offline — Twitter,
@@ -38,6 +47,13 @@ out **who got in, how, and what they can now do**, then fold that hunt into a re
 Two mental models carry almost all of Linux security, and both of them turn "investigation" into
 "reading."
 
+!!! note "The mental model"
+    Both Linux-security mental models turn "investigation" into "reading." **Everything is a file** —
+    so the same `grep`/`awk`/`cut`/`sort` pipeline reads accounts, privilege, processes, and logs
+    alike; there's no special forensics app, the forensics app is `grep` and your eyes. And
+    **permissions are the access-control story in a few bits**: `rwx` for user/group/other, plus the
+    one bit that punches above its weight — **SUID**.
+
 **Everything is a file.** Users live in a file (`/etc/passwd`). Who can become root lives in a file
 (`/etc/group`, `/etc/sudoers`). Login attempts — every success and every failure — land as lines in a log
 file (`/var/log/auth.log`). Even running processes and live kernel state show up as files under `/proc`.
@@ -55,16 +71,22 @@ who launches it. That's intentional and necessary for a few tools (`passwd` has 
 file), but it's also the seed of half of Linux privilege escalation: find an unexpected SUID-root binary
 an attacker dropped, and you've found a backdoor that hands anyone root.
 
+!!! warning "The gotcha"
+    SUID is easy to dismiss as a one-bit curiosity. It's the seed of half of Linux privilege
+    escalation: a SUID-root binary runs as root no matter who launches it, so an *unexpected* one is
+    a backdoor, not trivia. Treat every SUID-root file you didn't expect as a finding.
+
 So an investigation is three reading passes over those files: **who's here** (accounts and who can become
 root), **what can they do** (permissions and SUID), and **what happened** (the logs). The
 `grep | awk | cut | sort | uniq` pipeline is how you turn a million log lines into the one fact that
 matters — *which IP tried 200 passwords, and did any of them work?* This is the muscle memory every later
 track assumes: when offense escalates privilege or forensics carves a host, it starts right here.
 
-The judgment to carry: a model is a fast shell tutor and a great one-liner generator, but **verify before
-you run.** Check flags against `man`, and never paste a generated command that touches files or
-permissions — a wrong `rm` or `chmod` on a live box has no undo. The fluency is the point; AI accelerates
-building it, it does not replace it.
+!!! tip "AI caveat"
+    A model is a fast shell tutor and a great one-liner generator, but **verify before you run.**
+    Check flags against `man`, and never paste a generated command that touches files or permissions
+    — a wrong `rm` or `chmod` on a live box has no undo. The fluency is the point; AI accelerates
+    building it, it does not replace it.
 
 ## Learn (~3 hrs)
 
@@ -96,3 +118,8 @@ confidently produce a one-liner with the wrong field number (`$11` vs `$9` depen
 format) or a flag that means something else on your distro. **AI drafts → you verify against `man` and
 the real data → you own the command.** Never run a generated command that deletes, moves, or `chmod`s
 anything on a system you care about without reading every token first.
+
+!!! question "Check yourself"
+    - "Everything is a file" — name three security artifacts you'd read with the *same* text tools, and where they live.
+    - Why does an *unexpected* SUID-root binary count as a finding rather than trivia?
+    - You have a million-line `auth.log`. What pipeline turns it into "which IP tried 200 passwords, and did any work?"

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The endpoint is where the attack actually executes — a process spawns, injects, installs
+    persistence — while the network only sees the echoes. Default Windows logging is famously thin;
+    **Sysmon** turns a host into a rich detection sensor with a schema a huge share of public
+    detections are written against. Its most valuable gift is **process ancestry**: almost nothing
+    looks malicious as a single event, only as a lineage. And the config *is* the detection strategy
+    — every exclusion is a place an attacker can choose to live.
+
 ## Why this matters
 Most attacker activity — process creation, injection, persistence — happens on the endpoint, where
 default Windows logging is thin. Sysmon turns a Windows host into a rich detection sensor, and its
@@ -31,19 +39,35 @@ that gap, writing a rich, consistent event schema — process creation with the 
 parent, network connections, image loads, registry and file changes — that a huge fraction of
 public detections are written directly against.
 
-The single most valuable thing Sysmon gives you is **process ancestry** — the parent/child chain.
-Almost no technique looks malicious as a single event; it looks malicious as a *lineage*.
-`powershell.exe` alone is benign; `winword.exe → powershell.exe -enc <base64>` is a macro dropper.
-(That is literally the event the [detection-as-code](../08-detection-as-code/) lab fires on.)
-Learning to read the tree — with command lines attached — is the core endpoint skill, and it's why
-Event ID 1 is the workhorse of endpoint detection.
+!!! note "The mental model"
+    The single most valuable thing Sysmon gives you is **process ancestry** — the parent/child
+    chain. Almost no technique looks malicious as a single event; it looks malicious as a *lineage*.
+    `powershell.exe` alone is benign; `winword.exe → powershell.exe -enc <base64>` is a macro
+    dropper. (That is literally the event the [detection-as-code](../08-detection-as-code/) lab
+    fires on.) Learning to read the tree — with command lines attached — is the core endpoint skill,
+    and it's why Event ID 1 is the workhorse of endpoint detection.
 
 The judgment call: Sysmon's power is also its trap. Log everything and you drown in volume and cost
 while burying the very signal you're after — so **the config *is* the detection strategy.** The
 community baseline (SwiftOnSecurity's config) encodes years of "what's worth collecting and what's
-just noise"; you start from it and tune, not from a blank file. And every exclusion is a security
-decision, not just noise reduction — each path you stop logging is a place an attacker can choose to
-live.
+just noise"; you start from it and tune, not from a blank file.
+
+!!! warning "The gotcha"
+    Every exclusion is a security decision, not just noise reduction — each path you stop logging is
+    a place an attacker can choose to live. A "tidy" config that drops a noisy directory may have
+    just handed an adversary a blind spot, so weigh exclusions as carefully as inclusions.
+
+??? note "Go deeper: reading telemetry is only half the job"
+    Reading the events and *building a verified detection from them* are equal halves. It's easy to
+    "note what a rule would key on" and stop there; the discipline is to author the detection
+    (Sigma/predicate) and prove it fires on the malicious chain while staying quiet on benign
+    activity — not assume it would.
+
+!!! tip "AI caveat"
+    A model explains a Sysmon Event ID or a suspicious command line instantly — a genuine
+    accelerator when triaging. But it'll also rationalise a benign-looking event that's actually
+    malicious (or vice-versa); confirm against the process ancestry and the real data, not the
+    model's vibe.
 
 ## Learn (~4 hrs)
 
@@ -66,3 +90,10 @@ live.
 A model explains a Sysmon Event ID or a suspicious command line instantly — a genuine accelerator
 when triaging. But it'll also rationalise a benign-looking event that's actually malicious (or
 vice-versa); confirm against the process ancestry and the real data, not the model's vibe.
+
+!!! question "Check yourself"
+    - Why is `powershell.exe` running not suspicious on its own, but `winword.exe → powershell.exe
+      -enc …` is — and which Sysmon field makes that visible?
+    - In what sense is a Sysmon exclusion a *security* decision and not just noise reduction?
+    - You've read the telemetry and spotted the malicious chain — what two things must your
+      detection prove before the module is actually done?

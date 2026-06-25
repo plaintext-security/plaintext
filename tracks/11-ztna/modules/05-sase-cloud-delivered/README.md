@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    SASE is the *managed* version of the Zero Trust networking stack you'd otherwise build by hand. You
+    publish a private app to the whole internet through a vendor's global edge while the app opens
+    **no inbound ports at all** — `cloudflared` dials *out*, the edge enforces your Access policy, and
+    an attacker scanning your IP finds nothing to hit. The judgment is build-vs-buy (ops burden vs
+    control), and the module ends by red-teaming your own design: prove there's no listener and that an
+    unauthenticated request is turned away.
+
 ## Why this matters
 
 Module 04 made you decide the *architecture*. This module makes you ship one and operate it. The
@@ -35,6 +43,13 @@ self-hosted, and when it doesn't — and red-team your own design by confirming 
 
 ## The core idea
 
+!!! note "The mental model"
+    SASE is the *managed* version of the Zero Trust networking stack you built by hand in Modules 02–06.
+    Instead of running and patching a Pomerium proxy and a headscale coordination server yourself, you
+    rent a vendor's global edge that provides those controls as a service. The architectural core is the
+    **tunnel**: `cloudflared` dials *outbound-only* to the edge, so the app is unreachable from the
+    internet unless the request arrives through the edge — which evaluates your Access policy first.
+
 SASE — Secure Access Service Edge, the term Gartner coined in its 2019 "The Future of Network
 Security Is in the Cloud" report — names the convergence of networking (SD-WAN) and security (ZTNA,
 CASB, SWG, FWaaS) into one cloud-delivered service. The practitioner translation is shorter: SASE
@@ -51,6 +66,12 @@ OTP today, federated SSO tomorrow, posture-gated access after that, with the tun
 The gotcha to internalise: `include` is an **OR** (any matching rule lets you in) and `require` is
 an **AND** (every rule must hold). A policy with only `include: any @company.com email` and no
 `require` clause is syntactically valid and wide open — the implicit-trust bug, restored one layer up.
+
+!!! warning "The gotcha"
+    `include` is an **OR** (any matching rule lets you in); `require` is an **AND** (every rule must
+    hold). A policy with only an `include` and no `require` clause is syntactically valid and wide
+    open — the implicit-trust bug restored one layer up. It's the field where "valid policy" and "wide
+    open" coincide.
 
 **The load-bearing judgment of this module is build-vs-buy: cloud-delivered SASE vs self-hosted
 ZTNA — and you must defend the call.** It is *not* "the cloud always wins." The honest axis is
@@ -78,6 +99,20 @@ and reaching the app demands passing edge auth *and* (when you add it) device po
 made the app invincible — you've removed the cheap front door and forced the attacker up the cost
 curve. State what's left: a stolen valid session, a compromised enrolled device, a vendor-side
 compromise. That residual is the honest output of red-teaming your own design.
+
+??? note "Go deeper: build-vs-buy is ops-burden vs control"
+    Cloud-delivered wins when the team is small and the toil of running and patching your own proxies
+    dominates — the vendor operates the global edge, DDoS scrubbing, and the policy console. Self-hosted
+    wins when the data path itself is the risk: a regulated environment that can't route traffic through
+    a third party, an air-gapped or sovereignty-constrained network, a vendor SLA you can't make your
+    security floor, or a scale where per-seat pricing breaks. The convenience cloud-delivered buys, it
+    sells you back in **dependency** — the vendor is now in your data path and their SLA is your floor.
+
+!!! tip "AI caveat"
+    A model emits syntactically correct Cloudflare Access JSON fast — the trap. Two failures recur: it
+    reaches for `include` where you need `require` (turning an AND into an OR), and it uses deprecated
+    field names the dashboard silently won't honour. Then do the one test a model can't: attempt access
+    with a credential that *should* be denied, and confirm it is.
 
 ## Learn (~3 hrs)
 
@@ -117,3 +152,8 @@ every `include` / `require` / `exclude` against the current Cloudflare docs, and
 least one `require` clause anywhere your intent is "AND". Then do the one test a model can't do for
 you: attempt access with a credential that *should be denied*, and confirm it is. AI drafts the
 policy → you prove the deny path → you own the gate.
+
+!!! question "Check yourself"
+    - Why does an attacker scanning your origin's IP find nothing, even though the app is published to the whole internet?
+    - A policy has one `include: @company.com email` and no `require` clause — who can get in, and why is that the implicit-trust bug?
+    - When does self-hosted ZTNA beat cloud-delivered SASE, despite the higher ops burden?

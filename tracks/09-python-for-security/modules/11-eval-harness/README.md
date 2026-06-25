@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Type:** Eval Harness &nbsp;·&nbsp; **Prerequisites:** [02 — Files, Regex & Log Parsing](../02-files-regex-parsing/README.md), [10 — Packaging, Testing & Owning AI Code](../10-packaging-testing/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A unit test asks "does the code do what I wrote?"; an eval asks "does the tool catch the attacks,
+    and how often does it cry wolf?" — and only the second has a number. This module turns the
+    Module-02 log parser into a *measured* tool: a labelled, held-out corpus, a precision/recall
+    scorecard instead of a vibe, and a CI gate that fails the build when a change degrades recall. The
+    proof the gate works is a *planted regression* — you weaken the rule on purpose and watch CI turn
+    red. A gate you've only ever seen pass isn't a gate.
+
 ## Why this matters
 You built a log parser back in Module 02 — it pulled failed-login IPs out of an SSH auth log and
 flagged the brute-force offenders. It worked on the sample log. Module 10 taught you to pin its
@@ -46,6 +54,12 @@ on, reported as a number, gated in CI.** That is the entire module, and it is th
 of this build-track has been doing by accident ("verify on positive *and* negative cases") without
 ever naming.
 
+!!! note "The mental model"
+    The *code* is deterministic; the *space of inputs it will face* is not — and that gap is the thing
+    you cannot eyeball. The move that makes a detection tool trustworthy isn't a cleverer regex, it's a
+    number: score it against data it was never tuned on, report precision/recall, and gate that number
+    in CI.
+
 **A labelled corpus is the spec your unit tests aren't.** A `pytest` assertion says "this input
 yields this output." A *corpus* is a graded exam: dozens of log lines, each tagged `attack` or
 `benign`, including the cases that *break* naive tools — the benign `cron` double-failure, the
@@ -55,6 +69,13 @@ corpus is **held out** from whatever sample you tuned the regex against — scor
 tuned on and the number is inflated by the same memorisation that makes the demo lie. (This is the
 machine-learning train/dev/test split, and it transfers intact to a rule-based tool: tune the regex
 against the dev log, *grade* it against a test corpus it has never seen.)
+
+!!! warning "The gotcha"
+    Your corpus is imbalanced — most log lines are benign — so a tool that flags *nothing* scores 95%+
+    "accuracy" while catching zero attacks. Accuracy lies on skewed data; gate on **recall** (a missed
+    intrusion is a breach) and watch **precision** as its cost. And never grade on the lines you tuned
+    on — score on held-out data or the number is inflated by the same memorisation that makes the demo
+    lie.
 
 **Metric choice is a judgment, and accuracy is usually the wrong one.** Your corpus is imbalanced —
 most log lines are benign — so a tool that flags *nothing* scores 95%+ "accuracy" while catching zero
@@ -73,6 +94,14 @@ the *hard* cases — the near-misses that look like the other class, the malform
 brittle parser, the novel attack phrased unusually. The hand-built 40-line corpus that includes the
 cases you *know* trip naive tools is worth more than a thousand auto-generated easy ones.
 
+??? note "Go deeper: the confusion matrix, the knee, and `parametrize`"
+    Precision (of the lines you flagged, how many were real?) and recall (of the real attacks, how many
+    did you catch?) both come out of the confusion matrix — TP/FP/FN/TN. The eval lets you find the
+    *knee* of the tradeoff on purpose: tighten the rule and recall drops, loosen it and precision drops,
+    and the scorecard shows you exactly where. Mechanically, `@pytest.mark.parametrize` turns each
+    labelled corpus line into its own pass/fail test — the bridge from the Module-10 suite to a
+    corpus-driven eval.
+
 **The regression gate is what makes this engineering, not a one-off study.** The deliverable is a
 **gate**: the eval runs in CI, and a change that drops recall below a declared floor **fails the
 build** — exactly as a unit test fails on a broken function. The proof that the gate works is a
@@ -81,6 +110,13 @@ red and exit non-zero. A gate you have only ever seen pass is not a gate — you
 catch anything. The green-on-good / red-on-regressed contrast *is* the lesson; it's what lets a
 teammate refactor the parser on a Friday without praying. Unit tests prove the code didn't *break*;
 the eval gate proves the tool didn't get *worse*.
+
+!!! tip "AI caveat"
+    A model writes the mechanical parts well — confusion-matrix counting, the scorecard, the Actions
+    YAML. What it quietly gets wrong is the judgment: it defaults to *accuracy* (override it to recall),
+    it will happily grade on the lines it generated and "tested" (enforce the held-out wall), and it
+    won't fail-close by default. Use it to expand the corpus with adversarial near-misses, then label
+    every one yourself — a model labelling its own test set is the contamination this module warns about.
 
 ## Learn (~2.5 hrs)
 
@@ -116,3 +152,8 @@ Use a model to **expand the corpus with adversarial near-misses** — benign lin
 attacks, attacks phrased to dodge the obvious regex — then **label every one yourself** and verify it,
 because a model labelling its own test set is the contamination this whole module warns against. You
 generate candidates; you own the ground truth.
+
+!!! question "Check yourself"
+    - What question does an eval answer that a unit test cannot — and why does only the eval have a number?
+    - Why is accuracy the wrong metric for an imbalanced detection corpus, and what do you gate on instead?
+    - Why is a planted regression the proof your CI gate works, and what does its absence leave unproven?

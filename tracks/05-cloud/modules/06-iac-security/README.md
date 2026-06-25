@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 01 — Shared Responsibility](../01-cloud-fundamentals/README.md) · [Module 05 — Posture Auditing](../05-posture-auditing/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The unencrypted bucket and the `0.0.0.0/0` security group behind the cloud's biggest leaks almost
+    never start in a console — they ship as a line of Terraform, reviewed for *logic* not *posture*. A
+    static analyzer (`checkov`, `tfsec`, `trivy config`) parses the HCL before a resource exists and
+    flags known-bad patterns in milliseconds. But the scan isn't the lesson: it's a tireless junior
+    reviewer with no context, so the value you add is the verdict it can't render — and the deliverable
+    is a **CI gate** that blocks the bad merge and passes the fix, so it can't regress.
 
 ## Where the breaches actually start
 
@@ -42,6 +49,12 @@ your public load balancer actually needs, or that the open one on 5432 is a data
 the internet — because both are the same pattern, and the difference is a *decision* the scanner can't
 see. It cannot read intent, business context, or the blast radius two resources away.
 
+!!! note "The mental model"
+    A scanner is a brilliant, tireless junior reviewer who has memorized every known-bad pattern and
+    understands none of your intentions. It catches the *pattern* instantly across ten thousand files;
+    it can't tell the intended open port from the catastrophic one. That gap — pattern vs. decision —
+    is exactly where you add the value it can't.
+
 So the scanner splits the world cleanly into two halves, and your job is different in each:
 
 - **The known-bad pattern** — unencrypted storage, wildcard IAM, public ingress on a sensitive port,
@@ -58,6 +71,26 @@ intended public-HTTPS rule — is a legitimate, senior move; it is you over-ruli
 documented reason. Suppressing by check-ID across the whole codebase, or with no rationale, is how the
 junior gets ignored entirely and the bad decision ships anyway. **A suppression is an audit trail, not a
 mute button.** Getting that distinction right is the judgment skill this module grades.
+
+!!! warning "The gotcha"
+    A suppression is an audit trail, not a mute button. Silencing a *true* false-positive inline with a
+    check-ID and a rationale is a senior move — you over-ruling the junior, on the record. Blanket-skipping
+    a check across the whole codebase, or silencing with no reason, is how the junior gets ignored and the
+    real exposure ships anyway.
+
+??? note "Go deeper: IaC has a supply chain too"
+    A vulnerability in a *Terraform provider or shared module* poisons every config that uses it.
+    [CVE-2025-13357](https://nvd.nist.gov/vuln/detail/CVE-2025-13357) (CVSS 9.8) — the HashiCorp Vault
+    provider defaulted `deny_null_bind` to `false`, silently allowing anonymous-bind auth bypass for every
+    config on the affected versions. Pinning and scanning the modules/providers you pull is part of IaC
+    security, not separate from it.
+
+!!! tip "AI caveat"
+    AI writes Terraform that *passes a scanner* just as well as it writes Terraform that looks correct
+    but hides an IAM over-grant or an encryption miss. Draft → scan → feed findings back → iterate, with
+    the model as first-pass engineer and you as reviewer. It will happily "fix" a wildcard by moving it
+    from `Action` to `Resource` (still broken) or suppress a *real* exposure as a false-positive — so you
+    confirm each suppression's rationale and that the gate fails the original config for the *right* reason.
 
 ## Predict it before you scan (one prompt — then build)
 
@@ -120,3 +153,8 @@ exactly the scanner's blind spot: it will happily "fix" a finding by moving a wi
 while leaving the secret in the variable. Make the model draft the gate and the suppressions; **you**
 confirm each suppression has a real rationale, that the gate fails the *original* config for the *right*
 reason, and that it passes only the genuinely-fixed one. AI authors, you review, you own the verdict.
+
+!!! question "Check yourself"
+    - A scanner flags two `0.0.0.0/0` security-group rules with identical findings. Why can it never tell you which one to fix — and what does that tell you about where your value lives?
+    - When is an inline `checkov:skip` the right move, and what makes a suppression an audit trail rather than a mute button?
+    - Your scan passes the fixed Terraform. Why is that not the deliverable — and what must the gate also do to be done?

@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Eval Harness &nbsp;·&nbsp; **Prerequisites:** [11 — Anti-Forensics & Detecting It](../11-anti-forensics/README.md), [12 — Malware Artifacts in IR](../12-malware-artifacts-ir/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A detection rule tested only against the sample that inspired it is a vibe, not a tool — of
+    course it matches the file you tuned it to. This module is the discipline that turns "I wrote a
+    rule" into "I proved a rule": grade your Module 11/12 detectors against a **held-out** corpus the
+    rule never saw, report **precision and recall** (not accuracy — it lies on mostly-benign data),
+    name which error you can least afford, and wire a **CI regression gate** that goes red when a
+    rule change silently degrades detection. A planted regression must trip it.
+
 ## Why this matters
 
 In Module 11 you wrote a Python detector that flags timestomping by comparing NTFS `$STANDARD_INFORMATION`
@@ -45,6 +53,12 @@ it to. The reveal of this module is that the move which makes a detection rule t
 condition or a tighter byte string — it is *measurement against files the rule has never seen*, reported as a
 number, gated in CI.
 
+!!! note "The mental model"
+    This is the train/dev/test split from machine learning, applied to a hand-written rule: tune on
+    a development set, grade on a held-out set the rule never touched, report a number. Trust comes
+    from *measurement against unseen files*, not from a cleverer condition — and forensic tool
+    validation has demanded exactly this for decades under the name *known-answer testing*.
+
 **Held-out set vs. the sample you authored from.** The single most important wall in any eval is between the
 data you build the rule on and the data you grade it on. You write the YARA condition, pick the timestamp-divergence
 threshold, and choose which `$SI`/`$FN` deltas count as suspicious against a *development* set; you report the
@@ -66,6 +80,13 @@ nobody trusts is a rule nobody runs. So the load-bearing judgment is naming whic
 *this* rule and gating on it — high recall for a "find every variant" hunting rule, high precision for an
 "auto-quarantine" rule — and watching the other number as the cost you pay. Accuracy alone is a liar here: on a
 corpus that is 95% benign, a rule that flags nothing scores 95% "accurate" and catches zero attacks.
+
+!!! warning "The gotcha"
+    Two traps sink an honest eval. **Accuracy on imbalanced data lies** — a rule that flags nothing
+    scores 95% on a 95%-benign corpus and catches zero attacks; report precision and recall instead.
+    And **coverage ≠ effectiveness** — 500 easy files prove less than 40 hard ones. The corpus earns
+    its keep only by carrying the near-misses that *break* the rule: the benign installer that
+    rewrites timestamps, the repacked malicious sample, the innocent `$SI`/`$FN` divergence.
 
 **Coverage ≠ effectiveness.** A 500-file corpus is not better than a 40-file one if all 500 are easy. Counting
 files is vanity; the corpus earns its keep by including the cases that *break* the rule: the benign file that
@@ -121,3 +142,8 @@ parse, or does a broken eval silently "pass"?). Use a model to **expand the corp
 installers and backup scripts that legitimately rewrite timestamps, packed-but-legitimate binaries — then **label
 each one yourself and verify it against what it actually does**, because a model labelling its own test corpus is the
 contamination this entire module warns against. You generate candidates; you own the ground truth.
+
+!!! question "Check yourself"
+    - Your YARA rule fired on the loader it was written from. Why does that tell you nothing about how it behaves on the next disk image?
+    - Your detector scores 96% "accurate" on a corpus that's 95% benign. Why is that number meaningless, and what do you report instead?
+    - What does a *planted regression* prove about your CI gate that a gate you've only seen pass cannot?

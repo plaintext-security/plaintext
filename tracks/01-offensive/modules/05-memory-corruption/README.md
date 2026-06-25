@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Memory corruption is different from injection: it's about hijacking the program's own **control
+    flow** by writing where you shouldn't. The canonical case — overflow a stack buffer, overwrite the
+    saved return address, and the CPU jumps wherever you wrote. Out-of-bounds writes sit at #1 on the
+    CWE most-dangerous list for exactly this reason. You don't need to become an exploit developer,
+    but you need this model so "buffer overflow" stops being a magic phrase and becomes a mechanism —
+    the bedrock under "RCE" in the scariest CVEs.
+
 ## Why this matters
 Memory-corruption bugs — buffer overflows and their relatives — are the root of a huge share
 of the most severe CVEs, and out-of-bounds writes sit at the very top of the CWE "most
@@ -30,20 +38,24 @@ returns, the CPU jumps wherever you wrote. That's the entire magic trick — "sm
 demystified into "overwrite the saved instruction pointer and the processor executes your address."
 Out-of-bounds writes sit at #1 on the CWE most-dangerous list for exactly this reason.
 
-You don't need to become an exploit developer, but you need this model so "buffer overflow" stops
-being a magic phrase and becomes a mechanism you can reason about — and so you understand *why*
-memory-safe languages (Rust, Go) exist and what the mitigations are defending. Those mitigations are
-an arms race: **ASLR** randomises addresses so you don't know where to jump, **stack canaries** plant
-a guard value that detects the overwrite, **NX** marks the stack non-executable. Each raised the bar,
-which is why modern exploitation is largely about *bypassing* them — and why real exploits chain
-several tricks rather than just overflowing a buffer.
+!!! note "The mental model"
+    You don't need to become an exploit developer, but you need this model so "buffer overflow" stops
+    being a magic phrase and becomes a mechanism you can reason about — and so you understand *why*
+    memory-safe languages (Rust, Go) exist and what the mitigations are defending. The practitioner
+    payoff: this is the bedrock under "RCE" in the scariest CVEs. When you read "remote code execution
+    via a heap overflow," this is what's happening underneath — now a mechanism, not a headline.
 
-The practitioner payoff: this is the bedrock under "RCE" in the scariest CVEs. When you read "remote
-code execution via a heap overflow," this is what's happening underneath — and now it's a mechanism,
-not a headline. A model is a patient tutor for the assembly and the stack diagram (ask it to annotate
-a disassembly or explain a canary), but generated exploit code for memory bugs is fiddly and
-version-specific: you *will* debug it by hand, and that debugging is exactly where the understanding
-forms.
+!!! warning "The gotcha"
+    The mitigations are an arms race, not a cure: **ASLR** randomises addresses so you don't know
+    where to jump, **stack canaries** plant a guard value that detects the overwrite, **NX** marks the
+    stack non-executable. Each raised the bar, which is why modern exploitation is largely about
+    *bypassing* them — and why real exploits chain several tricks rather than just overflowing a buffer.
+
+!!! tip "AI caveat"
+    A model is a patient tutor for the assembly and the stack diagram (ask it to annotate a
+    disassembly or explain a canary), but generated exploit code for memory bugs is fiddly and
+    version-specific: you *will* debug it by hand, and that debugging is exactly where the
+    understanding forms.
 
 ## Learn (~4 hrs)
 
@@ -66,3 +78,8 @@ A model is a patient tutor for the concepts and the assembly — ask it to annot
 disassembly or explain a stack canary. But generated exploit code for memory bugs is fiddly
 and version-specific; expect to debug it yourself, which is exactly where the understanding
 forms.
+
+!!! question "Check yourself"
+    - When you overflow a stack buffer, what exactly gets overwritten that hands you control of execution?
+    - What does each of ASLR, stack canaries, and NX defend against — and why don't they make a program safe?
+    - Why is "buffer overflow" a different *class* of bug from SQL injection?

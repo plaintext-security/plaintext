@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Deleting a file removes its directory pointer; the content clusters stay on disk until the
+    allocator reuses them — and that gap is the investigator's window. SleuthKit walks the
+    filesystem by layer (`fls` lists deleted entries, `icat` extracts content by inode); `foremost`
+    *carves* file-shaped data straight from raw bytes by magic signature when no metadata survives.
+    You need both: inode recovery when metadata exists, carving when it's gone. NTFS is especially
+    rich — the MFT, dual timestamps, and journals reconstruct what happened and when.
+
 ## Why this matters
 When a user deletes a file or an attacker wipes their traces, the operating system marks that space as available — but the data usually remains on disk until overwritten. File system forensics is the discipline of reading what's really on the media, not what the OS presents. It is where evidence goes after it's been "deleted" and where malware that never ran from a normal path often hides. Understanding how NTFS and ext4 actually allocate and reclaim space is what separates an investigator who can say "I found a deleted file" from one who can prove *when it was deleted, who deleted it, and what it contained*.
 
@@ -21,11 +29,34 @@ Use SleuthKit tools (`fls`, `icat`, `fsstat`) to parse a raw disk image and reco
 ## The core idea
 Every filesystem is a data structure — a tree of metadata (inodes, MFT entries, directory entries) that points to clusters of actual file content. When a file is deleted, only the metadata pointer is removed from the directory listing. The MFT entry (NTFS) or inode (ext) is marked as unallocated, but the content clusters remain physically on disk until the allocator reuses them. This gap — between "metadata says deleted" and "data overwrote those sectors" — is the investigator's window. SleuthKit exploits it: `fls` lists *all* directory entries including deleted ones (flagged with `*`), and `icat` extracts the content at a given inode number even if the file no longer exists in the directory tree.
 
-**The layer model** is the mental model that makes SleuthKit navigable. The Forensic Toolkit's five layers are: volume (partition table), filesystem (superblock, allocation tables), metadata (inode/MFT), filename (directory entries), and data (actual content clusters). Each SleuthKit tool operates at one layer: `mmls` at volume, `fsstat` at filesystem, `istat` at metadata, `fls` at filename, and `icat` at data. Knowing which layer you're querying tells you immediately what the output will and won't include. Most confusion about SleuthKit comes from mixing layers — asking `fls` for inode details, or expecting `icat` to know about filenames.
+!!! note "The mental model"
+    SleuthKit is navigable once you think in *layers*: volume (`mmls`) → filesystem (`fsstat`) →
+    metadata/inode (`istat`) → filename (`fls`) → data (`icat`). Each tool queries exactly one
+    layer, which tells you what its output will and won't contain. Most SleuthKit confusion is a
+    layer mismatch — asking `fls` for inode detail, or expecting `icat` to know a filename.
 
 **File carving** is a different and complementary technique: instead of navigating the filesystem metadata, you scan the raw byte stream looking for known file signatures (magic bytes) and carve the data into a file regardless of whether any metadata exists for it. `foremost` uses a configuration file of header/footer byte patterns (PNG: `\x89PNG\r\n\x1a\n`; JPEG: `\xff\xd8\xff`; ZIP: `PK\x03\x04`) to locate and extract file-shaped content from unallocated space. Carving finds things the filesystem doesn't know about anymore, but it can't tell you the original filename, creation time, or path — the metadata is gone, only the content remains. You need both approaches: inode-based recovery when the metadata still exists, carving when it doesn't.
 
-**NTFS is particularly artifact-rich** relative to other filesystems. The Master File Table (MFT) is a structured database where every file and directory, current and recently deleted, has an entry. Each MFT entry carries multiple attribute streams — `$DATA` for content, `$STANDARD_INFORMATION` for timestamps, `$FILE_NAME` for the filename-level timestamps (which differ from `$SI` timestamps and matter for timestomping detection, covered in Module 11). `$MFT` itself is a file you can extract and parse. NTFS also keeps transaction logs (`$LogFile`, `$UsnJrnl`) that record file system operations — a gold mine for reconstructing what happened, when, and in what order. SleuthKit reads MFT entries directly from the raw image, bypassing Windows entirely.
+!!! warning "The gotcha"
+    Carving recovers *content*, not context. A carved JPEG has no filename, no path, no creation
+    time — the metadata that proves *when* and *by whom* it was deleted is gone. And the window
+    closes: once the allocator overwrites those clusters, the data is unrecoverable. Inode recovery
+    and carving answer different questions; reach for both and know which one your finding rests on.
+
+??? note "Go deeper: why NTFS is the artifact-rich filesystem"
+    The Master File Table (MFT) is a structured database where every file and directory — current
+    and recently deleted — has an entry, carrying multiple attribute streams: `$DATA` (content),
+    `$STANDARD_INFORMATION` (timestamps), `$FILE_NAME` (filename-level timestamps that differ from
+    `$SI` and matter for timestomping detection, Module 11). `$MFT` itself is an extractable file.
+    NTFS also keeps transaction logs (`$LogFile`, `$UsnJrnl`) recording filesystem operations — a
+    gold mine for reconstructing what happened, when, and in what order. SleuthKit reads MFT entries
+    directly from the raw image, bypassing Windows entirely.
+
+!!! tip "AI caveat"
+    A model is good for translating tool output into plain English ("what does this `fsstat` tell me
+    about the volume?") and drafting `foremost` config entries — but it cannot read your image and
+    *will* hallucinate inode numbers and byte offsets. Always verify those values by running the
+    tools yourself.
 
 ## Learn (~4 hrs)
 
@@ -53,3 +84,8 @@ Every filesystem is a data structure — a tree of metadata (inodes, MFT entries
 
 ## AI acceleration
 AI is useful for translating SleuthKit command output into plain English ("what does this `fsstat` output tell me about the volume?") and for drafting foremost configuration entries for new file types. Where AI is not a substitute: it cannot read your disk image, and it will hallucinate inode numbers and specific offsets. Use it to explain the output you've already captured; always verify inode and offset values by running the tools yourself.
+
+!!! question "Check yourself"
+    - When you delete a file, what is actually removed and what remains on disk — and what closes the recovery window?
+    - You recovered a JPEG with `foremost` but can't state its original filename or deletion time. Why not, and which technique *would* tell you?
+    - Which SleuthKit tool answers "what files (including deleted ones) were in this directory?" versus "give me the bytes at this inode"?

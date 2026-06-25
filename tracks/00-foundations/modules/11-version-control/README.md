@@ -10,6 +10,15 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules (especially [10 · Scripting & Automation](../10-scripting/README.md))
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every deliverable here ends the same way — *commit it to git* — and git is the single most common
+    place people leak secrets without realizing it. The everyday loop is simple (clone → branch →
+    commit → push → PR → merge), but one property does all the work: **git is append-only and never
+    forgets.** Deleting a secret in a later commit does *not* remove it — the old snapshot lives in
+    history until you actively rewrite it, and if it was ever pushed public, assume it's already
+    scraped. The only real fix is to **rotate** the secret, not delete it. Toyota left an access key
+    in a public repo for ~5 years; this module is why that happens.
+
 ## Why this matters
 
 Every deliverable in this curriculum ends the same way: *commit it to git.* Version control is how
@@ -34,6 +43,12 @@ then open a **pull request** (PR) to merge it back. A *remote* (usually GitHub) 
 history living on a server so others can see it and collaborate. That's the whole everyday loop:
 clone → branch → commit → push → pull request → merge. The lab walks you through it for real, so the
 README won't re-derive what the Learn links below explain step by step.
+
+!!! note "The mental model"
+    Git is a **history of snapshots**, append-only and effectively permanent: a commit is a labeled
+    snapshot, a branch is a cheap movable pointer at one, a remote is a copy living on a server.
+    "Working in the open" means treating everything you push as public and forever — including the
+    secret you thought you deleted.
 
 One property of that model is doing all the work in this module, and most beginners get it wrong.
 
@@ -60,6 +75,13 @@ Anyone with the repo can run `git log -p` (show every commit *with its diff*) or
 commit>` and read the key, plainly, as if you'd never "deleted" it. Deleting the file in a later
 commit changes the *present*; it does nothing to the *past* the repo is built to preserve.
 
+!!! warning "The gotcha"
+    "I deleted the line and committed again, so I'm safe" is exactly wrong. The first snapshot — with
+    the key — is still in the chain; `git log -p` reads it plainly. Rewriting history
+    (`git filter-repo`/BFG) removes the snapshot, but it's necessary, not sufficient: if the repo was
+    ever pushed public, bots scrape new commits within *minutes*, so the only real fix is to
+    **rotate the secret.** A rewritten key an attacker already copied is still live.
+
 Two consequences follow, and they are the security core of this module:
 
 - **To actually remove a secret from history you must *rewrite* history** — rebuild the chain of
@@ -84,6 +106,13 @@ manufacturer: a credential, committed once, lives in history until someone makes
 permanent; "working in the open" means treating everything you push as public and forever.* That's
 also why this repo ships a `.gitignore` — the cheapest fix is the secret that never gets committed in
 the first place.
+
+!!! tip "AI caveat"
+    Models will confidently propose history-rewriting commands (`reset --hard`, `filter-repo`,
+    force-push) that destroy work irrecoverably — understand any state-changing git command *before*
+    you run it ("the AI told me to force-push" is a bad incident story). And if you ask "I committed a
+    secret and deleted it, am I safe?", a careless model may say yes. You now know the answer is
+    *rotate it.*
 
 ## Learn (~2.5 hrs)
 
@@ -119,3 +148,8 @@ irrecoverably — understand any state-changing git command *before* you run it 
 force-push" is a bad incident story). Second, if you ask a model "I committed a secret and deleted
 it, am I safe?", a careless one may say yes. You now know the answer is *rotate it.* You own that
 judgment; the model assists it.
+
+!!! question "Check yourself"
+    - You commit a secret, then delete the line and commit again. Is the secret gone? Why or why not?
+    - Rewriting history removes the snapshot — why is that still not enough, and what's the real fix?
+    - Why is "treat everything pushed as public and forever" the operative mindset for working in the open?

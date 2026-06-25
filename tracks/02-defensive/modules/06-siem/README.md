@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every prior module produced telemetry sitting in its own silo; the **SIEM** is where they
+    converge into one searchable place — and, more than a store, it's the analyst's *workbench*:
+    ingest → parse → index → search → alert → triage. The leap beyond a log store is
+    **correlation** — turning many low-value events into one high-value alert. The defining failure
+    mode is **alert fatigue**: a SIEM that fires 500 alerts a day is functionally off. Tuning isn't
+    housekeeping; it's the job, and every rule is a claim on finite analyst attention.
+
 ## Why this matters
 Telemetry scattered across hosts and sensors is useless until it's centralised, correlated, and
 alertable. In the 2017 Equifax breach, attackers sat in the network slowly extracting data for **76
@@ -30,20 +38,35 @@ Every prior module produced a stream of telemetry sitting in its own silo. The *
 converge into one searchable, correlatable place — and, more than a store, it's the analyst's
 *workbench* and the engine of the SOC workflow: ingest → parse → index → search → alert → triage. The
 leap beyond a log store is **correlation**: turning many low-value events into one high-value alert.
-Fifty failed logons across the fleet from one source, then a success, is an alert; each individual
-logon is noise. The SIEM is where "events" become "a story."
 
-The practitioner reality is that a SIEM is less a product than a workflow. The query language differs
-by vendor (SPL, KQL, Lucene) and you learn whichever your shop runs — but the durable skill is
-knowing *what behaviour is worth alerting on* and expressing it so it fires on the real thing without
-burying the analyst. Wazuh gives you a complete open-source SIEM/XDR — decoders, rules, dashboards,
-alerting — to learn the whole loop for free, no licence.
+!!! note "The mental model"
+    Fifty failed logons across the fleet from one source, then a success, is an alert; each
+    individual logon is noise. The SIEM is where "events" become "a story." And a SIEM is less a
+    product than a workflow: the query language differs by vendor (SPL, KQL, Lucene) and you learn
+    whichever your shop runs, but the durable skill is knowing *what behaviour is worth alerting on*
+    and expressing it so it fires on the real thing without burying the analyst.
 
-The defining failure mode, and the thing that separates a working SOC from a dashboard nobody reads:
-**alert fatigue.** A SIEM that fires 500 alerts a day is functionally *off* — analysts triage it by
-ignoring it. Every rule you add is a claim on someone's finite attention, so tuning and
-prioritisation aren't housekeeping, they're the job. Test every correlation rule against data where
-you already know the answer before it earns a place in the pipeline.
+Wazuh gives you a complete open-source SIEM/XDR — decoders, rules, dashboards, alerting — to learn
+the whole loop for free, no licence.
+
+!!! warning "The gotcha"
+    The thing that separates a working SOC from a dashboard nobody reads is **alert fatigue.** A
+    SIEM that fires 500 alerts a day is functionally *off* — analysts triage it by ignoring it.
+    Every rule you add is a claim on someone's finite attention, so tuning and prioritisation aren't
+    housekeeping, they're the job. Test every correlation rule against data where you already know
+    the answer before it earns a place in the pipeline.
+
+??? note "Go deeper: Equifax and the cost of no correlation"
+    In the 2017 Equifax breach, attackers extracted data for **76 days** — querying 51 databases in
+    small increments to stay under the radar (US GAO, GAO-18-559). The telemetry to catch that
+    almost certainly existed; what was missing was the centralised correlation and alerting that
+    turns scattered low-value events into one "this is exfiltration" alert. Log storage alone would
+    not have caught it.
+
+!!! tip "AI caveat"
+    A model writes SIEM queries and correlation logic fast — and a generated rule with subtly wrong
+    logic ships confident false alerts or, worse, silently misses the real one. Test every rule
+    against data where you know the answer.
 
 ## Learn (~4 hrs)
 
@@ -67,3 +90,10 @@ you already know the answer before it earns a place in the pipeline.
 A model writes SIEM queries and correlation logic fast — and a generated rule with subtly wrong logic
 ships confident false alerts or, worse, silently misses the real one. Test every rule against data
 where you know the answer.
+
+!!! question "Check yourself"
+    - What can a SIEM do that a plain centralised log store cannot, and why is that the whole point?
+    - Give an example where a single event is noise but a *sequence* of them is an alert — what is
+      the SIEM adding?
+    - Why is "we added 200 rules" not obviously good news, and how does alert fatigue make a SIEM
+      functionally off?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 08 — Path to Domain Admin](../08-path-to-da/README.md) (the path you're closing), [Module 11 — Defending Identity](../11-defending-identity/README.md) (the target tier design)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Module 11 designed the tier model on greenfield Corp; this module imposes it on a *live* domain
+    where DAs already RDP into workstations every morning — and you may not break their access while
+    you fix it. The naive move (link the Deny-logon GPO at the domain root) is a **big-bang cutover**:
+    one blast radius, no incremental rollback, debugged live against every admin. The discipline is
+    **strangler-fig**: stage to a pilot OU, move accounts in waves, and prove each wave twice — *no
+    admin locked out* AND *the attack path that wave closed is now dead* — before you widen.
+
 ## Why this matters
 
 Module 11 gives you the right answer — a tiered admin model where Tier 0 credentials never touch a Tier 2 workstation, so a compromised Finance box can never hold a domain admin's hash. But Module 11 designs that model on **greenfield Corp**: a clean assignment table, the GPOs as a specification, the JIT workflow as a description. The domain you actually inherit looks nothing like that. It is **brownfield**: `tallen` (a domain admin) RDPs into Finance workstations to fix printers, `sgarcia` runs the helpdesk console from her own laptop, service accounts log on interactively where they shouldn't, and nobody has a complete inventory of who-logs-on-where. The tier boundaries you designed cut straight across how people work *today*. The job is not to design the model — you already did — it's to **get there from here without an outage**, on a domain the whole company depends on every morning.
@@ -20,13 +28,44 @@ The correct path is **stage to a pilot OU, move accounts in waves, prove each wa
 
 ## The core idea: you don't link the GPO at the root; you pilot, move in waves, prove each, then widen
 
+!!! note "The mental model"
+    The pattern is the **strangler fig** (Fowler, 2001): a vine grows *around* a living tree and
+    draws it down gradually — the host is never felled in one stroke. Applied here, you grow the
+    tiered structure *around* the running flat domain, moving accounts and host OUs one wave at a
+    time, while the flat surface (DAs on workstations) shrinks toward zero and everyone keeps working.
+    The lever that makes it incremental is **GPO scope** — a restriction authored once but linked to
+    one pilot OU, then widened.
+
 The mental model is the **strangler fig** (Martin Fowler, 2001 — named for the rainforest vine that grows *around* a host tree, drawing it down gradually until the new structure can stand on its own, with the original never felled in a single stroke). Applied to a live domain: you do **not** impose the tier model on the whole forest in one GPO link. You grow the tiered structure *around* the running flat domain — moving privileged accounts and host OUs across one wave at a time — and the surface still running flat (DAs on workstations, service accounts logging on interactively) shrinks toward zero while everyone's access keeps working. Big-bang is the failure mode the pattern exists to prevent: changing every privileged logon right at once is a single blast radius with no incremental rollback, debugged live against every admin in the company.
 
 The mechanism that makes it incremental is **scope**: a GPO's effect is exactly the OUs (and security-group filters) it is *linked and filtered to*, so a restriction you author once can be rolled out to one OU, proven, then widened. Concretely, the flat state is `tallen` (Tier 0) holding `Domain Admins` and freely RDPing into `WS-FIN-01` (Tier 2) — *interactive logon is unrestricted, so the DA hash lands in a workstation's LSASS, which is the seam every Module 03–08 attack walks through*. The target state is the Module 11 design: Tier 0 accounts denied interactive and RDP logon on Tier 2 hosts (so the hash can never co-locate with untrusted code), and added to **Protected Users** (no NTLM, no RC4, 4-hour TGT — Kerberoasting and PTH of those accounts removed). A **wave** is the unit you move: a coherent slice — e.g. *"the Tier 0 accounts, denied logon on the pilot Finance OU"* — small enough that you can name every admin it touches and coordinate the change. The **cutover** is linking (or scope-widening) the Deny-logon GPO to that wave's OU and moving its accounts into Protected Users. Because GPO effect is scoped, doing wave 1 changes *nothing* for the OUs you haven't linked yet — the rest of the domain keeps running flat, untouched, exactly as before.
 
 The discipline that makes it safe is the **before/after proof, run per wave, and it asserts two things, not one — "still works" AND "now closed."** Before a wave, you record the baseline: which admin reaches which host *and how* (today: `tallen` RDPs directly into the Finance box). You cut the wave over. Then you prove (1) **no admin is locked out** — every account in the wave can still perform its legitimate task, now via the *correct* tiered path (the admin works from the jump host / PAW-equivalent, not the workstation), because a tiering rollout that locks out the people who run the domain is an outage no matter how secure it is; and (2) **the attack path that wave closed is actually dead** — re-walk the specific PATH-001 hop the wave targeted (after the Tier 0 Deny-logon wave, dumping `WS-FIN-01` no longer yields a DA credential; after the Protected Users wave, the AS-REP/Kerberoast against that account fails) and show it now fails. Both, or the wave isn't done. If lockout assertion (1) fails, you **roll back that wave** — unlink the GPO from that OU, pull the accounts out of Protected Users — and those admins are working again in minutes while you debug *one slice*, not a company-wide lockout. The rollback is cheap because the flat domain never went away; you only ever changed scope.
 
+!!! warning "The gotcha"
+    A wave is **not** done when the admin can log on from the jump host — it's done when the *old
+    flat path is closed*. If `Deny log on through RDS` was scoped wrong and the DA can *still* RDP
+    into the workstation, you've **added** a tiered path without **removing** the flat one, and every
+    attacker who lands there harvests a DA credential exactly as in Module 08. The "attack-path-dead"
+    assertion is the one teams skip and the one that matters; an open `Deny`-that-doesn't-deny is
+    tiering theater.
+
 The honest gotcha that separates a real migration from a checkbox one: **the migration is only done when the *old flat behavior is closed*, not merely when the new tiered path *works*.** It is tempting to declare a wave complete the moment the admin can log on from the jump host — but if `Deny log on through Remote Desktop Services` was scoped wrong and the DA can *still* RDP into the workstation, you have *added* a tiered path without *removing* the flat one, and every attacker who lands on that workstation can still harvest a DA credential exactly as in Module 08. Assertion (2) — *the attack path is now dead* — is the one teams skip and the one that matters, because closing the flat logon per-wave is what actually shrinks the breach surface; an open `Deny`-that-doesn't-deny is tiering theater. Widening the GPO to the whole domain at the end is the final, forest-wide version of that same per-wave close — taken last, when the un-migrated surface is provably zero and you have proven, wave by wave, that nobody gets locked out.
+
+??? note "Go deeper: the per-wave proof asserts two things, not one"
+    The half-discipline that fails is proving only "still works." The full proof, run per wave, is
+    **(1) no admin locked out** — every account in the wave does its job via the *correct* tiered
+    path — *and* **(2) the attack path that wave targeted is now dead** (re-walk the specific PATH-001
+    hop and show it fails: dumping `WS-FIN-01` no longer yields a DA credential; the AS-REP/Kerberoast
+    against the Protected-Users account fails). Both, or the wave isn't done — and if (1) fails, you
+    roll back *that one slice*, not a company-wide lockout, because the flat domain never went away.
+
+!!! tip "AI caveat"
+    Ask a model to "apply the tier model to Corp" and it hands you a **big-bang** plan — link the
+    Deny-logon GPO at the root, add every privileged account to Protected Users at once — because
+    that's the simplest thing to express and it doesn't feel the fear of locking out the admin team
+    on a Tuesday. Use it for the bookkeeping (wave checklists, link/unlink commands, proof tables);
+    *you* sequence by blast radius and *you* verify both assertions on every wave.
 
 ## Learn (~3 hrs)
 
@@ -55,3 +94,8 @@ The honest gotcha that separates a real migration from a checkbox one: **the mig
 ## AI acceleration
 
 A model is genuinely useful at the *planning and bookkeeping* half of this migration — drafting the wave sequence (which accounts and OUs move in what order), generating the per-wave cutover checklist, writing the GPO link/unlink and Protected Users add/remove commands, and turning your raw before/after logon-test output into a clean per-wave proof table. That is real leverage on the tedious parts. But the posture is strict, because the dangerous instinct is the same one the stressed engineer has: **AI drafts the plan → you decide the wave order and own the cutover → you read the before/after proof yourself.** Ask a model to "apply the tier model to Corp" and it will cheerfully hand you a *big-bang* plan — link the Deny-logon GPO at the domain root, add every privileged account to Protected Users at once — because that is the simplest thing to express and it does not carry the operational fear of locking out the whole admin team on a Tuesday. The judgment the model cannot do for you is sequencing by *blast radius* (which wave is safe to pilot first, which admins it touches, who must be coordinated with, which service account silently logs on interactively and will break), and above all **verifying both assertions** — a model asked to "confirm the migration worked" will check that the admin can log on from the jump host and call it done, missing both the lockout it caused elsewhere *and* the open flat path it left behind. Make the model draft the runbook and the logon-test harness; **you** confirm every wave has a tested rollback, that the proof shows *no-lockout AND attack-path-dead*, and that the GPO widens to the whole domain only after the last wave is provably across. AI authors the runbook; you own the cutover.
+
+!!! question "Check yourself"
+    - Why does linking the Deny-logon GPO at the domain root fail even when the tier design it implements is correct?
+    - What two assertions must every wave's proof pass, and why is "the admin can log on from the jump host" not enough?
+    - What makes a per-wave rollback cheap, and which single step in the whole migration is the one that isn't?

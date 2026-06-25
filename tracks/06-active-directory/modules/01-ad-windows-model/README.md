@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Windows answers every "can this user do that?" by comparing an **access token** (your SID and
+    group SIDs) against an object's **security descriptor** (its ACL). Active Directory scales that
+    same yes/no across an enterprise: a Domain Controller holds the LDAP directory, **Kerberos**
+    hands out tickets, and your group SIDs ride inside the ticket's **PAC**. Domains are replication
+    boundaries, forests are the security boundary, and GPOs are how policy actually lands. Get this
+    map straight and every later attack — Kerberoasting, ACL abuse, pass-the-hash — reads as a seam
+    in a model you already understand.
+
 ## Why this matters
 
 Every Kerberos attack, every ACL abuse, every pass-the-hash scenario in this track exploits a seam in the Windows security model that looks like a feature until someone weaponises it. Attackers who understand the model find those seams; defenders who understand the model close them systematically instead of whack-a-mole. This module builds that shared map: the vocabulary and the mental model that every later lab assumes you have.
@@ -24,9 +33,34 @@ Windows security is built on two separable concerns: **authentication** (proving
 
 Active Directory extends this model to the domain. Instead of a local SAM database, a Domain Controller holds a replicated LDAP directory of every user, computer, group, and service account. Authentication flows through **Kerberos** (default since Windows 2000) or NTLM (fallback). In Kerberos, the Key Distribution Centre on the DC issues tickets: a **Ticket Granting Ticket (TGT)** proves who you are to the KDC, and **service tickets (TGS)** prove it to individual services. The critical insight: tickets are cryptographic blobs encrypted with the *service's* key, not the user's. The service decrypts it, reads your SID and group SIDs from the embedded PAC, and makes an access decision — exactly like a local token, but assembled from the ticket rather than the SAM.
 
+!!! note "The mental model"
+    Every access decision in Windows is the same comparison: **token vs. security descriptor**. A
+    Kerberos service ticket is just that token assembled remotely — the service reads your SIDs out
+    of the PAC the same way the kernel reads them out of a local token. Learn the one comparison and
+    the domain version stops being a separate thing to memorise.
+
 The organisational unit that makes this manageable at enterprise scale is the **domain**. A domain is a single replication boundary and trust boundary: all DCs share the same directory, and every object in the directory is identified by its distinguished name under the domain's DNS root. Domains can be grouped into **forests** (a forest is the outermost security boundary; a domain is a management boundary inside it). Trust relationships — transitive within a forest, explicitly configured between forests — let a user in one domain authenticate to resources in another. Every misconfigured trust is a lateral-movement opportunity.
 
 Two structural ideas that trip people up in practice: **groups vs. group types**, and **GPOs**. Security groups accumulate SIDs into a token — being a member of `Domain Admins` is simply having the Domain Admins SID in your token, nothing magical about it. Distribution groups carry no SID and have no security meaning. **Group Policy Objects** are settings pushed to computers and users by the DC; they define password policy, audit policy, software restrictions, logon scripts, and hundreds of security controls. GPOs are the enforcement mechanism for most hardening controls — and the most common place defenders find gaps, because a GPO applied to the wrong scope or with the wrong precedence silently does nothing.
+
+!!! warning "The gotcha"
+    "Domain admin" carries no magic — it is just the Domain Admins SID sitting in your token. And a
+    GPO that *looks* applied can silently do nothing: LSDOU precedence (Local, Site, Domain, OU) and
+    the wrong scope mean a hardening policy can be linked everywhere and enforced nowhere. The seam
+    is always "looks like a feature, behaves like a gap."
+
+??? note "Go deeper: forest vs. domain is a security-boundary distinction, not a naming one"
+    A common mistake is treating a domain as the security boundary. It is the *management* boundary;
+    the **forest** is the security boundary. Transitive trust inside a forest means a compromise in
+    any domain can reach every domain — which is why cross-forest trusts (explicit, non-transitive)
+    matter so much for attack scoping, and why "we'll just spin up a child domain to isolate that
+    risky app" does not isolate anything from a privilege standpoint.
+
+!!! tip "AI caveat"
+    A model is a strong Socratic tutor for this model — ask it to trace a file-share logon step by
+    step. But the subtle parts (PAC validation, unconstrained-delegation side effects) are exactly
+    where it confabulates, so cross-check every claim against the Microsoft Docs links below before
+    you rely on it.
 
 ## Learn (~4 hrs)
 
@@ -58,3 +92,8 @@ Two structural ideas that trip people up in practice: **groups vs. group types**
 ## AI acceleration
 
 Ask a model to walk you through what happens step-by-step when a domain user opens a file share: what tickets are requested, what fields are inspected, and what the file server actually checks. Then verify each claim against the Microsoft Docs links above. This is a great use of AI as a Socratic tutor — it explains at your pace — but the AD security model has enough subtle details (PAC validation, unconstrained delegation side effects) that you must cross-check against primary sources before you rely on the answer.
+
+!!! question "Check yourself"
+    - When a file server decides whether to grant you access, what two things is it comparing — and how is a Kerberos service ticket related to one of them?
+    - Why is the forest, not the domain, called the security boundary?
+    - A hardening GPO is linked at the domain root but the setting isn't taking effect on some hosts. What model explains how that can happen?

@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~4.5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 01 — Zero Trust Principles](../01-zero-trust-principles/README.md) (the flat-network breach), [Module 06 — Identity-Aware Access](../06-identity-aware-access/README.md) (the proxy you migrate *to*)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every ZTNA tutorial starts greenfield — an empty network, a clean IdP, nothing to break. The real
+    job is **brownfield**: a decade-old VPN on a flat network that the whole company logs into every
+    morning, and the one rule is *no outage*. The naive big-bang cutover (flip everything one Saturday)
+    is the canonical disaster — one blast radius, no incremental rollback. The discipline is
+    strangler-fig: run both paths, move one cohort at a time, prove each with a before/after test, keep
+    a per-cohort rollback, and decommission the VPN *last* — when the un-migrated surface is provably zero.
 
 ## Why this matters
 
@@ -21,6 +28,13 @@ The correct path is **run both, move cohorts, prove each, then retire** — the 
 
 ## The core idea: you don't flip a switch; you run both, move cohorts, prove each, then retire the VPN
 
+!!! note "The mental model"
+    The **strangler fig** (Martin Fowler, 2001): the rainforest vine grows *around* a host tree,
+    gradually taking over until it can stand on its own — the original never cut down in a single
+    stroke. Applied to access: you do *not* tear down the VPN and replace it in one cutover. You grow
+    the identity-aware path *around* the running VPN, moving apps and users across one cohort at a time,
+    so the surface still depending on the flat network shrinks toward zero while access never stops.
+
 The mental model is the **strangler fig** (Martin Fowler, 2001 — named for the rainforest vine that grows *around* a host tree, gradually taking over until it can stand on its own, with the original never cut down in a single stroke). Applied to network access: you do **not** tear down the VPN and replace it with ZTNA in one cutover. You grow the new identity-aware path *around* the running VPN — moving apps and users across one cohort at a time — and the surface still depending on the flat VPN network shrinks toward zero while access never stops. Big-bang cutover is the failure mode the pattern exists to prevent: changing every access path at once is a single blast radius with no incremental rollback, debugged live against the whole organization.
 
 The mechanism that makes this incremental is **the two paths run side-by-side, and a per-cohort cutover switch decides which path a given app's traffic takes.** Concretely: the legacy path is the VPN onto the flat network (a user connects, gets an internal IP, and reaches `app.internal` directly — *connectivity is the only check*); the new path is the identity-aware proxy from Module 06 (a request hits the proxy, which validates the caller's IdP-issued JWT against policy and only then forwards upstream — *identity is the check, on every request, with no inbound port on the backend*). A **cohort** is the unit you move: a small, coherent group of apps-plus-the-users-who-need-them — start with the lowest-risk one (an internal low-stakes web app used by a single team you can coordinate with), never the crown jewels first. The **cutover** is the switch that points that cohort's traffic at the proxy instead of the VPN route: in this lab a DNS change (point `app.internal` at the proxy) or a feature flag; in production a DNS record, a routing rule, or a per-group access policy. Because the two paths are independent, moving cohort 1 changes *nothing* for cohorts 2..N — they keep using the VPN, untouched, exactly as before.
@@ -28,6 +42,28 @@ The mechanism that makes this incremental is **the two paths run side-by-side, a
 The discipline that makes it safe reduces to one feedback signal per cohort: **the before/after access test, and the goal is "still reachable for authorized users, now via the proxy; the old flat path closing."** Before you cut a cohort over, you record the baseline — the authorized user reaches the app *and how* (through the VPN/flat route). You cut over. Then you run the *same* test and prove three things: (1) the authorized user **still reaches the app** (no outage — the whole point); (2) they now reach it **through the proxy** (the request carries identity, the proxy logged an allow — the migration actually moved, it didn't just appear to); and (3) the **old flat path to that app is now closed** (a direct request to the backend on the flat network no longer connects — otherwise you have *added* a ZTNA path without *removing* the bypass, which is migration theater, not migration). Only when all three hold is the cohort migrated. If any fails, you **roll back that cohort** — flip the cutover switch back to the VPN route — and the cohort is serving on the old path again in minutes while you debug *one small slice*, not a company-wide outage. The rollback is cheap precisely because the VPN is still running: you never removed it, so backing out is "point this cohort's DNS back." Then you do the next cohort. Only after the **last** cohort is across and proven do you close the flat network and **decommission the VPN** — the one irreversible step, taken last, when the un-migrated surface is provably zero.
 
 The honest gotcha that distinguishes a real migration from a checkbox one: **a migration is only done when the old path is *closed*, not merely when the new path *works*.** It is tempting to declare victory the moment the app answers through the proxy — but if the flat network still routes to the backend, every user (and every attacker who lands on the VPN) can still skip the proxy entirely, and you have spent the whole project building a front door while leaving the back door open. The before/after test's third assertion — *the old flat path is closing* — is the one teams skip and the one that matters most, because closing it per-cohort is what actually shrinks the breach surface Module 01 warned about. Decommissioning the VPN at the end is the final, organization-wide version of that same per-cohort close.
+
+!!! warning "The gotcha"
+    A migration is done only when the old path is **closed**, not when the new path *works*. Declare
+    victory the moment the app answers through the proxy and — if the flat network still routes to the
+    backend — every user and every attacker who lands on the VPN can skip the proxy entirely. The
+    before/after test's third assertion (the old flat path is closing) is the one teams skip and the one
+    that matters most: closing it per-cohort is what actually shrinks the Module-01 breach surface.
+
+??? note "Go deeper: the before/after test proves three things"
+    Before you cut a cohort, record the baseline — the authorized user reaches the app, and *how*
+    (through the VPN/flat route). Cut over, then run the *same* test and prove all three: (1) the user
+    **still reaches** the app (no outage), (2) now **through the proxy** (identity-checked, the proxy
+    logged an allow), and (3) the **old flat path is closed** (direct-to-backend no longer connects).
+    All three, or it isn't migrated — and if any fails, flip the cutover switch back to the VPN and
+    debug one small slice, not a company-wide outage.
+
+!!! tip "AI caveat"
+    A model is genuinely useful on the *bookkeeping* — the per-app checklist, the cohort sequence, the
+    proof table, the access-test harness. But ask it to "just migrate everything" and it cheerfully
+    produces a *big-bang* plan, because that's the simplest thing to express. The judgment it can't do
+    for you is sequencing by blast radius and, above all, verifying the third assertion — asked to
+    "confirm the migration worked," it checks the app answers through the proxy and misses the open back door.
 
 ## Learn (~2.5 hrs)
 
@@ -55,3 +91,8 @@ The honest gotcha that distinguishes a real migration from a checkbox one: **a m
 
 ## AI acceleration
 A model is genuinely useful at the *planning and bookkeeping* half of this migration — drafting the per-app cutover checklist, generating the cohort sequence (least-risky-first), turning your raw before/after `curl` output into a clean proof table, and writing the access-test harness that asserts the three conditions. That is real leverage on the tedious parts. But the posture is strict, because the dangerous instinct is the same one a stressed engineer has: **AI drafts the plan → you decide the cohort order and own the cutover → you read the before/after proof yourself.** Ask a model to "just migrate everything" or "write a cutover script" and it will cheerfully produce a *big-bang* plan — one flip, all apps — because that is the simplest thing to express and it doesn't carry the operational fear of a live outage. The judgment the model cannot do for you is sequencing by *blast radius* (which cohort is safe to move first, what its dependencies are, who to coordinate with) and, above all, **verifying the third assertion** — that the old flat path actually closed — because a model asked to "confirm the migration worked" will check that the app answers through the proxy and call it done, missing the open back door entirely. Make the model draft the checklist and the harness; **you** confirm every cohort has a tested rollback, that the proof shows no-outage *and* old-path-closed, and that the VPN comes down only after the last cohort is provably across. AI authors the runbook; you own the cutover.
+
+!!! question "Check yourself"
+    - Why does a big-bang cutover fail for reasons that have nothing to do with whether ZTNA "works"?
+    - The before/after test asserts three things after each cohort cutover — what are they, and which one do teams most often skip?
+    - Why is the per-cohort rollback cheap, and why is decommissioning the VPN the one irreversible step you take last?

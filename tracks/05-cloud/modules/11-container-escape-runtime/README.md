@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 10 — Container & Image Security](../10-container-image-security/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A container is not a small VM — it's an ordinary host process wearing a costume of namespaces,
+    cgroups, and capabilities, sharing the *same kernel* as the host. So "escape" isn't breaking out of
+    a box; it's abusing a resource both sides touch — a host binary, a device, `docker.sock`, a mounted
+    path. CVE-2019-5736 proves it by overwriting the host `runc` binary from inside a container.
+    Static scans and admission control can't see this — it's a sequence of **syscalls** at runtime, which
+    is what **Falco** watches. The practitioner skill is tuning a rule that fires on the escape and stays
+    silent on benign work.
 
 ## The exploit
 
@@ -40,7 +48,14 @@ So "escape" is not breaking out of a box — there is no box. Escape is **abusin
 container and host both touch**: a shared kernel interface, a host path mounted in, a privileged
 device, a host-side helper binary the runtime invokes on your behalf. CVE-2019-5736 abuses the last
 one: `runc` is a host binary that *reaches into* the container, and the attacker turns that reach
-around. `--privileged` abuses devices: it hands the container `CAP_SYS_ADMIN` and visibility of
+around.
+
+!!! note "The mental model"
+    There is no box to break out of. The wall is the **shared kernel**, and it can't be un-shared — so
+    every escape is just abusing a resource the container and host both touch. Different doors
+    (host binary, device, socket, host path), same hallway.
+
+`--privileged` abuses devices: it hands the container `CAP_SYS_ADMIN` and visibility of
 `/dev/sda1`, so it can just `mount` the host disk and `chroot` in — no CVE required. A mounted
 `docker.sock` abuses the control plane: any process that can talk to the Docker API can ask the host
 daemon to launch a new privileged container for it. Different doors, same hallway: **the boundary you
@@ -50,6 +65,11 @@ This is why the defenses layer the way they do. You cannot make the kernel un-sh
 **reduce what the container is allowed to ask the kernel** (drop capabilities, no `--privileged`,
 seccomp/AppArmor, non-root UID — the image-hardening of module 10 and the admission policy of module
 13), and (2) **watch what it actually asks at runtime.** That second layer is the subject of this lab.
+
+!!! warning "The gotcha"
+    Treating a container as a VM is the misconception that kills you. There's no hypervisor, no second
+    OS, no hardware boundary — a syscall from inside runs on the *host's* kernel. `--privileged` and a
+    mounted `docker.sock` are full escapes that need **no CVE at all**, just a permissive config.
 
 ## The gap that runtime detection fills
 
@@ -72,6 +92,12 @@ the difference between a noisy demo and something a SOC would actually keep enab
 > most cleanly betrays it — the one you'd build the detection around? Most people say "the `mount`."
 > Hold that thought; in the lab you'll see why the *write to the host binary* is the sharper,
 > lower-noise signal, and `mount` is the one that generates the false positive you'll have to tune out.
+
+!!! tip "AI caveat"
+    A model is good at explaining what syscall pattern a Falco rule catches and at drafting the
+    `exception` to suppress a benign workload. What it **can't** know is whether that rule is noisy in
+    *your* environment — that depends on what your containers actually do. Validate every variant against
+    real Falco output from `make demo` before you keep it.
 
 ## Learn (~3 hrs)
 
@@ -99,3 +125,8 @@ the difference between a noisy demo and something a SOC would actually keep enab
 
 ## AI acceleration
 Paste a Falco rule's YAML into a model and ask it to (a) explain in plain English what syscall pattern it catches, (b) name a benign workload that would trip it, and (c) draft the `exception` that suppresses that workload without blinding the rule to the attack. It is genuinely good at rule *syntax* and at imagining edge cases — but it **cannot** tell you whether the rule is noisy in *your* environment, because that depends on what your containers actually do. So treat its draft as a hypothesis: you validate every variant against real Falco output from `make demo` before you keep it. AI drafts the rule; you own whether it fires on the right thing.
+
+!!! question "Check yourself"
+    - Why is a container "a process in a jail, not a VM," and what single boundary are you actually trusting?
+    - CVE-2019-5736 overwrites the host `runc` binary — name two other escapes that abuse the same shared-kernel hallway through a different door.
+    - Why can neither image scanning nor admission control catch this attack, and what does Falco read instead?

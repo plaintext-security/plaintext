@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Detection *waits* for known-bad; hunting *goes looking*. Threat hunting assumes a breach already
+    happened and asks, "if an attacker were here, what would I see?" — then interrogates endpoint
+    data to confirm or refute a specific, testable hypothesis. The organising principle is the
+    **Pyramid of Pain**: hunt *behaviours* (expensive to change), not atomic indicators (trivial to
+    change). Velociraptor and osquery make this an enterprise-scale activity. The payoff loop: a
+    successful hunt becomes a detection, so you only hunt that thing by hand once.
+
 ## Why this matters
 Detections catch the known; hunting finds the unknown. Threat hunting is hypothesis-driven: you assume
 a breach, form a testable idea ("an attacker would persist via a Run key"), and go look across your
@@ -29,17 +37,29 @@ discipline: you're hunting precisely the thing your rules didn't have a signatur
 "they'd do discovery with built-in tools") and then interrogate your endpoint data to confirm or
 refute it. A hunt that ends in "ruled out" is a result, not a failure.
 
-The organising principle is the **Pyramid of Pain**: hunt *behaviours*, not atomic indicators. A hash
-or IP is trivial for an attacker to change (bottom of the pyramid); their techniques cost real effort
-to alter (top). So "any Office app spawning a script interpreter" outlives any single hash —
-hunt the TTP, not the IOC. Velociraptor and osquery let you ask that question across thousands of
-endpoints at once (host-as-database, VQL/SQL), which is what makes hunting an enterprise activity
-rather than a one-box exercise.
+!!! note "The mental model"
+    The organising principle is the **Pyramid of Pain**: hunt *behaviours*, not atomic indicators. A
+    hash or IP is trivial for an attacker to change (bottom of the pyramid); their techniques cost
+    real effort to alter (top). So "any Office app spawning a script interpreter" outlives any
+    single hash — hunt the TTP, not the IOC. Velociraptor and osquery let you ask that question
+    across thousands of endpoints at once (host-as-database, VQL/SQL), which is what makes hunting
+    an enterprise activity rather than a one-box exercise.
 
-The judgment, and the payoff loop: hunting is judgment under ambiguity, and a model will happily
-"confirm" a pattern that's just normal-for-you — treat its hypotheses and draft VQL as leads to test
-against the data, never as conclusions. And the move that makes hunting *compound*: a successful hunt
-becomes a new detection (module 08), so you only ever have to hunt that thing by hand once.
+!!! warning "The gotcha"
+    Hunting is judgment under ambiguity, and there is no rule firing to tell you when you're done.
+    A pattern that's just normal-for-you will look suspicious until you confirm it against the data —
+    so treat every hypothesis as something to *refute*, and remember a hunt that ends in "ruled
+    out" is a result, not a failure.
+
+??? note "Go deeper: make hunting compound"
+    The move that makes hunting pay off over time: a successful hunt becomes a new detection (module
+    08), so you only ever have to hunt that thing by hand once. Otherwise you re-discover the same
+    behaviour every quarter; codify it and your detection coverage grows with every hunt.
+
+!!! tip "AI caveat"
+    A model is great for generating hunt hypotheses and drafting VQL/osquery — but a model will
+    happily "confirm" a pattern that's just normal-for-you. Treat its leads as hypotheses to test
+    against the data, never conclusions.
 
 ## Learn (~4 hrs)
 
@@ -61,3 +81,9 @@ becomes a new detection (module 08), so you only ever have to hunt that thing by
 A model is great for generating hunt hypotheses and drafting VQL/osquery — but hunting is judgment
 under ambiguity, and the model will happily "confirm" a pattern that's just normal-for-you. Treat its
 leads as hypotheses to test against the data, never conclusions.
+
+!!! question "Check yourself"
+    - In one sentence, how does hunting differ from detection in stance?
+    - Why is a hunt that ends in "ruled out" a success rather than a wasted afternoon?
+    - Using the Pyramid of Pain, why is "any Office app spawning a script interpreter" a better hunt
+      than a list of malicious hashes?

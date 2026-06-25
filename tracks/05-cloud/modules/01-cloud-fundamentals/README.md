@@ -10,6 +10,14 @@
 **Difficulty:** Beginner–Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Capital One lost ~100M records to a chain that ran entirely through AWS features working exactly as
+    designed — SSRF to the instance metadata service, temporary role credentials, `s3:List*` on every
+    bucket, all recorded in CloudTrail nobody watched. The shared-responsibility line isn't a diagram
+    that runs *between* services; it runs *through* them: AWS owns the mechanism, you own its
+    configuration. Encryption at rest was on and bought nothing, because the breach used an authorized,
+    over-permissioned principal. Add up the five hops and zero were Amazon's — the controls that failed
+    were all customer-owned ones that *felt* like provider territory.
 
 ## The case
 
@@ -71,6 +79,17 @@ all — it was **who was allowed to use the key and the bucket**, which is ident
 customer's. **The mental model to keep: encryption protects data from people without keys; it is
 silent against people you gave keys to.** The customer owned that, and it was wide open.
 
+!!! note "The mental model"
+    The shared-responsibility line doesn't run *between* services — it runs *through* them. AWS owns the
+    mechanism (the metadata service, S3 durability, CloudTrail's recording); you own its configuration
+    (enforce IMDSv2, scope the role, watch the logs). Ask of every control: provider's mechanism, or
+    customer's setting?
+
+!!! warning "The gotcha"
+    "It was encrypted, so it was protected" is the seductive wrong answer. Encryption at rest defends
+    against a stolen disk — it is *silent* against a principal you authorized to read the data, whose
+    reads decrypt transparently. The real failed control was identity, not crypto.
+
 **Q2 — the line is finer than the diagram.** The metadata service is Amazon's — it exists, it works,
 it did its job. But *whether that server should have been allowed to ask it for credentials over an
 unauthenticated request*, and *how powerful the credentials it returned were*, are both customer
@@ -88,6 +107,18 @@ reason "the default is not secure" is the most expensive sentence in cloud:** th
 like provider failures are almost always customer-owned controls that *felt* like provider territory.
 If you predicted "one or two were Amazon's," you've just felt exactly the misconception this module
 exists to correct — and you'll feel it again, hands-on, in the lab.
+
+??? note "Go deeper: where the line sits is a control-by-control judgment"
+    There is no single height for the line. For physical security it's pure AWS; for OS patching on EC2
+    it's you; for a managed service like S3 it's split (AWS runs the storage, you set the bucket policy
+    and encryption choice). The diagram people memorize collapses all of this into one stripe — the
+    skill is re-deriving the line for *each control under question*, which is exactly the per-hop verdict
+    this module trains.
+
+!!! tip "AI caveat"
+    A model drafts a fast, confident per-hop verdict — and reliably makes this module's two errors: "the
+    data was encrypted, so it was protected" (false) and "the AWS metadata service failed" (wrong owner).
+    Use it as the adversary to catch, not the answer to copy. You own the verdict.
 
 Two of those hops — the over-broad role reading every bucket (Q1's real cause) and the
 "encryption didn't help" twist — you'll reproduce in a local account and verdict yourself. The point
@@ -117,3 +148,8 @@ reliably makes the two errors this module is about: it will often say "the data 
 protected" (Q1 — false) and lean toward blaming "the AWS metadata service" (Q2 — wrong owner). Your job
 is to catch exactly those misattributions. If you can explain *why* the model put the line on the wrong
 side, you've learned the module. You own the verdict.
+
+!!! question "Check yourself"
+    - The Capital One data was encrypted at rest yet read in plaintext — what control actually failed, and why didn't encryption stop it?
+    - The stolen credentials came from the instance metadata service, an AWS-built feature. Why is that hop still the customer's responsibility?
+    - Across the five hops of the chain, how many were Amazon's responsibility — and what does that tell you about breaches that "look like" provider failures?

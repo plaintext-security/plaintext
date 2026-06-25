@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Cloud incidents often leave no disk — the instance terminated, the function was serverless — so
+    the log *is* the evidence. Hayabusa and Chainsaw apply Sigma rules straight to EVTX files,
+    triaging thousands of events into a severity-ranked timeline in seconds (Hayabusa for speed,
+    Chainsaw for field-level drilling). CloudTrail is a different model: it logs every *API call*, so
+    you trace a compromised credential forward through `CreateUser`/`AssumeRole`/`AttachUserPolicy`
+    to find the backdoor. The catch — logs only exist if they were enabled *before* the incident.
+
 ## Why this matters
 
 Cloud-native incidents often produce no disk image. Autoscaling instances terminate and their local
@@ -54,6 +62,14 @@ already know what you're looking for. Running both against the same artifact cos
 produces complementary coverage: Hayabusa for the initial triage heat map, Chainsaw for drilling
 into specific accounts or techniques.
 
+??? note "Go deeper: why run both Hayabusa and Chainsaw"
+    They're complementary, not redundant. **Hayabusa** is a high-performance Sigma engine optimized
+    for speed across huge EVTX sets — hundreds of thousands of events in seconds, clean columnar or
+    JSON output; use it for the initial triage heat map. **Chainsaw** supports Sigma too but adds
+    its own grammar and structured field search (`SubjectUserName == "mfin\dev-svc01"`), which makes
+    hypothesis-driven drilling faster once you know what you're hunting. Running both costs little
+    time and widens coverage.
+
 Cloud forensics requires a different model entirely. CloudTrail is not a log of what happened on
 a system — it's a log of what the *API* was asked to do. Every `CreateUser`, `AttachUserPolicy`,
 `AssumeRole`, `RunInstances`, or `GetCallerIdentity` call is a row. An attacker who compromised
@@ -63,13 +79,25 @@ from the compromised credential, then trace forward in time to every action that
 then look for any new principals it created or any roles it assumed. **The attack graph is in the
 event sequence** — you're reconstructing a timeline of API calls, not filesystem operations.
 
-The gap that trips responders in cloud investigations is that **log availability is not
-guaranteed.** CloudTrail must be enabled before the incident; if a trail wasn't configured, the
-log doesn't exist. In AWS, CloudTrail management events are on by default for 90 days in Event
-History — but data events (S3 GetObject, Lambda invocations) are off by default and must be
-explicitly enabled. A mature cloud security posture ensures these are on and forwarded to a
-tamper-evident log archive (S3 with Object Lock, or a separate logging account) before anyone
-needs them. This is the planning decision that makes or breaks a cloud investigation.
+!!! note "The mental model"
+    A host log records what happened *on a machine*; CloudTrail records what the *API was asked to
+    do*. The attack graph is the event sequence — start at the first call from the compromised
+    credential and trace forward through every action that principal took, every principal it
+    created, every role it assumed. You reconstruct a timeline of API calls, not filesystem ops.
+
+!!! warning "The gotcha"
+    Log availability is not guaranteed — it's a planning decision made *before* the incident. AWS
+    keeps CloudTrail management events 90 days in Event History by default, but **data events** (S3
+    GetObject, Lambda invocations) are *off* by default and must be explicitly enabled. If the trail
+    wasn't configured (and forwarded to a tamper-evident archive), the evidence simply doesn't
+    exist. "We'll just check CloudTrail" assumes someone turned it on.
+
+!!! tip "AI caveat"
+    CloudTrail JSON is well-suited to model analysis — consistent, documented schema — and a model
+    can trace an event chain or group events into ATT&CK phases faster than grep. But it misses
+    events needing operational context ("this account doing this is normal here") and sometimes
+    hallucinates from event *names* without reading the field values. Verify every model-identified
+    event against the raw JSON before citing it.
 
 ## Learn (~3 hrs)
 
@@ -105,3 +133,8 @@ by extrapolating from the event names without reading the field values. CloudTra
 particularly well-suited to model analysis: the JSON schema is consistent and well-documented, and
 the model can trace an event chain faster than grep. Verify every model-identified event against
 the raw JSON before citing it in the report.
+
+!!! question "Check yourself"
+    - Why can a cloud incident leave you with no disk image at all, and what becomes your primary evidence instead?
+    - You have a compromised IAM key. Describe how you'd reconstruct the attacker's actions from CloudTrail.
+    - The team says "we'll check CloudTrail for the S3 data exfil." Why might that data simply not be there?

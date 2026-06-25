@@ -10,6 +10,12 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Automation doesn't make you safer — it makes you *faster*, in both directions. Knight Capital lost
+    ~$440M in 45 minutes because a deploy automation executed the wrong action millions of times before
+    anyone could stop it. The safety isn't in the automation; it's in the **gate, kill-switch, and
+    review** you wrap around it. *What* to automate is itself a judgment — decided by repeatability and
+    determinism, minus the maintenance burden everyone underestimates.
 
 ## Why this matters
 This is the first module of the automation track, and it sets the posture for everything after it.
@@ -67,6 +73,11 @@ whole lesson of this module, and it's the opposite of the comfortable intuition:
 > no human can catch in time.** The safety doesn't come from the automation; it comes from the
 > **gate, the kill-switch, and the review** you wrap around it. Those are the point.
 
+!!! note "The mental model"
+    Automation is a force multiplier on whatever you point it at — including your mistakes, executed at
+    a scale and speed no human can catch in time. Stop asking "is this safe because a machine does it the
+    same way every time?" and start asking "what gate, kill-switch, and review stop it when it's wrong?"
+
 Three things Knight didn't have, and every one of them maps to a control you'll build later in this
 track:
 
@@ -120,6 +131,12 @@ breaks — and needs 4 hours of fixing — every time an upstream API or output 
 loss*. Maintenance is systematically underestimated for anything that calls external APIs, scrapes
 web pages, or parses undocumented tool output, because those change without notice.
 
+!!! warning "The gotcha"
+    The seductive wrong answer is "the automation was buggy / they should have tested more." Knight's
+    code wasn't doing something humans couldn't — humans place orders too. What changed was *speed and
+    scale*. And when you do decide to automate, the maintenance term in the ROI equation is the one
+    that flips a "win" into a net loss — and the one everybody leaves out of the estimate.
+
 The posture the whole track builds toward: **AI authors → you review → scanners gate → you own it.**
 The automation handles the mechanics; *you* understand every step and can defend every decision it
 makes. "I don't know what that script does" is not an acceptable answer for a security tool running
@@ -154,3 +171,13 @@ determinism** (calling "is this a real incident?" automatable because it *sounds
 placements you most disagree with and argue the other side; see whether its reasoning holds. The
 first-pass sort is the model's; the **cut line is yours to defend** — which is exactly what the lab's
 ADR makes you write down.
+
+!!! tip "AI caveat"
+    A model sorting your task list will *over-rate determinism* (it calls "is this a real incident?"
+    automatable because it sounds mechanical) and *under-rate maintenance burden* (it ignores that the
+    API changes monthly). The first-pass sort is the model's; the cut line is yours to defend.
+
+!!! question "Check yourself"
+    - "Automation makes you safer" is the comfortable intuition — in one sentence, why is it wrong?
+    - Knight Capital was missing three controls that map to things you'll build later in this track. Name them.
+    - You have a task that saves 30 minutes a week. What term in the ROI test most often turns that "win" into a net loss, and why is it the one people skip?

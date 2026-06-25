@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules (esp. 04 Linux, 08 Encoding)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Analysts don't script for fun — they script when the data outgrows the eyes: a CISA advisory
+    ships hundreds of IOCs, a busy log is tens of thousands of lines a day. The product here is a
+    **reusable tool, not a throwaway**: same logic, but packaged so a teammate can run it cold —
+    flags instead of hard-coded paths, a `--help`, a short README, one test. The shape is **read →
+    parse → filter → output**, and you **automate the toil while keeping the judgment.** The real
+    lesson is the *review* skill: a model writes the whole parser in seconds and it looks right —
+    your job is catching the wrong data assumption, the silent skip, and the off-by-one.
 
 ## The scale problem
 
@@ -56,6 +64,17 @@ is not bureaucracy — it is the difference between a result you got once and a 
 hand off*. Everything the automation track later compounds on is this construct: a reusable, reviewable
 tool, not a pile of scratch scripts.
 
+!!! note "The mental model"
+    A security script is one boring decision written down so it can be re-run *by other people*:
+    **read → parse → filter → output.** A *throwaway* hard-codes its path and dies with the terminal;
+    a *tool* takes input as a flag, answers `--help`, ships a short README and one test — and that's
+    the difference between a result you got once and a capability you own and can hand off.
+
+!!! warning "The gotcha"
+    Automate the **toil**, keep the **judgment.** The script flags 50 IPs over a threshold; deciding
+    which is the attacker and which is your own backup job is still your call. A tool that quietly
+    makes judgments *for* you is worse than no tool — because you'll trust it.
+
 Two ideas make a script worth writing, and both are about trust:
 
 **A script is a hypothesis you can re-run.** When you say "the brute force is coming from one IP,"
@@ -77,6 +96,13 @@ Here's the thing that makes this a *security* lesson and not a Python lesson: **
 whole script for you in five seconds, and it will look right.** From here on, your job is not typing —
 it's *reviewing*. This is the first real rep of the posture the entire rest of the curriculum assumes:
 **AI authors → you review every line → you own it.**
+
+!!! tip "AI caveat"
+    AI-generated parsing code fails in *quiet* ways — a regex for the format it imagined (matches
+    nothing, no error), a silent skip of lines it can't parse (your "top 10" is missing half the
+    log), an off-by-one on the header or trailing space. You catch these by running it against the
+    ten lines you already analyzed by hand. **If you can't explain every token in the regex, you
+    don't own the script — you're just pasting.**
 
 AI-generated parsing code fails in quiet, specific ways, and you have to learn to see them:
 
@@ -126,3 +152,8 @@ drop it? Read the regex token by token and predict what it matches before you ru
 transfers to every later track is not "prompt a model to write code" — it's catching the off-by-one,
 the wrong assumption, and the silent skip that make confident, wrong output. Typing was never the
 skill. Directing and reviewing it is, and you own what you ship.
+
+!!! question "Check yourself"
+    - What's the honest reason an analyst writes a script — and what's the test that separates a "tool" from a "throwaway"?
+    - Name the three quiet ways AI-generated parsing code fails, and the one habit that catches all three.
+    - Your script flags 50 IPs over a threshold. Which part of that is the tool's job, and which is still yours?

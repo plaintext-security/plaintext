@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    RAM is the one place a sophisticated attacker can't fully clean: fileless malware, injected
+    shellcode, and runtime decryption keys live only in memory. Volatility3 parses a raw memory
+    image using kernel symbol tables (the profile must match the exact OS build), then `pslist`/
+    `pstree`/`cmdline` reveal process hierarchy and launch commands, `malfind` finds injected code,
+    and `netscan` ties connections to processes. The highest-value signals are parent-child
+    anomalies and a process making network calls it has no business making.
+
 ## Why this matters
 Advanced attackers go to great lengths to avoid touching disk: fileless malware runs entirely in memory, injected shellcode lives inside legitimate processes, encryption keys are decrypted at runtime and never written to a file. A traditional disk investigation sees none of this. Memory forensics is the technique that reveals what is actually running — processes, their injected payloads, their network connections, the decryption keys in use — from a single memory capture. For a sophisticated intrusion, memory is often the *only* place the full picture exists.
 
@@ -21,11 +29,37 @@ Use Volatility3 to analyze a memory image: enumerate running processes, identify
 ## The core idea
 A memory image is a dump of physical RAM at a moment in time — every bit of every process, the kernel, device drivers, and the OS's own data structures, all in one flat binary file. Volatility3 navigates this raw binary by applying *symbol tables* (debug symbols for the specific kernel version) that tell it exactly where, in this particular OS build, the process list, network table, and other structures live. This is why Volatility3 requires a profile that matches the captured system — the data structures for Windows 10 build 22H2 are in different locations than Windows Server 2019, and the wrong profile produces garbage. Once the profile is right, Volatility3 can walk the kernel's linked list of processes (`pslist`), read each process's virtual address space, and reconstruct almost everything the OS knows.
 
+!!! note "The mental model"
+    A memory image is the live system's state frozen in a flat binary; Volatility3 is a reader that
+    needs a *map* (the kernel symbol table for that exact build) to know where the process list,
+    socket table, and other structures sit. Get the map right and you can reconstruct almost
+    everything the OS knew at capture time.
+
+!!! warning "The gotcha"
+    The profile must match the *exact* OS build — Win10 22H2 lays out its structures differently
+    from Server 2019. A mismatched profile doesn't error helpfully; it produces plausible-looking
+    garbage. And a `malfind` hit is a lead, not a verdict: JIT compilers and DRM legitimately
+    allocate executable anonymous memory, so triage every hit before you call it injection.
+
 **The most important Volatility3 plugin for IR is `pslist` — but the most important one for detecting malware is `pstree` paired with `cmdline`.** The process tree reveals the parent-child relationships that malware exploits: a web server that spawned `cmd.exe`, or a `Word.exe` that spawned `powershell.exe -enc`. These parent-child anomalies are the most reliable behavioral signal for initial access and execution. `cmdline` reveals the exact command line every process was launched with — including encoded PowerShell payloads, credential-harvesting flags, and lateral movement commands that were never written to disk.
 
 **Process injection** is the technique that makes memory forensics essential. An attacker injects shellcode or a DLL into a legitimate process — `svchost.exe`, `explorer.exe`, `notepad.exe` — so that their malicious activity runs under a trusted process name and evades process-based controls. Volatility3's `malfind` plugin detects injection by looking for memory regions inside a process's virtual address space that are executable, contain no mapped file on disk, and exhibit tell-tale byte patterns (PE headers, shellcode stubs). A `malfind` hit is a lead, not a conviction — some legitimate software (JIT compilers, DRM) allocates executable anonymous memory — but an executable anonymous region inside `notepad.exe` warrants investigation.
 
 **Network connections in memory** are often more complete than the OS's own `netstat`, because the memory image captures the kernel's socket and connection tables directly, including connections that may have been opened and closed recently. `netstat` (in Volatility3) shows established connections, listening ports, and recently-closed connections — all tied to the owning process. A connection from `svchost.exe` to a non-Microsoft external IP is immediately suspicious. A connection from `notepad.exe` to port 443 is definitive evidence of injection, because `notepad.exe` has no legitimate reason to make network calls.
+
+??? note "Go deeper: why process injection makes memory forensics essential"
+    Injection (MITRE ATT&CK T1055) is the technique that hides malicious activity inside a trusted
+    process name — shellcode or a DLL injected into `svchost.exe`, `explorer.exe`, or `notepad.exe`
+    so it runs under a name process-based controls won't flag. `malfind` detects it by finding
+    memory regions that are executable, back no mapped file on disk, and carry telltale byte
+    patterns (PE headers, shellcode stubs). Correlate a hit with its `pslist` parent and `netscan`
+    connections to turn a lead into a finding.
+
+!!! tip "AI caveat"
+    A model is useful for interpreting captured output — flag anomalous parent-child pairs in a
+    `pslist` dump, or judge whether `malfind` bytes look like shellcode or a JIT stub. It cannot run
+    Volatility3 against your image and will hallucinate offsets and process details. Every finding
+    must trace back to actual plugin output.
 
 ## Learn (~4 hrs)
 
@@ -54,3 +88,8 @@ A memory image is a dump of physical RAM at a moment in time — every bit of ev
 
 ## AI acceleration
 AI is useful for explaining Volatility3 output — feed it a `pslist` dump and ask it to flag anomalous parent-child relationships. For `malfind` hits, feed the disassembled bytes and ask whether they look like shellcode or a JIT stub. Where AI is not reliable: it cannot run Volatility3 against your image, and it will hallucinate specific offsets and process details. Use it to interpret output you've already captured; every finding must trace back to the actual plugin output.
+
+!!! question "Check yourself"
+    - Why does memory forensics surface attacker activity that a full disk analysis cannot?
+    - You run Volatility3 with a profile for the wrong Windows build. What happens, and why is it dangerous rather than obviously broken?
+    - A `malfind` hit fires inside `svchost.exe`. Why isn't that a conviction on its own, and what two outputs do you correlate to confirm it?

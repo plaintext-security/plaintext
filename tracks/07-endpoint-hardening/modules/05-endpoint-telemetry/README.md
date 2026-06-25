@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A hardened host with no telemetry is a vault with no camera — you've lowered the odds of a breach
+    but learn about it from a third party weeks later. osquery treats the OS as a relational database:
+    every process, socket, cron entry, and user is a SQL table you can query. This module stands up
+    osquery, writes security-focused queries against the schema, and ties each to the ATT&CK technique
+    it surfaces. Wazuh extends the model from query-polling to real-time event streaming.
+
 ## Why this matters
 
 A hardened host without telemetry is a vault with no security camera. You've reduced the odds of a breach, but if it happens you'll find out from a third party weeks later. Endpoint telemetry — the structured, continuous collection of process events, network connections, file changes, and authentication activity from each host — is the data layer that turns "we think we're secure" into "we'll know within minutes if something changes." osquery and Wazuh are the two open-source tools most deployed in production for this purpose: osquery for ad-hoc and scheduled SQL-query-based host interrogation, Wazuh for real-time event collection, alerting, and SIEM integration.
@@ -22,11 +29,27 @@ Run osquery against a Linux host, execute security-focused queries against the p
 
 osquery treats the operating system as a relational database. Every aspect of system state — running processes, open files, listening sockets, kernel modules, user accounts, browser history — is a table you query with SQL. This is a genuinely useful abstraction because it makes host interrogation programmable, composable, and auditable in the same language analysts already know. A query that finds all processes with a network connection and no corresponding installed package is a one-line SQL join that would require a bespoke script in any other approach.
 
+!!! note "The mental model"
+    The OS is a database. Once host state — processes, sockets, cron, users, kernel modules — is a set
+    of SQL tables, "find anything anomalous" becomes a query you can compose, version, and schedule,
+    instead of a bespoke script per question. Each useful query maps to a specific ATT&CK technique.
+
 The telemetry architecture has two modes. Interactive queries (via `osqueryi`) are the analyst's tool — you connect to the daemon and run ad-hoc queries to investigate a specific host or hypothesis. Scheduled queries (in `osquery.conf` or via osquery's `packs` system) run continuously and log results to a file or a centralized logging service. The scheduled query output is what feeds a SIEM or detection pipeline; the interactive mode is what you use when you're on a host and need to understand its state quickly. Both modes share the same SQL interface.
 
 Wazuh extends the telemetry model from query-based polling to real-time event streaming. The Wazuh agent collects system logs, audit events (via `auditd`), file integrity monitoring (FIM) events, and osquery results, then forwards them to the Wazuh manager for alerting and correlation. The combined osquery + Wazuh stack covers both the "what is the state right now" query use case and the "alert me when something changes" real-time use case. For an endpoint-monitoring programme, this means every process creation, privileged command, and configuration change is visible and searchable in near-real-time.
 
+!!! warning "The gotcha"
+    Telemetry without alerting is archaeology; alerting without telemetry is guesswork. osquery's
+    scheduled packs collect — but collection alone only helps *after* an incident, in hindsight. The
+    pairing with Wazuh's real-time streaming is what turns "what was the state" into "tell me when it
+    changes." You need both halves, and you need the queries tuned so they produce signal, not noise.
+
 The practitioner discipline in endpoint telemetry is knowing which tables matter for security and which queries produce signal without excessive noise. Process creation queries (`SELECT pid, name, path, cmdline, parent FROM processes`) are universally useful — they reveal what is running and what spawned it. Network connection queries (`SELECT pid, local_address, remote_address, remote_port FROM process_open_sockets`) catch C2 beaconing. Crontab queries (`SELECT command, path FROM cron_tabs`) catch persistence mechanisms. SUID binary queries (`SELECT path, permissions FROM file WHERE ... permissions LIKE '%s%'`) catch the privesc paths module 09 addresses. Each query maps to a specific adversary technique.
+
+!!! tip "AI caveat"
+    Hand a model an ATT&CK technique and it will draft an osquery SQL detection — but it routinely
+    invents table or column names that don't exist in the schema. Check every query against the
+    osquery schema reference and run it on a live host before treating its output as signal.
 
 ## Learn (~4 hrs)
 
@@ -55,3 +78,8 @@ The practitioner discipline in endpoint telemetry is knowing which tables matter
 ## AI acceleration
 
 Give an AI a specific attack technique (e.g. "persistence via cron") and ask it to write an osquery SQL query that would detect it. Check the query against the osquery schema to confirm the table and column names are real, then run it against a live host. The model drafts the query; you validate the schema and test the output before treating the result as signal.
+
+!!! question "Check yourself"
+    - What does "the OS is a relational database" buy you over writing a bespoke script per question?
+    - When do you reach for `osqueryi` (interactive) versus a scheduled pack — and what does each feed?
+    - Why is collecting telemetry without alerting on it described as "archaeology"?
