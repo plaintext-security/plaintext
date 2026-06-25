@@ -43,7 +43,7 @@ public detections are written directly against.
     The single most valuable thing Sysmon gives you is **process ancestry** — the parent/child
     chain. Almost no technique looks malicious as a single event; it looks malicious as a *lineage*.
     `powershell.exe` alone is benign; `winword.exe → powershell.exe -enc <base64>` is a macro
-    dropper. (That is literally the event the [detection-as-code](../08-detection-as-code/) lab
+    dropper. (That is literally the event the [detection-as-code](../08-detection-as-code/README.md) lab
     fires on.) Learning to read the tree — with command lines attached — is the core endpoint skill,
     and it's why Event ID 1 is the workhorse of endpoint detection.
 
