@@ -23,13 +23,19 @@ This board tracks what's live now.*
 | Status | Item | Where |
 |--------|------|-------|
 | 🟡 in review | **Labs PR #17** — survey tuning + ~31 category-D lab fixes (version bit-rot + code bugs) | plaintext-labs |
+| ✅ | **A1** Type tags normalized — 34 `Variant D ·` → canonical `Type N ·` (+ 3 stray renderings); Variant D = 0 | plaintext `afcdac1` |
+| ✅ | **A2** Deluxe tier sanctioned as go-forward template + type tag made required (CONTRIBUTING.md) | plaintext `afcdac1` |
+| ✅ | **A3** 9 empty Learn sub-headers filled with real resources | plaintext `afcdac1` |
+| ✅ | **A4** Stale track READMEs refreshed (crypto/python/automation/ai-ops/endpoint counts+tables+phases) | plaintext `afcdac1` |
+| ✅ | **A5** Numbering reconciled in reader-facing surfaces (automation nav, ztna README match nav) | plaintext `afcdac1` |
+
+## Next phase — after PR #17 merges + re-survey
+
+| Status | Item | Where |
+|--------|------|-------|
 | ⬜ next | **Merge PR #17 → re-run Labs Survey → promote greens to `.ci-demo`** (dimension-3 validation loop) | plaintext-labs |
-| ⬜ | **A1** Normalize type tags — `Variant D ·` → `Type N ·` on 34 modules (all foundations + cloud + scattered) | plaintext |
-| ⬜ | **A2** Editorial call: roll out the deluxe formatting tier (4 exemplars) or sanction it as exemplar-only | plaintext |
-| ⬜ | **A3** Fill/remove empty Learn sub-headers (foundations 01, malware 03/05/09, endpoint 02/04, crypto 02/03/06, python 01) | plaintext |
-| ⬜ | **A4** Refresh stale track-root READMEs (crypto, python, automation, ai-ops, endpoint) | plaintext |
-| ⬜ | **A5** Resolve numbering collisions (automation two-`11`, ztna two-`10`) | both |
-| ⬜ | **B** Reconcile genuine prose↔env lab mismatches (offensive 02/12, defensive 15/06/14/01, ai-ops eval harnesses, AD 06) — after the re-run survey | both |
+| ⬜ | **A5-tail** Physical dir-prefix renames (cosmetic URL slugs), bundled with the gitlink bump: automation `11-clickops`→`12`, ztna `10-vpn-ztna-migration`→stays-10 / `10-workload-identity-mtls`→`12` + symlink + nav-path fixes | both |
+| ⬜ | **B** Reconcile genuine prose↔env lab mismatches (offensive 02/12, defensive 15/06/14/01, ai-ops eval harnesses, AD 06) — drive off the re-run survey's real fail list | both |
 | ⬜ | **C** Per-track prose papercut sweep | plaintext |
 
 Full detail + reconciliation (which auditor claims were stale) in the remediation doc.
