@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A SOC drowns in repetitive response — enrich, look up intel, open a ticket, maybe contain — most
+    of it the same keystrokes every time. **SOAR** automates that toil via a *playbook*: trigger →
+    enrich → decide → act, wiring together everything this track built. It's the capstone of
+    defensive operations because it integrates the rest, and the natural home for AI-augmented
+    triage. The whole skill is placing the **human gate** where a wrong machine decision would hurt:
+    enrichment is safe and reversible; containment acts on production at machine speed and is not.
+
 ## Why this matters
 A SOC drowns in repetitive response: enrich the alert, check the intel, open a ticket, maybe contain.
 SOAR automates that toil so analysts spend their judgment where it matters — and it's the natural home
@@ -30,18 +38,31 @@ process) into one workflow. It's the capstone of defensive operations precisely 
 *integrates* the rest — and it's the natural home for AI-augmented triage: a small local model for
 high-volume "is this even interesting?", a frontier model for the genuinely hard call.
 
-The distinction that drives every design decision: orchestration (connecting tools), automation
-(doing steps without a human), and response (the action) are not the same thing — and the art is
-deciding *which steps are safe to fully automate and which need a human gate*. Enrichment is safe
-(read-only, reversible). *Containment* is not (it acts on production, hard to undo). Shuffle gives you
-an OSS platform to build the whole loop for free.
+!!! note "The mental model"
+    Orchestration (connecting tools), automation (doing steps without a human), and response (the
+    action) are not the same thing — and the art is deciding *which steps are safe to fully automate
+    and which need a human gate*. Enrichment is safe (read-only, reversible). *Containment* is not
+    (it acts on production, hard to undo). Shuffle gives you an OSS platform to build the whole loop
+    for free.
 
-The judgment, and the sharpest form of the standing rule: this is where automation stops being
-advisory and *becomes the deliverable*, so **AI authors → you review → you own it** bites hardest. An
-AI triage step that auto-closes alerts will eventually auto-close a real one; an auto-contain action
-on a false positive takes down production *at machine speed*, before any human can intervene.
-Automation multiplies whatever judgment you encoded — including the bad judgment — so the entire skill
-is placing the human gate exactly where a wrong machine decision would hurt, and owning that design.
+!!! warning "The gotcha"
+    This is where automation stops being advisory and *becomes the deliverable*, so **AI authors →
+    you review → you own it** bites hardest. An AI triage step that auto-closes alerts will
+    eventually auto-close a real one; an auto-contain action on a false positive takes down
+    production *at machine speed*, before any human can intervene. Automation multiplies whatever
+    judgment you encoded — including the bad judgment.
+
+??? note "Go deeper: where to place the human gate"
+    The entire skill is placing the human gate exactly where a wrong machine decision would hurt.
+    Read-only, reversible steps (enrichment, intel lookups, ticket creation) can run unattended;
+    actions that touch production and are hard to undo (isolation, account disable, blocks) want an
+    approval gate. Get this placement right and you reclaim the boring 80% without ever risking an
+    auto-inflicted outage.
+
+!!! tip "AI caveat"
+    This is the module where AI/automation stops being advisory and becomes the deliverable — and
+    where the standing rule bites hardest: **AI authors → you review → you own it**. Put the human
+    gate where a wrong machine decision would hurt, and own that design.
 
 ## Learn (~4 hrs)
 
@@ -65,3 +86,11 @@ the standing rule bites hardest: **AI authors → you review → you own it**. A
 auto-closes alerts will eventually auto-close a real one; an auto-contain action on a false positive
 takes down production. Put the human gate where a wrong machine decision would hurt, and own that
 design.
+
+!!! question "Check yourself"
+    - In the trigger → enrich → decide → act playbook, which steps are safe to fully automate and
+      which demand a human gate — and what's the deciding property?
+    - Why is an auto-contain action on a false positive more dangerous than the same mistake made by
+      a human analyst?
+    - What does it mean that "automation multiplies whatever judgment you encoded," and how does
+      that change how you review an AI triage step?

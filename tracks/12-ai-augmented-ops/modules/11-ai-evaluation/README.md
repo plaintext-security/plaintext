@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Eval Harness &nbsp;·&nbsp; **Prerequisites:** [04 — RAG](../04-rag/README.md), [07 — AI Detection & Triage](../07-ai-detection-triage/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    This is the measurement layer the rest of the track plugs into. A non-deterministic system that
+    performs on the handful of inputs you tried is not measured — it's an *anecdote*, and a demo set
+    actively lies because it's the same data you tuned on. The discipline: a **held-out** test set,
+    a metric chosen on purpose (**recall on the malicious class**, not accuracy), a **scorecard**, and
+    a **CI regression gate** that goes red when a planted regression degrades the score. Modules 04,
+    06, and 07 each plug into it. An AI system without an eval is a liability with good demo luck.
+
 ## Why this matters
 Every AI system you built earlier in this track works in the demo. The triage classifier in
 Module 07 labelled the five sample alerts; the RAG in Module 04 answered the question you typed at
@@ -41,6 +49,13 @@ against; of course it gets them right. A demo is a memorised exam. The reveal of
 the move which makes an AI system trustworthy is not a better prompt or a bigger model — it is
 *measurement against data the system has never been tuned on*, reported as a number, gated in CI.
 
+!!! note "The mental model"
+    A demo is a memorised exam: the inputs you watched it ace are the same ones you tuned against, so
+    "it got the demo right" is no evidence at all. The only honest estimate of behaviour on the *next*
+    input is a score on a held-out set the system has never touched — the standard train/dev/test wall
+    from ML, applied to a prompt-driven system that was never gradient-trained. The discipline
+    transfers intact.
+
 **Held-out set vs. demo/tuning set.** The single most important line in eval is the wall between the
 data you tune on and the data you grade on. You tune the prompt, pick the few-shot examples, and pick
 the threshold against a *tuning* set; you report the score against a *held-out* set the system has
@@ -67,6 +82,12 @@ lets you find the knee of that curve deliberately instead of by feel. For RAG th
 wrong context answers confidently and wrongly, and a generation metric alone never sees the bad
 retrieval underneath.
 
+!!! warning "The gotcha"
+    Accuracy is usually the wrong metric: in a SOC the classes are imbalanced and the costs are
+    asymmetric, so a model that's 95% *accurate* by ignoring the rare attacks is worthless. The
+    load-bearing number is **recall on the malicious class** and its complement the false-negative
+    rate — a missed critical can cost a breach; a false positive costs an analyst minutes.
+
 **Coverage ≠ effectiveness.** A 500-item test set is not better than a 30-item one if all 500 are
 easy. Coverage — how *much* you test — is not the same as effectiveness — whether you test the cases
 that *break* the system. A held-out set earns its keep by including the hard, adversarial, and
@@ -74,13 +95,14 @@ near-miss cases: the benign event that looks malicious, the novel technique phra
 question whose answer sits in a poorly-chunked document. Counting items is vanity; deliberately
 sampling the failure modes is the work.
 
-**Observability — the eval that never stops.** An offline eval tells you the system was good *the day
-you ran it*. Production is where it rots: the weights are fixed, but the *input distribution* drifts —
-new tooling, new attacker tradecraft, a re-org that changes what "normal" looks like — and the score
-you measured in March no longer describes June. Observability is the standing version of the eval:
-log every input, output, and (where you have it) the realised outcome, so you can re-score against
-fresh ground truth and *see the drift before an analyst does*. The same scorecard, run on last
-month's labelled traffic, is your early-warning system.
+??? note "Go deeper: observability — the eval that never stops"
+    An offline eval tells you the system was good *the day you ran it*. Production is where it rots:
+    the weights are fixed, but the *input distribution* drifts — new tooling, new attacker tradecraft,
+    a re-org that changes what "normal" looks like — and the score you measured in March no longer
+    describes June. Observability is the standing version of the eval: log every input, output, and
+    (where you have it) the realised outcome, so you can re-score against fresh ground truth and *see
+    the drift before an analyst does*. The same scorecard, run on last month's labelled traffic, is
+    your early-warning system.
 
 **The regression gate.** The deliverable that makes this engineering rather than a one-off study is a
 **gate**: the eval runs in CI, and a change that drops the score below a declared threshold **fails
@@ -96,6 +118,14 @@ copilot), and 07 (triage) each plug into it**: 07's confusion matrix becomes a h
 a gate; 04's "where retrieval fails" becomes retrieval@k with a regression threshold; 06's summaries
 get a groundedness check. An AI system without an eval is not done — it is a liability with good
 demo luck.
+
+!!! tip "AI caveat"
+    A model writes the confusion-matrix arithmetic and the scorecard table well. What it gets quietly
+    wrong: it **defaults to accuracy** (you override to recall-on-malicious and justify it), it will
+    **score on the tuning set** (you enforce the held-out wall), and it leaves the gate direction
+    ambiguous (does it fail *closed* when the score is missing or the eval errors?). Ask it to
+    generate *adversarial* held-out items, then label and verify each yourself — a model labelling its
+    own test set is the contamination this whole module warns against.
 
 ## Learn (~2.5 hrs)
 
@@ -131,3 +161,8 @@ errors, or does a broken eval silently "pass"?). Ask a model to generate *advers
 items — benign events crafted to look malicious — then label them yourself and verify each against
 the technique it mimics, because a model labelling its own test set is the contamination this whole
 module warns against.
+
+!!! question "Check yourself"
+    - Why does the demo set "actively lie," and what is the one wall that makes a score honest?
+    - Why is accuracy the wrong metric for SOC triage, and which metric replaces it (and why)?
+    - What is a "planted regression," and why isn't a gate you've only ever seen pass actually a gate?

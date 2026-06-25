@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md); Module 05 (SASE / no-inbound-ports) and Module 06 (Identity-Aware Access / Pomerium) — you red-team the deployment you stood up there
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A control you haven't attacked is a hope, not a control. A green dashboard and a tunnel showing
+    *connected* prove the happy path; they say nothing about whether the design refuses the attacks it
+    was built to refuse. You'll take the gated, no-inbound-ports service from Modules 05/06 and attack
+    it four ways — port scan, unauthenticated reach, identity-header forgery, proxy bypass — documenting
+    each *failed* attack as evidence. The forgery against a deliberately naive backend is the one finding
+    you land; hardening it and re-attacking until it fails too *is* the deliverable.
+
 ## Why this matters
 
 There is a gap between "I deployed Zero Trust" and "I proved it holds," and most deployments live in it. A `docker compose up` that returns a green dashboard, a tunnel that shows *connected*, an Access policy that asks for an email — these tell you the happy path works. They tell you nothing about whether the design refuses the attacks it was built to refuse. You only trust a control after you have attacked it yourself and watched it hold; until then it is an assertion.
@@ -22,15 +30,42 @@ Take the gated, no-inbound-ports service you built in Modules 05/06 and attack i
 
 ## The core idea
 
+!!! note "The mental model"
+    **A control you haven't attacked is a hope, not a control.** Deployment proves the happy path;
+    red-teaming proves the *deny* path — and the deny path is the only thing that makes it Zero Trust.
+    So the module is four attacks, each targeting one load-bearing tenet of the design you built, each
+    producing a documented pass (it was refused) or fail (it got through — now you harden). A refused
+    attack is a documented *win*, not a non-event.
+
 The deliverable is the design plus the attacks it survived — so the structure of this module is four attacks, each targeting one tenet of the architecture you built, and each producing a documented pass (it was refused) or fail (it got through, and now you harden). The mental model is one sentence: **a control you haven't attacked is a hope, not a control.** Deployment proves the happy path; red-teaming proves the deny path, and the deny path is the only thing that makes it Zero Trust.
 
 The four attacks map one-to-one onto the design's load-bearing tenets. **(1) No inbound listener** — an external port scan (`nmap` against the host/origin) must find nothing; the connector dialed *out* (Cloudflare Tunnel) or the backend has no published port (Pomerium), so there is no service to reach and nothing to fingerprint. **(2) No unauthenticated reach** — an `https` request with no session must land on a login/redirect or a drop, never a 200 from the backend. These two are the easy passes; if either fails, the deployment isn't Zero Trust yet and the later attacks are moot.
 
 The third attack is the one this module exists for: **identity-header forgery.** An identity-aware proxy works by *injecting* the validated caller into the upstream request as a header — Pomerium's signed `X-Pomerium-Jwt-Assertion`, plus context like `X-Forwarded-For` / `X-Forwarded-User`. The whole model holds right up until the backend trusts a header that an attacker can *also* set. `curl -H "X-Forwarded-User: admin@corp.com"` costs nothing; a forged value of a *signed* assertion costs the proxy's private key, which you don't have. So the rule the backend must follow is exact: **trust the identity in `X-Pomerium-Jwt-Assertion` only after verifying its signature against the proxy's JWKS (`/.well-known/pomerium/jwks.json`), plus `aud`/`iss`/`exp` — and never trust a plain, client-supplied identity header.** The lab ships *two* backends so you can see both sides: a properly-verifying one (the forgery is refused — a documented pass) and a deliberately naive one that believes a raw `X-Forwarded-User` header (the forgery *succeeds* — your one finding). Hardening the naive backend to verify the signed assertion, then watching the same forgery fail, is the harden-and-re-attack beat that *is* the deliverable.
 
+!!! warning "The gotcha"
+    The model holds right up until the backend trusts a header an attacker can *also* set. `curl -H
+    "X-Forwarded-User: admin@corp.com"` costs nothing; forging a *signed* `X-Pomerium-Jwt-Assertion`
+    costs the proxy's private key, which you don't have. The backend must trust the signed assertion
+    only after verifying it against the JWKS plus `aud`/`iss`/`exp` — never a plain client-supplied
+    header. CVE-2026-40575 (OAuth2 Proxy, CVSS 9.1) is this exact class.
+
 The fourth attack is the dual of the first: **proxy bypass.** Even a perfect deny path is decoration if the backend is reachable without traversing it — a published port "for convenience," a route on a flat internal network, a teammate's `docker run -p`. Try to reach the backend directly; it must refuse. The honest framing throughout: each attack is run *against your own deployment only*, and a refusal is a documented win — "I attacked this and it held" — not a non-event. The one finding you do land is not a failure of the exercise; it is the exercise working. A red-team that finds nothing on the first pass either has a hardened design or a shallow attack — and the way you tell the difference is by including a known-vulnerable backend and confirming your attack can actually detect the difference.
 
-## Learn (~2.5 hrs)
+??? note "Go deeper: the four attacks map to four tenets"
+    **(1) No inbound listener** — an external `nmap` against the host/origin must find nothing; the
+    connector dialed *out* or the backend has no published port. **(2) No unauthenticated reach** — an
+    `https` request with no session lands on a login/redirect or a drop, never a 200. These two are the
+    easy passes; if either fails, the later attacks are moot. **(3) Identity-header forgery** — the one
+    this module exists for. **(4) Proxy bypass** — the dual of the first: even a perfect deny path is
+    decoration if the backend is reachable around it (a published port, a flat-network route).
+
+!!! tip "AI caveat"
+    A model drafts the whole harness — the `nmap` invocation, the four `curl` probes, the forged-header
+    payloads — in one shot. The review has one specific failure mode to hunt: a script that **fails
+    open**, printing PASS when a request errors, times out, or hits an unexpected redirect, will tell
+    you your *design* held when in fact your *test* broke. Every assertion must fail closed — a probe
+    that can't reach a verdict is a failure to investigate, never a silent pass.
 
 **The design you're attacking — what each tenet promises (~45 min)**
 - [NIST SP 800-207 — Zero Trust Architecture, §2 (tenets) and §3.4 (threats to ZTA)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf) (~30 min) — §2 is the checklist your four attacks test; **read §3.4 closely** — it enumerates exactly the deployment-level threats (subverting the policy decision/enforcement point, denial-of-service of the PEP, stolen credentials) that this red-team operationalizes. The PDP/PEP split there is the proxy-vs-backend boundary you attack.
@@ -56,3 +91,8 @@ The fourth attack is the dual of the first: **proxy bypass.** Even a perfect den
 ## AI acceleration
 
 A model will happily draft your whole attack harness — the `nmap` invocation, the four `curl` probes, the forged-header payloads — in one shot, and that speed is genuinely useful here. The posture holds exactly as everywhere else: **AI authors → you review every line → you own it**, and in a red-team harness the review has one specific failure mode to hunt. An attack script that **fails open** — that prints PASS when the request errors, times out, or hits a redirect the script didn't anticipate — will tell you your design held when in fact your *test* broke. Every assertion must fail *closed*: a probe that can't reach a verdict counts as a failure to investigate, never a silent pass. Make a model draft `attack.sh`, then read each check and ask: if this `curl` returned nothing, or a 000, or an unexpected 502, does the harness report a held design or a broken test? The transferable skill of this module is not prompting for `nmap` flags; it's owning a red-team harness whose green you can actually trust — and proving it by pointing the *same* harness at the deliberately-naive backend and watching it correctly go red.
+
+!!! question "Check yourself"
+    - Why is a green dashboard and a `connected` tunnel not evidence that your Zero Trust design holds?
+    - Why does forging a plain `X-Forwarded-User` header cost nothing while forging `X-Pomerium-Jwt-Assertion` is infeasible?
+    - In a red-team harness, what is "failing open," and why does it make a green result untrustworthy?

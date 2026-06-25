@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Infrastructure as Code](../02-infrastructure-as-code/README.md), [IaC Security Scanning](../03-iac-security-scanning/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A security check you run by hand runs inconsistently; the misconfig that ships is always "the one
+    we forgot to check." A CI/CD pipeline turns those tools into **gates** — secret-scan, IaC-scan,
+    SBOM — wired between commit and deploy that a bad change *cannot* get past. But the pipeline is
+    also a high-value target: the runner holds every secret and runs other people's code on every
+    push. Codecov 2021 is the cautionary backdrop. So the build is two stacked decisions — *what
+    runs* (the gates) and *what the runner is allowed to do* (its trust boundary).
+
 ## Why this matters
 Every security tool in this track — `checkov`, `gitleaks`, `sigma-cli` — is only as good as the
 thing that runs it consistently. Run them by hand and they run inconsistently; the misconfiguration
@@ -49,6 +57,12 @@ A pipeline gate is a graph of jobs wired to repo events. The build is two decisi
 runs** (the gates) and **what the gate-runner is allowed to do** (its trust boundary). Get the first
 and you catch bad changes; get the second and the gate can't be turned into Codecov.
 
+!!! note "The mental model"
+    A pipeline gate is a graph of jobs wired to repo events, and the build is two decisions stacked:
+    **what runs** (the gates) and **what the gate-runner is allowed to do** (its trust boundary). Get
+    the first and you catch bad changes; get the second and the gate can't be turned into Codecov —
+    the exfiltration channel for every secret in the build.
+
 **The gates, commit → deploy.** Three checks, each fail-closed: a **secret scan** (`gitleaks`) so a
 hardcoded credential never reaches the remote; an **IaC scan** (`checkov`) so an unencrypted bucket
 or `0.0.0.0/0` rule can't merge; and an **SBOM** step (`syft`) that produces a software bill of
@@ -67,6 +81,13 @@ holds the repo's secrets, and the security model has two axes you control:
   code, **any forked PR can read every secret.** That is precisely the Codecov shape, self-inflicted.
   `pull_request_target` has legitimate uses (a bot posting a comment with write access), but it must
   **never execute untrusted PR code.**
+
+    !!! warning "The gotcha"
+        The two most expensive mistakes are invisible until exploited: a `pull_request_target` that
+        checks out and runs the PR's code (any forked PR can then read every secret — the Codecov
+        shape, self-inflicted), and an action pinned to a *mutable* `@v4` tag a maintainer can
+        re-point at new code. A pinned commit SHA is the literal control that would have caught
+        Codecov on day one; `permissions: write-all` is the other red flag.
 - **`permissions:` is least privilege for the token.** Set it at the job level to the minimum:
   `contents: read` for a scan, `pull-requests: write` only on the job that comments,
   `security-events: write` only on the job that uploads SARIF. `permissions: write-all` is a red
@@ -113,3 +134,8 @@ trust boundary above**: which trigger, what the token can do, is each `uses:` pi
 do the cloud credentials come from. Then make it *prove* the gate works — the operating test, not the
 vibe — by feeding it the bad change and confirming the build goes red. AI drafts → you review every
 line → you own the pipeline that has the keys to your infrastructure.
+
+!!! question "Check yourself"
+    - Why does running a security check as a *required status check* on `pull_request` make it a gate, where running the same tool by hand does not?
+    - `pull_request_target` checks out and runs a forked PR's code. Concretely, what can any stranger now do — and what is the one-word fix Codecov 2021 proves?
+    - You pinned an action to `@v4` and OIDC is wired for cloud auth. Which of those two still leaves a moving target under you, and why?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Three constructions get confused constantly: a *hash* (keyless, deterministic, fast), a *MAC*
+    (keyed, integrity + authenticity), and a *password hashing function* (slow, salted, memory-hard).
+    Using the wrong one is a category of breach. Storing passwords as SHA-256 is a breach waiting to
+    happen — fast and unsalted is precisely backwards. LinkedIn 2012 proved it: ~117M unsalted SHA-1
+    hashes, ~90% cracked in 72 hours. The only correct password store is a tuned KDF (Argon2id) with a
+    per-password salt.
+
 ## Why this matters
 
 In 2012, **LinkedIn** lost roughly **117 million** account credentials — and because the passwords were stored as **unsalted SHA-1** hashes, ~90% were cracked within 72 hours of the dump surfacing ([TechCrunch — "117 million LinkedIn emails and passwords from a 2012 hack just got posted online"](https://techcrunch.com/2016/05/18/117-million-linkedin-emails-and-passwords-from-a-2012-hack-just-got-posted-online/)). SHA-1 was not the problem in itself — it was that a *fast, keyless, unsalted* hash is precisely the wrong tool for password storage: no salt means identical passwords share a hash and a single rainbow-table pass cracks them all, and the speed of SHA-1 means a GPU tries billions of guesses a second. Three distinct constructions — cryptographic hashes, message authentication codes, and password hashing functions — are routinely confused with each other, and the confusion leads to real vulnerabilities. Storing passwords as SHA-256 hashes is a breach waiting to happen; using HMAC where you need a password hash is the wrong tool; using MD5 where you need collision resistance is broken. Understanding what each construction provides — and what it explicitly does not — is the practitioner competency that prevents a category of vulnerabilities that appears in every major breach report.
@@ -22,11 +30,35 @@ Use OpenSSL and the `argon2-cffi` Python library to compute hashes, HMACs, and p
 
 A cryptographic hash function (SHA-256, SHA-3) maps arbitrary-length input to a fixed-length output. Its security properties are: preimage resistance (given a hash, you can't find the input), second-preimage resistance (given an input, you can't find a different input with the same hash), and collision resistance (you can't find any two inputs with the same hash). A hash has no key — it is deterministic and public. This means that if an adversary has the hash of a password, they can precompute a table of hash values for common passwords and look up the original. SHA-256 is fast — billions of hashes per second on modern hardware — which is exactly the wrong property for a password hash.
 
+!!! note "The mental model"
+    Match the construction to the job by asking one question: is the input a *secret you chose* or a
+    *secret the user chose*? A hash verifies integrity of public data. A MAC authenticates a message
+    using a key *you* hold. A password KDF stores a low-entropy secret *the user* chose — which is why
+    it must be deliberately slow. Speed is a feature for hashes and a vulnerability for password storage.
+
 A Message Authentication Code (MAC) is a keyed construction. HMAC-SHA256 takes a key and a message and produces a tag that only someone with the key can produce or verify. It provides integrity and authenticity — but not confidentiality, and not preimage resistance in the password-storage sense. Using HMAC with the password as the key (a common mistake) still allows offline cracking if the attacker has the tag and can try billions of keys per second. The key in HMAC must be a secret held by the server, not derived from user input.
+
+!!! warning "The gotcha"
+    "SHA-256 is a strong, modern hash, so it's fine for passwords" is the trap. It *is* strong — and
+    that strength is the problem: a GPU computes billions of SHA-256 hashes per second, so an unsalted
+    SHA-256 password store cracks at the same speed. The right primitive is one engineered to be *slow*
+    and memory-hard, not one chosen for collision resistance.
 
 Password hashing functions — Argon2, bcrypt, scrypt, PBKDF2 — are designed specifically to be slow, memory-hard, and tunable. They include a random per-password salt (preventing precomputed table attacks), a cost factor (controlling how much work each hash requires), and optionally a memory parameter (making GPU-parallelised cracking expensive). Argon2id is the current recommendation from the OWASP Password Storage Cheat Sheet and the winner of the Password Hashing Competition. The core properties — salt, cost, memory hardness — make a brute-force attack against a properly hashed password database orders of magnitude harder than against an unsalted SHA-256 database.
 
 The salt deserves specific attention because unsalted password databases are still found in breaches. A salt is a random value unique to each password that is stored alongside the hash. With salting, an attacker who obtains the database must crack each password individually — they cannot precompute a single table and look up all passwords at once. Without salting, a single crack against the most common password cracks every account that uses it — which is exactly why LinkedIn's unsalted SHA-1 store collapsed so fast in 2012. Two users with the same password have different hashes when salted; without salting, their hashes are identical and a single crack breaks both accounts simultaneously.
+
+??? note "Go deeper: salt stops tables, cost stops brute force — you need both"
+    Salt and work factor defeat *different* attacks, and one without the other still leaks. A salt
+    defeats precomputation (rainbow tables) and forces per-password cracking, but a fast salted hash is
+    still brute-forced billions/sec per account. A high cost factor defeats brute force but, without
+    salt, identical passwords still share a hash so one crack breaks every reuse. Argon2id bundles salt,
+    cost, *and* memory-hardness — set the cost so a single verify takes ~100–300 ms on your hardware.
+
+!!! tip "AI caveat"
+    Ask an AI which Argon2 variant to use and it will answer confidently — but the authority is the
+    OWASP Password Storage Cheat Sheet, not the model. Verify the variant *and* the parameters against
+    OWASP's current minimums before you ship; cracking economics move, and a model's numbers may be stale.
 
 ## Learn (~4 hrs)
 
@@ -56,3 +88,8 @@ The salt deserves specific attention because unsalted password databases are sti
 ## AI acceleration
 
 Ask an AI to explain the difference between Argon2i, Argon2d, and Argon2id and which to use for password storage. Verify the recommendation against the OWASP Password Storage Cheat Sheet — does it match? AI explains the variants; OWASP is the authority on which to use in production.
+
+!!! question "Check yourself"
+    - A colleague stores passwords as salted SHA-256 and argues the salt makes it safe. What attack does the salt stop, and which one does it *not* stop?
+    - Why is using HMAC with the user's password as the HMAC key still insecure for password storage?
+    - What does the cost/work factor of Argon2id buy you, and how should you pick its value?

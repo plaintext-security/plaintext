@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md) · [Module 04 — Cloud Network Security](../04-cloud-network-security/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Kubernetes RBAC is cloud IAM one layer down: a ServiceAccount is a principal, a Role is a policy, a
+    RoleBinding attaches it, and `cluster-admin` is the `Resource: "*"`. The trap is the **default** — every
+    pod gets an SA token auto-mounted, and the pod network is flat (every pod reaches every pod across
+    namespaces) until you opt in to NetworkPolicy. That's the Tesla shape: open API → over-broad SA → read
+    a Secret holding cloud keys → cloud compromise. The fix is least-privilege RBAC + default-deny
+    networking, both as YAML in git, both *verified* with `kubectl auth can-i` and a connectivity probe.
 
 ## The case
 
@@ -49,6 +56,10 @@ relabelled for the cluster:
 | `Resource: "*"` / `Action: "*"` | `cluster-admin`, or `verbs: ["*"]` on `["*"]` |
 | Trust policy (who can assume) | the SA **token**, auto-mounted into every pod |
 
+!!! note "The mental model"
+    You already wrote this evaluation for AWS in module 02 — just relabel it for the cluster. Subject →
+    Binding → Role (`verbs` × `resources` × `apiGroups`), and `cluster-admin` *is* the `Resource: "*"`.
+
 The one difference that bites is the **default**. In AWS, a new principal can do *nothing* until you
 grant it. In Kubernetes, every pod gets the `default` ServiceAccount's token **auto-mounted at
 `/var/run/secrets/...` unless you explicitly say `automountServiceAccountToken: false`** — so a
@@ -65,6 +76,12 @@ no `ingress:` rules) is the firewall default-deny you've written for years (modu
 the specific flows the app actually needs. The failure mode is partial coverage — a deny in namespace `A`
 does nothing for namespace `B` unless `B` has its own.
 
+!!! warning "The gotcha"
+    The Kubernetes default is *default-allow*, the opposite of AWS IAM. A new AWS principal can do nothing
+    until granted; a Kubernetes pod gets an SA token auto-mounted and a flat network out of the box. Two
+    traps follow: assuming a pod "uses no SA" means no token (it still has one), and assuming a default-deny
+    in one namespace protects the cluster (it covers only that namespace).
+
 **One thing to call before you build.** A pod in your cluster gets compromised — say through an app RCE.
 *Before reading on, write down: by default, what can that pod reach, and what can its ServiceAccount
 read?* The honest default answers are why this module exists: it can reach **every other pod in the
@@ -76,6 +93,12 @@ The practitioner discipline is **least-privilege + default-deny, *verified*.** R
 YAML, so they go through code review and live in git; `kubectl auth can-i` is the functional test for the
 RBAC cut, and a connectivity probe is the test for the network cut. `kube-bench` (the CIS Kubernetes
 Benchmark, section 5 covers RBAC and policies) is the baseline audit and, run in CI, the drift detector.
+
+!!! tip "AI caveat"
+    A model reads RBAC YAML well and will draft a tighter Role from a `ClusterRoleBinding`. But it can't
+    see *cluster state* — whether that SA's token has actually leaked, or whether a NetworkPolicy already
+    constrains the pod — and it will happily write a NetworkPolicy that looks right but leaves a namespace
+    uncovered. Validate the RBAC cut with `kubectl auth can-i` and the network cut with a real probe.
 
 ## Learn (~3.5 hrs)
 
@@ -113,3 +136,8 @@ strong at reading RBAC YAML and drafting a tighter Role. Two things it can't do 
 the pod — and it will happily write a NetworkPolicy that *looks* right but leaves a namespace uncovered.
 So the model drafts; you **validate the RBAC cut with `kubectl auth can-i` and the network cut with a real
 connectivity probe** before you trust either. AI authors → you review → you own the cut.
+
+!!! question "Check yourself"
+    - Map each RBAC piece to its cloud-IAM equivalent: ServiceAccount, Role, RoleBinding, `cluster-admin`.
+    - A pod is compromised via RCE. By default, what can it reach on the network, and what can its SA token read?
+    - Why isn't a default-deny NetworkPolicy in one namespace enough, and what two tests verify the RBAC and network cuts?

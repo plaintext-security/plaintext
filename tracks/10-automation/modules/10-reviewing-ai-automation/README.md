@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 03 — IaC Security Scanning](../03-iac-security-scanning/README.md) · [Module 05 — CI/CD Pipelines & Gates](../05-cicd-pipelines/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    AI-generated automation is fluent, plausible, and structurally correct — and *that* is the trap: a
+    model writes the over-permissive IAM policy with the same confident polish as the correct one, with
+    no tell in the *style*, only in the *semantics*. A clean linter run proves *well-formed*, not
+    *safe* — a large fraction of linter-passing LLM code still carries a defect (OWASP LLM09
+    Overreliance; the `tj-actions` `@v44` pattern is what a model writes by default). The skill is
+    reviewing the semantics against the primary source, and **calibrating trust with a measured number,
+    not a vibe** — a policy with a threshold and a list of never-auto-suppressible finding classes.
 
 ## Why this matters
 
@@ -42,6 +50,13 @@ sound and semantically dangerous.** The syntax is correct (so it parses, applies
 *meaning* is wrong in ways that only show up if you know the security model behind the resource. This is the
 opposite of a normal junior's mistakes, and it inverts how you review. You are not looking for things that *look*
 broken — nothing will. You are auditing whether each line *means* what it should.
+
+!!! note "The mental model"
+    AI-generated automation fails along a single axis: **structurally sound, semantically dangerous.**
+    The syntax is correct (so it parses, applies, runs, and lints clean); the *meaning* is wrong in ways
+    that only surface if you know the security model behind the resource. This inverts how you review —
+    you're not hunting for things that *look* broken (nothing will), you're auditing whether each line
+    *means* what it should.
 
 **Call it before you read on.** You are handed a 40-line GitHub Actions workflow from a model. It uses real
 actions, the YAML is valid, `actionlint` passes clean. Roughly what fraction of AI-generated automation that
@@ -89,6 +104,23 @@ review.** Suppressing a *true* false-positive with a rationale a human can defen
 model's own justification for its own insecure line is how the defect ships with a paper trail that makes it look
 reviewed. **A suppression is an audit trail, not a mute button — and least of all when the model wrote it.**
 
+!!! warning "The gotcha"
+    "Review AI output carefully" is useless advice — everyone agrees and nobody operates on it. The
+    failure is closing a finding on intuition: a *tell* (a wildcard where a value belongs, a `@v4` where
+    a SHA belongs, attacker-controlled data crossing into a privileged context) only tips you off; the
+    **primary source** is what makes it defensible. And the model's own `#checkov:skip` or "this is safe
+    because…" comment is not evidence — it's another AI artifact to review. Trust must be *measured*: a
+    threshold from a counted sample, plus classes that are *never* auto-suppressible (wildcard IAM,
+    untrusted-input execution, unpinned actions).
+
+!!! tip "AI caveat"
+    Use a model to both *generate* the dangerous automation and *propose* the fixes — then review every
+    line of both. Generating teaches its house style of mistake; reviewing its fixes teaches its house
+    style of *bad fix* (moving a wildcard from `Action` to `Resource` and calling it least-privilege;
+    "pinning" by adding a comment instead of a SHA). For each fix, demand the *why*: "what can an
+    attacker do before this change that they can't after?" The gaps in its answer are your map of what
+    to verify by hand.
+
 ## Learn (~2 hrs)
 
 *Review-first: read enough to recognise the failure modes and verify a finding against its primary source, then go
@@ -125,3 +157,8 @@ one that just edits a value — and the gaps in its answer are your map of what 
 loop the OpenSSF guide describes: write the *security instructions* you'd prepend to the next generation so the
 model drafts the safer version first. AI authors, you review, **you own the verdict and the policy** — that
 ownership is the entire deliverable.
+
+!!! question "Check yourself"
+    - A model's GitHub Actions workflow passes `actionlint` clean. Why does that tell you almost nothing about whether it's safe?
+    - You spot a `@v4` action reference and feel it's wrong. What turns that intuition into a defensible finding you can close?
+    - What's the difference between "review AI output carefully" and an *operable* trust policy — and what two things must the policy state?

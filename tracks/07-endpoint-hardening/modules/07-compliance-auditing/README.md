@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every framework — PCI-DSS, HIPAA, SOC 2, ISO 27001 — wants *evidence* that controls are
+    continuously applied, not checked once a year. Compliance scoring turns the hardening of modules
+    02–06 into measurable, version-controlled evidence: run OpenSCAP and Lynis, remediate a set of
+    high-severity findings, and re-score after each so the climbing delta *is* the proof. The
+    discipline that separates "compliant" from "checks compliant" is running on a schedule, alerting
+    on score drift, and documenting every exception you can't remediate.
+
 ## Why this matters
 
 Every compliance framework — PCI-DSS, HIPAA, SOC 2, ISO 27001 — requires evidence that security controls are continuously applied, not just checked during an annual audit. Compliance scoring tools turn the hardening work of modules 02–06 into measurable, reportable evidence. The discipline of running them on a schedule, tracking the score over time, and treating a score drop as an incident is what separates organisations that are compliant from organisations that *check* compliant.
@@ -22,11 +30,29 @@ Run OpenSCAP and Lynis against a deliberately un-hardened container, remediate a
 
 Compliance auditing and security hardening are related but distinct activities. Hardening is the engineering work of applying controls; compliance auditing is the measurement work of verifying those controls are in place and producing evidence for auditors. The measurement tools (OpenSCAP, Lynis, CIS-CAT) don't know if you're secure — they know if specific, pre-defined controls are in a specific state. A host can score 95% on CIS Level 1 and still be trivially exploitable through a misconfiguration the benchmark doesn't cover. Understanding this gap is the practitioner calibration: use compliance scoring as a systematic check on your hardening baseline, not as a security oracle.
 
+!!! note "The mental model"
+    A compliance score measures whether *specific, pre-defined* controls are in a specific state — it
+    is not a security oracle. The before/after scoring cycle is the unit of work: baseline, remediate
+    a set, re-score, and the climbing delta (with the rule IDs that moved) is the evidence an auditor
+    reviews — not the fact that you ran a script.
+
 The before/after scoring cycle is the fundamental unit of work. Before you apply a control, capture the baseline score. Apply the control. Rescan and capture the after score. The delta is your evidence: this control changed the score from X% to Y%, and here are the specific CIS rule IDs that moved from fail to pass. This is what an auditor reviews, not the fact that you ran a script. The structured output — OpenSCAP XML, Lynis log, CIS-CAT JSON — is the evidence chain. Treat it as an audit artefact: version-control it, timestamp it, and never edit it after generation.
+
+!!! warning "The gotcha"
+    A 95% CIS score can still be trivially exploitable through a misconfiguration the benchmark never
+    tested — the score is a check on your *baseline*, not proof you're secure. And the part teams get
+    wrong most: an open finding with no documentation is an audit liability; the same finding with a
+    recorded risk acceptance (constraint, approver, date, compensating control) is a managed exception.
 
 Exception management is the part of compliance auditing that organisations get wrong most often. No benchmark is 100% applicable to every environment — containers can't set certain kernel parameters, legacy applications require deprecated cipher suites, operational requirements override a control's default. An open finding with no documentation is an audit liability. The same finding with a documented risk acceptance ("Control X.Y.Z cannot be applied because of constraint Z; risk accepted by security lead on YYYY-MM-DD; mitigated by compensating control W") is a managed exception. The compliance programme requires a formal exception process, not a perfect score.
 
 Continuous compliance — running scans on a schedule and alerting on score drift — is the operational maturity that separates a compliance programme from a pre-audit scramble. The implementation is straightforward: a cron job or CI pipeline that runs the scan, compares the score to the previous baseline, and pages if the score drops more than a threshold. The cultural change it requires is treating a compliance score drop the same way you treat an alert: investigate, identify the change that caused it, and either remediate or document an exception. This turns compliance from a once-a-year event into an operational practice.
+
+!!! tip "AI caveat"
+    A model is a good translator of dense XCCDF/OVAL definitions into plain English — use it to
+    understand what state a failing rule tests. But verify its reading against the CIS benchmark
+    rationale before you act: AI translates the jargon, the benchmark is the authority on whether the
+    translation is right.
 
 ## Learn (~3 hrs)
 
@@ -53,3 +79,8 @@ Continuous compliance — running scans on a schedule and alerting on score drif
 ## AI acceleration
 
 Ask an AI to explain a failing OpenSCAP rule's OVAL definition in plain English — the XCCDF/OVAL XML is dense and hard to read. Use the explanation to understand what state the rule is actually testing, then verify against the CIS benchmark rationale. AI is a good XCCDF translator; the benchmark is the authority on whether the translation is correct.
+
+!!! question "Check yourself"
+    - A host scores 95% on CIS Level 1 — why is that not the same as "secure"?
+    - Why is remediating a *set* of findings and re-scoring after each better evidence than a single rule moving?
+    - What turns an open finding from an audit liability into a managed exception?

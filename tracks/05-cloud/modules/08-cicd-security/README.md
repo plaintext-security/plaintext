@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 07 — Secrets Management](../07-secrets-management/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The build pipeline is the highest-trust path you own and the least-watched. SUNBURST didn't commit
+    malicious code to SolarWinds' repo — it compromised the **build system** and injected the backdoor
+    *after* checkout and *before* signing, so the artifact carried SolarWinds' own valid signature. The
+    lesson: **signing proves WHO built it, not WHAT they built.** The missing control is **build
+    provenance** — a signed attestation tying the artifact to its source and builder — which, plus pinned
+    SHAs and OIDC tokens, is the hardened pipeline you'll author as the deliverable.
 
 ## The case
 
@@ -76,6 +83,11 @@ separates someone who *audits* a pipeline from someone who *recites* "shift left
 the code, it's the **distance between trusted source and trusted signature**, and nothing in a normal
 pipeline was watching that distance.
 
+!!! note "The mental model"
+    The dangerous gap in a pipeline isn't the code — code review, branch protection, and signed commits
+    already guard that arrow. It's the **distance between trusted source and trusted signature**: the
+    build step, the most-privileged and least-watched stage, where SUNBURST walked in unobserved.
+
 **Q2 — signing proves WHO built it, not WHAT they built.** This is the mental model to keep for the rest
 of your career. A code-signing certificate is an identity claim: "an artifact bearing this signature came
 from the holder of this key." SolarWinds held the key; the build server had legitimate access to use it;
@@ -83,7 +95,15 @@ the signature was genuine. What the signature could *not* attest is that the byt
 to the reviewed source — because the signing step trusts whatever the build step hands it. **Signing
 authenticates the signer; it says nothing about the integrity of the build process that produced the
 input.** Every downstream check that "verified the signature and trusted the binary" was answering the
-wrong question. The missing link SUNBURST exposed is **build provenance** — a tamper-evident statement of
+wrong question.
+
+!!! warning "The gotcha"
+    A green signature is not "secure" — it answers *who*, never *what*. SolarWinds' signature verified
+    perfectly on a backdoored binary because the signing step trusts whatever the build step hands it.
+    Treating a valid signature (or a clean scan) as proof of integrity is exactly the reflex SUNBURST
+    exploited; you must demand provenance, not just a verified signer.
+
+The missing link SUNBURST exposed is **build provenance** — a tamper-evident statement of
 *how, from what source, by which builder* an artifact came to be. Trust the build, not just the signature.
 
 **Q3 — provenance/attestation as the gate is the control that breaks the chain.** This is what
@@ -97,6 +117,13 @@ attestation is the gate that fails the SolarWinds build.** That, plus pinning ev
 to an immutable digest (so a re-pointed tag can't quietly change what runs) and minting **OIDC tokens**
 instead of long-lived secrets (so a compromised build can't exfiltrate a standing credential), is the
 hardened pipeline — and it's exactly the shape of T23's Actions-hardening work in this repo.
+
+!!! tip "AI caveat"
+    A model pattern-matches injection points, excessive `permissions`, and unpinned `uses:` well and
+    drafts a hardened rewrite fast — but it gets this module's two lessons wrong. It treats a green
+    signature/scan as "secure" and rarely volunteers **provenance** (you must direct it to add attestation
+    as the gate), and it misses **multi-job data-flow injection** where a tainted early step feeds a later
+    privileged one. Confirm the hardened workflow actually *fails the SolarWinds-shaped build*.
 
 ## Learn (~4 hrs)
 
@@ -135,3 +162,8 @@ lesson. First, it treats a green signature/scan as "secure" and rarely volunteer
 Second, it misses **multi-job data-flow injection** where a compromised early step passes tainted data to a
 later privileged one. Have the model draft; you own the verdict — confirm the hardened workflow actually
 *fails the SolarWinds-shaped build*, not just passes the linters.
+
+!!! question "Check yourself"
+    - In the path commit → source → build → sign → publish, where did SUNBURST inject — and why does the popular guess ("bad code in the repo") miss?
+    - SolarWinds' signature verified perfectly. What did it prove, and what did it crucially *not* prove?
+    - Name the one control that would have made the injected build *fail to verify* downstream even though it was correctly signed.

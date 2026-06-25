@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every other control in this track raises the cost of getting *in*; integrity answers the question
+    an incident responder asks first — *has this host changed from how we shipped it?* This module
+    builds an AIDE file-integrity baseline, plants three realistic tampers, and proves AIDE flags each
+    one — then hardens the control itself, because an attacker who can rewrite the baseline defeats it
+    silently. Finally it maps what file integrity catches versus what only measured boot, Secure Boot,
+    and full-disk encryption cover in the boot chain that runs before any file checker exists.
+
 ## Why this matters
 
 Every other module in this track raises the cost of *getting in* — a CIS baseline, an AppArmor profile, a patched kernel, an allowlist. None of them answers the question an incident responder asks first: *has this host been changed from how we shipped it?* When an attacker lands a persistence mechanism — a trojaned `sshd`, a new SUID-root binary, a cron job that re-establishes a foothold — the hardening you applied last week says nothing about it, because hardening is a *state you set* and integrity is a *change you detect*. This is the missing pillar: the controls that establish a known-good and prove, on demand, whether the live host still matches it. It is the host-level counterpart to the detection work in Modules 05 and 10 — telemetry watches *events*, integrity watches *state* — and it is the first thing a forensic timeline leans on when "we think the box was touched in March" needs to become "these eleven files changed on March 14th."
@@ -20,13 +28,41 @@ Build an **AIDE** baseline of a watched filesystem, confirm a clean check report
 
 ## The core idea
 
+!!! note "The mental model"
+    Integrity is one question asked on a loop: *has this changed from known-good?* Fingerprint a set
+    of files into a baseline, recompute and diff on every check. Hardening is a state you *set*;
+    integrity is a change you *detect* — the host-level counterpart to telemetry, which watches events
+    while integrity watches state.
+
 Integrity monitoring is one question asked repeatedly: **"has this changed from known-good?"** The mechanism is almost embarrassingly simple — walk a set of files, record an attribute fingerprint for each (a content hash plus permissions, owner, size, inode, mtime/ctime), store that as a **baseline database**, and on every later check recompute the fingerprints and diff them against the baseline. AIDE (Advanced Intrusion Detection Environment) is the canonical open-source implementation, and the whole craft is in *what* you fingerprint and *which attributes* you compare. Watch `/bin`, `/sbin`, `/usr`, `/etc`, the cron directories, and the SUID/SGID set with strong hashes and you'll catch a swapped binary or a planted backdoor; watch `/var/log` or `/tmp` with the same strictness and you'll drown in false positives because those *are supposed* to change. The baseline-and-compare model is only as good as a config that knows the difference between "this file is immutable, alarm on any change" and "this directory churns, only watch its permissions."
+
+!!! warning "The gotcha"
+    An attacker who can rewrite the baseline defeats FIM *silently* — tamper the binary, re-run `aide
+    --init`, and the next check is clean. A burglar alarm whose off-switch is in the room it guards is
+    no alarm. The real control isn't "do we run AIDE," it's **baseline integrity**: the database (and
+    ideally the binary and config) must live where a compromised host can't write it.
 
 The gotcha that turns this from a checkbox into a real control is that **an attacker who can rewrite the baseline defeats the whole thing silently.** If the AIDE database sits on the same disk the attacker just rooted, they tamper the binary *and* re-run `aide --init` (or just overwrite `aide.db`), and the next check is clean — you've built a burglar alarm whose off-switch is in the room it's guarding. So the security boundary isn't "do we run AIDE," it's **baseline integrity**: the database (and ideally the AIDE binary and config) must live somewhere the monitored host can't write to in the course of being compromised — read-only media, a separate hardened host that pulls and checks, or at minimum an off-box copy whose hash you verify before trusting a check. This is the same lesson as Module 17's "the key policy is the real off-switch" one layer down: the comparison is trivial; *protecting the thing you compare against* is the job. A FIM result you can't trust the baseline of is theater.
 
 File integrity stops where the running OS stops, though, and that's the boundary worth holding clearly. AIDE can only fingerprint files once a filesystem is mounted and a userspace process is running — it is blind to everything that executes *before* that: the firmware, the bootloader, the kernel and initramfs. Defending that earlier chain is a different set of tools that you should be able to place precisely. **Secure Boot** is *prevention* — UEFI firmware verifies a cryptographic *signature* on each component it loads (bootloader, then kernel) against keys in its signature database, and refuses to run anything unsigned or tampered; it stops an evil bootloader from launching at all. **Measured boot** is *detection* — each stage hashes the next and *extends* that measurement into a TPM **Platform Configuration Register (PCR)**, a write-only-by-extension register, building a tamper-evident log of exactly what ran; nothing is blocked, but a later **attestation** can compare the PCR values against known-good and prove whether the boot chain was modified. And **full-disk encryption** (LUKS/`cryptsetup` on Linux) is *confidentiality at rest* — it doesn't detect tampering, it makes the data unreadable to someone who steals the disk or boots it elsewhere, and the practitioner move is to *seal* the LUKS key to a TPM PCR state so the volume only unlocks if the measured boot chain is the expected one. Prevent, detect, protect — three different jobs on the same chain.
 
 The synthesis a practitioner carries is a **layered "known-good" stack**: Secure Boot gates what runs before the OS, measured boot/TPM attests that the pre-OS chain was untouched, FDE protects the data while powered off, and AIDE watches the files once the system is live. Each layer covers a window the others can't see, and each has the same Achilles' heel — the *reference* it compares against (the signature DB, the expected PCR values, the AIDE baseline) is the actual asset. Get the reference right and protected, and you can answer "was this host tampered with?" from the silicon up. Lose control of the reference and every green checkmark above it is meaningless.
+
+??? note "Go deeper: three boot-chain jobs, not one"
+    File integrity is blind before the OS mounts, and the pre-OS chain has *three distinct* jobs you
+    should be able to place precisely. **Secure Boot** is *prevention* — UEFI verifies a signature on
+    each component and refuses unsigned/tampered ones. **Measured boot** is *detection* — each stage
+    hashes the next into a TPM PCR, building a tamper-evident log you can later *attest* against
+    known-good. **Full-disk encryption** (LUKS) is *confidentiality at rest* — it doesn't detect
+    tampering, it makes a stolen disk unreadable; seal the LUKS key to a PCR state and the volume only
+    unlocks if the measured chain is the expected one, tying FDE to boot integrity.
+
+!!! tip "AI caveat"
+    A model drafts an AIDE config fluently and triages a 200-line diff into "expected vs suspicious"
+    well — real leverage. But the **excludes are a security decision it gets subtly wrong** (it will
+    silence a directory that also holds things you must watch), and it **cannot tell you whether your
+    baseline is trustworthy** — it reads the report without ever questioning whether the database was
+    itself tampered. That judgment, and protecting the baseline off-box, is yours.
 
 ## Learn (~3.5 hrs)
 
@@ -52,3 +88,8 @@ The synthesis a practitioner carries is a **layered "known-good" stack**: Secure
 ## AI acceleration
 
 A model is a fast, fluent author of an AIDE config — hand it your watch list and it will draft the selection lines and attribute groups, suggest sensible excludes for `/var` and `/proc`, and explain a cryptic change report. Use it for that, and to *triage* an AIDE diff: paste a 200-line check output and ask it to group the changes into "expected (package update)" versus "suspicious (new SUID, modified `/etc/passwd`, unexpected cron)." Where you own the judgment is twofold. First, **the excludes are a security decision the model will get subtly wrong** — ask it to silence the noise and it will happily exclude a directory that *also* contains things you must watch (it doesn't know that `/etc/cron.d` matters and `/etc/mtab` doesn't in *your* environment), the file-integrity equivalent of an over-broad firewall rule. Second, and non-negotiable, **the model cannot tell you whether your baseline is trustworthy** — it will validate the config and read the report without ever questioning whether the database it's comparing against was itself tampered. That's the actual control, and it's yours: AI drafts the config and explains the diff; you decide what's watched, protect the baseline off-box, and prove the planted tamper is caught the way the lab does.
+
+!!! question "Check yourself"
+    - Why is *baseline integrity* — not "do we run AIDE" — the real security boundary for file-integrity monitoring?
+    - Place Secure Boot, measured boot, and FDE on the prevent/detect/protect spectrum, and say which window each covers.
+    - Why is asking a model to "silence the noise" in an AIDE config a security decision you can't fully delegate?

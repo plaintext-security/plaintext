@@ -10,6 +10,15 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Kerberos hands out cryptographic material derived from a password to anyone who asks the right
+    way. **Kerberoasting** requests a service ticket for any SPN, gets it encrypted with the service
+    account's hash, and cracks it offline — no lockout, no failed logon. **AS-REP roasting** does the
+    same against accounts with pre-auth disabled, needing *no* credential at all. Both are fully
+    protocol-compliant; the only reliable signal is the **RC4 downgrade** in Event 4769. And when the
+    protocol itself breaks — **noPac** (CVE-2021-42278 + -42287) — any authenticated user impersonates
+    a DC.
+
 ## Why this matters
 
 Kerberoasting and AS-REP roasting are in the top MITRE ATT&CK technique lists for a reason: they are fully authenticated, use the normal Kerberos protocol, generate no logon failures, and produce offline-crackable hashes. A domain with even one service account on a weak password is vulnerable. The detection requires specific audit settings that most environments don't have, and even with them, the signal is easy to miss. Understanding these attacks at the protocol level — not just running a tool — is what allows you to tune both the attack and the defence. And when the protocol itself is broken, a single Kerberos flaw becomes instant domain takeover: the **noPac** chain — [CVE-2021-42278](https://nvd.nist.gov/vuln/detail/CVE-2021-42278) (sAMAccountName spoofing) paired with [CVE-2021-42287](https://nvd.nist.gov/vuln/detail/CVE-2021-42287) (PAC confusion in the KDC), both CISA KEV-listed — let any authenticated user rename a controlled machine account to impersonate a domain controller and obtain a TGT as a DC.
@@ -22,11 +31,37 @@ Execute Kerberoasting (T1558.003) and AS-REP roasting (T1558.004) against a live
 
 The Kerberos protocol was designed with a subtle trust model: when a client wants to talk to a service, it asks the KDC for a **service ticket (TGS)**, which the KDC encrypts with the **service account's password hash**. The client receives this encrypted blob and delivers it directly to the service — no one checks that the client actually *uses* the ticket to do anything legitimate. **Kerberoasting** exploits this: any authenticated domain user can request a service ticket for any SPN in the domain, receive the KDC's encrypted blob, and then take it offline to crack. The attack is entirely protocol-compliant. There is no brute-force lockout, no failed logon, no authentication anomaly. The only observable signal is the TGS-REQ on the wire or a Windows Event 4769 on the DC — and only if you're logging and watching for Kerberoasting-shaped patterns (RC4 encryption type from an account that normally uses AES).
 
+!!! note "The mental model"
+    Both roasts are the same trick: **get the KDC to hand you something encrypted with a user's
+    password hash, then crack it offline where there are no lockouts or logging.** Kerberoasting
+    targets a service account's hash via its SPN; AS-REP roasting targets a user's hash via a missing
+    pre-auth flag. The protocol is working exactly as designed — that's why there's no "failed
+    authentication" to alert on.
+
 **AS-REP roasting** targets a different design choice: Kerberos pre-authentication. In normal Kerberos, the client proves it knows the password before the KDC issues a TGT — it encrypts a timestamp with the user's key, and the KDC checks it. This prevents an offline attack on the TGT. But if an account has the `DONT_REQUIRE_PREAUTH` flag set — a configuration option that exists for legacy application compatibility — any unauthenticated attacker can send an AS-REQ for that account and the KDC will respond with an AS-REP, part of which is encrypted with the user's password hash. Again: offline crackable, no failed logon, and the account doesn't have to have an SPN. It's the same fundamental issue — the KDC handing out encrypted material derived from the user's password.
 
 The practical hierarchy of risk: **AS-REP roasting is more dangerous** (requires no credentials at all) but less common because the `DONT_REQUIRE_PREAUTH` flag is obvious and easy to audit. **Kerberoasting is more common** because SPNs are legitimate and abundant in any real environment, and service account passwords are often stale because nobody wants to update them across all the applications that use them. The realistic attack chain is: Kerberoast a service account with a weak/old password, crack it offline with hashcat, then use that credential to move laterally or escalate.
 
 The encryption type matters: a TGS encrypted with **RC4** (etype 23) cracks orders of magnitude faster than one encrypted with **AES256** (etype 18). Some tools request RC4 explicitly even when the service account supports AES — the KDC allows the downgrade by default, and the downgrade from AES to RC4 is the most reliable detection signal. Defenders: configure audit policy for Event 4769 and alert on RC4 service tickets for accounts that normally use AES.
+
+!!! warning "The gotcha"
+    Detection looks easy on paper and fails in practice. A healthy domain emits thousands of Event
+    4769s a day, and the attack produces no failures to anchor on — so without the *right audit
+    policy enabled first* and an alert keyed to the **RC4-from-an-AES-account** anomaly, the roast is
+    invisible. "We have logging" is not the same as "we see this."
+
+??? note "Go deeper: noPac turns one Kerberos flaw into instant domain takeover"
+    The roasts steal a *hash*; **noPac** steals the *domain*. CVE-2021-42278 lets any authenticated
+    user rename a controlled machine account to look like a DC's name, and CVE-2021-42287 makes the
+    KDC issue a PAC for the *real* DC because the spoofed account "no longer exists" by the time the
+    PAC is built — so the chain mints a TGT as a domain controller. Both are KEV-listed; the fix is
+    the November 2021 patch, and the operational signal is **machine-account renames**.
+
+!!! tip "AI caveat"
+    The PAC structure inside a ticket is poorly documented in any single place, so a model is a
+    useful explainer — ask it to walk through what `GetUserSPNs.py` parses into hashcat format. But
+    verify against the impacket source (`krb5/ccache.py`, `krb5/kerberosv5.py`): the explanation must
+    match the code, not just sound plausible.
 
 ## Learn (~3 hrs)
 
@@ -58,3 +93,8 @@ The encryption type matters: a TGS encrypted with **RC4** (etype 23) cracks orde
 ## AI acceleration
 
 Use a model to explain the PAC (Privilege Attribute Certificate) structure inside a Kerberos ticket — it's not well documented in a single place. Ask it to walk through what fields `GetUserSPNs.py` parses to produce the hashcat-formatted output. Then verify against the impacket source (`impacket/krb5/ccache.py`, `impacket/krb5/kerberosv5.py`) — the model's explanation should match the code.
+
+!!! question "Check yourself"
+    - Why do Kerberoasting and AS-REP roasting generate no failed-logon events, and what is the single most reliable signal a defender *can* key on?
+    - AS-REP roasting needs no credentials yet is less common in the wild than Kerberoasting. Why?
+    - In the noPac chain, what does each of the two CVEs contribute, and what one operational event should you alert on?

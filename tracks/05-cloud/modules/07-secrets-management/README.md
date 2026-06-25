@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A long-lived static secret **fails open**: it's valid from creation until a human notices and acts,
+    so rotation is a race you start *after* losing — which is why rotating Uber's leaked AWS key contained
+    nothing. The fix isn't hiding the secret better; it's changing *what the secret is*. A leased, dynamic
+    credential minted per request and destroyed at lease end **fails closed** — a leaked copy expires on
+    its own in minutes. You'll find a key in git history with `trufflehog`, then build the Vault-backed,
+    fetched-at-runtime, auto-rotated architecture that makes the Uber leak architecturally impossible.
 
 ## The case
 
@@ -71,12 +78,23 @@ credential is *revoke and rotate*, never *delete the commit*. `trufflehog` also 
 provider's API to check whether the found key is still live. The tool finds; you triage — real or
 placeholder, live or dead, who owns it.
 
+!!! note "The mental model"
+    A static secret **fails open**, a leased one **fails closed**. The whole architecture is one
+    inversion: stop trying to *hide a permanent secret* and instead make the secret *temporary by
+    construction*, so a leaked copy is worthless within minutes whether or not anyone noticed.
+
 **2 — Store it properly: encrypted at rest, gated by least privilege.** A secrets manager (Vault, or the
 cloud-native AWS Secrets Manager / SSM Parameter Store) centralises secrets, encrypts them at rest, and
 **puts an access-control wall in front of every read.** This already beats "in code": the Vault policy
 or the IAM `Resource`-scoped read means only the app's role can fetch the secret, and every fetch is
 audited. But a stored static secret is *still long-lived* — it still fails open. Storing it better is
 necessary, not sufficient.
+
+!!! warning "The gotcha"
+    "Rotate faster" is the wrong fix, and so is "store it in a secrets manager." The clock on a leaked
+    static key doesn't start when it leaks — it starts when you *find out*, which is often a year later
+    or never. A vault that holds a long-lived secret still fails open; encryption-at-rest is not the same
+    property as short-lived-by-construction.
 
 **3 — Make it leased, so a leak expires on its own.** This is the move the shipped module under-sold and
 the answer to the predict prompt. Vault's **database secrets engine** mints a credential *per request*:
@@ -93,6 +111,18 @@ that remains — the master password Vault uses to mint users — **rotates itse
 database/rotate-root` changes the Postgres admin password and keeps it to itself, so afterward *no human
 knows it*. "No human knows the credential" is a strictly stronger property than "the credential is
 encrypted" — you can't leak what you don't possess.
+
+??? note "Go deeper: an env var baked in at deploy is a slower hardcode"
+    Fetching at runtime is non-negotiable: a secret injected as an environment variable at deploy time
+    still lives in the process, the deploy config, and often the image layer — it's a hardcode with extra
+    steps. The app must hold *no* secret; it authenticates to the broker at startup and fetches the leased
+    credential, which expires behind it.
+
+!!! tip "AI caveat"
+    A model drafts a Vault policy or a `Resource`-scoped IAM read fast — but the thing you must verify is
+    that the policy *denies* everything outside the one path/ARN, by **testing** it, not by reading it.
+    For triage, it conflates rotation procedures: rotating an AWS IAM key, a GitHub PAT, and a Postgres
+    password are three different procedures. The model drafts; you prove the wall holds.
 
 ## Learn (~3.5 hrs)
 
@@ -130,3 +160,8 @@ three different procedures the model will sometimes conflate). For the build, AI
 a Vault policy or a `Resource`-scoped IAM read — but verify the policy *denies* everything outside the
 one path/ARN by testing it, not by reading it. The model drafts; you prove the wall holds and you own
 the architecture.
+
+!!! question "Check yourself"
+    - Uber rotated the leaked AWS key after the breach. In one sentence, why didn't that contain it?
+    - What property does a leased, dynamic credential have that a static secret in an encrypted vault still lacks?
+    - "Removing" a committed secret in the next commit doesn't remove it — where does it persist, and what is the only correct response to a leaked credential?

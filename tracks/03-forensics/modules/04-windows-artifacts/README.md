@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Windows was built for accountability, so it records what ran across many sources at once: event
+    logs (EVTX), the registry, prefetch, Shimcache, Amcache. `chainsaw` parses EVTX without Windows
+    and applies Sigma rules to surface suspicious logons (4624/4625), process creations (4688), and
+    Kerberos activity (4768/4769). The key move is *cross-corroboration*: artifacts back each other
+    up, so an attacker who clears one source (Event ID 1102 records the clearing itself) usually
+    leaves the trail in another.
+
 ## Why this matters
 Windows is the dominant enterprise endpoint, and it is extraordinarily artifact-rich. Every program that runs leaves traces across event logs, the registry, prefetch files, the shellbag, and the timeline. An attacker who compromises a Windows host is operating in a recording studio: they may wipe the most obvious logs, but they can rarely erase all traces across all artifact sources simultaneously. The forensic investigator who knows all the sources — and which ones survive each anti-forensics technique — has a decisive advantage. This module maps the terrain.
 
@@ -21,13 +29,38 @@ Parse Windows Security event logs with `chainsaw` to surface authentication and 
 ## The core idea
 Windows is designed for accountability — it was built for enterprise environments that need audit trails, and that design decision benefits the forensic investigator far more than it inconveniences the attacker. The registry is a structured database, not a log file: it's always-on, always-consistent, and resistant to partial corruption. The event log system (EVTX) is a structured binary format with embedded checksums and forward-recovery from incomplete writes. Prefetch is a performance optimization that happens to record the first 8 seconds of a program's I/O — which is exactly what an investigator needs to prove execution. These weren't designed to help investigators, but they do.
 
+!!! note "The mental model"
+    Treat a Windows host as a recording studio with many independent microphones. No single
+    artifact is the case; the case is built so that knocking out one source doesn't knock out the
+    investigation — execution shows up in prefetch *and* Shimcache *and* Amcache *and* event 4688,
+    each with a different durability against tampering.
+
 **The most important Windows forensic principle** is that artifacts cross-corroborate each other, and that an attacker who clears one source usually leaves the clearing event itself in another source. A `wevtutil cl Security` command to clear event logs creates Event ID 1102 (log cleared) in the Security log — you can't clear the log without recording that you cleared it. Wiping prefetch requires either deleting the files (which leaves filesystem artifacts about the deletion) or using a specialized tool (which itself leaves an execution trace). The investigator's job is to build a case that doesn't rest on any single artifact source, so that knocking out one source doesn't knock out the investigation.
+
+!!! warning "The gotcha"
+    Registry timestamps record only a key's *last write time* — not creation or access. That's still
+    useful for placing activity in time, but reading it as a creation date is a classic error that
+    produces a wrong timeline. Know what each artifact actually records before you anchor a finding
+    to it.
 
 **Event logs (EVTX)** are the most commonly examined Windows artifact. The Security log is the richest: Event IDs 4624/4625 (logon success/failure), 4688 (process creation — gold for execution analysis), 4768/4769 (Kerberos ticket activity), 4720–4726 (account management), and 1102 (log cleared). The System and Application logs add hardware, service, and application events. `chainsaw` is a Rust-powered tool that parses EVTX files directly (no Windows needed), applies Sigma rules to surface suspicious events, and supports custom field queries. It is the forensic analyst's first pass over a log archive before hunting manually.
 
 **The registry** is a hierarchical key-value store that encodes almost everything about a Windows system's configuration and user activity. The forensically important hives are `SYSTEM` (boot configuration, device history, network interfaces), `SOFTWARE` (installed applications, run keys), `SECURITY` (policy, cached credentials), and per-user `NTUSER.DAT` (MRU lists, typed paths, shellbags, run keys, autorun persistence). Registry timestamps only record the *last write time* of a key — not creation or access — which limits timestamp analysis but is still useful for placing activity in time. `python-registry` reads raw hive files without needing a Windows OS, making it suitable for offline forensic analysis.
 
 **Persistence and execution artifacts** deserve special attention because they answer the investigator's core question: "what ran, and how did it get there?" Persistence lives predominantly in run keys (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, scheduled tasks in `SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache`), services (`SYSTEM\CurrentControlSet\Services`), and startup folders. Execution evidence comes from prefetch (`C:\Windows\Prefetch\MALWARE.EXE-XXXXXXXX.pf` — proves the file ran, when, and how many times), the Shimcache (`SYSTEM` hive, AppCompatCache key — records executable metadata even if prefetch is disabled), and Amcache (`C:\Windows\appcompat\Programs\Amcache.hve` — SHA1 hash of the binary, proving the specific file that ran). These sources survive each other's deletion in different ways, which is why experienced investigators check all of them.
+
+??? note "Go deeper: the execution-artifact trio"
+    Three sources answer "what ran, when, how often?" with different survivability. **Prefetch**
+    (`C:\Windows\Prefetch\*.pf`) proves a file ran, when, and the run count. **Shimcache**
+    (`SYSTEM` hive, AppCompatCache) records executable metadata even if prefetch is disabled.
+    **Amcache** (`Amcache.hve`) carries the SHA1 of the binary — proving the *specific* file that
+    ran. An attacker who clears one rarely clears all three, which is exactly why you check each.
+
+!!! tip "AI caveat"
+    A model excels at explaining unfamiliar Event IDs ("what is 4769 failure code 0x12?") and
+    drafting registry-parsing scripts from a key description — but it cannot read your EVTX or hive
+    files, and it will invent specific event details. Draft and interpret with it; verify every
+    finding against the raw event.
 
 ## Learn (~4 hrs)
 
@@ -56,3 +89,8 @@ Windows is designed for accountability — it was built for enterprise environme
 
 ## AI acceleration
 AI excels at explaining unfamiliar Event IDs ("what does Event 4769 with failure code 0x12 mean?") and drafting registry parsing scripts from a description of the key structure. Where it falls short: it cannot read your EVTX or hive files, and it will invent specific event details. Use it to draft the parsing logic and to interpret output you've already collected — then verify every finding against the raw event data.
+
+!!! question "Check yourself"
+    - An attacker ran `wevtutil cl Security` to wipe the Security log. Why is that not the dead end they hoped, and what survives it?
+    - Prefetch was disabled on the host. Which two artifacts still let you prove a specific binary executed, and what does each contribute?
+    - A registry key's timestamp shows last night. Why is "the key was created last night" an unsafe conclusion?

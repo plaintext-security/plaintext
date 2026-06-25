@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Same goal as Linux — low-privilege user → SYSTEM — and the same root cause, misconfiguration, but
+    Windows has its own idioms: service misconfigurations (unquoted paths, weak ACLs), excessive token
+    privileges (the `SeImpersonate` right the "potato" attacks abuse), unpatched kernels, scheduled
+    tasks. The method is identical: enumerate first (`winPEAS`/`PrivescCheck`), exploit second. The
+    bridge worth drawing — **Windows privesc runs straight into Active Directory.** Local SYSTEM is
+    rarely the goal; it's the springboard to the domain, as PrintNightmare (CVE-2021-34527) showed.
+
 ## Why this matters
 On Windows, the path from a normal user to SYSTEM runs through service misconfigurations,
 excessive privileges, and unpatched kernels — and it's the step that turns a phishing
@@ -33,19 +41,23 @@ privileges** (the `SeImpersonate` right the "potato" attacks abuse to become SYS
 and scheduled-task or registry abuse. The method is identical to Linux — enumerate the misconfigurations
 first (`winPEAS`/`PrivescCheck`), exploit second — only the catalog of where admins slip is different.
 
-The bridge worth drawing: **Windows privesc runs straight into Active Directory.** The same token,
-service, and privilege misconfigurations you abuse on one host are what the AD track chains across a
-domain, and what the endpoint-hardening track locks down. Local SYSTEM is rarely the goal on Windows —
-it's the springboard to the domain, which is why this module matters beyond the single box. PrintNightmare
-(CVE-2021-34527) is the case study: a local-to-SYSTEM bug that, because the vulnerable service runs on
-Domain Controllers too, became a domain-takeover primitive — the clearest illustration of why a single
-host's privesc is never just about that host.
+!!! note "The mental model"
+    **Windows privesc runs straight into Active Directory.** The same token, service, and privilege
+    misconfigurations you abuse on one host are what the AD track chains across a domain, and what the
+    endpoint-hardening track locks down. Local SYSTEM is rarely the goal on Windows — it's the
+    springboard to the domain. PrintNightmare (CVE-2021-34527) is the case study: a local-to-SYSTEM
+    bug that, because the vulnerable service runs on Domain Controllers too, became a domain-takeover
+    primitive — the clearest illustration of why a single host's privesc is never just about that host.
 
-The judgment: Windows privesc is a minefield of **preconditions** — a specific service ACL, a token
-right, a patch level — that decide whether a vector actually works, and a model can't see them on your
-target. It will explain a vector cleanly and then confidently propose one whose preconditions your box
-doesn't meet, wasting your time or alerting the defender. Confirm each precondition yourself before
-exploiting.
+!!! warning "The gotcha"
+    Windows privesc is a minefield of **preconditions** — a specific service ACL, a token right, a
+    patch level — that decide whether a vector actually works. A vector that reads perfectly on a blog
+    fails silently on a box that doesn't meet its preconditions; confirm each one before you fire.
+
+!!! tip "AI caveat"
+    A model will explain a vector cleanly and then confidently propose one whose preconditions your box
+    doesn't meet, wasting your time or alerting the defender. Confirm each precondition yourself before
+    exploiting — the model can't see your target's ACLs, token rights, or patch level.
 
 ## Learn (~4 hrs)
 
@@ -68,3 +80,8 @@ exploiting.
 A model reads `winPEAS` output and explains a vector quickly — but Windows privesc is full of
 preconditions (service ACLs, token rights, patch level) the model can't see on your target.
 Confirm each precondition yourself before exploiting.
+
+!!! question "Check yourself"
+    - Name three Windows-specific privesc vector families and what each abuses.
+    - What is `SeImpersonate` and why do the "potato" attacks care about it?
+    - Why did PrintNightmare scale from a single host to domain takeover, and what does that say about local SYSTEM?

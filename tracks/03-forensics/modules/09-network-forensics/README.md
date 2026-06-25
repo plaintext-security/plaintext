@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    An attacker can wipe a host but can't un-send the packets that crossed the wire — a capture is a
+    record of every byte that transited. The workflow is **Zeek for breadth, tshark for depth**:
+    Zeek turns a giant PCAP into structured logs (`conn.log`, `dns.log`, `http.log`, `files.log`) you
+    can grep, then you pivot to packet-level inspection on the flagged IPs and sessions. Encryption
+    hides payloads, but beacon *timing* and SNI/cert metadata still betray C2 — pattern survives even
+    when content doesn't.
+
 ## Why this matters
 
 An attacker can delete files from a compromised host, but they cannot reach back in time to erase
@@ -54,6 +62,12 @@ responses — a command-and-control beacon that can't find its server. Then pivo
 the suspicious DNS response, find it in `conn.log`, and pull the matching packets in Wireshark or
 via `tshark -r capture.pcap -Y "ip.addr==<suspect>"` for exact-packet inspection.
 
+!!! note "The mental model"
+    Don't scroll a 50 GB PCAP in Wireshark hoping to spot evil — that's a prayer, not a strategy.
+    Zeek collapses the capture into structured rows (one per connection, DNS query, HTTP
+    transaction) you can grep at scale; *then* you pivot to tshark/Wireshark for packet-level proof
+    on the handful of flows Zeek flagged. Breadth first, depth second.
+
 HTTP forensics adds a layer that many responders underuse: **content reconstruction.** Zeek's
 `http.log` records the URI, host, method, and `resp_mime_types` for every transaction, and its
 `files.log` records MD5 hashes of every transferred file. If an attacker staged a dropper at
@@ -64,11 +78,30 @@ for direct analysis. Encrypted (HTTPS) sessions require a TLS secrets log or dec
 most network investigations, you won't have them, so you document what you *can* see: the SNI,
 the certificate subject, the timing, and the connection pattern.
 
+!!! warning "The gotcha"
+    Encryption is the attacker's best asset here, and the rookie reaction is to give up at "it's
+    HTTPS, I can't read it." You usually can't decrypt — but you can still read the SNI, certificate
+    subject, connection timing, and beacon interval. A fresh IP contacted at a regular cadence is
+    detectable by *pattern* alone; never let an encrypted payload end the investigation.
+
 The attacker's biggest asset in network forensics is encryption; the defender's biggest asset is
 that beacon intervals are hard to randomise perfectly and that most infrastructure reuse persists
 for months. A connection to a fresh IP at a regular interval — even over TLS — is detectable by
 pattern, even without reading the payload. That pattern is what the SOC should have alerted on,
 and it's what you'll reconstruct in post-incident forensics from the flow record.
+
+??? note "Go deeper: HTTP content reconstruction from a capture"
+    Zeek's `http.log` records the URI, host, method, and `resp_mime_types` per transaction, and
+    `files.log` records the MD5 of every transferred file — so if a sensor saw a dropper download at
+    `http://198.51.100.42/update.exe`, you can check that hash on VirusTotal without ever holding
+    the file. For unencrypted sessions, `tshark --export-objects http` pulls the actual transferred
+    bytes straight out of the PCAP.
+
+!!! tip "AI caveat"
+    A model can ingest a subset of `conn.log` rows, build duration histograms, and flag beaconing
+    intervals far faster than manual review — it's strong on the *structured* rows Zeek already
+    parsed, weak on raw bytes and packet timing. Never take "that IP looks suspicious" as a finding;
+    trace it to a specific log row and document the field values, then confirm in Wireshark.
 
 ## Learn (~3 hrs)
 
@@ -101,3 +134,8 @@ about raw bytes and packet timing; they work well on the structured log rows tha
 parsed. Use the model for log analysis; use Wireshark for packet-level confirmation. Never take a
 model's "that IP looks suspicious" as a finding — trace it to a specific row in the log and
 document the field values.
+
+!!! question "Check yourself"
+    - Why reach for Zeek before Wireshark when handed a 50 GB enterprise PCAP — what does each tool do best?
+    - The C2 channel is TLS-encrypted and you have no keys. Name two things you can still extract that help identify the beacon.
+    - You found a dropper download in `http.log` but don't have the file. How do you still check whether it's known malware?

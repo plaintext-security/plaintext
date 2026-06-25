@@ -10,6 +10,15 @@
 **Type:** Build-&-Operate (Family II) &nbsp;·&nbsp; **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 04 (Configuration Management)](../04-configuration-management/README.md) (its mock enrichment service is reused here)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Raw security data (`source_ip 185.220.101.1, RULE-002, HIGH`) is noise until *context* is
+    stitched onto it — is that a Tor exit, a C2 node, the office VPN? Doing it by hand is the SOC's
+    most grinding toil and the first thing a tired analyst skips at 3 a.m. A two-stage pipeline
+    (collector → queue → processor → store) automates it — but the moment you automate, you inherit
+    the failure modes that the happy path ignores: APIs time out, processors get OOM-killed mid-event,
+    malformed alerts land. The engineering judgment is the four properties that make a pipeline
+    trustworthy when nobody's watching: **durability, at-least-once, idempotency, and observability.**
+
 ## Why this matters
 
 Security data arrives continuously and arrives raw: an alert says `source_ip 185.220.101.1, RULE-002,
@@ -44,6 +53,12 @@ independently replaceable. In production the queue is Kafka, SQS, or Redis and t
 Elasticsearch or a database; here the queue is a directory and the store is another directory, but the
 *shape* — produce → queue → consume → store — is identical, and so is the judgment.
 
+!!! note "The mental model"
+    The queue *between* the two stages is the architecture's whole point: the collector knows nothing
+    about enrichment, the processor knows nothing about collection. That decoupling makes each stage
+    independently testable, scalable, and replaceable — and the simplest durable queue that gives you
+    that is a directory you can `ls`.
+
 **The queue between the stages is what buys you durability, and the simplest durable queue is a
 directory.** The collector writes `alert-<uuid>.json` into a `pending/` directory; the processor lists
 `pending/`, enriches each file, writes the result to `processed/`, and only then deletes the original
@@ -65,6 +80,13 @@ processor and should not silently drop the alert — it moves the file to an `er
 malformed JSON file does the same. The rule is: an event leaves `pending/` only by being successfully
 processed *or* by being explicitly dead-lettered — never by being lost.
 
+!!! warning "The gotcha"
+    The ordering is load-bearing: **write the output, *then* delete the input.** Reverse it and you've
+    built *at-most-once* delivery that silently loses alerts on a crash — for security data, almost
+    always wrong. A pipeline that drops an alert on a timeout or an OOM kill is *worse* than the manual
+    process it replaced, because no human is watching the gap. And reaching for Kafka on day one is its
+    own failure mode — match the tool to the scale you actually have.
+
 **Observability is the property that makes all of the above operable, not optional.** A pipeline that
 runs silently is a pipeline that fails silently — and a stuck queue you can't see is an outage you
 discover from the analysts, hours late. The minimum bar: every processed event emits a structured log
@@ -72,13 +94,21 @@ line with the event ID, the verdict, and the processing time; every error emits 
 (captured by Docker's logging driver, tailable during an incident) plus a backlog you can measure
 (`ls pending/ | wc -l`) is what turns "the pipeline is up" from a hope into something you can prove.
 
-A note on the scheduler: this lab runs the loop with the `schedule` library —
-`schedule.every(N).seconds.do(job)` — a readable in-process scheduler that needs no cron, Celery, or
-broker. For modest throughput (a few events per second) with the directory queue providing the
-durability, that is the right tool. The boundary worth knowing: for high throughput, work that must
-survive across distributed workers, or fan-out/retry-with-backoff semantics, you graduate to a real
-task queue (Celery + Redis, `apscheduler`, or a cloud-native queue). Reaching for Kafka on day one is
-its own failure mode; choosing the right tool *for the scale you have* is part of the judgment.
+??? note "Go deeper: the scheduler, and when to graduate off it"
+    This lab runs the loop with the `schedule` library — `schedule.every(N).seconds.do(job)` — a
+    readable in-process scheduler that needs no cron, Celery, or broker. For modest throughput (a few
+    events per second) with the directory queue providing the durability, that is the right tool. The
+    boundary worth knowing: for high throughput, work that must survive across distributed workers, or
+    fan-out/retry-with-backoff semantics, you graduate to a real task queue (Celery + Redis,
+    `apscheduler`, or a cloud-native queue). Choosing the right tool *for the scale you have* is part of
+    the judgment.
+
+!!! tip "AI caveat"
+    A model writes the collector and processor in seconds — and the part it writes is the *happy path*,
+    which was never the problem. The bugs are all in the failure modes the first draft skips: does
+    `json.loads()` on a malformed file crash the loop or log-and-skip? Does a timed-out enrichment lose
+    the alert or move it to `errors/`? Does it delete the input *before* writing the output? Review for
+    those, then prove your version by breaking it on purpose.
 
 ## Learn (~2 hrs)
 
@@ -112,3 +142,8 @@ re-processing the same UUID make a duplicate? Then *prove* your version by break
 `docker compose stop threat-api` and watch where the alerts go; drop a `not-json` file in `pending/`
 and watch the loop survive. The model's first draft handles the demo; you own the version that handles
 the API being down and the disk being full.
+
+!!! question "Check yourself"
+    - Why does "write the output, then delete the input" give you at-least-once delivery — and what does reversing the two lines silently cost you?
+    - At-least-once means an event can be processed twice. What property must the processor have to make that harmless, and how does keying by the alert's UUID provide it?
+    - A pipeline runs but you discover hours late that it stalled. Which of the four properties failed, and what is the minimum bar that would have surfaced it?

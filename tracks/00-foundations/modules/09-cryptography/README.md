@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~5–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Crypto is the trust layer under every secure system, and you don't need the math — you need to
+    know what each primitive *guarantees* and what it *doesn't*. The most expensive crypto mistake in
+    history wasn't broken math: **Adobe (2013, 153M accounts)** *encrypted* passwords that should
+    have been *hashed*, in ECB mode, one key, no salt — and the dump was cracked without anyone
+    breaking the cipher. The load-bearing distinction: a hash is one-way (for verifying a match), a
+    cipher is two-way (for data you need back). A password must be **hashed and salted, never
+    encrypted.** You'll exercise the primitives with `openssl` to see why "encrypted" ≠ safe.
 
 ## Why this matters
 Every trust decision online rests on crypto: that a download wasn't tampered with, that a login is
@@ -51,6 +59,18 @@ No. They were catastrophically exposed, and the reason is the whole point of thi
 password, "encrypted" is the wrong goal — you want it *hashed*.** Three separate mistakes stacked up,
 and each one is a primitive you need to understand.
 
+!!! note "The mental model"
+    A **hash** is one-way (no un-hash) — use it to *verify a match* without storing the secret. A
+    **cipher** is two-way (reversible with the key) — use it for *data you need back.* A login system
+    never needs the password back, so you **hash and salt it, never encrypt it.** Encryption protects
+    data you intend to read again; hashing proves a match.
+
+!!! warning "The gotcha"
+    "Encrypted means safe" is the assumption that turned a real cipher into 153M crackable passwords.
+    Encryption is only as safe as the key, and keys always eventually leak. Worse, ECB mode leaks
+    *structure* — identical input → identical ciphertext — so even encrypted, the patterns (and the
+    plaintext hints beside them) gave the passwords away.
+
 **A *hash* is one-way; a *cipher* is two-way — and a password should be one-way.** A **cryptographic
 hash** (like SHA-256) is a function that turns any input into a fixed-size fingerprint, and *cannot be
 reversed* — there's no "un-hash." A **cipher** (encryption) is *designed* to be reversed: whoever has
@@ -82,6 +102,12 @@ secret. If you answered "encrypted means safe," you've just made the exact assum
 real cipher into 153M crackable passwords — and that is the assumption the Web, Cloud, and PKI tracks
 all inherit when this module is skimmed.
 
+!!! tip "AI caveat"
+    Crypto is where confident-but-wrong AI advice is most dangerous: models cheerfully suggest broken
+    modes (ECB) and dead ciphers because those appear all over their training data. Use a model to
+    *explain* a concept, then verify the actual command and flags against the OpenSSL Cookbook before
+    you rely on them.
+
 ## Learn (~3 hrs)
 
 *Short on purpose. The reveal above is the spine; read these to deepen the mechanism, not to relearn
@@ -112,3 +138,8 @@ and ask it to explain why the passwords were crackable *before* you read the rev
 against this module. It often gets the headline ("ECB is bad") but blurs *why* hashing, not encryption,
 was the real fix. Use a model to *explain* a concept, then verify the actual command and flags against
 the OpenSSL Cookbook before you rely on them. You own the verdict.
+
+!!! question "Check yourself"
+    - Why must a password be *hashed* rather than *encrypted* — what does a login system never need that decides it?
+    - Adobe used a real cipher. Name two of the four reinforcing mistakes that made the dump crackable anyway.
+    - What does a salt defeat specifically, and why does the "ECB penguin" illustrate the problem it solves?

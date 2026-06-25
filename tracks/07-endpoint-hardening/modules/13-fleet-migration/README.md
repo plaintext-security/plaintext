@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate–Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 06 — Configuration Management](../06-configuration-management/README.md) (the baseline-as-code you roll), [Module 12 — Configuration & Posture Drift](../12-config-drift/README.md) (what keeps it enforced after) &nbsp;·&nbsp; helpful: [Module 07 — Compliance Scoring](../07-compliance-auditing/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Hardening one box you just provisioned is a tutorial; hardening hundreds of in-service hosts that
+    can't take downtime is the actual job — and the way you break production is to apply the baseline
+    to all of them at once. This module rolls the Module-06 baseline across a running fleet the safe
+    way: test ring → canary → fleet, a service-health check before and after each ring (compliant ≠
+    working), a defended exception carve-out for the host class the benchmark would break, and a
+    rollback at every step. CrowdStrike's July 2024 big-bang is the anchor for why blast radius is a choice.
+
 ## Why this matters
 
 Every hardening lab in this track — Modules 02, 03, 06 — starts from a host you just provisioned. A clean box, no users, no running services, nothing to break. You apply the CIS baseline, re-scan, and it's compliant on the first try because there was never any production on it. That is **greenfield**, and almost no real hardening project starts there. The project you actually walk into is **brownfield**: a fleet of hundreds of hosts that have been *in service for years*, running applications the business depends on, serving traffic right now, that you are told to bring up to a hardening baseline — and the one rule is **you cannot break production.** A CIS control that's harmless on an empty box can be catastrophic on a running one: disabling a "weak" cipher breaks a legacy app that only speaks it; tightening `umask` breaks a service that relied on group-writable files; enforcing a sysctl drops the long-lived connections a database cluster depends on. Hardening *is* change, and change to a running fleet is how outages happen.
@@ -29,6 +37,12 @@ run; and only when every ring is across and proven do you declare the fleet hard
 rollout runbook + ring plan + the health-check proof of no-outage + the rollback.
 
 ## The core idea
+
+!!! note "The mental model"
+    The **strangler fig** applied to a running fleet: don't cut every host over at once — grow the
+    hardened state across it *incrementally*, one ring at a time, proving each is healthy before the
+    next, while the fleet never stops serving. Rings are concentric cohorts ordered by blast radius
+    (test → canary → fleet), each a gate the change must pass before it reaches more machines.
 
 The mental model is the **strangler fig** (Martin Fowler) applied to *hardening a running fleet*: you do
 not flip every host to the new baseline in one cutover. You grow the hardened state across the fleet
@@ -51,6 +65,12 @@ pattern give you exactly this: process N hosts (or N%) at a time, with `max_fail
 whole rollout* the moment a batch's failure rate crosses a threshold, so a bad control stops the rollout
 instead of completing it. The order is **by blast radius, least-risky-first**: a control reaches the fleet
 only after it has survived the test ring and the canary, so each ring is a gate the change must pass.
+
+!!! warning "The gotcha"
+    A hardening rollout has a seductive false success signal: the Ansible run went green, the CIS score
+    rose, ship it. But *compliant ≠ working* — a host that passes the benchmark and can no longer serve
+    its app is a **failed** rollout, not a successful one. Health-check before *and* after every ring
+    (still serving → hardened and still serving); both, or roll the ring back.
 
 The discipline that makes it safe — and the thing that separates a real rollout from a checkbox one —
 reduces to **the service-health check before and after every ring: the host must be both *hardened* and
@@ -78,6 +98,14 @@ and *defend it*, rather than either taking down the app or pretending the host i
 isn't. An exception you can point to and justify is hardening; a silent skip is a lie in your compliance
 report.
 
+!!! tip "AI caveat"
+    Ask a model to "harden the fleet" and it hands you a **big-bang** playbook — one run, every host,
+    no rings — because that's the simplest thing to express and it carries none of the fear of a live
+    outage (it has no idea which host is the production database). It also can't do the
+    **service-health check**: asked to "confirm the rollout worked," it checks the run went green and
+    the score rose and misses that the app is now down. You own sequencing, canary size, the defended
+    exception, and proving *hardened **and** still serving* before any control reaches the fleet.
+
 ## Learn (~3.5 hrs)
 
 **The pattern — why staged beats big-bang (~1.25 hrs)**
@@ -100,3 +128,8 @@ report.
 
 ## AI acceleration
 A model is genuinely useful at the *planning and bookkeeping* of a fleet rollout — drafting the ring plan and host inventory, generating the `serial`/`max_fail_percentage` rolling playbook from your batch sizes, turning raw before/after health-check output into a clean no-outage proof table, and writing the health-check harness. That is real leverage on the tedious half. But the posture is strict, because the dangerous instinct is the model's default: ask it to "harden the fleet" or "apply CIS to all the servers" and it will hand you a **big-bang** playbook — one run, every host, no rings — because that's the simplest thing to express and it carries none of the operational fear of a live outage (it has no idea which of your hosts is the database serving production traffic). The judgment it cannot do for you is **sequencing by blast radius** (which hosts are safe in the test ring, what the canary fraction should be, which host class needs the exception) and, above all, **the service-health check** — asked to "confirm the rollout worked," a model checks that the Ansible run went green and the CIS score rose and calls it done, **missing entirely that the app on those hosts is now down** (compliant ≠ working, the failure mode it's blind to). Make the model draft the ring plan, the rolling playbook, and the health harness; **you** decide the ring order and the canary size, you confirm every ring has a *tested* rollback, you own the *defended* exception for the legacy host class, and you verify the after-state proves *hardened **and** still serving* before any control reaches the fleet. AI authors the runbook; you own the rollout — and the blast radius.
+
+!!! question "Check yourself"
+    - Why does big-bang fail for a reason independent of whether the baseline is *correct*?
+    - Why is the service-health check *before and after* each ring the real signal, not the green Ansible run?
+    - How does a defended exception carve-out differ from silently skipping the hosts the benchmark would break?

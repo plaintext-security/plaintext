@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    "Zero Trust" is a government mandate, a sales term, and a real architectural shift all at once — and
+    the practitioner skill is choosing the right *delivery pattern* for a specific org, not memorizing
+    which product "is" ZT. Four patterns (VPN, reverse proxy, network mesh, cloud edge, plus hybrid)
+    map onto three tradeoff axes: self-hosted vs cloud-delivered, OSS/self-run vs managed, and threat
+    model vs blast radius. You'll score them against a real constraint set and defend the pick as an
+    Architecture Decision Record — where the *Consequences* section is the proof, not the pick.
+
 ## Why this matters
 
 "Zero Trust" is now a requirement in government mandates (the 2021 Biden Executive Order), a sales
@@ -30,6 +38,13 @@ that a security architect could defend to a CISO. The deliverable is the ADR; it
 defence, not the pick.
 
 ## The core idea
+
+!!! note "The mental model"
+    The ZT *principle* is fixed — never trust, always verify, enforce least-privilege at the resource —
+    but the **delivery mechanism** is an engineering decision with real tradeoffs. The skill is
+    reasoning along the axes of that tradeoff, not memorizing which product "is" Zero Trust. "We bought
+    a ZTNA product" is not "we have Zero Trust" — the gap is being able to say *why this pattern was
+    chosen* and *what threat model it addresses*, which is exactly what an ADR closes.
 
 This is a **Decision / ADR** module: there is no single right answer to bring you to, only a choice
 to make well and write down honestly. The ZT *principle* is fixed — never trust, always verify,
@@ -79,6 +94,28 @@ honesty*: the Consequences section is where you write down what you are giving u
 you are taking on. A recommendation with only upsides is the tell of a junior architect — or an
 AI draft you didn't review.
 
+!!! warning "The gotcha"
+    A recommendation with only upsides is the tell — every pattern trades something away. Self-hosting
+    is not "free" (you now run, patch, and scale the control plane); cloud-delivered is not
+    dependency-free (the vendor sits in your data path and their SLA becomes your security floor). The
+    Consequences section is where that honesty has to land, per option.
+
+??? note "Go deeper: the four patterns against the three axes"
+    A **VPN** enforces at the network perimeter — broad protocol support, maximum blast radius on
+    credential compromise. A **reverse proxy** (Pomerium, BeyondCorp-style) decides per request at the
+    app layer; self-hostable but HTTP/S-scoped. A **network mesh** (Tailscale, headscale) restores
+    private-IP reachability cryptographically for any protocol, limiting blast radius to a device's ACL
+    tags. A **cloud edge** (Cloudflare, Zscaler) moves enforcement to a distributed edge with continuous
+    re-evaluation, at the cost of vendor dependency. A **hybrid** (cloud edge for SaaS + mesh for infra)
+    is often the honest answer for a mixed estate — and a real ADR should be willing to recommend it.
+
+!!! tip "AI caveat"
+    A model drafts the ADR template and pre-populates the scoring tables well — it knows the vendor
+    landscape. Your critical review is the **Consequences** section: a model reliably lists only
+    *positive* consequences. Explicitly ask it for the negative and risky ones per option, then verify
+    each against the actual product docs. A model that says Cloudflare carries no single-vendor risk, or
+    that a self-hosted proxy is "free," is not being honest about the axes.
+
 ## Learn (~3 hrs)
 
 **Architecture patterns (~1.5 hrs)**
@@ -110,3 +147,8 @@ for each option, then verify each against the actual product documentation. A mo
 Cloudflare Zero Trust carries no single-vendor dependency risk, or that a self-hosted proxy is "free,"
 is not being honest about the axes — and catching that is the skill this module certifies. **AI drafts
 → you review every line → you own the decision.**
+
+!!! question "Check yourself"
+    - Name the three tradeoff axes — and why is "self-hosted vs cloud-delivered" not the same axis as "OSS/self-run vs managed"?
+    - For the same stolen credential, how does the blast radius differ between a VPN, a reverse proxy, and a cloud edge?
+    - Why is a recommendation with only upsides a sign the ADR (or the AI draft) wasn't reviewed honestly?

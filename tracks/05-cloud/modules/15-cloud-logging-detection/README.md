@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 14 — Cloud Attack Techniques](../14-cloud-attack-techniques/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    In both Capital One and LastPass, the log existed the whole time — nobody was watching the
+    stream it landed in. Cloud is comprehensively logged by default, and that abundance breeds a
+    false sense of safety: a detection is a hypothesis scored against a stream that is 99.99%
+    benign, so the hard part is never the true positive — it's making the rule quiet enough that a
+    human still reads its alerts a month from now. You'll take module 14's telemetry, find the
+    data-plane blind spot, write one Sigma rule, and tune it against benign noise. Precision, not
+    recall, is the product — and a rule muted by week two is no coverage at all.
 
 ## The case
 
@@ -68,6 +76,13 @@ a default account, *invisible*. The first question in any cloud incident is "wer
 for this bucket?" — and the honest, common answer is *no, so we cannot tell which objects left.* The
 attacker's loudest action (the one that did the damage) is the one your default log is silent on.
 
+!!! warning "The gotcha"
+    "We have GuardDuty enabled" is not "we detect," and "the log exists" is not "we'd see it."
+    Bulk S3 exfil — the move that did the LastPass damage — leaves *no record* in a default account
+    because data events are off. The first question in any cloud incident is "were S3 data events
+    enabled for this bucket?", and the common, honest answer is *no, so we can't tell which objects
+    left.*
+
 **Q2 — the false-positive economics is the whole craft.** A rule that fires on every `CreateUser` is
 correct on the attack and *useless* in production, because legitimate automation creates users all day.
 By week two it's muted, ignored, or routed to a folder no one opens — and a muted rule is a non-existent
@@ -75,6 +90,11 @@ rule that *feels* like coverage. **A detection isn't scored on whether it catche
 on its signal-to-noise on a 99.99%-benign stream.** Precision is the product. This is why "we have
 GuardDuty enabled" is not the same as "we detect": coverage you don't tune is alert fatigue with a
 dashboard.
+
+!!! note "The mental model"
+    A detection isn't scored on whether it catches the attack — it's scored on its signal-to-noise
+    on a 99.99%-benign stream. Recall is easy and cheap; precision is the craft. The product you
+    ship is not "a rule that fires," it's "a rule a tired analyst still trusts at 3am."
 
 **Q3 — sequence and qualifying context turn benign atoms into a signal.** The fix for Q2 is to stop
 detecting single events and start detecting *behaviour*. `CreateUser` alone is noise; `CreateUser`
@@ -87,6 +107,13 @@ Cloud, GCP SCC) ship pre-built versions of exactly this logic over the same cont
 strength is one-click coverage of common patterns, their weakness is opacity and lag behind the ATT&CK
 Cloud matrix. The practitioner posture is not "native or open" — it's **native as the baseline, Sigma
 for the gap, and every rule tuned against benign traffic before it's trusted.**
+
+!!! tip "AI caveat"
+    A model drafts a passable Sigma rule in seconds — it knows the syntax and the common field
+    names. That's the cheap 80%. The owned 20% it *can't* do: it doesn't know *your* benign
+    baseline, so its `falsepositives` block is generic and its rule is almost always too broad. Run
+    the draft against the lab's benign events, watch it false-fire, then tighten it — the tuned rule
+    plus the explicit "what this must NOT fire on" is yours to own, not the model's to guess.
 
 In the lab you'll do exactly this against the module-14 telemetry: confirm the data-plane blind spot,
 write and tune one Sigma rule, and reproduce the finding in a native detector's model.
@@ -123,3 +150,8 @@ for you: it doesn't know *your* benign baseline, so its `falsepositives` block i
 is almost always too broad. Run its draft against the lab's benign events; watch it false-fire; then
 tighten it and write the FP analysis from what you saw. The judgment-as-code here is the tuned rule plus
 the explicit "what this must NOT fire on" — that's yours to own, not the model's to guess.
+
+!!! question "Check yourself"
+    - Which module-14 technique is *not* in CloudTrail at all by default, and what setting would have captured it?
+    - A rule that alerts on every `CreateUser` fires perfectly on the attack. Why is it a bad detection by week two?
+    - How do you turn individually-benign events (`AssumeRole`, `GetObject`) into a high-fidelity detection?

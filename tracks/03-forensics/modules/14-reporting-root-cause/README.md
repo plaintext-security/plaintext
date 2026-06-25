@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    An investigation is only as valuable as the report — and a report serves three audiences at once
+    (executive, technical, legal), so it's layered: Executive Summary, artifact-cited Technical
+    Findings, Appendix. The part most reports botch is **root-cause analysis**: stopping at "the
+    user clicked a link" implies a non-control as the fix. Root cause is *the last place a control
+    could have stopped the chain*, not the first thing that went wrong. And scope language must
+    separate confirmed access (evidenced) from exposure (reachable) — overstating it is a legal
+    problem, not just an accuracy one.
+
 ## Why this matters
 
 Every forensic finding, every log artifact, every capability profile is only useful if it ends up
@@ -47,6 +56,12 @@ as evidenced by artifact Z") rather than inferences presented as facts. A report
 three audiences uses a layered structure: Executive Summary (three paragraphs), Technical Findings
 (artifact-cited, reproducible), and Appendix (raw evidence, tool output, methodology notes).
 
+!!! note "The mental model"
+    One report, three readers who never want the same thing — the CISO needs what/cost/what-now in
+    three paragraphs, the investigator needs to reproduce every finding, legal needs facts cited to
+    artifacts and clean scope language. The layered structure (Executive Summary → Technical
+    Findings → Appendix) is how you serve all three without diluting any.
+
 Root-cause analysis is the part most IR reports skip or do badly. The common mistake is to stop
 at the proximate cause: "the developer clicked a phishing link." That is true but useless — it
 implies the remediation is "don't click phishing links," which is not a security control. A proper
@@ -57,6 +72,13 @@ documents. Why did the attacker reach the C2 IP? Because the egress firewall all
 HTTP from workstations. Each of these is an actionable finding; the root cause is the earliest
 in the causal chain that the organisation could have reasonably addressed. **Root cause is not the
 first thing that went wrong; it's the last place a control could have stopped the chain.**
+
+!!! warning "The gotcha"
+    Scope language is where imprecision becomes liability. "The attacker *had access to* all systems
+    reachable from the account" is a defensible finding; "the attacker *accessed* all those systems"
+    is an overstatement unless you have artifact evidence of each access. Characterise *exposure*
+    (reachable) separately from *confirmed access* (evidenced). In a regulatory or legal submission,
+    overstating access is a legal problem, not just an accuracy one.
 
 The other trap in forensic reports is scope language: "the attacker had access to all systems
 accessible from the compromised account" is a finding. "The attacker accessed all those systems"
@@ -71,6 +93,21 @@ actionable; a prioritised short list of the three to five controls that break th
 effort estimates, is what a CISO can take to a board. Write the remediation section as if budget is
 constrained — because it always is — and prioritise by: (1) closes the initial access vector,
 (2) reduces dwell time on the next similar incident, (3) improves future detection or investigation.
+
+??? note "Go deeper: root cause as the last stoppable control"
+    The proximate cause ("the developer clicked a phishing link") is true and useless — it implies
+    "don't click links," which isn't a control. Proper RCA asks why each contributing factor existed
+    and walks the chain: DMARC in reporting-only mode let the mail through; Office config allowed
+    internet-origin macros; the egress firewall permitted outbound HTTP. Each is actionable; the
+    *root* cause is the earliest link the organisation could reasonably have closed — the last place
+    a control could have broken the chain, not the first thing that went wrong.
+
+!!! tip "AI caveat"
+    A model drafts a "CISO-level" executive summary from bulleted findings well — but it overstates
+    certainty ("the attacker accessed production data" where the evidence supports only "had access
+    to"). Read every sentence against the technical findings: any assertion not traceable to an
+    artifact gets removed or downgraded to a hedged characterisation. The model drafts structure; you
+    own accuracy and defensibility.
 
 ## Learn (~2 hrs)
 
@@ -103,3 +140,8 @@ data" rather than "the attacker had access to production data with no evidence o
 Read every sentence in the generated summary against the technical findings: any assertion not
 traceable to a specific artifact must be either removed or downgraded to an appropriately hedged
 characterisation. The model drafts the structure; you edit for accuracy and defensibility.
+
+!!! question "Check yourself"
+    - A report concludes the root cause was "the user clicked a phishing link." Why is that the proximate cause, not the root cause — and how do you find the real one?
+    - What's the difference between writing "the attacker accessed System X" and "the attacker had access to System X," and why does it matter legally?
+    - Why does one report use a layered structure instead of being written for a single audience?

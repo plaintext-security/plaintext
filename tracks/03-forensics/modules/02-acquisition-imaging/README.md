@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4.5–6.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Acquisition is the most time-sensitive, least reversible step in forensics — you get one clean
+    shot at the original. A forensic image copies *every sector* (deleted, slack, unallocated), not
+    files, with the hash computed inline. The first real call is **dead-box vs. live**: powering off
+    preserves disk integrity but loses RAM; imaging live keeps volatile state but captures a system
+    in motion. Memory is highest-volatility — capture it first — and every step gets a timestamp,
+    tool version, and hash.
+
 ## Why this matters
 Acquisition is the most time-sensitive and least reversible step in any forensic investigation. If you image a disk sector-perfectly with a verified hash, every subsequent analysis phase can work from that image indefinitely. If you skip the write block, run the wrong tool, or copy only the visible filesystem, you may destroy the very data your investigation depends on — and you can never go back to the original. Memory acquisition is even more time-critical: the moment a machine reboots or the user kills a process, that volatile state is gone. This module teaches you to capture evidence cleanly under pressure.
 
@@ -21,13 +29,35 @@ Image a disk device sector-by-sector using `dc3dd`, verify the image with inline
 ## The core idea
 When you image a disk forensically, you are not copying files — you are copying *every bit on the physical medium*, from sector zero to the end. This matters because deleted files, slack space, unallocated clusters, and volume metadata all live outside what the filesystem presents to the OS. A file-level copy (`cp -r`) misses everything the OS considers "gone." A forensic tool like `dc3dd` reads the raw block device and writes every sector to the output image, reporting the hash as it goes. The image is a bit-for-bit clone, provably identical to the original.
 
+!!! note "The mental model"
+    A forensic image is a copy of *the medium*, not the filesystem. `cp -r` copies what the OS will
+    show you; `dc3dd` copies every sector — deleted files, slack, unallocated space, volume
+    metadata — and hashes it as it goes, producing a bit-for-bit clone you can prove is identical.
+
 **The discipline of dead-box versus live acquisition** is the first call you make on a real engagement. Dead-box (powered-off machine, hardware write blocker, image the drive) is the gold standard for non-volatile evidence: no running processes can modify timestamps, extend logs, or drop additional payloads during acquisition. The trade-off is everything in RAM disappears the moment power is cut — encryption keys, running process state, network socket tables, injected shellcode that never touched disk. Live acquisition (image the disk and capture memory *while the system runs*) preserves volatile artifacts but introduces risk: the running OS continues to write to disk, so the disk image you take is of a system in motion, not a frozen moment. Neither approach is universally correct; the right call depends on what your investigation needs most.
+
+!!! warning "The gotcha"
+    The dead-box-vs-live choice is irreversible: pull the power and the RAM (and any keys, live
+    connections, fileless malware in it) is gone forever; image live and your disk image is a system
+    in motion, not a frozen moment. There is no universally correct answer — decide deliberately for
+    *this* investigation, and record the decision and the acquisition time precisely.
 
 **Memory acquisition** is a separate discipline from disk imaging. Memory is a running snapshot of the entire system's state: every process's virtual address space, the OS kernel, device drivers, cached files, and whatever the malware running right now is doing. `avml` (Acquire Volatile Memory for Linux) is a kernel-level tool that produces a raw memory dump suitable for Volatility3 analysis. Windows equivalents include WinPmem and DumpIt. The challenge with memory acquisition is that the tool itself must be memory-resident to run, and on a live system the contents are changing as you capture — you get a consistent-enough snapshot, not a perfect freeze-frame. This is fine for investigation purposes; just document the acquisition time precisely.
 
 The practical workflow on a modern IR engagement runs like this: for a suspected compromised host, you arrive with a forensic kit (write blockers, bootable forensic USB, `avml` or equivalent pre-staged), capture memory first (highest volatility), then image the disk with a write blocker in place if the machine is being imaged live, or boot to a forensic OS and image with the machine powered off. Every step is documented with timestamps, tool versions, and hash values in your case notes. A forensic acquisition that can't be reproduced in a court room is not forensic — it's a guess.
 
-**Image formats** are worth understanding. Raw (`dd`-style) images are maximally compatible — every tool can read them — but large. E01 (Expert Witness Format) is the industry standard for disk images: compressed, split into segments, with built-in metadata including hashes and case information. `dc3dd` outputs raw; `ewfacquire` (from `libewf`) produces E01. For the purpose of this curriculum and the lab, raw images are fine — they keep the toolchain minimal and the pipeline transparent.
+??? note "Go deeper: raw vs. E01 image formats"
+    Raw (`dd`-style) images are maximally compatible — every tool reads them — but large. E01
+    (Expert Witness Format) is the industry standard: compressed, split into segments, with built-in
+    metadata including hashes and case information. `dc3dd` outputs raw; `ewfacquire` (from `libewf`)
+    produces E01. For this curriculum and the lab, raw is fine — it keeps the toolchain minimal and
+    the pipeline transparent.
+
+!!! tip "AI caveat"
+    A model drafts acquisition checklists, case-note templates, and hashing scripts well. Feed it
+    your scenario and ask for an acquisition decision tree — then validate each branch against the
+    NIST guidance before you execute. It does not compute hashes, run the tools, or make the
+    live-vs-dead-box call for you.
 
 ## Learn (~3.5 hrs)
 
@@ -56,3 +86,8 @@ The practical workflow on a modern IR engagement runs like this: for a suspected
 
 ## AI acceleration
 A model is useful for drafting acquisition checklists, case note templates, and hashing scripts. Where AI is not a substitute: computing hashes, running acquisition tools, and making the live-vs-dead-box judgment call. Feed the model your scenario (machine type, suspected attack, investigation goals) and ask it for an acquisition decision tree — then validate each branch against the NIST guidance before you execute.
+
+!!! question "Check yourself"
+    - Why does `cp -r` of a mounted volume fail to capture forensically important data that `dc3dd` of the raw device captures?
+    - You're called to a running, suspected-compromised host. What do you capture first, and why does ordering matter?
+    - Give one scenario where dead-box acquisition is the wrong call, and explain what you'd lose.

@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 01 — Security First Principles](../01-security-principles/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    "Build a safe lab" hides a *decision*, not a recipe: you must run unknown, possibly hostile
+    software at zero cost, reproducibly, and pick a point across three axes — **VM vs. container**,
+    **network mode**, **snapshot strategy** — then *defend* it. The load-bearing call is the first:
+    untrusted code goes in a VM (its own kernel), tooling goes in a container (shares the host
+    kernel). You'll write your first **ADR** recording what you chose, what you rejected, and what
+    you're accepting — the construct later tracks lean on every time there's a choice to defend.
+
 ## Why this matters
 
 Every later lab — and all the poking-around you'll do on your own — needs somewhere you can run
@@ -38,6 +46,18 @@ in an ADR** that states the options you rejected and the downsides you accepted.
 There is no one "safe lab." There is a set of tradeoffs, and your job is to pick a point in that space
 and justify it. Three axes carry the decision; the first is load-bearing.
 
+!!! note "The mental model"
+    A safe lab isn't a recipe, it's a point in a tradeoff space you choose and *defend*: untrusted
+    code goes in a VM (its own kernel — a strong wall); your tooling goes in a container (a process
+    with a restricted view, sharing the host kernel). The ADR is where you write down which lane
+    gets which, and why.
+
+!!! warning "The gotcha"
+    The one question worth re-checking every single time: *"is my lab actually isolated, or did I
+    leave it bridged?"* Bridged puts the lab directly on your home LAN — where malware built to
+    *worm* (WannaCry) can reach and infect your real devices. A lab you *think* is host-only while
+    it's really bridged is the expensive mistake this module exists to prevent.
+
 **Axis 1 — VM vs. container (the load-bearing one).** Containers are fast, cheap, and reproducible, so
 the tempting answer is "just use Docker." For *your tooling* and the curriculum's reproducible labs,
 that's right. For *detonating unknown malware, it is not enough* — and this is the call beginners get
@@ -65,13 +85,22 @@ unlock, because you learn far faster when a mistake costs nothing. The choice is
 the disk space each snapshot costs.
 
 And here is the honesty that turns these three axes into one decision rather than three: **isolation has
-limits even for VMs.** A VM's wall is strong, not infinite. **VENOM**
-([CVE-2015-3456](https://nvd.nist.gov/vuln/detail/CVE-2015-3456)) was a 2015 bug in the virtual
-*floppy-disk controller* shared by QEMU, Xen, and KVM: code running as root *inside* a guest could
-write out of bounds and potentially execute code on the **host** — a true guest-to-host escape, from a
-device almost no one even uses. The takeaway isn't fear; it's *why you don't bet everything on one
-axis.* The VM boundary can fail, so you also wall off the network and keep snapshots — defence in
-depth, which is exactly the kind of "consequence I accept and mitigate" an ADR exists to record.
+limits even for VMs.** A VM's wall is strong, not infinite. The takeaway isn't fear; it's *why you don't
+bet everything on one axis.* The VM boundary can fail, so you also wall off the network and keep
+snapshots — defence in depth, which is exactly the kind of "consequence I accept and mitigate" an ADR
+exists to record.
+
+!!! tip "AI caveat"
+    A model will happily fill in tradeoffs it can't verify and confidently call a setup "isolated"
+    without ever seeing your adapter mode. AI drafts the options table; *you* verify the one thing
+    that matters (is it really host-only?) and you sign the Decision and Consequences.
+
+??? note "Go deeper: VENOM, a real guest-to-host escape"
+    **VENOM** ([CVE-2015-3456](https://nvd.nist.gov/vuln/detail/CVE-2015-3456)) was a 2015 bug in the
+    virtual *floppy-disk controller* shared by QEMU, Xen, and KVM: code running as root *inside* a
+    guest could write out of bounds and potentially execute code on the **host** — a true
+    guest-to-host escape, from a device almost no one even uses. It's the concrete proof that the VM
+    wall is strong, not infinite.
 
 ## Learn (~1 hr)
 
@@ -105,3 +134,8 @@ happily fill in tradeoffs it can't verify and confidently call a setup "isolated
 your adapter mode; a lab you *think* is host-only while it's really bridged onto your home LAN is
 precisely the expensive mistake this module exists to prevent. AI drafts the scaffold; you verify the
 one thing that matters and you sign the decision.
+
+!!! question "Check yourself"
+    - Why is "VM vs. container" the load-bearing axis — what does a container share with the host that a VM doesn't?
+    - Which network mode puts your lab on your home LAN, and why is that the wrong default for untrusted software?
+    - Your VM boundary is strong but not infinite (VENOM). What does that fact justify doing on the *other* two axes?

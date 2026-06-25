@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md) · [Module 03 — IAM Attack Paths](../03-iam-attack-paths/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Serverless deletes the server you patch but keeps the identity you must scope: a Lambda's whole
+    security surface is its **execution role** plus its **event payload**. Code execution inside the
+    function hands an attacker the role's credentials — a tiny 40-line function with `iam:*`/`s3:*` on
+    `*` is an account-wide blast radius. Ephemerality protects the host you no longer have, not the
+    admin user or assumed role the attacker created. And an authenticated *source* never makes the event
+    *data* safe — that JSON body is untrusted input crossing a trust boundary (OWASP Serverless #1).
 
 ## The case
 
@@ -69,6 +76,10 @@ read every bucket; `sts:AssumeRole` on `*` lets them pivot. **A tiny function wi
 a huge blast radius** — the size of the function tells you nothing; the size of the role tells you
 everything. People reliably under-weight this because they look at the 40 lines and not at the policy.
 
+!!! note "The mental model"
+    Stop reading the function's code and read its **role**. Code is ephemeral; identity is standing — so
+    the policy attached to the function, not its line count, *is* the blast radius.
+
 **Q2 — ephemerality protects the host you no longer have, not the identity you still do.** Yes, the
 container vanishes — which is exactly why there's no server to patch and no host malware to find later.
 But the *power* the function wielded outlives the container: an admin user the attacker created, a role
@@ -87,10 +98,28 @@ function holds an over-broad role, it becomes a **confused deputy**: the attacke
 function take actions *with the function's privileges* that the attacker could never take directly. The
 event boundary and the role are two halves of the same surface — that's why you fix both in the lab.
 
+!!! warning "The gotcha"
+    "Authenticated source" and "trusted data" are different walls. The gateway tells you *who* sent the
+    event; it says nothing about what's *in* it. A handler that pipes an event field into `subprocess`,
+    SQL, or `eval` is injectable no matter how locked-down the caller is — and with an over-broad role it
+    becomes a confused deputy acting with privileges the attacker never had.
+
+??? note "Go deeper: why ephemerality helps the attacker, not you"
+    Denonia's authors leaned into short runtimes and disposable environments precisely because they make
+    the *compromise* hard to investigate — no host malware to find later. But the *consequences* (an admin
+    user minted, a role assumed, data exfiltrated) outlive the container. Ephemerality shrinks the
+    forensic trail, not the damage.
+
 The bridge to keep: **serverless doesn't remove the attack surface, it relocates it into the execution
 role and the event boundary.** There's no host to harden, so the entire job is (1) scope the role to the
 minimum the function actually needs, and (2) treat every event field as hostile input. The lab makes you
 do both, then encodes the role half as a check that can't silently regress.
+
+!!! tip "AI caveat"
+    A model is great at narrating the path from "code execution" to "account compromise" off a role's
+    JSON policy. What it can't do: confirm the path is *actually* reachable — an SCP or permission
+    boundary may cap the policy text (validate with `simulate-principal-policy`) — or write the
+    **minimum** role that still does the real job. That least-privilege cut is the judgment you own.
 
 ## Learn (~3.5 hrs)
 
@@ -127,3 +156,8 @@ SCP or permission boundary may cap the policy text — validate with `simulate-p
 write the **minimum** role that still lets the function do its real job. That least-privilege cut is the
 judgment the module is about: AI drafts the policy and the guardrail; you prove the dangerous reach is
 denied and the legitimate call still works, and you own the verdict.
+
+!!! question "Check yourself"
+    - A 40-line Lambda holds `iam:*` on `*`. In one sentence, why is its blast radius the whole account rather than the function's data?
+    - The function runs for 200 ms then vanishes — what survives that the ephemerality does *not* protect you from?
+    - The event comes from an authenticated API Gateway. Why is the JSON body still untrusted, and what does an over-broad role turn that injection into?

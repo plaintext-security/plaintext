@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    You harden a host today and it passes the audit; thirty days later it has *drifted* — a 2 a.m.
+    debug change, a package that flipped a sysctl, a "temporary" firewall rule that outlived its
+    ticket — and the control you proved is silently gone. Drift, not attack, is the most common way
+    controls fail. Configuration management answers it with a **closed loop**: a declared baseline
+    (an idempotent Ansible role), a detector (`--check --diff` as a dry run), and a reconcile step —
+    the same playbook in two modes. The deliverable is the loop, not a playbook that runs clean once.
+
 ## Why this matters
 You harden a server today. CIS Level 1, by the book — root SSH off, password auth off,
 IP forwarding disabled, telnet gone. It passes the audit. Thirty days later it's wrong again,
@@ -50,6 +58,12 @@ reports `OK` (already correct), `CHANGED` (it was wrong, now fixed), `FAILED`, o
 line is not just noise — it is a **diff between declared state and observed state**, and that diff is the
 whole game.
 
+!!! note "The mental model"
+    Don't read the `CHANGED`/`OK` status line as installer noise — read it as a **diff between
+    declared state and observed state**. `OK` means the host already matched the spec; `CHANGED`
+    means it had drifted and the role pulled it back. Once you see the role as the spec and the run
+    as a comparison, configuration management is a control loop, not a one-shot installer.
+
 Read it that way and configuration management becomes a control loop, not a one-shot installer:
 
 - **Declared state** — the role *is* the spec. `tasks/main.yml`, `handlers/main.yml`,
@@ -74,6 +88,13 @@ Read it that way and configuration management becomes a control loop, not a one-
   often run `--check`/alert in prod and full enforcement in lower environments. Either way: **the loop runs
   itself, or it isn't a control.**
 
+!!! warning "The gotcha"
+    "Set and forget" *is* the failure. A loop only protects you if it runs **without a human
+    deciding to run it** — a scheduled `--check` (configuration synchronization) catches drift in
+    hours, not at the next breach. And mind the posture call: auto-reconcile is powerful and
+    occasionally dangerous — it will happily revert a legitimate emergency change nobody encoded
+    yet — so teams often run detect-and-alert in prod and full enforcement in lower environments.
+
 The one load-bearing judgment of this module: **detect-only vs auto-reconcile.** A drift *detector* that
 pages a human respects that the host may have drifted for a good reason; an *enforcer* that silently
 reverts removes the security gap fast but can stomp an undocumented fix. State which you chose and why —
@@ -84,6 +105,14 @@ target: each numbered item maps to one or more tasks, so your role is auditable 
 standard rather than your own taste; the `devsec.hardening` Galaxy role is a mature reference for what
 production CIS hardening looks like. And **Ansible Vault** is the answer to secrets in the spec: encrypt
 any credential a play needs, because a plaintext password in a `vars:` block *will* end up in git history.
+
+!!! tip "AI caveat"
+    A model drafts verbose Ansible YAML fast — and slips exactly where it matters. The classic
+    failure is reaching for `ansible.builtin.command: sysctl -w …` instead of `ansible.posix.sysctl`:
+    the first reports `changed` *every* run and isn't idempotent, which silently breaks your detector
+    so real drift hides in the noise. Review every line against one test — is it idempotent? — and
+    let the lab's own detector catch the model's mistake: if the second run isn't zero-changed, it
+    handed you a hardening illusion.
 
 ## Learn (~2.5 hrs)
 
@@ -120,3 +149,8 @@ your drift detector, because now *every* `--check` shows a false positive and re
 The detector you build in the lab is itself the test that catches the model's mistake: run the AI-drafted
 role twice; if the second run isn't zero-changed, the model handed you a hardening *illusion*. AI drafts →
 you verify idempotency → you own the loop.
+
+!!! question "Check yourself"
+    - Why is a green `ansible-playbook --check` (zero `changed`) a *proof of steady-state* you could hand an auditor — and what is the detector comparing against?
+    - Detect-only vs auto-reconcile: name one real situation where silently self-healing is the wrong choice.
+    - A model gives you a `command: sysctl -w …` task. Why does that silently break your drift detector, and how does running the role twice expose it?

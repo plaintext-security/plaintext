@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Type:** Detection-as-Code + Eval Harness &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Detecting AD attacks is **50% audit policy, 50% Sigma logic** — without the right audit category
+    enabled first, the event (4769, 4662) never even appears. You'll write Sigma for Kerberoasting,
+    AS-REP roasting, DCSync, and pass-the-hash and validate them offline against EVTX with
+    `chainsaw`. The trap is treating "it fired on the attack sample" as success — that's the data you
+    *wrote the rule against*. The real test is a **held-out corpus** of benign near-misses plus a
+    regression gate, so a broadened filter can't silently turn a tight rule into noise.
+
 ## Why this matters
 
 Detection of AD attacks is hard because the techniques use legitimate protocols and many organisations lack the specific audit policy configuration required to see the events. A domain that hasn't enabled "Audit Kerberos Service Ticket Operations" will never see Event 4769 — the primary signal for Kerberoasting. A domain without "Audit Directory Service Access" will never see Event 4662 — the only direct signal for DCSync. The detection work is 50% audit policy and 50% Sigma logic; without the former, the latter never fires.
@@ -22,13 +30,40 @@ Write Sigma rules for Kerberoasting (Event 4769), AS-REP roasting (Event 4768), 
 
 The fundamental challenge with AD attack detection is that the techniques blend into the background of legitimate Kerberos traffic. Thousands of Event 4769 records are generated every day in a healthy domain. The Kerberoasting signal is not "a 4769 was logged" — it is "a 4769 with encryption type RC4 (0x17) was logged for a service account from a source that has never requested a ticket for that SPN before." The signal is a combination of field value, rate, and behavioural baseline. A Sigma rule can capture the field value and a threshold; the behavioural baseline requires a SIEM with user-entity behavioural analytics (UEBA) or a tuned time-window correlation.
 
+!!! note "The mental model"
+    Detection here is **anomaly-against-baseline, not event-presence**. The event ID alone is noise —
+    a healthy domain emits thousands of 4769s a day. The signal lives in the *field values plus
+    rate plus source*: RC4 for an account that normally uses AES, replication exercised by a non-DC,
+    a logon from a source that's never authenticated that way. Write rules to the anomaly, not the
+    event.
+
 The practical approach for most environments: write tight Sigma rules that catch the high-fidelity indicators (etype 23 TGS for a service account from a workstation, replication rights exercised by a non-DC account) and accept some false positives from lower-fidelity indicators (every 4624 Type 3 from a new source host). The high-fidelity rules should alert immediately; the lower-fidelity rules should feed a hunting dashboard for weekly review. This tiering — alert vs. hunt — is how mature SOCs manage detection without drowning in noise.
 
 The tooling for offline validation — testing a Sigma rule against real EVTX data — is the essential practice. `chainsaw` (a Rust tool from WithSecure) can ingest EVTX files and apply Sigma rules natively, giving you a direct answer to "would this rule have fired on the real attack data?" The EVTX files in `data/evtx/` contain real-shaped events for each attack from modules 03-08, allowing you to validate each rule before it ever touches a live SIEM. This is detection-as-code applied to AD-specific attacks.
 
-A note on honeytokens: the most reliable detection for credential-based attacks is not an event you generate during the attack — it is a deliberate trap. A Kerberoastable service account that no legitimate service ever authenticates with (a honeytoken SPN) generates a 4769 that, by definition, must be attacker activity. No false positives, near-zero baseline noise. Similarly, a user account that is never used (a honey account) generates a 4769 or 4625 only when someone is probing. These are the highest-fidelity signals available, and they require zero complex logic — just the alert "any authentication to this account is malicious."
+??? note "Go deeper: honeytokens are the highest-fidelity signal you can deploy"
+    The most reliable detection isn't an event you generate *during* the attack — it's a deliberate
+    trap. A Kerberoastable service account no legitimate service ever uses (a honeytoken SPN) emits a
+    4769 that, by definition, can only be attacker activity: no false positives, near-zero baseline
+    noise, and zero complex logic — just "any authentication to this account is malicious." A
+    never-used honey account is the same idea for 4625/4769. When tuning a behavioural rule is hard,
+    a honeytoken sidesteps the whole baseline problem.
 
 **Coverage is not effectiveness — and a held-out corpus is how you tell them apart.** "My rule fires on the attack EVTX" is the easy, misleading half. The attack sample is the data you *wrote the rule against*; of course it fires. The hard half — the half that decides whether the rule survives contact with a real domain — is whether it stays *quiet* on the flood of benign 4769s, 4662s, and 4624s that look almost identical. The AES service ticket for the very same SPN you're watching; the `DC2$` machine account doing legitimate replication; the normal `PreAuthType=2` AS-REQ; the Kerberos file-share logon; the machine-account NTLM service auth — these are the near-misses that turn a coverage-green rule into an alert-fatigue generator, and they are exactly what a "fires on the attack" test never shows you. So the discipline this module ends on is the eval-harness move borrowed from machine learning: assemble a **held-out** corpus, *distinct from the demo set*, that pairs the attacks each rule must catch with the benign near-misses each must not fire on; score the rules into a scorecard (recall, precision, FP-rate); and wrap it in a **regression gate** that fails the build if a rule misses an attack or fires on benign. A rule with 100% recall and a 50% false-positive rate is worthless in a SOC — the gate is what stops a well-meaning "let me broaden this filter" edit from quietly regressing a tight detection into noise. You'll watch the gate go green on the tight rules and red on a deliberately too-broad copy: that contrast *is* the lesson, and it is the difference between a detection you can ship and one you only have an anecdote about.
+
+!!! warning "The gotcha"
+    "It fired on the attack sample" is the rule grading its own homework — that's the data you wrote
+    it against. Effectiveness is recall on attacks **and** silence on the benign near-misses that
+    look almost identical (the AES ticket for the same SPN, `DC2$` replicating legitimately, the
+    normal file-share logon). Keep the held-out corpus *distinct* from the demo set, or your score is
+    meaningless.
+
+!!! tip "AI caveat"
+    A model drafts the Sigma YAML fast but gets **field names wrong** (`TicketOptions` vs.
+    `TicketEncryptionType`, mixed-up event IDs) — validate each against the event reference. Worse,
+    when you have it enumerate benign events for the corpus, *a model labelling its own test set is
+    exactly the contamination the eval exists to catch*: verify every label yourself, and keep the
+    corpus distinct from the rules' demo set.
 
 ## Learn (~4 hrs)
 
@@ -61,3 +96,8 @@ A note on honeytokens: the most reliable detection for credential-based attacks 
 Ask a model to draft all four Sigma rules (4769 Kerberoast, 4768 AS-REP, 4662 DCSync, 4624 PTH) from descriptions of the attack. The model is good at the YAML structure but will frequently get field names wrong (e.g., `TicketOptions` vs `TicketEncryptionType`, or confuse event IDs). Validate each field name against the ultimatewindowssecurity.com event reference before running the rule through chainsaw.
 
 Then point the model at effectiveness, not just structure: ask it to enumerate the benign events that would make each rule false-positive — the AES ticket for the same SPN, the machine-account replication, the Kerberos file-share logon — and turn each into a labelled **benign** entry in your held-out corpus. Two cautions you must own. First, keep the wall: the corpus you grade on must stay distinct from the demo set the rules were written against, or the score is the rule grading its own homework. Second, a model labelling its own test set is exactly the contamination the eval guards against — verify every label yourself against the technique it mimics, and own the metric and the gate's fail-closed direction.
+
+!!! question "Check yourself"
+    - Why does a perfect Sigma rule never fire if you skip the audit-policy step?
+    - Your rule fires on the attack EVTX. Why is that not yet evidence the rule is any good?
+    - What makes a honeytoken SPN a higher-fidelity signal than a tuned behavioural rule for the same attack?

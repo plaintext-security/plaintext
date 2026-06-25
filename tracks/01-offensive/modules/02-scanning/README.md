@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Scanning turns a list of hosts into a map of services, versions, and the misconfigurations that
+    become footholds — a funnel from host discovery to deep enumeration. The key insight: **a port
+    number is a hypothesis, not an answer.** 443 doesn't mean HTTPS; it means "something is listening"
+    — version detection and NSE turn that guess into ground truth. And scanning is the loudest thing
+    you'll do: your scan *is* the T1595 telemetry the blue team is staring at.
+
 ## Why this matters
 Once you know what exists, you need to know what it's running. Scanning and enumeration turn
 IPs into a detailed picture — open ports, service versions, and the misconfigurations that
@@ -28,21 +35,28 @@ detection (what software, which version) → deep enumeration (what that service
 stage narrows toward an attack path. Nmap is the field standard not because it sends packets but
 because it does all four, and its output is the lingua franca attackers and defenders both read.
 
-The thing to internalise: **a port number is a hypothesis, not an answer.** 443 doesn't mean HTTPS;
-it means "something is listening here" — version detection and the Nmap Scripting Engine turn that
-guess into ground truth (and NSE quietly does a lot of the enumeration that finds the actual way in).
-The SYN-vs-connect choice everyone frets over is really one knob on a single dial: stealth vs. speed
-vs. reliability — the same packets, a different footprint. The practitioner translation for anyone
-who has read firewall or NSM logs: your scan *is* the rows the blue team is staring at — one source
-IP touching a fan of ports in a tight window — so the way you read your own Nmap output is the
-mirror image of how a defender reads the connection log it generates.
+!!! note "The mental model"
+    **A port number is a hypothesis, not an answer.** 443 doesn't mean HTTPS; it means "something is
+    listening here" — version detection and the Nmap Scripting Engine turn that guess into ground
+    truth (and NSE quietly does a lot of the enumeration that finds the actual way in). The
+    SYN-vs-connect choice everyone frets over is one knob on a single dial: stealth vs. speed vs.
+    reliability — the same packets, a different footprint.
 
-The judgment, and the bridge to the other side of the house: **scanning is the loudest thing you'll
-do.** It is exactly the T1595 telemetry the defensive track's NSM and IDS modules exist to catch — so
-"scan aggressively" is an engagement decision with consequences. Too fast and you crash fragile
-services or trip every alert; too slow and you burn the clock. A model will explain an unfamiliar flag
-or summarise a huge scan instantly, but it cannot tell you whether your scan was appropriate for *this*
-target on *this* engagement — that judgment stays yours, verified against the actual output.
+The practitioner translation for anyone who has read firewall or NSM logs: your scan *is* the rows
+the blue team is staring at — one source IP touching a fan of ports in a tight window — so the way
+you read your own Nmap output is the mirror image of how a defender reads the connection log it
+generates.
+
+!!! warning "The gotcha"
+    **Scanning is the loudest thing you'll do.** It is exactly the T1595 telemetry the defensive
+    track's NSM and IDS modules exist to catch, so "scan aggressively" is an engagement decision with
+    consequences: too fast and you crash fragile services or trip every alert; too slow and you burn
+    the clock.
+
+!!! tip "AI caveat"
+    A model will explain an unfamiliar flag or summarise a huge scan instantly, but it cannot tell you
+    whether your scan was appropriate for *this* target on *this* engagement — that judgment stays
+    yours, verified against the actual output.
 
 ## Learn (~3 hrs)
 
@@ -64,3 +78,8 @@ target on *this* engagement — that judgment stays yours, verified against the 
 A model will explain an unfamiliar Nmap flag or NSE script and summarise a big scan
 instantly. But it can't tell you whether a result is real or whether your scan was too
 aggressive for the engagement — that judgment stays yours. Verify against the actual output.
+
+!!! question "Check yourself"
+    - Why is an open port a hypothesis rather than an answer, and what turns it into ground truth?
+    - Walk the scanning funnel — what does each of the four stages narrow down?
+    - What does your scan look like in a defender's connection log, and why does that affect how aggressively you scan?

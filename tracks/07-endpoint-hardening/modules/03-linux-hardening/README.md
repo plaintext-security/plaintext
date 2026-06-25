@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Linux has no native compliance tooling — you bring your own, and the two everyone actually runs
+    are Lynis (a fast, readable *auditor* that scores and reports) and OpenSCAP (an *auditor +
+    remediator* that runs official CIS content and can generate the fix script). This module scans a
+    host, interprets the findings, remediates a representative set, and rescans to prove a measurable
+    improvement. The discipline isn't running the tool — it's acting on the output, and documenting
+    every finding you *don't* fix.
+
 ## Why this matters
 
 Linux servers are the dominant target in cloud and on-premises data centres, and unlike Windows they have no native compliance tooling — you bring your own. OpenSCAP and Lynis are the two open-source tools that organisations actually run in production compliance programmes. Both are free, both produce machine-readable output, and both map directly to CIS Benchmarks and STIG controls. Knowing how to run them, interpret their output, and act on findings is a day-one skill for any security engineer operating in a Linux environment.
@@ -22,11 +30,28 @@ Run Lynis and OpenSCAP against a Linux container, interpret the findings, apply 
 
 Linux hardening tools split between *auditors* and *remediators*. Lynis is an auditor: it interviews the running system, outputs a scored finding list, and tells you what to do. It does not change anything itself. OpenSCAP, via the `oscap` command-line tool and the SCAP Security Guide (SSG), can both audit and remediate — the same XCCDF profile that scores the host can generate a shell script that fixes it. Understanding which tool to reach for and when is the practitioner distinction: Lynis for a quick readable score and ad-hoc forensic auditing; OpenSCAP for benchmark-mapped, policy-exportable, remediable scans in a compliance programme.
 
+!!! note "The mental model"
+    Two tools, two jobs. Lynis is the fast, human-readable triage of a host you've never seen — its
+    0–100 "hardening index" tracks drift but is *not* a CIS percentage. OpenSCAP runs the official
+    CIS XCCDF content, so its score *is* a CIS percentage and is what an auditor wants. In production,
+    both run on a schedule.
+
 The CIS Linux Benchmarks address two categories of control: configuration settings (sysctl parameters, file permissions, service states) and installed packages (removing legacy software, ensuring security packages are present). A naive scan of a fresh OS image will score poorly on both, because default Linux installs optimise for compatibility, not security. The hardening process is iterative: scan, read the finding, decide whether to remediate or accept with justification, apply the remediation, rescan. The "accept with justification" step is not optional — a finding left open without a documented rationale is an audit liability; a finding left open *with* a documented business reason is a managed risk.
+
+!!! warning "The gotcha"
+    Don't conflate the two scores: Lynis's hardening index and OpenSCAP's CIS percentage measure
+    different control sets and are not comparable. And every open finding needs an outcome —
+    remediated, or *accepted with documented justification*. An undocumented open finding is an audit
+    liability; the same finding with a recorded business reason is a managed risk.
 
 Two sysctl parameters appear on almost every CIS benchmark and illustrate the principle well. `kernel.randomize_va_space=2` enables ASLR — it makes memory layout unpredictable and significantly raises the cost of memory-corruption exploits. `net.ipv4.conf.all.accept_redirects=0` disables ICMP redirect acceptance — without this, an on-path attacker can reroute traffic through a malicious gateway. Both are one-line changes with no operational downside in almost any environment, yet both appear as findings on a default Ubuntu or RHEL install. They illustrate a wider pattern: many high-value hardening controls are trivial to apply once you know they exist.
 
 Lynis produces a "hardening index" on a 0–100 scale. This number is useful for tracking drift over time and comparing hosts, but it is not a CIS compliance percentage — Lynis tests a broader and different set of controls than the CIS Benchmark. OpenSCAP's score *is* a CIS percentage, because it runs the official CIS XCCDF content. When you need to report to an auditor, use OpenSCAP. When you need a fast, human-readable triage of a host you've never seen before, use Lynis. In production both run, scheduled, and their output feeds a SIEM or compliance dashboard.
+
+!!! tip "AI caveat"
+    A model is a good translator of dense XCCDF rule IDs and OVAL checks into plain English — but
+    confirm its reading against the SCAP Security Guide rationale for that rule before you trust it.
+    AI explains the jargon; the SSG is the authority on what the rule actually tests.
 
 ## Learn (~4 hrs)
 
@@ -55,3 +80,8 @@ Lynis produces a "hardening index" on a 0–100 scale. This number is useful for
 ## AI acceleration
 
 Ask an AI assistant to explain a specific OpenSCAP finding in plain English — the XCCDF rule IDs and OVAL check descriptions are dense. The model is good at translating "xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space" into "this checks that ASLR is enabled." Then verify the explanation against the SCAP Security Guide rationale for that rule. AI explains the jargon; the SSG is the authority.
+
+!!! question "Check yourself"
+    - Which tool do you reach for to report to an auditor, and which for fast triage of an unknown host — and why?
+    - Why is Lynis's hardening index *not* comparable to OpenSCAP's CIS compliance percentage?
+    - What is the difference between an undocumented open finding and an "accepted with justification" one?

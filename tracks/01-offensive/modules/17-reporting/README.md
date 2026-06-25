@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The uncomfortable truth that separates a professional from a tool-runner: **nobody buys shells —
+    they buy the report.** A brilliant exploit that produces a finding the defender can't understand,
+    reproduce, or act on is worth nothing. The same engagement is told twice: the executive summary
+    answers "how exposed are we, in business terms?" and the technical findings answer "exactly what,
+    where, proven how, fixed how?" This is the single most career-defining offensive skill — and the
+    place AI is both most useful and most dangerous.
+
 ## Why this matters
 Clients and defenders don't buy shells — they buy a clear, prioritised, reproducible account of
 what's wrong and how to fix it. Reporting is the single most career-defining offensive skill: it
@@ -29,18 +37,23 @@ reproduce, or act on is worth nothing. This is the single most career-defining o
 deliverable that gets you re-hired — which is why the track *ends* here, turning everything you found
 into something actionable.
 
-The mental model is audience-driven: the same engagement is told twice. The **executive summary**
-answers "how exposed are we, in business terms, and what do we do Monday?" — no jargon, just risk and
-money. The **technical findings** answer "exactly what, where, proven how, fixed how?" — each with a
-clear title, evidence, reproduction steps, impact, and a risk rating that blends CVSS with *business*
-context (the KEV/EPSS prioritisation from module 03, applied to *this* client's reality). A finding you
-can't reproduce is not a finding.
+!!! note "The mental model"
+    The report is audience-driven: the same engagement is told twice. The **executive summary** answers
+    "how exposed are we, in business terms, and what do we do Monday?" — no jargon, just risk and
+    money. The **technical findings** answer "exactly what, where, proven how, fixed how?" — each with
+    a clear title, evidence, reproduction steps, impact, and a risk rating that blends CVSS with
+    *business* context (the KEV/EPSS prioritisation from module 03, applied to *this* client's reality).
 
-The judgment, and the sharpest AI line in the whole track: reporting is where AI shines *and* is most
-dangerous. A model drafts clean report prose from your notes in seconds — a real time-saver — but it
-will smooth over a finding you can't actually reproduce, or invent an impact that merely sounds right.
-AI authors the prose; you verify every finding, every number, every CVE. **You sign it; you own it** —
-your name is on a document the client makes real decisions from.
+!!! warning "The gotcha"
+    A finding you can't reproduce is not a finding. A brilliant exploit that produces something the
+    defender can't understand, reproduce, or act on is worth nothing — reproducibility and clarity,
+    not cleverness, are what the client actually pays for.
+
+!!! tip "AI caveat"
+    Reporting is where AI shines *and* is most dangerous. A model drafts clean report prose from your
+    notes in seconds, but it will smooth over a finding you can't actually reproduce or invent an
+    impact that merely sounds right. AI authors the prose; you verify every finding, number, and CVE.
+    **You sign it; you own it** — your name is on a document the client makes real decisions from.
 
 ## Learn (~4 hrs)
 
@@ -62,3 +75,8 @@ your name is on a document the client makes real decisions from.
 This is where AI shines *and* where it's most dangerous: a model drafts clean report prose from
 your notes in seconds — but it will also smooth over a finding you can't reproduce or invent an
 impact. AI authors the prose; you verify every finding, number, and CVE. You sign it; you own it.
+
+!!! question "Check yourself"
+    - Why is the report — not the shell — the actual product of an engagement?
+    - How does the story you tell in the executive summary differ from the technical findings, and who reads each?
+    - Why isn't a finding you can't reproduce a finding, and where is AI most likely to betray you here?

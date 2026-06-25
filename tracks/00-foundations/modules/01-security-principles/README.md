@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** None — start here
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Security isn't a product you buy — it's a property of the *whole system*, and breaches happen
+    when a chain of separate principles fails in series. You'll take apart **Equifax 2017** (147M
+    records lost) and name the principle that gave way at each link: an unpatched flaw (the entry),
+    a flat network (no defense in depth), and an expired cert that blinded detection (availability
+    of monitoring). The lens you build — "see a system, see all the ways it fails" — is the one you
+    carry into every later track. Most write-ups name one villain ("they didn't patch"); the real
+    lesson is that there was no one thing.
 
 ## Why this matters
 Before any tool, before any track, you need the shared language: what security is actually trying to
@@ -55,6 +63,17 @@ There was no single point of failure, because **security is not a single thing.*
 the *whole system*, and Equifax lost it the way systems always do: **a chain of separate principles
 failed in series, and each one was supposed to catch what the last one missed.** The first principles
 below aren't vocabulary to memorize — they're the **lenses** that let you see every link in that chain.
+
+!!! note "The mental model"
+    Security is a property of the *whole system*, not a product you buy. A breach is a *chain* of
+    principles failing in series — the firewall, the patching, the segmentation, and the monitoring
+    are different walls, and an attacker only needs them to fail **in a line.**
+
+!!! warning "The gotcha"
+    The instinct is to name a single villain — "they didn't patch." That's the first domino, and it
+    misses the three behind it (flat network, blinded detection) that turned a routine vulnerability
+    into a generational breach. A checklist of controls you *own* is not the same as a system that
+    *holds*.
 
 **The CIA triad — *what* you're protecting.** Three properties: **Confidentiality** (only the right
 people can read it), **Integrity** (it can't be secretly altered), **Availability** (you can use it
@@ -111,3 +130,8 @@ failures: the flat network (defense in depth) and especially the **expired cert 
 (an availability-of-monitoring failure most write-ups skip). Your job is to catch what it flattened. If
 you can explain *why* the breach needed all three failures, not just the patch, you've learned the
 module — and you own the verdict.
+
+!!! question "Check yourself"
+    - Which property of the CIA triad did the *expired certificate* compromise — and why is that the one most write-ups miss?
+    - Why did one unpatched server become 147M records instead of a single compromised box?
+    - In one sentence, why is "they didn't patch" the wrong answer to "what was the *one thing* that failed?"

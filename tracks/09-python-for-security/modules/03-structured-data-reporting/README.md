@@ -10,6 +10,13 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Security data arrives as JSON and leaves as CSV and tables — that data plumbing is the spine of
+    every security script. `json.loads` in, `csv.DictWriter` out, `rich` for the human-readable table.
+    The judgment is in the middle: treat parsed JSON as untrusted (use `.get()`, skip bad records,
+    don't crash on record 3 of 50), and deduplicate by a fingerprint tuple so three sensors firing
+    the same finding don't become three tickets. Compute and filter first; render last.
+
 ## Why this matters
 Security alerts almost always arrive as JSON — from SIEMs, from APIs, from tool output. The
 analyst who can read a JSON blob, filter it, deduplicate it, and produce both a CSV for the
@@ -31,6 +38,16 @@ in record` check). Silently skipping a record with missing fields is almost alwa
 raising a `KeyError` on record 3 of 50 and killing the script is almost always wrong. Security
 data is messy in the field; your parser must not be brittle.
 
+!!! note "The mental model"
+    Treat parsed JSON as untrusted input, exactly like data off the wire. The fields you expect are a
+    hope, not a guarantee — `.get()` with a default skips the broken record; `record["key"]` kills the
+    run on the first malformed one.
+
+!!! warning "The gotcha"
+    Never build CSV by string concatenation. The moment a field contains a comma or a newline,
+    hand-rolled CSV breaks in ways that are hard to spot and painful to debug — `csv.DictWriter`
+    quotes and escapes correctly so you don't have to think about it.
+
 Deduplication is a recurring pattern in alert pipelines: the same finding fires three times from
 three sensors, and without deduplication you create three tickets for one issue. The standard
 approach is to define a "fingerprint" — a tuple of the fields that make two alerts the "same
@@ -51,6 +68,18 @@ formatted, colour-coded table that a non-engineer can parse at a glance. The `Co
 the security tool ecosystem (many popular OSS tools use it), it requires no special terminal,
 and its output degrades gracefully when piped. Keep the structured data pipeline and the
 presentation layer separate: compute and filter first, render last.
+
+??? note "Go deeper: dedup-by-fingerprint and the scale boundary"
+    Define a fingerprint — a tuple of the fields that make two alerts the "same thing"
+    (`(rule_id, source_ip, dst_port)`) — and track seen fingerprints in a `set` as you iterate. It's
+    deterministic, dependency-free, and fast for hundreds of thousands of alerts in memory. The moment
+    you outgrow memory you reach for a database; for this scale a set is correct, and adding a DB early
+    is just complexity you'll have to maintain.
+
+!!! tip "AI caveat"
+    A model writes the JSON→CSV pipeline correctly in one pass — for the happy path. The value-add is
+    handing it the broken cases: a null field, a value containing a comma, an unexpected schema
+    version. The pipeline you deploy is the one that survives the weird record, not the clean one.
 
 ## Learn (~2 hrs)
 
@@ -78,3 +107,8 @@ handle the edge cases: what happens with a null field? A field that contains a c
 record with an unexpected schema version? Prompt it with a realistic broken record and review
 how it handles the error. The pipeline you deploy is the one that handles the weird cases, not
 the happy path.
+
+!!! question "Check yourself"
+    - Why access JSON fields with `.get()` rather than `record["key"]` when parsing security data?
+    - What is a dedup "fingerprint," and why a `set` of tuples rather than a regex on the raw record?
+    - Why must the `rich` rendering happen at the *end* of the pipeline, not woven into the filtering?

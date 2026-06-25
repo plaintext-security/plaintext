@@ -9,6 +9,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    PowerShell is the most-abused execution vector on Windows — Microsoft-signed, everywhere, and able
+    to download and run code entirely in memory. The download cradle (`IEX (New-Object
+    Net.WebClient).DownloadString(...)`) fetches a second stage over HTTP and runs it in memory, so
+    nothing lands on disk. But **obfuscation is a race against the layer that has to deobfuscate** —
+    Script Block Logging (Event ID 4104) records the reassembled, cleartext script at execution time.
+    Every evasion shifts you from one detection surface to another; it never makes you invisible.
+
 ## Why this matters
 PowerShell is the single most-abused execution vector on Windows — signed by Microsoft, present
 everywhere, and able to download and run code entirely in memory. Operators reach for it constantly:
@@ -31,26 +39,36 @@ command from a shoulder-surfing analyst and from naive command-line rules. None 
 the plumbing under most "fileless" intrusions, and it's why "is the binary known-bad?" stopped being a
 useful question on Windows years ago.
 
-The mental model that keeps this honest: **obfuscation is a race against the layer that has to
-deobfuscate.** Base64, string-concatenation, `[char]`-code rebuilding, Invoke-Obfuscation's token tricks —
-they all change the *bytes* while preserving the *behaviour*, which beats a static string signature. But
-PowerShell cannot run what it hasn't reassembled, and **Script Block Logging (Event ID 4104) records the
-reassembled, cleartext script block at execution time.** So obfuscation reliably defeats pre-execution
-string matching and buys time against an analyst, and reliably *fails* against script-block logging and
-behavioural detection. The skill is knowing which control you're actually up against.
+!!! note "The mental model"
+    **Obfuscation is a race against the layer that has to deobfuscate.** Base64,
+    string-concatenation, `[char]`-code rebuilding, Invoke-Obfuscation's token tricks — they all change
+    the *bytes* while preserving the *behaviour*, which beats a static string signature. But PowerShell
+    cannot run what it hasn't reassembled, and **Script Block Logging (Event ID 4104) records the
+    reassembled, cleartext script block at execution time.** So obfuscation reliably defeats
+    pre-execution string matching and buys time against an analyst, and reliably *fails* against
+    script-block logging. The skill is knowing which control you're actually up against.
 
 AMSI (the Antimalware Scan Interface) is the other half of that runtime story: it hands the deobfuscated
 buffer to the registered AV *just before* execution, which is why so much real tradecraft includes an AMSI
-"bypass" that patches `amsiInitFailed` in memory. That, too, is loud — tampering with AMSI is itself a
-high-signal detection. The through-line of the whole module: every evasion shifts you from one detection
-surface to another; it never makes you invisible. The operator who understands the telemetry picks the
-*quietest* path for the engagement; the one who just copies a cradle off a blog gets caught on the first
-4104 event.
+"bypass" that patches `amsiInitFailed` in memory.
 
-A word on doing this for real: PowerShell 7 on Linux (this lab) runs the language-level tradecraft
-faithfully — cradles, encoding, obfuscation — but **AMSI and the Windows event channels are Windows
-runtime features.** The lab teaches the mechanics deterministically and shows you the 4104 record your
-command *would* generate; the lab notes the Windows-VM path for exercising AMSI itself.
+!!! warning "The gotcha"
+    Every evasion shifts you from one detection surface to another; it never makes you invisible. The
+    AMSI bypass is itself loud — tampering with AMSI is a high-signal detection — and the cleartext your
+    obfuscated cradle reassembles still lands in 4104. The operator who understands the telemetry picks
+    the *quietest* path; the one who just copies a cradle off a blog gets caught on the first 4104 event.
+
+??? note "Go deeper: PowerShell 7 on Linux vs. the Windows runtime"
+    PowerShell 7 on Linux (this lab) runs the language-level tradecraft faithfully — cradles, encoding,
+    obfuscation — but **AMSI and the Windows event channels are Windows runtime features.** The lab
+    teaches the mechanics deterministically and shows you the 4104 record your command *would* generate;
+    it notes the Windows-VM path for exercising AMSI itself.
+
+!!! tip "AI caveat"
+    A model will hand you a working cradle or an obfuscated one-liner in seconds — and just as happily
+    one that's heavily signatured, calls a cmdlet that doesn't exist on the target, or trips AMSI on the
+    first line. Use it to generate variants fast, then verify each against the actual telemetry: AI
+    drafts the payload; you own what it logs.
 
 ## Learn (~4 hrs)
 
@@ -90,3 +108,8 @@ that's heavily signatured, calls a cmdlet that doesn't exist on the target, or t
 line. Use it to *generate variants fast*, then verify each against the actual telemetry: run it, read the
 4104 it produces, and decide whether it's quiet enough for the engagement. AI drafts the payload; you own
 what it logs.
+
+!!! question "Check yourself"
+    - Why does the in-memory download cradle defeat a file-based scanner?
+    - Obfuscation reliably beats one detection layer and reliably fails against another — name both.
+    - Why is an AMSI bypass itself a high-signal detection, and what does that say about "evasion"?

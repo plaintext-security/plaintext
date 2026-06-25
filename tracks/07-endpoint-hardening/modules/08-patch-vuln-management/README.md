@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Unpatched, known-exploited software is the leading cause of breaches — Equifax (2017) traced to a
+    single Struts server with a patch that shipped two months before the exploit. This module runs the
+    production workflow: osquery inventories what's installed, grype matches CVEs against it, and a
+    triage model (CVSS × KEV × reachability × fix availability) turns hundreds of findings into a
+    single-page priority list. CVSS alone is the wrong sort: a 9.8 in an unreachable library loses to
+    a 6.5 in an internet-facing service that's in CISA's KEV catalogue.
+
 ## Why this matters
 
 Unpatched vulnerabilities in known-exploited software are the leading cause of breaches. The 2017 Equifax breach — 145.5 million people's records — traced back to a single web server running a version of Apache Struts with a known, *patched* vulnerability ([CVE-2017-5638](https://nvd.nist.gov/vuln/detail/CVE-2017-5638), CVSS 9.8 critical). The fix shipped in March 2017; attackers exploited the unpatched server in May, and Equifax didn't detect the intrusion until late July (US GAO, GAO-18-559). The CISA Known Exploited Vulnerabilities catalogue lists hundreds of CVEs that adversaries are actively exploiting — the vast majority of which had patches available before they appeared in incident reports. Vulnerability management is the operational discipline that closes this gap: knowing what software is installed, which CVEs apply to it, and in what order to patch based on actual exploitation evidence rather than CVSS scores alone.
@@ -22,11 +30,29 @@ Use osquery to enumerate installed packages and versions on a Linux host, scan w
 
 Vulnerability management fails in one of two ways: organisations either patch nothing because the queue is overwhelming, or they patch everything indiscriminately and spend engineering cycles on theoretical vulnerabilities while real ones accumulate. The solution is a triage model that combines vulnerability severity with exploitation evidence. CVSS alone is not sufficient — a CVSS 9.8 vulnerability in an application that is not exposed or not reachable from the network is lower priority than a CVSS 6.5 vulnerability in an internet-facing service that appears in CISA's KEV catalogue. The discipline is building and applying that triage model consistently.
 
+!!! note "The mental model"
+    Two roles, one pipeline: osquery answers *"what do we have"* (package names, versions, paths),
+    grype answers *"what CVEs apply to it"* (matched against NVD and advisory feeds). The judgment
+    sits on top — a triage model (KEV membership × network reachability × fix availability × software
+    role) that collapses hundreds of findings into a single-page priority list.
+
 osquery's role in vulnerability management is asset inventory: it knows exactly what is installed on each host (package names, versions, paths), when packages were last updated, and what processes are running. This is the "what do we have" question. grype is the scanner that answers "what CVEs apply to what we have" — it compares the package inventory against the NVD (National Vulnerability Database), GitHub Advisory Database, and other vulnerability feeds and produces a finding list with CVE IDs, severity ratings, and the fixed version that closes each finding. Together, osquery (inventory) and grype (CVE matching) replace the expensive commercial vulnerability scanner for most endpoint use cases.
+
+!!! warning "The gotcha"
+    Sorting by CVSS alone inverts your priorities — it floats a network-unreachable memory-corruption
+    bug above an actively-exploited auth bypass. The base score is a property of the *vulnerability*,
+    not of *your* exposure; KEV membership and reachability are what tell you what to patch first. A
+    fix that exists and stays unapplied past SLA is a governance failure, not just an engineering gap.
 
 The prioritisation step is where most organisations lose the signal. A raw grype output against a modern Ubuntu system will produce dozens or hundreds of findings. Sorting by CVSS score alone produces a list where network-unreachable memory-corruption vulnerabilities outrank actively-exploited authentication bypass bugs. The correct prioritisation combines: is the CVE in CISA's KEV catalogue (active exploitation evidence), is the service exposed (network reachability), is a patch available (fix exists), and what is the software's role (SUID binary exploited locally is different from unexposed library). This triage model turns hundreds of findings into a single-page remediation priority list.
 
 Patch management and vulnerability scanning are often separated in organisations, with different teams owning each. The security engineer's role is to bridge the gap: produce the prioritised finding list, translate it into the terms the operations team understands (package name and `apt upgrade` command, not CVE ID and CVSS vector), and track closure rates over time. A vulnerability that stays open for 30 days after a patch is available is a governance failure, not just an engineering gap — the management discipline is as important as the technical one.
+
+!!! tip "AI caveat"
+    A model is fast at "what is this CVE and what's the exploit scenario" — useful for drafting the
+    triage rationale. But it can be stale on whether a CVE is in CISA KEV or whether a fix shipped;
+    verify membership and patch availability against NVD and the live KEV catalogue before you assign
+    a priority.
 
 ## Learn (~3 hrs)
 
@@ -59,3 +85,8 @@ Patch management and vulnerability scanning are often separated in organisations
 ## AI acceleration
 
 Paste a grype finding (CVE ID + package name + version) into an AI and ask it to explain: what the vulnerability is, what the exploit scenario looks like, whether a patch is available, and whether you've seen it in CISA KEV. Use the explanation to write the triage rationale entry in your remediation list. AI accelerates the "what is this CVE" research; you verify against NVD and KEV before assigning priority.
+
+!!! question "Check yourself"
+    - Why can a CVSS 6.5 deserve a patch before a CVSS 9.8 on the same host?
+    - What two questions do osquery and grype each answer, and why do you need both?
+    - Equifax had a patch in March and was exploited in May — what control does that gap argue for?

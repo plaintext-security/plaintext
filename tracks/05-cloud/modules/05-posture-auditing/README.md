@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 01 — Shared Responsibility](../01-cloud-fundamentals/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A posture scanner like `prowler` is a linter for your cloud account: one command walks every
+    resource and prints a few hundred CIS-rule violations with a severity. The 2017 wave of public-S3
+    leaks (Verizon, Accenture, Booz Allen) proves the finding was always *trivial to detect* — the
+    breach was a failure to act, not to scan. So the skill this module grades isn't running the tool;
+    it's **triage** — severity × exploitability × blast radius, with the asset context the tool can't
+    have — and **verification**: re-scanning to watch the fix flip FAIL→PASS, then freezing it as a guardrail.
 
 ## The case
 
@@ -54,6 +61,11 @@ numbered benchmarks for AWS/GCP/Azure where each control has a rationale, the ex
 tests it, and the fix. ScoutSuite does the same collection from a different angle and renders it as a
 walkable HTML report. Running it is one command. **The output is the start of the work, not the end.**
 
+!!! note "The mental model"
+    `prowler` is to your AWS config what `eslint` is to a codebase — it finds rule violations in
+    seconds. The tool supplies findings; **you** supply which resource holds what, who can reach it,
+    and what its blast radius crosses. That asset context is the part no scanner can run.
+
 Here is the trap, and it is the whole module. A linter that emits 400 warnings is *worse* than useless
 if you treat every line equally — you drown the one that matters (public bucket holding INSCOM's
 classified data) under 380 that don't (an unused IAM user from 2019 whose key is "stale"). A real
@@ -64,12 +76,24 @@ noise; a public bucket *with regulated data in it, reachable from the internet* 
 waiting to happen, whatever severity the tool stamped on it. The tool supplies findings; **you** supply
 which resource holds what, who can reach it, and what its blast radius crosses — and you make the call.
 
+!!! warning "The gotcha"
+    The raw finding count is not the priority order, and the tool's severity stamp is only a guess. A
+    MEDIUM on a sandbox is noise; a public bucket with regulated data reachable from the internet is the
+    2017 wave waiting to happen — whatever label the scanner printed. Closing all 400 or suppressing the
+    noisy rule are both wrong; suppression is a *conscious, documented* decision, never the default way to clear a finding.
+
 And triage without verification is a wish. "I'll remediate the public bucket" is not done until you've
 applied the fix **and re-run the check to watch it flip from FAIL to PASS.** That re-scan is the
 difference between a remediation plan and a remediated account — and it is the seed of the guardrail.
 The mature end-state of posture management isn't a quarterly PDF; it's the same check running every day
 (and, in module 06, in CI) so the fix can't silently regress. The verified check *is* your verdict —
 "this control must hold" — turned into something that fails the moment it stops holding.
+
+!!! tip "AI caveat"
+    A model explains a prowler finding and drafts the remediation fast and usually correct on the
+    *mechanism* — but it sees one finding, not your account. It can't know which bucket holds regulated
+    data or which "stale" key still serves a live service. Let it do the synthesis (group and draft);
+    own the priority order against real asset criticality, and never let it shortcut you to a clean report by suppressing a rule.
 
 ## Learn (~4 hrs)
 
@@ -106,3 +130,8 @@ use it for the **synthesis it's good at** — "group these 400 findings by servi
 note per group" — and own the part it can't do: the **priority order against real asset criticality**,
 and the decision to suppress (which must be conscious, with a written rationale, never an AI shortcut to
 a clean report). AI triages the noise; you make the verdict on the signal.
+
+!!! question "Check yourself"
+    - A first scan of a year-old account returns 400 findings. What turns that dump into a triage queue — and why is the raw count the wrong way to prioritise?
+    - The scanner stamps a public bucket MEDIUM. What account-specific facts would override that severity, and why can't the tool know them?
+    - Your remediation plan says "fix the public bucket." What single step proves it's actually done, and how does that step become the guardrail?

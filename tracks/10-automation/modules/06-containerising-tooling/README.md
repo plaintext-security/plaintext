@@ -10,6 +10,15 @@
 **Type:** Tool-Build (Family II) &nbsp;·&nbsp; **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A security tool is only useful if it runs the same way for whoever picks it up next — and an
+    unpinned install (`curl | bash`, `FROM ubuntu:latest`) is "run arbitrary binary data and hope"
+    dressed as convenience; the docker123321 campaign rode exactly that, ~5M pulls of backdoored
+    images. The fix is to package the tool as a *reusable image* you build and control: pin the base
+    **and** the tool version (verify the checksum), run non-root, set a clean `ENTRYPOINT` with no
+    `CMD`, and never bake a secret into a layer. The deliverable is judged like a tool — clear entry,
+    safe by default, reproducible by someone else.
+
 ## Why this matters
 
 A security tool is only useful if it runs — reliably, the same way, for whoever picks it up next.
@@ -48,6 +57,11 @@ result.
 A Dockerfile is the recipe for a tool other people run, so the design judgments are *tool* design
 judgments, not just packaging. Four of them carry the weight.
 
+!!! note "The mental model"
+    A tool image is a product with users, not a packaging chore. What you pin, what you keep out,
+    what the entrypoint exposes, and what you refuse to bake in are the same decisions you'd make
+    designing any reusable tool — they just happen to be written in a Dockerfile.
+
 **The base image is a dependency you're choosing — pin it and keep it small.** `FROM ubuntu:latest`
 pulls whatever is current on build day and ships everything Ubuntu installs by default; every one
 of those packages is attack surface and a potential CVE in *your* tool's image. `FROM ubuntu:22.04`
@@ -78,10 +92,19 @@ time. Layer ordering is the cheaper companion rule: put what changes rarely near
 (`apt-get install ca-certificates`) and what changes often near the bottom (`COPY . /app`), so the
 cache does the work and rebuilds stay fast.
 
-The load-bearing judgment across all four: a tool image is a product with users. What you pin,
-what you keep out, what the entrypoint exposes, and what you refuse to bake in are the same kinds
-of decisions you'd make designing any reusable tool — they just happen to be written in a
-Dockerfile.
+!!! warning "The gotcha"
+    Two traps look harmless and aren't. A secret in `RUN echo …` survives in `docker history` even
+    after a later layer deletes the file — a deleted layer is not a gone layer. And `FROM
+    ubuntu:latest` (or an unpinned tool version) makes "the thing you ran today" un-provably the
+    same as last month's — fatal for a tool whose entire job is being the boring, auditable artifact
+    in your kit.
+
+!!! tip "AI caveat"
+    A model hands you a *functional* Dockerfile fast, and the gap to a production tool image is this
+    module's checklist. The omission to watch for is the **checksum verification** — models reliably
+    skip it, and it's the supply-chain control that makes the binary provably the one you intended.
+    Close the loop like a reviewer: `checkov -f Dockerfile` on the draft *and* the hardened version,
+    and confirm the hardened one clears the HIGH findings (non-root, etc.).
 
 ## Learn (~2 hrs)
 
@@ -116,3 +139,8 @@ step — models reliably skip it, and it is exactly the supply-chain control tha
 trustworthy. Then close the loop the way a reviewer would: run `checkov -f Dockerfile` on both
 versions and confirm the hardened one clears the HIGH findings. **AI drafts → you review every line
 → you own the image that ships.**
+
+!!! question "Check yourself"
+    - Why is `FROM ubuntu:latest` a supply-chain problem for a *security* tool specifically, not just a reproducibility nuisance?
+    - A teammate deletes a leaked key in a later `RUN rm` layer and says it's fixed. Why are they wrong, and what command proves it?
+    - Your image sets `ENTRYPOINT ["/usr/local/bin/trufflehog"]` and no `CMD`. What does `docker run image --help` do, and why is that the right behaviour for a tool image?

@@ -10,6 +10,15 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~4–5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    You can't attack, defend, or investigate what you can't read on the wire — and a **packet
+    capture is the network's CCTV**, recording what was actually sent, not what a log claims. The
+    unlock is **layering** (application → TCP/UDP → IP → frame), so reading a packet is reading those
+    nested headers off it. Two patterns appear in almost every capture: the **TCP three-way
+    handshake** (SYN / SYN-ACK / ACK) and a **DNS** lookup (query + answer over UDP/53). DNS is
+    implicitly trusted and rarely blocked — which is exactly why SUNBURST-style C2 and exfil hide in
+    it, and what you'll learn to spot.
+
 ## The hook
 
 In December 2020, the security firm FireEye found a backdoor buried in a software update millions of
@@ -54,6 +63,11 @@ the network, a defender watches it, a forensicator reconstructs it from a captur
 frame) and unwrapped on the way up, so a single packet carries nested context: this IP, this port, this
 connection state. Reading a capture is just reading those layers off each packet.
 
+!!! note "The mental model"
+    A packet capture is the network's **CCTV**: a time-stamped recording of every packet that crossed
+    a point on the wire — it sees what was *actually* sent, not what a log says. Reading one is just
+    reading the nested headers (application → TCP/UDP → IP → frame) off each packet, layer by layer.
+
 Two patterns appear in almost every capture you'll ever open. The first is the **TCP three-way
 handshake**, how every TCP connection begins. The client sends a **SYN** ("I'd like to talk" —
 *synchronize*); the server replies **SYN-ACK** ("go ahead, and I acknowledge you"); the client sends
@@ -69,9 +83,17 @@ tunneling, and exfiltration all hide in DNS, because a lookup leaving your netwo
 other lookup. SUNBURST is the textbook case: the *query name itself* carried the smuggled data, and the
 *answer* steered the malware. **DNS is the phone book attackers use because no one hangs up on it.**
 
-The judgment for the AI era: a model decodes a capture faster than you and explains a baffling `tcpdump`
-filter well — but it occasionally invents header fields that aren't there, so verify against the RFC and
-the man page. Reading the packets yourself is the skill the model accelerates, not the one it replaces.
+!!! warning "The gotcha"
+    DNS C2 hides *because DNS looks like every other lookup* — everyone lets it out, so you can't
+    just block it. The beacon isn't invisible, but spotting it means reading the lookups themselves
+    (a long random subdomain, an odd query rate, a name no human would type), not waiting for a
+    firewall to flag the channel. "It's just DNS traffic" is precisely the assumption SUNBURST
+    counted on.
+
+!!! tip "AI caveat"
+    A model decodes a capture faster than you and explains a baffling `tcpdump` filter well — but it
+    occasionally invents header fields that aren't there, so verify against the RFC and the man page.
+    Reading the packets yourself is the skill the model accelerates, not the one it replaces.
 
 ## Learn (~3 hrs)
 
@@ -105,3 +127,8 @@ against the capture, the RFC, and `man tcpdump`: models occasionally invent fiel
 further — ask it *why* a particular DNS lookup looks anomalous (long random subdomain? high query
 rate? a name no human would type?). It drafts the reasoning; **you confirm it against the actual
 packets and own the verdict.**
+
+!!! question "Check yourself"
+    - Name the three packets of the TCP three-way handshake, in order, and what each one means.
+    - Why does C2 and exfil hide in DNS rather than, say, a custom port?
+    - A DNS capture looks ordinary except for one lookup. What about a single query could give a beacon away?

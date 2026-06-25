@@ -10,6 +10,15 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Type:** Build-&-Operate + Eval Harness (end-to-end) &nbsp;·&nbsp; **Prerequisites:** [04 — RAG](../04-rag/README.md), [05 — Building MCP Servers](../05-building-mcp-servers/README.md), [07 — AI Detection & Triage](../07-ai-detection-triage/README.md), [11 — AI Evaluation & Observability](../11-ai-evaluation/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The copilot combines RAG (Module 04) and MCP tools (Module 05) into a **coordination layer**:
+    retrieve context → call tools → generate an auditable answer. It's the track's flagship — and by
+    the type pass's own diagnosis the most dangerous thing to ship on vibes, because it compounds
+    *three* independent failure surfaces (retrieval miss, wrong tool, hallucination) under one fluent
+    paragraph. So the deliverable is the running copilot **plus** an end-to-end scorecard that
+    decomposes failure by layer — tool-selection correctness, retrieval recall@k, answer groundedness
+    — over a held-out set, gated in CI.
+
 ## Why this matters
 Modules 04 and 05 built the two halves of a useful AI assistant: a knowledge base you can query for
 institutional context, and a set of tools that pull live data. This module combines them into a
@@ -53,6 +62,13 @@ that just says "this looks malicious" is not. That transparency is the mechanism
 authors → you review → you own it" possible at all — and, not coincidentally, it is what makes the
 copilot *evaluable*.
 
+!!! note "The mental model"
+    The copilot is a coordination layer, not a new kind of model — retrieve, call tools, generate, in
+    that order. The sophistication lives in the *coordination*: retrieve selectively, call only the
+    tools likely to have data (don't `get_threat_intel` an internal hostname), and structure the
+    prompt so the model knows which facts are authoritative documents, which are live lookups, and
+    which are its own priors. "Showing its work" is what makes it both auditable and evaluable.
+
 The one load-bearing judgment of this module is that **a system that compounds three components fails
 in three independent ways, and a single answer-quality glance sees none of them cleanly.** This is the
 exact trap Module 11 names — a non-deterministic system that performed on the handful of inputs you
@@ -85,6 +101,21 @@ in this architecture either; they multiply (context poisoning, tool-result poiso
 injection via tool output are all real against this stack), which is exactly why Module 09 attacks the
 copilot you build here — and why the eval you build here becomes the regression test that proves a
 mitigation holds.
+
+!!! warning "The gotcha"
+    A RAG-only system you can eyeball; a copilot that answers "no open incident exists, stand down"
+    when one *is* open — because it never called the right tool — fails silently *with authority*.
+    Three layers fail three independent ways and the prose papers over all of them identically. **The
+    most consequential system you build is the one you've evaluated least** unless you decompose the
+    score by layer.
+
+!!! tip "AI caveat"
+    A model tabulates the per-tool confusion matrix and computes recall@k well. What it gets wrong:
+    the **labels** (expected tools, relevant chunk — *your* judgments; a model writing its own answer
+    key is contamination), the **per-axis grader and direction** (tool selection wants recall-weighting
+    because a missed `summarize_incident` is the costly error — defaulting all three to "accuracy"
+    hides the failure that matters), and the **gate** (a missing axis or crashed copilot must turn the
+    build red, never silently pass).
 
 ## Learn (~2.5 hrs)
 
@@ -122,3 +153,8 @@ that matters, and the gate must **fail closed** (a missing axis, an errored eval
 crashed must turn the build red, never silently pass). Third, the **held-out wall**: a model will
 happily score against the demo question; the whole point is grading questions the copilot was never
 tuned against. The model writes the arithmetic; you own the labels, the three metrics, and the gate.
+
+!!! question "Check yourself"
+    - The copilot does three things in sequence — name them, and say where the quality actually lives.
+    - Why does a single answer-quality glance miss the failures that matter, and what three axes decompose them?
+    - Which Module-04/07 metric does each axis of the end-to-end scorecard reuse, and why is "tool selection" scored recall-weighted rather than by accuracy?

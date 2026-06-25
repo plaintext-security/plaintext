@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every security platform — MISP, VirusTotal, TheHive, Shodan — has an API, and the engineer who
+    scripts it processes hundreds of IOCs while the analyst clicks through one. `pymisp` wraps the MISP
+    REST API into Python objects: create an event, add typed attributes (`ip-dst`, `sha256`), tag it
+    (TLP, ATT&CK), enrich from a VT-shaped feed, and attach the verdict back. The operational rule:
+    never publish automatically at scale — false-positive IOC sharing is a trust problem that's hard
+    to undo.
+
 ## Why this matters
 Security platforms — MISP, VirusTotal, TheHive, Shodan — all have APIs. The analyst who uses
 them through a browser clicks through one IOC at a time. The engineer who scripts them processes
@@ -31,6 +39,12 @@ dictionaries to work with. But the principle applies to any security platform: u
 REST API first, then decide whether the library saves enough boilerplate to be worth the
 dependency.
 
+!!! note "The mental model"
+    `pymisp` is a thin wrapper over structured HTTP-with-JSON — the same shape as any platform API. The
+    rule generalizes: understand the REST API first, then decide whether the library saves enough
+    boilerplate to justify the dependency. The library is a convenience, not a substitute for knowing
+    what it sends.
+
 Creating a MISP event from an alert is a four-step operation: create the event (metadata — who
 reported it, when, what threat level), add attributes (the actual IOCs with their type: `ip-dst`,
 `domain`, `sha256`, `md5`), tag the event (TLP, MISP taxonomies, ATT&CK technique), and publish.
@@ -43,11 +57,13 @@ industry. The VT response tells you the detection ratio (how many engines flagge
 that as a `comment` or a `vt-report` object to the MISP attribute. The event then carries both
 the raw IOC and the enrichment in one place, queryable and shareable via MISP's federated sync.
 
-The operational discipline is: write automation that produces MISP events you would be
-comfortable having a human review. Never create MISP events automatically at scale without
-a human-in-the-loop gate, at least for the first run against a new data source. False-positive
-IOC sharing (sending a known-good IP to your MISP community as malicious) is a trust problem
-that is hard to undo.
+!!! warning "The gotcha"
+    Write automation that produces events you'd be comfortable having a human review — and gate it.
+    Never create MISP events automatically at scale without a human-in-the-loop step, at least for the
+    first run against a new source. Sharing a known-good IP to your MISP community as malicious is a
+    trust problem that's hard to undo, and it propagates through federated sync before you notice.
+
+The operational discipline is exactly that human-review gate, designed in from the start.
 
 ## Learn (~2.5 hrs)
 
@@ -73,3 +89,13 @@ Ask a model to write the MISP event creation and attribute-adding code. It will 
 `misp.add_attribute(event)` — one modifies the in-memory object, the other sends an API call.
 Run its code against the local MISP and check whether the event actually appears in the MISP UI.
 If it doesn't, read the traceback — it will tell you exactly which API call failed.
+
+!!! tip "AI caveat"
+    Models get the `pymisp` object model mostly right but routinely confuse `event.add_attribute()`
+    (mutates the in-memory object) with `misp.add_attribute(event)` (sends an API call) — so the code
+    runs clean and nothing appears in MISP. Verify against the live UI, not the absence of a traceback.
+
+!!! question "Check yourself"
+    - What four fields describe every MISP attribute, and what do the four event-creation steps map to?
+    - Why understand the underlying REST API even when you're using `pymisp`?
+    - Why must automated MISP publishing carry a human-in-the-loop gate on a new data source?

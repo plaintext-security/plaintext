@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Identity as the Control Plane](../02-identity-control-plane/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Identity tells you *who* is asking; device trust binds that answer to a known, healthy machine — so
+    a stolen credential alone isn't enough. The LastPass 2022 breach is the case: right user, right
+    credential, MFA passed, and an unmanaged home computer still became the trusted launch point into
+    cloud backups. You'll build device *identity* end-to-end with WireGuard + headscale (an unenrolled
+    device is denied by construction), enforce a default-deny ACL, and reason honestly about device
+    *posture* — the half self-hosting can't fully prove.
+
 ## Why this matters
 
 In August 2022, an attacker compromised the **personal home computer of a senior LastPass DevOps
@@ -31,6 +39,13 @@ model that only verifies identity cannot tell those two apart. Device trust is t
 Zero Trust after identity, and it is the pillar most organizations handle worst.
 
 ## The core idea
+
+!!! note "The mental model"
+    Device trust has two halves answering two different questions: **is this the device I think it is?
+    (identity)** and **is this device in a state I'm willing to trust? (posture)**. Identity is
+    cryptographic, not network-positional — the WireGuard public key *is* the device, where an IP is
+    spoofable and says nothing about the machine. This module builds identity end-to-end and is honest
+    about why posture stays mostly conceptual in a self-hosted lab.
 
 Device trust has two halves, and they answer two different questions. **Is this the device I think it
 is? (identity)** and **is this device in a state I'm willing to trust? (posture).** This module builds
@@ -61,6 +76,12 @@ AI-generated ACLs reliably get wrong — is an **implicit default-allow**: a pol
 passes syntax, and quietly grants everything it didn't explicitly deny. You verify against it the only
 honest way: by confirming an *unenrolled* device is refused, not merely that an enrolled one succeeds.
 
+!!! warning "The gotcha"
+    A WireGuard mesh that lets every enrolled device reach everything is just a flatter network with
+    better crypto — you've moved the perimeter, not removed it. The failure mode AI-generated ACLs
+    reliably get wrong is an **implicit default-allow**: a policy that looks correct, passes syntax, and
+    quietly grants everything it didn't explicitly deny. Prove the deny, don't just prove the allow.
+
 **Posture is the second half, and self-hosting can't fully prove it — so we say so.** Even a genuinely
 identified device can be *unhealthy*: 60 days behind on patches, EDR disabled, disk unencrypted — the
 LastPass home machine, exactly. Production ZT gates on this: Cloudflare Access queries a CrowdStrike
@@ -75,6 +96,19 @@ job. (**FIDO2/passkeys** are the human-layer complement — a hardware-bound ass
 is present at this device*, private key never leaving the authenticator. WireGuard proves the device;
 FIDO2 proves the user on it; together they are NIST 800-207 Tenet 3. Because FIDO2 hardware is
 physical, the lab exercises it via the browser at WebAuthn.io and reasons about it in prose.)
+
+??? note "Go deeper: what production posture gating actually checks"
+    Production ZT gates on device health before issuing access: Cloudflare Access queries a CrowdStrike
+    Zero Trust Assessment score, OS version, and disk-encryption state; Tailscale's tag/group ACLs
+    segment "managed corporate" from "contractor BYOD" inside one mesh. Those signals come from a
+    managed-endpoint stack (MDM, EDR) you can't stand up for free in a container — which is exactly the
+    seam the lab's `device-posture-policy.json` makes explicit: posture is *assessed*, never demonstrated.
+
+!!! tip "AI caveat"
+    A model generates headscale/Tailscale ACL HuJSON well from a plain-English description — genuinely
+    fast. But an ACL that *looks* correct can carry an implicit default-allow, the single failure a
+    syntax check never catches. Your review job is not "does it parse" but "does an *unenrolled* device
+    get refused" — prove it with a `curl` from a container with no registered keypair.
 
 ## Learn (~4 hrs)
 
@@ -113,3 +147,8 @@ failure a syntax check will never catch. So your review job is not "does it pars
 container with no registered keypair and confirm it cannot reach the protected service. If a device you
 never tagged can still reach it, the ACL has a hole — and the model's confident, valid-looking output
 was wrong. You direct it; you own the deny.
+
+!!! question "Check yourself"
+    - In the LastPass breach, identity verification *worked* — so what question was never asked, and why did its absence become the breach?
+    - Why is a WireGuard public key a stronger device identity than the source IP or VLAN it connects from?
+    - What's the difference between device *identity* and device *posture*, and which one can a self-hosted headscale lab actually prove?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A service version is trivia until you connect it to its weaknesses — and the real skill isn't
+    *finding* CVEs (a search box does that), it's judging which ones actually matter. Get the
+    vocabulary straight: a **CVE** is a named vulnerability, a **CWE** is the weakness type behind it,
+    **CVSS** scores how bad it is *if* exploited. The classic mistake is treating CVSS as a worst-first
+    to-do list — **KEV** (confirmed exploited in the wild) and **EPSS** (probability of exploitation)
+    are what turn a wall of scores into real prioritisation.
+
 ## Why this matters
 A service version is only interesting if you know its weaknesses. This module connects
 enumeration to the real vulnerability ecosystem — CVEs, CWEs, exploit databases, and
@@ -26,21 +34,27 @@ A service version is trivia until you connect it to its weaknesses — and the r
 CVEs (a search box does that), it's judging which ones actually matter. Get the vocabulary straight,
 because people blur it constantly: a **CVE** is a specific named vulnerability; a **CWE** is the
 weakness *type* behind it (CVE-2021-44228 is an instance of CWE-502); **CVSS** scores how bad it is
-*if* exploited. The classic mistake is treating CVSS as a to-do list, worst-first — a 9.8 that nobody
-exploits is less urgent than a 7.5 that's in every breach report this month.
+*if* exploited.
 
-That gap is exactly what **KEV** and **EPSS** close. CISA's Known Exploited Vulnerabilities catalog is
-"confirmed exploited in the wild — this is real, fix it"; EPSS estimates the *probability* something
-will be exploited. Together they turn a wall of CVSS numbers into actual prioritisation. This is the
-same triage a defender does in vulnerability management — the other side of this exact coin — so
-learning to read NVD/KEV/EPSS makes you bilingual: you can tell a defender not just "you run CVE-X"
-but "it's in KEV, here's the urgency."
+!!! note "The mental model"
+    The classic mistake is treating CVSS as a to-do list, worst-first — a 9.8 that nobody exploits is
+    less urgent than a 7.5 that's in every breach report this month. **KEV** and **EPSS** close that
+    gap: CISA's Known Exploited Vulnerabilities catalog is "confirmed exploited in the wild — this is
+    real, fix it"; EPSS estimates the *probability* something will be exploited. Together they turn a
+    wall of CVSS numbers into actual prioritisation.
 
-The judgment: a public PoC on Exploit-DB is a *lead*, not a guarantee — it may target a different
-build, be deliberately defanged, or be malware aimed at lazy attackers. Read it before you run it. And
-models are dangerously fluent here: they will state a wrong affected-version range or invent a
-plausible-looking CVE ID with complete confidence. In vulnerability work a hallucinated "fact" costs
-you hours or sends you down a dead end — confirm against NVD/KEV directly, every time.
+This is the same triage a defender does in vulnerability management — the other side of this exact
+coin — so learning to read NVD/KEV/EPSS makes you bilingual: you can tell a defender not just "you run
+CVE-X" but "it's in KEV, here's the urgency."
+
+!!! warning "The gotcha"
+    A public PoC on Exploit-DB is a *lead*, not a guarantee — it may target a different build, be
+    deliberately defanged, or be malware aimed at lazy attackers. Read it before you run it.
+
+!!! tip "AI caveat"
+    Models are dangerously fluent here: they will state a wrong affected-version range or invent a
+    plausible-looking CVE ID with complete confidence. In vulnerability work a hallucinated "fact"
+    costs you hours or sends you down a dead end — confirm against NVD/KEV directly, every time.
 
 ## Learn (~3 hrs)
 
@@ -63,3 +77,8 @@ you hours or sends you down a dead end — confirm against NVD/KEV directly, eve
 Models summarise a CVE and its impact well — and will also confidently state a wrong version
 range or invent a CVE ID. Always confirm against NVD/KEV directly; in vulnerability work a
 hallucinated "fact" wastes hours or sends you down a dead end.
+
+!!! question "Check yourself"
+    - What's the difference between a CVE, a CWE, and a CVSS score?
+    - Why can a CVSS 7.5 be more urgent than a 9.8, and which signals tell you that?
+    - You find a public PoC on Exploit-DB for your target's version — why isn't that a confirmed finding yet?

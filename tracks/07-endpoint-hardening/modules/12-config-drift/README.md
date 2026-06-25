@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Module 03 — Linux Hardening to CIS](../03-linux-hardening/README.md), [Module 06 — Configuration Management](../06-configuration-management/README.md) (the baseline-as-code you now keep enforced)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Hardening is a state you set once; staying hardened is a loop you run forever. The host that passed
+    the benchmark in January is quietly out of compliance by March — a package update flipped a sysctl,
+    an on-call engineer re-opened root SSH at 2 a.m. — and drift is dangerous because it's *invisible by
+    default*. This module owns the full steady-state loop: detect on a schedule, diff against the
+    declared baseline (naming *what* changed and *which* control), reconcile back, and alert on the
+    delta. The deliverable is the running loop, proven by drifting a setting and watching it get caught.
+
 ## Why this matters
 
 You hardened the host in Module 02/03, expressed the baseline as code in Module 06, and scored it as compliant in Module 07. That host was secure *on the day you ran the playbook*. Three months later it almost certainly is not — and nobody touched it maliciously. A routine `apt upgrade` shipped a new default that re-enabled a kernel parameter you'd locked down. An on-call engineer set `PermitRootLogin yes` at 2 a.m. to debug an outage and never reverted it. A new package dropped a config file that loosened a permission. None of these is an attack; all of them are **drift** — the slow, entropic divergence between the state you *declared* and the state the host is *actually in*. The whole thesis of this track is "a baseline that is enforced and then drifts," and this is the module that owns the drift directly. "Set and forget" is the failure mode: a control you apply once and never re-check rots silently, so that by the time an auditor (or an attacker) finds the re-opened root login, it has been open for ten weeks and you had no idea.
@@ -22,11 +30,31 @@ Take a host already hardened to a baseline-as-code, **declare** that baseline ex
 
 ## The core idea
 
+!!! note "The mental model"
+    Drift is the gap between *declared* state and *observed* state as a function of time — zero at
+    `t=0`, opened by the world (updates, operators, other automation). The discipline is a thermostat
+    loop that runs *forever*: detect (re-measure on a schedule), diff (report the delta), reconcile
+    (re-apply the baseline), alert (tell a human what changed). A one-time scan is not a drift control.
+
 Drift is the gap between **declared state** and **observed state** as a function of time. Configuration management (Module 06) declares the state: "this host *should* have `PermitRootLogin no`, this sysctl set, this umask, auditd running." At `t=0`, right after you converge the host, observed equals declared and the gap is zero. Then the world acts on the host — package updates, operators, drift from other automation — and the gap opens. The steady-state discipline is a loop with four beats that runs *forever*, not a scan you run once: **detect** (re-measure observed state on a schedule), **diff** (compare it to declared and report the delta), **reconcile** (re-apply the baseline so observed converges back to declared), and **alert** (tell a human *what* changed, because a drift that auto-heals silently hides the fact that something keeps re-breaking it). The mental model is the same one a thermostat uses: declare the target, continuously measure the actual, and correct the difference — except here the "actual" is your security posture and the corrections are auditable.
 
 The single most important design judgment in this loop — and the thing most teams get wrong — is the **diff must report *what* changed and against *which control*, not just a score.** Module 07 gave you a compliance *score*: "94/100, you dropped two points." That number tells you that you drifted but not *how*, and a score that goes from 94 to 92 is almost useless operationally — you can't act on it. The drift loop's output has to be a *delta*: "`/etc/ssh/sshd_config:PermitRootLogin` changed from `no` to `yes` (control CIS-5.2.10) at the 03:00 check; `net.ipv4.conf.all.rp_filter` changed from `1` to `0` (CIS-3.3.7) — both reconciled." This is the difference between a smoke detector that beeps and a panel that says *which room is on fire*. Tooling makes this directly available and you should use the native mechanism rather than re-inventing it: Ansible's **`--check --diff`** mode reports exactly which tasks *would* change and shows the before/after lines (a pending change in check mode *is* a drift); OpenSCAP re-scans against the SCAP/CIS content and produces a per-rule pass/fail with the rule ID; osquery lets you *query* observed host state (the actual `sshd_config` line, the live sysctl, the SUID set) as data you can diff. The same "compare declared to observed, report the named delta" pattern is what AWS Config does in the cloud (continuous evaluation against config rules, flag the noncompliant resource) and what `terraform plan` does for IaC (compare prior state to real infrastructure, propose the change set) — drift detection is one idea wearing many tool-shaped hats.
 
+!!! warning "The gotcha"
+    The naive loop just re-runs the enforcement playbook on cron and reports "fixed" — and that
+    **auto-heals silently**, hiding a recurring cause: if a nightly job keeps re-enabling a sysctl and
+    your loop keeps quietly fixing it, you've masked the real problem instead of surfacing it. The
+    *alert on the delta* exists so a human sees "this drifted three nights running" and fixes the
+    upstream job. Nothing should drift — or heal — silently.
+
 The hard judgment that turns this from a script into a real control is **reconcile-vs-alert: not every drift should be silently auto-healed, and not every drift is a security event.** The naive loop just re-runs the enforcement playbook on a cron and calls it done — but that has two failure modes. First, **auto-reconciling silently hides a recurring cause**: if a nightly package job keeps re-enabling the sysctl and your loop keeps quietly fixing it, you've built a control that masks the real problem (the package job) instead of surfacing it — the *alert on the delta* exists precisely so a human sees "this same control drifted three nights running" and goes fixes the upstream cause. Second, **some drift is legitimate** — an approved change that hasn't yet made it into the declared baseline. The discipline is: the declared state in git is the source of truth, so an *approved* change is a change to the *baseline* (a reviewed commit), not a manual edit on the host; a manual edit on the host that diverges from git is drift *by definition* and gets reconciled. This is exactly the Module-11 lesson one layer over: re-baselining over a change is only safe when you *decided* that change was approved first. Auto-reconcile the clearly-mechanical drift (a flipped sysctl, a re-opened root login — re-converge and alert); for higher-risk classes, alert-and-hold for a human. The loop's value isn't that it heals everything automatically; it's that *nothing drifts silently*.
+
+!!! tip "AI caveat"
+    Ask a model to "build a drift loop" and it writes a cron job that re-runs enforcement and reports
+    "fixed" — exactly the auto-heal-everything-silently failure mode. The judgment it can't make for
+    you is **reconcile-vs-alert per control class** and **whether a change is drift or an approved
+    baseline update** — it doesn't know last night's `sshd_config` edit was an authorised fix that
+    should become a commit, not a silent revert. AI drafts the diff parser; you own the policy.
 
 ## Learn (~3.5 hrs)
 
@@ -55,3 +83,8 @@ The hard judgment that turns this from a script into a real control is **reconci
 ## AI acceleration
 
 A model is genuinely strong at the *parsing and reporting* half of this loop — turning raw `ansible --check --diff` output or an `oscap` results XML into a clean, control-named delta table ("here are the three rules that drifted, with their CIS IDs and before/after values"), drafting the osquery scheduled-pack queries, and writing the alert-formatting and the cron wiring. That is real leverage on tedium you'd otherwise hand-roll. But the posture is strict because the dangerous instinct is the one a model defaults to: asked to "build a drift loop," it will write a cron job that re-runs the enforcement playbook and reports "fixed" — a loop that **auto-heals everything silently**, which is precisely the failure mode that hides a recurring root cause and lets a security-relevant change get quietly papered over night after night. The judgment the model cannot make for you is the **reconcile-vs-alert decision per control class** (which drift is safe to auto-fix-and-log versus which must alert-and-hold for a human) and **whether a given change is drift or an approved baseline update** — it does not know your change-management context, so it cannot tell that last night's `sshd_config` edit was an authorized 2 a.m. fix that should become a commit, not silently reverted. Make the model draft the diff parser, the queries, and the alert format; **you** decide what auto-reconciles versus alerts, you confirm the alert *always* fires on a delta (so nothing heals invisibly), and you own that the declared baseline in git — the thing every check compares against — is the real source of truth, edited only by reviewed commit. AI authors the report; you own the policy.
+
+!!! question "Check yourself"
+    - Why is drift "invisible by default" when a misconfiguration that was never there is loud?
+    - Why must the diff name *what* changed and *which control* rather than report a score like "94 → 92"?
+    - When is auto-reconciling a drift the wrong move, and what does the alert-on-delta exist to surface?

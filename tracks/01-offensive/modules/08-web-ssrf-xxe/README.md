@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    SSRF, XXE, and insecure deserialization abuse the server's own position and privileges: you trick
+    the server into acting on your behalf using *its* network access, *its* filesystem, *its* identity.
+    They punch far above their frequency because the server can reach what you can't. The headline case
+    — SSRF against the cloud metadata endpoint (`169.254.169.254`) yields IAM credentials, precisely
+    the 2019 Capital One breach (100M+ records) from one bug. The unifying model is the **confused
+    deputy**: a powerful component acting on attacker input without realising it's been redirected.
+
 ## Why this matters
 Beyond the client-facing bugs lie the server-side ones — Server-Side Request Forgery, XML
 External Entity injection, and insecure deserialization — that let an attacker make the
@@ -30,19 +38,27 @@ case is SSRF against the cloud metadata endpoint (`169.254.169.254`): the server
 control, you aim it at the metadata service, and you walk off with the host's IAM credentials. That is
 precisely the 2019 Capital One breach — 100M+ records — from one SSRF.
 
-The unifying mental model is the **confused deputy**: a powerful component — the HTTP fetcher, the XML
-parser, the deserializer — acting on attacker input without realising it's been redirected. XXE is
-SSRF-plus-file-read through an XML parser that resolves external entities; insecure deserialization is
-"rebuild this object from bytes I control," which becomes code execution. Once your question is "where
-does the server act on *my* input using *its own* privileges?", you find all three.
+!!! note "The mental model"
+    The unifying model is the **confused deputy**: a powerful component — the HTTP fetcher, the XML
+    parser, the deserializer — acting on attacker input without realising it's been redirected. XXE is
+    SSRF-plus-file-read through an XML parser that resolves external entities; insecure deserialization
+    is "rebuild this object from bytes I control," which becomes code execution. Once your question is
+    "where does the server act on *my* input using *its own* privileges?", you find all three.
 
-The judgment, and the reason this module matters disproportionately: **this is where a web bug becomes
-infrastructure compromise** — the pivot from app to cloud account, which is exactly what the cloud
-track's IAM and metadata hardening defends. The fixes all amount to "stop the deputy trusting input":
-allow-list outbound destinations, disable external entities, sign or avoid deserialization. A model
-explains these abstract classes well, but reliable exploitation needs the target's parser, network
-position, and trust relationships — which it can't see. Learn the class from it; verify the exploit
-against the real app.
+**This is where a web bug becomes infrastructure compromise** — the pivot from app to cloud account,
+which is exactly what the cloud track's IAM and metadata hardening defends. The fixes all amount to
+"stop the deputy trusting input": allow-list outbound destinations, disable external entities, sign or
+avoid deserialization.
+
+!!! warning "The gotcha"
+    These three are low-frequency but high-blast-radius: a single SSRF that nobody rated critical is the
+    pivot from app to cloud-account takeover. Don't rank them by how often they appear — rank them by
+    what they can reach.
+
+!!! tip "AI caveat"
+    A model explains these abstract classes well, but reliable exploitation needs the target's parser,
+    network position, and trust relationships — which it can't see. Learn the class from it; verify the
+    exploit against the real app.
 
 ## Learn (~4 hrs)
 
@@ -63,3 +79,8 @@ A model explains these abstract classes and drafts payloads well — but exploit
 reliably needs you to understand the target's parser, network position, and trust
 relationships, which the model can't see. Use it to learn the class; verify the exploit
 against the actual app.
+
+!!! question "Check yourself"
+    - What single shape do SSRF, XXE, and insecure deserialization all share?
+    - Walk the SSRF → metadata → IAM path that drove the Capital One breach.
+    - Why do these classes matter far more than their frequency in bug-bounty stats suggests?

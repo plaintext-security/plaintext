@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every source describes the world differently — Apache, sshd, Sysmon, and a firewall each name
+    "source IP" their own way. Until you **parse** raw text into typed fields and **normalise** them
+    to a shared schema (the Elastic Common Schema), one detection can't work across sources and you
+    can't correlate them. It's two steps: parse, then rename into a common vocabulary. This is AI's
+    home turf *and* where it fails most silently — a parser that drops 5% of lines looks fine until
+    a detection misses. Always check the parse rate.
+
 ## Why this matters
 Every source logs differently — Apache, sshd, Sysmon, and a firewall each describe a "source IP" in
 their own way. Until logs are *parsed* into fields and *normalised* to a common schema, you can't
@@ -30,17 +38,26 @@ one detection that works across sources, and you cannot correlate them: a "suspi
 would need rewriting for every vendor. Normalisation is what lets one rule mean the same thing
 everywhere.
 
-The mental model is two steps: *parse* (unstructured text → fields, via grok/regex/VRL), then
-*normalise* (rename those fields into a shared vocabulary). For the network engineer it's the exact
-reason you map every vendor's syslog into a common field set before building one dashboard across a
-mixed fleet — the detection logic should never have to care which box emitted the line.
+!!! note "The mental model"
+    Two steps: *parse* (unstructured text → fields, via grok/regex/VRL), then *normalise* (rename
+    those fields into a shared vocabulary). For the network engineer it's the exact reason you map
+    every vendor's syslog into a common field set before building one dashboard across a mixed
+    fleet — the detection logic should never have to care which box emitted the line.
 
 This module exists because parsing is **AI's home turf *and* where it fails most silently.** A model
-writes a grok or VRL parser for an unfamiliar format in seconds — genuinely useful. But a parser that
-drops 5% of lines, mislabels a field, or mangles a timestamp looks completely fine until a detection
-quietly misses the one event that mattered. The single discipline that saves you: always check the
-*parse rate* and the actual field values against the raw log. A green pipeline is not a correct
-pipeline — the same lesson as module 01, one layer down.
+writes a grok or VRL parser for an unfamiliar format in seconds — genuinely useful.
+
+!!! warning "The gotcha"
+    A parser that drops 5% of lines, mislabels a field, or mangles a timestamp looks completely fine
+    until a detection quietly misses the one event that mattered. The single discipline that saves
+    you: always check the *parse rate* and the actual field values against the raw log. A green
+    pipeline is not a correct pipeline — the same lesson as module 01, one layer down.
+
+!!! tip "AI caveat"
+    This is AI's home turf — a model writes a grok/VRL parser for an unfamiliar format in seconds.
+    It's also where it fails *silently*: a parser that drops 5% of lines or mislabels a field looks
+    fine until a detection misses. Always check the parse rate and the field values against the raw
+    log.
 
 ## Learn (~4 hrs)
 
@@ -62,3 +79,10 @@ pipeline — the same lesson as module 01, one layer down.
 This is AI's home turf — a model writes a grok/VRL parser for an unfamiliar format in seconds. It's
 also where it fails *silently*: a parser that drops 5% of lines or mislabels a field looks fine until
 a detection misses. Always check the parse rate and the field values against the raw log.
+
+!!! question "Check yourself"
+    - Why can't you write one "suspicious source IP" detection that works across Apache, sshd, and a
+      firewall until you've normalised — what specifically breaks?
+    - What's the difference between *parsing* and *normalising*, and why do you need both?
+    - Your AI-drafted parser runs clean and the pipeline is green — what single number tells you
+      whether it's actually correct?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 01 — Shared Responsibility](../01-cloud-fundamentals/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    In the cloud the perimeter is identity, so one leaked key is a question of *how much of the business
+    it can touch* — and the answer is the transitive closure of its permissions, including the
+    permissions it can grant itself. Code Spaces died in twelve hours because a single credential could
+    reach the whole account *and* the backups inside it. The reach is almost always wider than the
+    policy's label: `iam:PassRole` + `ec2:RunInstances` composes two legitimate grants into admin. Every
+    IAM wall obeys one rulebook — explicit deny > allow > implicit deny — and a fix is only "proven" when
+    `simulate-principal-policy` denies the dangerous action while still allowing the legitimate one.
 
 ## The case
 
@@ -66,6 +74,17 @@ a key is never what its name suggests — it's the transitive closure of everyth
 reach, including the permissions it can grant itself. People reliably under-guess this, and the
 under-guess is how a "dev" key ends a company.
 
+!!! note "The mental model"
+    A key's blast radius is not the label on its policy — it's the *transitive closure* of everything its
+    permissions can reach, including the permissions it can grant itself. `iam:PassRole` + a launch
+    action is two legitimate grants that compose into root.
+
+!!! warning "The gotcha"
+    People read `Action` and `Resource` and stop. The escalation hides in *composition*: no single line
+    says "admin," but `iam:PassRole` on `*` plus `ec2:RunInstances` does. And explicit `Deny` beats every
+    `Allow` everywhere in the chain — so a broad allow isn't dangerous if a deny walls it, and isn't safe
+    just because the name says "dev."
+
 **Q2 — the perimeter is identity, and there was only one of it.** Backups defend against deletion only
 if the thing that can delete the primary **cannot also delete the backup.** Code Spaces' backups lived
 in the *same* account, reachable by the *same* control-plane credentials — so a single identity with
@@ -92,6 +111,19 @@ an OIDC trust with no `sub` condition trusts **every** workflow from the provide
 forged or over-broad, the wall never even gets consulted — which is exactly how **Golden SAML** worked in
 SolarWinds (a stolen token-signing key let attackers mint SAML assertions for *any* user, federating
 straight past authentication). Same model — who can act, evaluated against policy — one layer up.
+
+??? note "Go deeper: irreversibility is its own dimension of blast radius"
+    Reach is only half the story. Code Spaces could survive having data *read*; it could not survive
+    having data *deleted with its backups in the same blast radius*. When access is identity, blast
+    radius is the intersection of a principal's reach and your inability to recover from what it does —
+    which is why the fix is not "more backups" but ensuring no single principal can touch both the system
+    and its recovery path.
+
+!!! tip "AI caveat"
+    A model is a strong first-pass escalation detector — it'll flag `iam:PassRole` and `s3:*` on `*`. But
+    it sees one document; it can't know whether an SCP, boundary, or `Deny` you didn't paste already caps
+    the grant. Treat every hit as a hypothesis and confirm it with `simulate-principal-policy`, which runs
+    AWS's real logic. The minimum cut is yours.
 
 ## Learn (~3 hrs)
 
@@ -128,3 +160,8 @@ didn't paste already closes the path. Treat its output as a hypothesis and valid
 `simulate-principal-policy`, which runs AWS's real logic. The skill the model can't do for you is the
 *minimum cut* — author the smallest policy change that denies the dangerous action without breaking the
 principal's real job, then prove it. You direct it; you own the verdict.
+
+!!! question "Check yourself"
+    - A leaked key's policy is named "dev" — why is its real blast radius almost never what the label suggests, and what two things actually bound it?
+    - Two legitimate permissions composed into admin in this module — name the pair and explain why neither is a bug in IAM.
+    - A role has `Allow s3:*` and `Deny s3:Del*` attached. Can it delete an object, and what evaluation rule decides it?

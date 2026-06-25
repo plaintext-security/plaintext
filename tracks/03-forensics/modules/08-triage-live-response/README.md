@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The first hour of an incident is the most volatile, and disk imaging takes hours you don't have.
+    Live response collects volatile state — processes, connections, recent file writes — read-only
+    in minutes across the whole fleet. Velociraptor is a single binary that runs **VQL** (SQL for
+    endpoint artifacts) in parallel across thousands of hosts. The key mindset shift: *triage is not
+    forensics* — you collect just enough to scope which hosts are in or out, then image only the
+    in-scope ones.
+
 ## Why this matters
 
 The first hour of an incident is the most volatile. Processes die, network connections drop, and
@@ -42,6 +50,12 @@ queries the OS through kernel APIs, pulls the results over the wire, and leaves 
 otherwise untouched. You're not sitting at the keyboard running commands; you're issuing queries
 that execute in parallel across a fleet.
 
+!!! note "The mental model"
+    You're not at the keyboard running commands one host at a time — you're issuing a *query* (VQL)
+    that a read-only agent runs locally and ships back, in parallel across every enrolled endpoint.
+    Live response is collection-first, analysis-second: pull volatile state cleanly, then reason
+    about it.
+
 The querying primitive Velociraptor uses is **VQL** (Velociraptor Query Language), which is SQL
 shaped around OS artifacts: process tables, file system journals, Windows event logs, registry
 hives. A VQL artifact is a named, parameterised query — `Windows.System.Pslist` or
@@ -58,11 +72,23 @@ and drown in data for weeks. VQL artifacts let you ask crisp questions — persi
 scheduled tasks, suspicious parent-child process relationships — and stop when you have enough to
 triage, not when you've collected everything.
 
+!!! warning "The gotcha"
+    Triage fails in both directions. Miss an in-scope host and you lose the evidence to a reboot or
+    a wiper; image *everything* and you drown the team in data for weeks while the incident stays
+    open. The discipline is to collect just enough to make the in/out call — and to know that a VQL
+    query against the wrong table returns an empty result that *looks* like "clean," not an error.
+
 In this investigation, the compromised developer account triggered alerts on one endpoint,
 but the IR team needs to know whether the attacker moved laterally. Live response can answer that
 question across fifty hosts in ten minutes; disk imaging those fifty hosts would take two days. The
 answers shape every subsequent step: which hosts go into the imaging queue, which users get password
 resets, and whether the incident is still active.
+
+!!! tip "AI caveat"
+    A model writes VQL from a plain-English description fast — but VQL that selects from the wrong
+    table or joins on the wrong key returns *empty* results, not an error, and silently misses the
+    threat. Treat model-drafted queries (and any "anything anomalous here?" verdict) as triage leads
+    to confirm against the artifact, never as the answer.
 
 ## Learn (~3 hrs)
 
@@ -88,3 +114,8 @@ resets, and whether the incident is still active.
 ## AI acceleration
 
 A model is excellent at writing VQL from a description: "give me a VQL query for all processes whose parent is explorer.exe but whose image path is outside C:\Windows" is faster to describe than write. Use it to draft artifact queries, then review the generated VQL against the reference docs before running it in production — VQL that selects from the wrong table or joins on the wrong key will silently return empty results and miss the threat. The other AI move: paste a process list or connection table into a chat session and ask "anything anomalous here?" as a *triage lead generator*, not as a verdict. You confirm every flagged item against the artifact yourself.
+
+!!! question "Check yourself"
+    - Why is live response, not disk imaging, the right first move across fifty potentially-affected hosts?
+    - What does "triage is not forensics" mean in practice — what do you collect, and when do you stop?
+    - A VQL query returns zero rows. Why is "the host is clean" an unsafe reading of that result?

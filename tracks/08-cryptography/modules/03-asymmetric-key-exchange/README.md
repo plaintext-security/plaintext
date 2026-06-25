@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Public-key crypto rests on mathematical trapdoors — easy one way (multiply primes, multiply a
+    curve point), infeasible to reverse. But the math almost never breaks head-on; the *randomness
+    feeding it* does. ROCA (CVE-2017-15361) leaked RSA private keys from structured key generation;
+    the PS3 ECDSA key fell to a reused signature nonce. EC beats RSA on size for equal security, and
+    ephemeral Diffie-Hellman buys forward secrecy — past sessions stay safe even if the long-term key
+    later leaks. Every TLS, SSH, and signing operation you touch rides on this.
+
 ## Why this matters
 
 Asymmetric cryptography is only as strong as the randomness underneath it — and that is where it breaks in the real world. In 2017, **ROCA** ([CVE-2017-15361](https://nvd.nist.gov/vuln/detail/CVE-2017-15361)) showed that a flawed RSA key-generation routine in Infineon's crypto library produced primes with enough structure that the *public* key alone leaked the private key — affecting TPM chips, Estonian national ID cards, and YubiKeys in the field. Years earlier, **fail0verflow** recovered Sony's PlayStation 3 code-signing private key because Sony reused the *same* ECDSA random value `k` across signatures: two signatures sharing a nonce let you solve directly for the private key. Both are the same lesson from opposite ends — the math (factoring, the elliptic-curve discrete log) was never broken; the *key generation* and the *signature nonce* were. Every TLS session you initiate starts with a key exchange, every digital signature you verify uses asymmetric cryptography, and every SSH connection relies on public-key authentication — so understanding how the mechanism works, and the narrow places where it actually fails, is foundational for any practitioner who operates, audits, or builds systems that communicate securely.
@@ -22,11 +30,33 @@ Generate RSA and ECDSA keypairs with OpenSSL, sign and verify a message, perform
 
 Asymmetric cryptography is built on mathematical trapdoors: operations that are easy to perform in one direction and computationally infeasible to reverse without a secret. RSA's trapdoor is integer factorisation — generating two large primes and multiplying them takes milliseconds; factoring the product takes longer than the age of the universe at current computational limits. ECDSA and ECDH use elliptic curve discrete logarithm — multiplying a point on a curve by a scalar (private key) to get another point (public key) is fast; recovering the scalar from the two points is infeasible for properly chosen curves. In practice the trapdoor rarely fails head-on; what fails is the randomness feeding it — ROCA broke RSA by generating structured primes, and the PS3 ECDSA key fell because the per-signature nonce `k` was reused, letting the private key be solved for algebraically.
 
+!!! note "The mental model"
+    Don't picture an attacker factoring your 3072-bit modulus — that's not where systems fall. Picture
+    the randomness *under* the key: the prime generator, the per-signature nonce, the RNG. The trapdoor
+    is sound; the inputs to it are where the engagements and CVEs actually live.
+
+!!! warning "The gotcha"
+    A reused ECDSA nonce `k` is not a degraded signature — it is a full private-key disclosure. Two
+    signatures sharing `k` let you solve for the key with high-school algebra. This is why deterministic
+    nonces (RFC 6979) and Ed25519 exist: they remove the one input most likely to be mishandled.
+
 The difference between RSA and elliptic curve (EC) schemes is not security level — it is key size. A 256-bit EC key provides roughly the same security as a 3072-bit RSA key. For equivalent security, EC keys are orders of magnitude smaller, making them faster to generate, faster to sign with, and cheaper to transmit. This is why modern TLS, SSH, and code-signing infrastructure has migrated to ECDSA and Ed25519. RSA is not broken — but at 2048 bits it is marginal for long-lived keys, and generating new RSA infrastructure today should use at least 3072 bits.
 
 Diffie-Hellman key exchange (DH) is the mechanism that allows two parties to establish a shared secret without transmitting the secret itself. Each party generates an ephemeral keypair, exchanges public keys, and computes the shared secret using their private key and the other party's public key. The shared secret is never transmitted — it is computed independently on each side and used to derive symmetric session keys. ECDH (Elliptic Curve Diffie-Hellman) is the EC variant; it is what TLS 1.3's key exchange uses. The "ephemeral" part is critical: if the server reuses the same DH parameters across sessions, past sessions can be decrypted if the server's long-term private key is later compromised — the forward secrecy property is lost.
 
 Forward secrecy deserves explicit attention because it is the property that makes ephemeral key exchange valuable. A session has forward secrecy if compromising the long-term key does not allow decryption of past sessions. With static DH or RSA key exchange (the old TLS 1.2 pattern), the server's private key can decrypt any session recorded in the past. With ephemeral ECDH (ECDHE), each session's key is derived from a freshly generated ephemeral key that is discarded after the session — so even if the long-term key is compromised, past sessions remain encrypted. This is why "perfect forward secrecy" (PFS) appears in TLS audit reports as a positive finding.
+
+??? note "Go deeper: why a 256-bit EC key matches a 3072-bit RSA key"
+    The difference between RSA and EC isn't security *level* — it's the cost of the best-known attack
+    against each problem. Sub-exponential algorithms (the number field sieve) chip away at integer
+    factorisation, so RSA needs ever-larger moduli to stay ahead; elliptic-curve discrete log has no
+    comparable shortcut, so EC keys stay small. That size gap is why modern TLS, SSH, and code-signing
+    migrated to ECDSA/Ed25519 — faster to generate, sign, and transmit at equal strength.
+
+!!! tip "AI caveat"
+    An AI walks through the ECDH computation cleanly — but the only proof it's right is the terminal.
+    Run it with `openssl pkeyutl`: Alice's derived secret must byte-for-byte equal Bob's. The model
+    explains the math; the matching output confirms it.
 
 ## Learn (~4 hrs)
 
@@ -59,3 +89,8 @@ Forward secrecy deserves explicit attention because it is the property that make
 ## AI acceleration
 
 Ask an AI to explain the ECDH key exchange computation step-by-step: what Alice sends, what Bob sends, and how each computes the shared secret. Then verify the explanation by running through it manually with `openssl pkeyutl` — does the shared secret computed by Alice match the shared secret computed by Bob? AI explains the math; the terminal output confirms it.
+
+!!! question "Check yourself"
+    - ROCA and the PS3 ECDSA break are both held up as "the math wasn't broken." If not the trapdoor, what failed in each — and what do they have in common?
+    - A server uses static RSA key exchange and its long-term private key leaks today. Which past sessions are now decryptable, and why does ECDHE change that answer?
+    - Why is a 256-bit EC key considered roughly equivalent to a 3072-bit RSA key rather than weaker?

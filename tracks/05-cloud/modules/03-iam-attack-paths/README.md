@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) · [Module 02 — Cloud Identity & IAM](../02-cloud-identity-iam/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Privilege escalation in the cloud isn't a vulnerability — it's a path through a graph that legitimate
+    permissions drew for you. Rhino's "21 methods" are 21 combinations of permissions AWS grants exactly
+    as intended that nonetheless let a low-privilege principal become admin, and the killer property is
+    that they're *invisible to flat policy review*: no single step looks alarming, the composition is
+    total compromise. Model the account as a directed graph — principals are nodes, an edge means "A can
+    become B" — and privesc collapses to reachability to an admin node. The deliverable is the **minimum
+    cut-set** (the smallest edge removal that disconnects *all* paths), implemented and re-run to prove
+    the path is gone.
 
 ## The research
 
@@ -67,6 +76,18 @@ they're *terminal*: they grant no new permissions, so they draw no edges. The sk
 trains is reading a permission and asking **"does this let the holder grant itself or a resource more
 power?"** If yes, it's an edge. The 21 methods are 21 answers to that one question.
 
+!!! note "The mental model"
+    The account is a directed graph: principals are nodes, an edge from A to B means "A holds a
+    permission that lets it become B," and privilege escalation is just *reachability to an `is_admin`
+    node*. "Find all privesc paths" becomes graph search from every principal to every admin node —
+    milliseconds, not an afternoon of squinting at JSON.
+
+!!! warning "The gotcha"
+    The danger is never one over-grant — it's the *edges between* principals. `dev-alice` with no
+    `iam:*`, no admin, and a single `sts:AssumeRole` can still be two hops from admin. Flat,
+    policy-by-policy review cannot see multi-hop chains; that blind spot is the entire reason `pmapper`
+    exists.
+
 **Q2 — she is two hops from admin, and nothing she holds looks dangerous.** `dev-alice` can assume
 `LambdaRole` (hop 1, a plain `sts:AssumeRole` the trust policy permits). That role holds
 `iam:PassRole` and `lambda:UpdateFunctionConfiguration` — so she updates an existing Lambda's execution
@@ -88,6 +109,20 @@ over-broad principal from a trust policy); the discipline of the **minimal, targ
 not to cut more than disconnects the graph. And — the beat that makes the verdict yours — you don't stop
 at naming the cut. You apply it and **re-run the analysis**: a fixed account is one where the path finder
 reports *no paths to admin*, proven, not promised.
+
+??? note "Go deeper: why 'cut-set,' not 'cut'"
+    Severing one edge breaks one path. If a second path reaches admin through different edges, the
+    account is still compromised — so the deliverable is the *minimum cut-set*: the smallest set of edges
+    whose removal disconnects *all* source-to-admin paths. The graph tells you which edge is cheapest
+    (usually scoping an `iam:PassRole` `Resource` from `*`, adding an `iam:PassedToService` condition, or
+    pruning a trust policy); the discipline of the minimal change tells you not to cut more than the
+    graph requires.
+
+!!! tip "AI caveat"
+    A model is a fast first-pass on single-hop edges and a strong drafter of the CISO summary — but it
+    reliably misses three-hop chains and hallucinates edges from services it doesn't fully model (Lambda
+    execution, ECS task roles). Treat its path list — and every claimed *absence* of a path — as a
+    hypothesis, and validate against the `pmapper`/`cloudfox` graph. You own the graph.
 
 ## Learn (~4 hrs)
 
@@ -123,3 +158,8 @@ path list as a *hypothesis*, never the source of truth: validate every reported 
 `pmapper`/`cloudfox` graph, and confirm every *absence* of a path the same way. The judgment the model
 can't do for you is the minimum cut — the smallest edge removal that disconnects all paths without
 breaking the principal's real job — and the re-run that proves it. You direct it; you own the graph.
+
+!!! question "Check yourself"
+    - Of `iam:CreatePolicyVersion`, `s3:GetObject`, `iam:PassRole`, `cloudwatch:GetMetricData` — which draw edges in the graph, and what single question separates an escalation primitive from an inert permission?
+    - `dev-alice` has no admin grant, no `iam:*`, and can only assume one Lambda role. Why is she not safe, and where does the escalation actually live?
+    - You scope `iam:PassRole` on the role in one of two paths from `dev-alice` to admin. Is the account fixed, and what makes "cut-set" the right word?

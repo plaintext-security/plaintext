@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) (esp. 03 Docker, 11 Version Control)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Infrastructure clicked into a console exists in exactly one place, with no history, no review, and
+    no way to reproduce it. IaC turns that config into a file in git, where every change is a reviewable
+    diff. But the same `apply` that builds a hundred resources can destroy a hundred — so the discipline
+    is **review the plan-diff, never the apply**, and treat the `terraform.tfstate` file as the bundle
+    of plaintext secrets it actually is. The `local` provider lets you learn the whole lifecycle free.
+
 ## Why this matters
 
 Infrastructure built by clicking through a web console is configuration that exists in exactly one
@@ -61,12 +68,24 @@ executes the *exact* plan you reviewed and nothing that drifted in between. This
 the whole automation track turns on: **automation makes you faster, including at being wrong — so the
 gate (here, the reviewed plan) is the point.**
 
+!!! note "The mental model"
+    You don't write the steps to build infrastructure; you write the *desired state* and the tool
+    computes the delta. The `plan` diff is your safety surface: `~ update in-place` is safe, `-/+`
+    (replace) and `- destroy` are where production databases die. Read the diff; the apply just
+    executes what you already approved — which is why you `plan -out=tfplan` then `apply tfplan`.
+
 **State is sensitive, and it's the thing beginners get wrong.** The state file maps your declarations
 to real provider IDs (`local_file.config` → an actual path; `aws_instance.web` → `i-0123…`) — without
 it the tool can't tell "what I declared" from "what exists." Because it stores resource attributes
 verbatim, it routinely contains secrets in plaintext. So: **`terraform.tfstate` never goes in git**,
 and in real use it lives in an encrypted, locked backend (S3 + DynamoDB lock, Terraform/Tofu Cloud, a
 GitLab/HTTP backend). Treat the state file like a credential, because it often *is* a bundle of them.
+
+!!! warning "The gotcha"
+    `terraform.tfstate` stores resource attributes — database passwords, API keys, private keys — in
+    **plaintext**, and beginners commit it to git or leave it in an open bucket. Researchers find
+    exposed state files handing over live credentials (SCARLETEEL pulled cleartext IAM keys straight
+    from one in an S3 bucket). State never goes in git; in real use it lives in an encrypted, locked backend.
 
 The `local` provider is the underused teaching tool that lets you learn all of this with **zero cloud
 credentials and zero cost**: it manages real files on your filesystem through the identical
@@ -76,6 +95,12 @@ workflow — and only the *provider* changes when you later point the same skill
 Variables (`variable {}`) and outputs (`output {}`) are what turn a single-use config into a reusable
 module: a security group that takes its allowed CIDR as a variable with a sane default is far harder
 to accidentally open to the world than one with the CIDR — or the open rule — baked in.
+
+!!! tip "AI caveat"
+    A model writes syntactically perfect HCL in seconds — and that's the risk. It produces open
+    security groups, public buckets, no encryption, secrets hardcoded into arguments where they land
+    in state. After AI drafts HCL, your *first* action is never `apply` — it's `tofu plan`, and you
+    read the diff before you trust a line.
 
 ## Learn (~2.5 hrs)
 
@@ -108,3 +133,8 @@ I intended, and does any line read as a destroy/replace I didn't ask for?"), and
 before you trust it. Module 03 wires a scanner (`checkov`/`tfsec`) into this same gate to catch the
 misconfigurations automatically. The habit starts here: AI drafts; *you* plan, read the diff, and only
 then apply.
+
+!!! question "Check yourself"
+    - Which lines in a `tofu plan` diff are safe, and which two are where production dies?
+    - Why must `terraform.tfstate` never go in git — and what does it contain that makes it a credential?
+    - Why does `plan -out=tfplan` then `apply tfplan` give you a stronger guarantee than `plan` followed by a plain `apply`?

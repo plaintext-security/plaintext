@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md) + the earlier crypto modules (02 Symmetric & AEAD, 03 Asymmetric & Key Exchange, 04 Hashing/MACs/Passwords, 07 Secrets Management)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    You've learned the trade-offs four times over — AES-GCM vs ChaCha20, Ed25519 vs RSA, Argon2id vs
+    bcrypt, Vault vs SOPS — but never been asked to *commit a choice and defend it*. That gap is where
+    applied crypto goes wrong: the algorithm decision is made once, lived with for years, nearly
+    irreversible, and usually undocumented. The fix is the Architecture Decision Record — Context,
+    Options, Decision, Consequences, plus a crypto-specific **"what would change this"** trigger. This
+    module is short on theory and long on judgment: make the call, cite the current standard, own the
+    consequences.
+
 ## Why this matters
 
 By now this track has taught you the trade-offs four times over — AES-GCM vs ChaCha20-Poly1305 in
@@ -53,6 +62,18 @@ should watch for. That field is what turns an ADR from a tombstone into a living
 is the thing module 11's post-quantum migration will read first. The single discipline that separates a
 real ADR from an essay is that the Consequences and the negatives are as specific as the upsides — a
 recommendation with only benefits is the tell of a junior engineer, or an AI draft nobody reviewed.
+
+!!! note "The mental model"
+    An ADR is a letter to the engineer (often future-you) who will ask "why is it like this?" long after
+    the context evaporated. Its value isn't picking the "best" algorithm — it's recording *the forces and
+    the trade-off* so the choice can be audited, migrated, or defended later. A crypto decision nobody
+    wrote down is one nobody can safely change.
+
+!!! warning "The gotcha"
+    A recommendation with only upsides is the tell of an unreviewed ADR. The honesty lives in the
+    Consequences and the negatives — the nonce-uniqueness burden you took on with GCM, the ops cost of
+    running Vault, the lock-in of cloud KMS. And "use Argon2id" without parameters is a slogan, not a
+    decision: for the KDF, the *parameters are the decision*.
 
 There are four canonical crypto decisions almost every service makes, and each has a *real* trade-off
 and a *current* standard you must cite rather than assert:
@@ -142,3 +163,8 @@ each line the model wrote, open the actual RFC/SP/cheat-sheet section and confir
 cite SP 800-38D §8 for the nonce rule, do the Argon2id parameters meet the RFC 9106 / OWASP floor, does
 the "what would change this" field name a real trigger? The deliverable earns trust only when the
 citation checks out. **AI drafts → you verify every claim against the standard → you own the decision.**
+
+!!! question "Check yourself"
+    - What is the crypto-specific field this module adds to Nygard's ADR skeleton, and why does module 11's migration read it first?
+    - Why is "we will use Argon2id" an incomplete ADR decision, and what must it record to become a real one?
+    - An AES-GCM ADR lists only the upsides of GCM. What load-bearing consequence is missing, and which standard pins it down?

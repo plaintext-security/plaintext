@@ -10,6 +10,13 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    "Most breaches don't hack in — they log in." A **hash** is a one-way fingerprint, so cracking is
+    just *guess → hash the guess → compare* — and the entire security of a stolen hash database comes
+    down to **how expensive each guess is.** Fast hashes (MD5, NTLM) fall at billions/sec on a GPU;
+    slow KDFs (bcrypt, argon2) make each guess thousands of times costlier. But the dominant real-world
+    vector isn't cracking at all — it's **reuse**: credentials from one breach sprayed everywhere else.
+
 ## Why this matters
 Most breaches don't "hack in" — they log in. Once you have a foothold, dumped password
 hashes, reused credentials, and weak passwords turn access into more access. Understanding
@@ -33,17 +40,26 @@ hashes (with ~100 million more surfacing in 2016) stored *unsalted*, which let c
 en masse with off-the-shelf rainbow tables — the textbook case of why a missing salt plus a fast hash
 turns a leak into instant plaintext.
 
-The "attack modes" are just progressively smarter guessing: dictionary (known passwords) → rules
-(mutate them — `Password` → `P@ssw0rd!`) → mask (known structure) → brute force (last resort). And the
-dominant real-world entry vector isn't cracking at all — it's **reuse**: credentials from one breach
-sprayed across everything else, because humans recycle passwords. (This is the Foundations crypto
-lesson cashed in: hashing is not encryption — there's no "decrypt," only guess-and-check.)
+!!! note "The mental model"
+    The security of a stolen hash database is just **cost-per-guess.** Cracking is *guess → hash →
+    compare*, and the "attack modes" are progressively smarter guessing: dictionary (known passwords)
+    → rules (mutate them — `Password` → `P@ssw0rd!`) → mask (known structure) → brute force (last
+    resort). This is the Foundations crypto lesson cashed in: hashing is not encryption — there's no
+    "decrypt," only guess-and-check.
 
-The judgment, and the defensive payoff: understanding crack *speed* is the only way to argue the
-defenses convincingly — demonstrating that a 9-character fast-hashed password dies in minutes makes the
-case for length + a strong KDF + MFA far better than any policy memo. A model identifies a hash type and
-suggests modes instantly, but it also misidentifies hashes and sends you burning GPU-hours on the wrong
-attack. Confirm the hash type and mode yourself; cracking is expensive to get wrong.
+!!! warning "The gotcha"
+    The dominant real-world entry vector isn't cracking at all — it's **reuse**: credentials from one
+    breach sprayed across everything else, because humans recycle passwords. Don't fixate on GPU
+    horsepower when the cheaper win is a password your target already leaked somewhere else.
+
+The defensive payoff: understanding crack *speed* is the only way to argue the defenses convincingly —
+demonstrating that a 9-character fast-hashed password dies in minutes makes the case for length + a
+strong KDF + MFA far better than any policy memo.
+
+!!! tip "AI caveat"
+    A model identifies a hash type and suggests modes instantly, but it also misidentifies hashes and
+    sends you burning GPU-hours on the wrong attack. Confirm the hash type and mode yourself; cracking
+    is expensive to get wrong.
 
 ## Learn (~4 hrs)
 
@@ -66,3 +82,8 @@ attack. Confirm the hash type and mode yourself; cracking is expensive to get wr
 A model suggests hashcat modes and rules and identifies a hash type instantly — handy. But it
 also misidentifies hashes or suggests attacks that waste GPU-hours. Confirm the hash type and
 mode yourself; cracking is expensive to get wrong.
+
+!!! question "Check yourself"
+    - Why does a stolen bcrypt database survive where the same passwords stored as MD5 fall in hours?
+    - What made the 2012 LinkedIn hashes crackable en masse, and what would have stopped it?
+    - Why is credential reuse a bigger real-world vector than cracking, and how does spraying exploit it?

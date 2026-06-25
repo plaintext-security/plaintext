@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The perimeter didn't fail — it dissolved. Once apps moved to SaaS, infra to cloud, and the
+    workforce home, "inside the network" stopped meaning anything coherent, yet most access models
+    still trust it. Zero Trust is the architectural response: the unit of access is the *request*,
+    not the session; you verify identity **and** device explicitly every time; and you assume breach
+    and minimize blast radius. The cleanest way to learn *why* is to take apart Colonial Pipeline —
+    a breach the perimeter model could never have stopped.
+
 ## Why this matters
 
 For most of network-security history, the working assumption was that everything inside the firewall
@@ -76,6 +84,11 @@ is "you're on the network, so you're trusted." That single assumption is what tu
 password into a national fuel crisis. The tenets below aren't a vendor checklist — they're the
 **lenses** that let you see why a perimeter + a trusted interior is a structurally fragile design.
 
+!!! note "The mental model"
+    *Trust is never granted by location.* "Inside the network" is not a security property — it is the
+    bug Zero Trust removes. Every access decision should re-derive trust from identity, device, and
+    context, and grant the minimum for that one request.
+
 **The unit of access is the request, not the session.** The founding insight of Zero Trust — Google's
 2014 **BeyondCorp** work, later formalized by **NIST SP 800-207** — is that "put the user on the
 network" is the wrong unit of access. The VPN grants you a *session* on the interior and then stops
@@ -95,6 +108,12 @@ credential on a trusted device is bad; the same credential on an unmanaged, comp
 catastrophic — and an identity-only model can't tell the two apart. CISA's Zero Trust Maturity Model
 distinguishes Traditional / Advanced / Optimal largely on this point.
 
+!!! warning "The gotcha"
+    Identity alone is not enough — and it's the most common first-pass ZT mistake. A stolen credential
+    on a trusted device is bad; the same credential on an unmanaged, compromised box is catastrophic,
+    and an identity-only model can't tell the two apart. Naming "no MFA on the VPN" explains the open
+    door but misses the design that let one open door own everything behind it.
+
 **Assume breach, and minimize blast radius.** The Colonial interior was flat: a foothold reached far
 more than it should have. ZT's third move is to *assume the attacker is already inside* and design so
 that it barely matters — least privilege, no standing trust, segmentation so server-to-server paths
@@ -103,11 +122,23 @@ packet; it is shrinking what any one compromised credential or device can touch.
 2015 are the same failure mode: the wall held at the edge, and the flat interior did the attacker's
 work for them.
 
+??? note "Go deeper: BeyondCorp, NIST 800-207, and the maturity model"
+    The per-request model traces to Google's 2014 **BeyondCorp** work, formalized by **NIST SP 800-207**
+    (the seven tenets and five pillars: identity, device, network, application/workload, data). CISA's
+    Zero Trust Maturity Model then benchmarks an org across three levels per pillar — Traditional →
+    Advanced → Optimal — which is the rubric you map the breach onto in the lab.
+
 **The model to keep:** *trust is never granted by location.* "Inside the network" is not a security
 property — it is the bug Zero Trust removes. Every access decision should re-derive trust from
 identity, device, and context, and grant the minimum for that one request. If your answer was "no
 MFA on the VPN," you named the open door — and missed the design that let one open door own
 everything behind it. That gap is exactly what this module, and this whole track, closes.
+
+!!! tip "AI caveat"
+    Hand a model the breach timeline and it produces a fast, confident tenet-mapping — but it tends to
+    collapse the story into the single headline cause ("they had no MFA") and stop there. Your job is
+    catching what it flattened: the structural failure is the **flat interior**. Verify every gap claim
+    traces to a specific NIST 800-207 tenet or CISA maturity level before you commit it.
 
 ## Learn (~3 hrs)
 
@@ -147,3 +178,8 @@ the actual NIST tenets. Verify every gap claim is traceable to a specific NIST 8
 maturity level before committing the deliverable. If you can explain *why* the breach needed both the
 open door **and** the flat interior, not just the missing MFA, you've learned the module — and you
 own the verdict.
+
+!!! question "Check yourself"
+    - Colonial's VPN *did* ask for a password — so why was the perimeter model still the failure, not just the missing MFA?
+    - What changes when the unit of access becomes the individual request instead of the VPN session?
+    - Why does "we have SSO" not mean "we did Zero Trust" — which tenets does that claim leave unaddressed?

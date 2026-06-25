@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The most careful TLS config is irrelevant if the database password sits in a `.env` committed to
+    git. Secrets management solves the *distribution and lifecycle* problems that make credentials
+    leak: centralised encrypted storage, policy-based access, audit logging, and rotation. Vault's
+    dynamic secrets go further — the app gets a fresh, short-lived credential per connection and never
+    holds a long-lived one; SOPS handles the secrets-that-must-live-in-git case by encrypting values
+    while leaving keys readable. Uber 2016 (static AWS keys in a repo → 57M-user S3 bucket) is what
+    these tools exist to prevent.
+
 ## Why this matters
 
 In 2016, attackers found **AWS access keys hardcoded in a private GitHub repository** belonging to an Uber engineer; those long-lived keys unlocked an S3 bucket holding personal data on **57 million** riders and drivers ([breaches.cloud — Uber incident analysis](https://www.breaches.cloud/incidents/uber/)). The keys were static, broadly scoped, and stored alongside source — three failures secrets management exists to prevent. This is the gap between "we have good cryptography" and "our credentials are actually secure": the most careful TLS configuration is irrelevant if the database password is in a `.env` file committed to git, or if every developer has a copy of the production API key in their shell history. Secrets management tools — HashiCorp Vault and Mozilla SOPS are the open-source standard — solve the distribution and lifecycle problems that make secrets insecure: centralised storage, access control, audit logging, automatic rotation, and encryption at rest and in transit.
@@ -22,11 +31,37 @@ Use Vault's dev server to store, retrieve, and rotate a database credential, dem
 
 Vault's security model separates *secrets storage* from *secrets access*. Secrets are stored encrypted in Vault's backend (an encrypted database, a cloud KMS, or a hardware HSM). Access is controlled by policies — Vault tokens or identity-linked roles grant access to specific paths, not to all secrets. Every read, write, and rotation is written to the audit log. This combination — encrypted storage, policy-based access, comprehensive audit trail — is why Vault is the production standard for secrets management in cloud-native environments.
 
+!!! note "The mental model"
+    The goal is to shrink what a leaked secret is *worth*, not just to hide it better. A static key in
+    a vault is still a static key — steal it once and you own it indefinitely. A dynamic, short-lived,
+    scoped credential is worth almost nothing the moment after it's issued. Reframe "where do I store
+    the secret?" as "how short-lived and narrowly-scoped can I make it?"
+
 The critical insight is that the secret itself never needs to leave Vault in most architectures. Dynamic secrets take this further: instead of storing a long-lived database password, Vault creates an ephemeral database credential on demand, with a short lease, and revokes it when the lease expires. An application that uses dynamic secrets never holds a long-lived credential — if the application is compromised, the attacker gets a credential that expires in minutes. This is the opposite of a hardcoded password: the application gets a fresh, expiring credential every time it connects. Had Uber's S3 access been a short-lived dynamic credential rather than a static key checked into a repo, the 2016 leak would have yielded a credential already expired by the time it was found.
+
+!!! warning "The gotcha"
+    "We deployed Vault, so secrets are solved" is the trap — secrets management is a *discipline*, not
+    a deployment. The leak vector that survives Vault is secret *sprawl*: copies accumulating in CI
+    variables, developer shells, backups, and old config. Rotation, access auditing, and detection
+    (module 08) are the ongoing work; the tool is just the place the canonical copy lives.
 
 SOPS (Secrets Operations) solves a different problem: secrets that need to live *in* a git repository, such as Kubernetes secrets, Helm values files, or Terraform variable files. SOPS encrypts the values (not the keys) of a YAML, JSON, or dotenv file, using a key from Vault, AWS KMS, GCP KMS, or a local age key. The encrypted file can be committed to git — the keys are readable (so a reviewer can see what is being configured), the values are encrypted (so a compromised git clone doesn't yield live credentials). This is the "GitOps-safe secrets" pattern.
 
 The common mistake organisations make is treating secrets management as a one-time deployment problem — "we set up Vault, now we're done." The ongoing discipline is secret rotation: Vault's leases automatically revoke dynamic secrets, but static secrets (API keys, TLS certificates, service account passwords) require an explicit rotation process. Secret sprawl — the gradual accumulation of copies of a secret across environments, developer machines, CI/CD systems, and backups — is the primary way secrets leak even in organisations that use Vault. The remediation is a combination of access auditing (who has retrieved this secret, and from where?), automatic rotation (so copies that do exist become stale quickly), and detection (module 08 scans for secrets that escaped the vault).
+
+??? note "Go deeper: Vault vs SOPS vs cloud KMS — they solve different problems"
+    These aren't competitors to rank; they target different deployment shapes. **Vault** is a runtime
+    broker — best when you want dynamic, short-lived, audited credentials, at the cost of running and
+    unsealing a stateful service. **SOPS+age** keeps secrets *in* the repo so GitOps stays git-only,
+    encrypting values while leaving keys reviewable — but it gives you no rotation or audit trail of its
+    own. **Cloud KMS** hands you managed envelope encryption at the cost of vendor lock-in. The decision
+    follows your deployment model, and module 12 turns exactly this trade-off into an ADR.
+
+!!! tip "AI caveat"
+    An AI drafts a Vault policy HCL quickly, but policy bugs are silent — an over-broad path or an extra
+    capability grants access nobody intended. Verify the generated capability list against the Vault
+    policy docs *and* test it live: confirm a token with that policy can read but genuinely cannot write
+    or delete.
 
 ## Learn (~4 hrs)
 
@@ -59,3 +94,8 @@ Ask an AI to generate a Vault policy HCL file that grants read access to `secret
 but not write or delete access. Then verify the policy against the [Vault policy documentation](https://developer.hashicorp.com/vault/docs/concepts/policies) —
 does the capability list match the intended permissions? Apply the policy and confirm a token
 with that policy can read but not write the secret.
+
+!!! question "Check yourself"
+    - Had Uber's S3 access been a Vault dynamic secret instead of a static key in a repo, why would the 2016 leak have been far less damaging?
+    - SOPS lets you commit secrets to a git repo. What does it encrypt, what does it leave readable, and why is that split deliberate?
+    - An org runs Vault but still suffers a credential leak. Name the most likely mechanism and the three controls that address it.

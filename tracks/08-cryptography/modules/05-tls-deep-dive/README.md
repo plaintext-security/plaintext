@@ -10,6 +10,14 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~6–8 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    TLS protects nearly all internet traffic — but that protection is not automatic. It depends on the
+    *protocol version*, the *cipher suites*, and the *certificate* all being right, and on the
+    implementation being sound (Heartbleed was sound protocol, unsound code). TLS 1.3 is forward-secret
+    and authenticated by construction; TLS 1.2 is configurable, therefore misconfigurable. Every dull
+    "deprecated cipher" line in a scan maps to a named real attack — POODLE, BEAST, DROWN. Reading a
+    `testssl.sh` report and turning each finding into a config change is the day-one skill here.
+
 ## Why this matters
 
 In April 2014, **Heartbleed** ([CVE-2014-0160](https://nvd.nist.gov/vuln/detail/CVE-2014-0160)) turned TLS — the protocol the entire web trusts — into a one-way mirror. A missing bounds check in OpenSSL's heartbeat extension let any client read up to 64 KB of a server's memory per request — private keys, session cookies, passwords — with no authentication and no trace in the logs. Half a million trusted certificates were suddenly suspect overnight, and the internet spent weeks patching OpenSSL and re-issuing keys. The lesson that outlived the bug: **TLS protects nearly all internet traffic, but that protection is not automatic.** It depends on the version, the cipher suites, and the certificate all being right — and on the implementation being sound. TLS 1.0 and 1.1 are deprecated but still found in production, weak cipher suites coexist with strong ones, and certificate configurations fail in ways that silently undermine the authenticity guarantee. Auditing a TLS configuration is a day-one skill for a security engineer — and `testssl.sh`, the tool this module builds fluency in, still checks every server for Heartbleed alongside those misconfigurations. Knowing what each finding means for actual risk is the practitioner competency this module builds.
@@ -22,11 +30,34 @@ Configure a local nginx server with both a weak and a strong TLS configuration, 
 
 A TLS session establishes three properties: the server's identity (verified via the certificate chain), a shared secret (negotiated via a key exchange), and a secure channel (encrypted and authenticated using that shared secret). The TLS handshake is the negotiation that establishes all three. In TLS 1.3, the handshake is simplified and the protocol mandates: ECDHE for key exchange (forward secrecy), AEAD cipher suites only (no CBC, no stream ciphers), and SHA-256 or better for the hash function. Every handshake in TLS 1.3 is forward-secret and authenticated by construction. TLS 1.2 is configurable — and therefore misconfigurable.
 
+!!! note "The mental model"
+    A TLS finding falls into exactly one of three buckets: *protocol version*, *cipher suite*, or
+    *certificate*. Classify every scanner line into one of the three first, and the remediation almost
+    names itself — protocol/cipher findings are config-list edits, certificate findings are reissue/renew
+    actions. The three buckets are what make a wall of `testssl.sh` output readable.
+
 Cipher suite selection in TLS 1.2 is the primary source of audit findings. A cipher suite is a four-algorithm package: key exchange + authentication + bulk encryption + MAC. `TLS_RSA_WITH_AES_128_CBC_SHA` uses static RSA key exchange (no forward secrecy), AES-128-CBC (no authentication, vulnerable to padding oracle), and SHA-1 MAC (deprecated). `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384` uses ECDHE (forward secrecy), AES-256-GCM (authenticated encryption), and SHA-384. The first suite appears on the server, an audit tool flags it, and a fix requires removing it from the cipher list. Understanding the cipher suite string is the skill that lets you fix the finding rather than just report it. And these findings aren't theoretical: SSLv3 fell to **POODLE** ([CVE-2014-3566](https://nvd.nist.gov/vuln/detail/CVE-2014-3566)), the CBC suites in TLS 1.0 to **BEAST** ([CVE-2011-3389](https://nvd.nist.gov/vuln/detail/CVE-2011-3389)), and a server still answering SSLv2 can leak a *modern* TLS session's key via **DROWN** ([CVE-2016-0800](https://nvd.nist.gov/vuln/detail/CVE-2016-0800)) — each is a named, real-world attack hiding behind what looks like a dull "deprecated protocol/cipher" line in the scan.
+
+!!! warning "The gotcha"
+    A scanner line is the *symptom*, not the risk. "SSLv2 enabled" reads like a dusty leftover, but it
+    is DROWN — it can leak the key of a *modern* TLS session on the same key. Don't down-rank a finding
+    because the protocol looks ancient; map it to its named attack before you assign severity.
 
 Certificate configuration problems are a distinct category. A self-signed certificate fails the authenticity check — the client can verify the cryptographic signature but cannot verify that the signing CA is trustworthy. A certificate with an expired `notAfter` date fails the validity check. A certificate whose `subjectAltName` doesn't include the hostname the client connected to fails the identity check. A certificate signed with SHA-1 (deprecated signature algorithm) may be rejected by modern browsers. Each of these is a TLS audit finding with a specific remediation that has nothing to do with cipher suites. `testssl.sh` checks all of them in a single scan.
 
 The distinction between protocol version, cipher suite, and certificate is the mental model that makes a TLS audit readable. `testssl.sh` outputs all three categories of findings, and a practitioner who reads the output can classify each finding, assess its severity (is this a theoretical weakness or an active attack vector?), and propose the specific configuration change that fixes it. This is the applied skill — not TLS trivia, but the ability to connect a scanner finding to a concrete configuration change.
+
+??? note "Go deeper: why a sound protocol can still be broken (Heartbleed)"
+    TLS 1.2/1.3 the *protocol* never failed in Heartbleed — OpenSSL the *implementation* did. A missing
+    bounds check in the heartbeat extension let any client read 64 KB of server memory per request:
+    private keys, session cookies, plaintext. The lesson is that "we use a modern protocol and strong
+    ciphers" is necessary but not sufficient — patch level is its own audit axis, which is why every
+    `testssl.sh` run still checks for Heartbleed by CVE.
+
+!!! tip "AI caveat"
+    Pasting a finding into an AI gets you a fast, usually-correct explanation and a candidate nginx
+    fix — but the model isn't the configuration authority. Confirm any proposed directive appears in the
+    Mozilla SSL Configuration Generator's modern/intermediate profile before you apply it.
 
 ## Learn (~5 hrs)
 
@@ -57,3 +88,8 @@ The distinction between protocol version, cipher suite, and certificate is the m
 ## AI acceleration
 
 Paste a `testssl.sh` finding into an AI and ask it to explain: what cryptographic property the finding tests, what an attacker could do if this finding is exploited, and the nginx configuration change that fixes it. Then verify the nginx config change against the [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/) — does it appear in the modern profile? AI explains the finding; the Mozilla generator is the configuration authority.
+
+!!! question "Check yourself"
+    - Into which of the three buckets — protocol, cipher suite, certificate — does each fall: a SHA-1-signed cert, `TLS_RSA_WITH_AES_128_CBC_SHA`, SSLv2 enabled, an expired `notAfter`?
+    - In the suite `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`, which component gives forward secrecy and which gives authenticated encryption?
+    - Heartbleed didn't break any algorithm or weak cipher. Why does `testssl.sh` still check for it, and what audit axis does that represent?

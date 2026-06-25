@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    An IP in a log is *data*; "that IP is a known Cobalt Strike C2 node hitting your sector this
+    week" is *intelligence*. The difference — context and assessment on a raw indicator — is what
+    lets a SOC prioritise and keeps detections current. **MISP** is the open standard for storing
+    and sharing CTI; abuse.ch and CISA give you real feeds. The judgment is that intelligence is
+    **assessment, not collection**: a stale indicator manufactures false positives and an
+    over-trusted feed poisons your detections. Garbage intel, automated, is worse than none.
+
 ## Why this matters
 An IP in a log means nothing until you know it's a known C2 node. When Mandiant disclosed the
 SolarWinds/SUNBURST supply-chain compromise in December 2020 — a trojanised Orion update that
@@ -33,17 +41,31 @@ enriching them into decisions, and sharing them so the whole community isn't ind
 rediscovering the same attacker. MISP is the open standard for storing and exchanging it; abuse.ch and
 CISA give you real, free, high-quality feeds to work with genuine threat data rather than toy IOCs.
 
-The recurring **Pyramid of Pain** pays off again here: not all indicators are equal. Hashes and IPs
-are cheap for an attacker to change — so they age fast and false-positive — while TTPs are expensive.
-Good intel programmes weight toward the durable, behavioural end, which is exactly why *intelligence*
-beats a firehose of IOCs. STIX/TAXII are the format and transport that make all this machine-readable
-and shareable at scale.
+!!! note "The mental model"
+    The recurring **Pyramid of Pain** pays off again here: not all indicators are equal. Hashes and
+    IPs are cheap for an attacker to change — so they age fast and false-positive — while TTPs are
+    expensive. Good intel programmes weight toward the durable, behavioural end, which is exactly why
+    *intelligence* beats a firehose of IOCs. STIX/TAXII are the format and transport that make all
+    this machine-readable and shareable at scale.
 
-The judgment: intelligence is **assessment, not collection** — the hard part is confidence and aging,
-not ingest. A stale indicator (the C2 box got cleaned up and is now a shared CDN) manufactures false
-positives; an over-trusted feed quietly poisons your detections. A model summarises a threat report
-into structured IOCs quickly, but it will hallucinate an attribution or over-trust a dead indicator —
-verify against the source and judge confidence yourself. Garbage intel, automated, is worse than none.
+!!! warning "The gotcha"
+    Intelligence is **assessment, not collection** — the hard part is confidence and aging, not
+    ingest. A stale indicator (the C2 box got cleaned up and is now a shared CDN) manufactures false
+    positives; an over-trusted feed quietly poisons your detections. Garbage intel, automated, is
+    worse than none.
+
+??? note "Go deeper: intelligence shared so defenders can act"
+    When Mandiant disclosed SUNBURST in December 2020, they didn't just publish a report — they
+    pushed YARA rules, Snort signatures, and IOCs to a public repo so every defender could
+    immediately hunt the backdoored DLL and its C2 in their own telemetry. *Here are the indicators,
+    go look* is threat intelligence doing its job: the analysis is paired with detection content, not
+    left as prose.
+
+!!! tip "AI caveat"
+    A model summarises a threat report into structured indicators quickly — useful for ingest. But
+    it'll hallucinate an attribution or over-trust a stale indicator; intelligence is about
+    *assessment*, not just collection. Verify indicators against the source and judge confidence
+    yourself.
 
 ## Learn (~4 hrs)
 
@@ -68,3 +90,10 @@ verify against the source and judge confidence yourself. Garbage intel, automate
 A model summarises a threat report into structured indicators quickly — useful for ingest. But it'll
 hallucinate an attribution or over-trust a stale indicator; intelligence is about *assessment*, not
 just collection. Verify indicators against the source and judge confidence yourself.
+
+!!! question "Check yourself"
+    - What turns an IOC into *intelligence*, and why does that distinction change what you act on?
+    - Why does an un-aged indicator feed eventually generate false positives, and what's the
+      mechanism (give the CDN example)?
+    - Using the Pyramid of Pain, why does a good intel programme weight toward TTPs over hashes and
+      IPs?

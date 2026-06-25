@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Zero trust for humans is identity-aware proxies; zero trust *between services* is a cryptographic
+    identity every workload can prove — and rotate — on its own. Most service-to-service auth today is a
+    shared API key, a long-lived token, or nothing ("same network") — the exact flat-trust assumption ZT
+    kills, and the gap Module 07's segmentation narrows but never closes (a label rule never makes the
+    caller *prove* who it is). You'll stand up SPIFFE/SPIRE, issue each workload a short-lived SVID,
+    establish identity-keyed mTLS, and prove an unregistered workload gets no identity at all.
+
 ## Why this matters
 
 The rest of this track makes *human* access zero-trust: an identity-aware proxy checks a user's token
@@ -33,6 +41,13 @@ boundary**: a workload with no registration entry is refused an identity by the 
 the mTLS handshake, demonstrating that identity — not network position — is what grants access.
 
 ## The core idea
+
+!!! note "The mental model"
+    A workload's identity should be a credential it can **prove**, not a secret it **holds**. SPIFFE
+    gives each workload a SPIFFE ID (a URI like `spiffe://corp.local/ledger`) wrapped in a short-lived
+    X.509 SVID; services present their SVIDs and validate each other's, reading the peer's SPIFFE ID out
+    of the cert. The practitioner translation: **a SVID is to a service what a short-lived OIDC token
+    (Module 02) is to a user** — verifiable identity per request, no standing trust, automatic expiry.
 
 The move to internalize is that **a workload's identity should be a credential it can prove, not a
 secret it holds.** SPIFFE (Secure Production Identity Framework For Everyone) gives every workload a
@@ -63,7 +78,16 @@ where the judgment lives. Selectors that are too loose — attesting on a Unix U
 shares, or a label any deployment can set — let the wrong workload claim an identity, the workload-identity
 equivalent of a wildcard IAM policy. The discipline is to pin each entry to selectors that are genuinely
 hard to spoof in your environment (an image digest, a Kubernetes service account bound to a namespace) and
-to keep SVID TTLs short so a leaked credential expires in minutes, not months. And note the boundary of what
+to keep SVID TTLs short so a leaked credential expires in minutes, not months.
+
+!!! warning "The gotcha"
+    The security control is no longer "protect the key" — it's "**get the attestation right**." A
+    selector that's too loose (a Unix UID every container shares, a label any deployment can set) lets
+    the wrong workload claim an identity — the workload-identity equivalent of a wildcard IAM policy.
+    Pin each entry to selectors genuinely hard to spoof (an image digest, a bound service account), and
+    ask of every one: *could a different workload satisfy this?*
+
+And note the boundary of what
 this gives you: SPIFFE proves *which workload* is calling and encrypts the channel — it is **authentication**,
 not **authorization**. Deciding whether `spiffe://corp.local/web` may call `spiffe://corp.local/ledger`
 is a policy question, which is exactly the handoff to Module 08: the proxy/mesh authenticates with the SVID,
@@ -75,6 +99,22 @@ the request and is re-evaluated at each hop; SPIFFE gives a *service* a signed, 
 does the same. Same zero-trust principle — verifiable identity per request, no standing trust, automatic
 expiry — applied one layer down, to the east-west traffic that the proxy and the segmentation policy never
 actually authenticate.
+
+??? note "Go deeper: two-layer attestation solves the bootstrap problem"
+    SPIRE's central problem is the one that trips up every "just give each service a cert" scheme: how
+    do you hand a brand-new workload its first credential without already trusting it? Two layers. A
+    SPIRE **agent** on each node first proves the *node's* identity to the server (an instance-identity
+    document, a k8s projected token, a join token). Then when a local workload asks for its SVID, the
+    agent **attests the workload** by properties it can observe but the workload can't forge — its UID,
+    k8s service account, Docker labels/image — and matches them against the registration entries. No
+    bootstrap secret is ever shipped; identity is *derived from what the workload demonstrably is*.
+
+!!! tip "AI caveat"
+    A model writes the SPIRE config, the `entry create` commands, and the go-spiffe mTLS boilerplate
+    fluently. Where you own the judgment is **the selectors** — the actual security decision, and the
+    model has no way to know your environment. It will happily pick a selector that *works*
+    (`unix:uid:0`, a label any pod can set) without seeing it's forgeable. Review every selector against
+    "could a different workload satisfy this?" and prove it: an unregistered workload gets no SVID.
 
 ## Learn (~3.5 hrs)
 
@@ -111,3 +151,8 @@ against "could a different workload satisfy this?", prefer image digests / bound
 shared UIDs and free-form labels, and **prove it** the way the lab does: confirm an unregistered workload is
 refused an SVID and the mTLS handshake fails. AI drafts the entry; you make it unforgeable and verify the
 deny.
+
+!!! question "Check yourself"
+    - Why does Module 07's label-based segmentation not authenticate the caller, and what does workload identity add that it can't?
+    - How does SPIRE hand a brand-new workload its first credential without already trusting it?
+    - SPIFFE proves *which* workload is calling — so what is it *not* doing, and where does that decision live instead?

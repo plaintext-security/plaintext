@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3.5–4.5 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Every security tool eventually emits text — auth events, IDS alerts, firewall drops — and the
+    first craft is pulling reliable signal out of it. The trap is a regex that matches *most* lines
+    (silently dropping the rest) or *too broadly* (pulling in noise). Write the pattern against the
+    documented format with named groups, compile it once, iterate line-by-line for memory, and use
+    `Counter` plus a sliding-window `deque` to turn failed logins into a brute-force verdict — then
+    verify on positive *and* negative cases before you trust the count.
+
 ## Why this matters
 Every security tool eventually outputs text: syslog lines, auth events, IDS alerts, firewall
 drops. Before you can graph, alert, or escalate anything, you have to extract signal from that
@@ -26,8 +34,17 @@ Log parsing has two failure modes that look like success: the regex that matches
 (and silently drops the rest) and the one that matches *too broadly* (and pulls in noise that
 looks like signal). The discipline is to write the regex against the actual format documented by
 the application — not by eye-balling a few samples — then verify it on both a positive case and
-a negative case before trusting the output. A parser that misses 5% of failed logins because of
-a minor sshd format variation is worse than no parser, because you will believe the output.
+a negative case before trusting the output.
+
+!!! note "The mental model"
+    A parser isn't done when it works on your sample — it's done when you've proven it on a line that
+    *should* match and a line that *shouldn't*. The format you code against is the documented one, not
+    the three samples you happened to look at.
+
+!!! warning "The gotcha"
+    A parser that misses 5% of failed logins because of a minor sshd format variation is worse than no
+    parser at all — because you will believe its output. The silent miss is the failure mode, not the
+    crash.
 
 `re` in Python is a full POSIX ERE dialect with named groups. Named groups — `(?P<name>...)` —
 are the difference between a regex that produces a tuple of strings and one that produces a
@@ -48,6 +65,17 @@ the right tool for the aggregate; a dictionary of `collections.deque` (with `max
 right tool for the sliding window. Neither requires a database — for a few thousand IPs, an
 in-memory structure is fast enough and simpler to reason about. The moment your window needs
 persistence across restarts, you add a database; don't add one before you need it.
+
+??? note "Go deeper: why named groups and `re.compile` aren't optional"
+    `(?P<ip>\d{1,3}(?:\.\d{1,3}){3})` is self-documenting and returns a dict you can reason about;
+    `(\d+\.\d+\.\d+\.\d+)` is a mystery three months later. And compile the pattern once outside the
+    loop — `re.match()` with a string literal inside a million-line loop recompiles on every call.
+    These two habits are the difference between a script that scales and one that quietly burns CPU.
+
+!!! tip "AI caveat"
+    A model writes the regex instantly — and it's usually subtly wrong on edge cases (IPv6, extra
+    whitespace, a slightly different sshd version). Feed it the *actual* log lines, ask it to name the
+    groups, then test the output on at least five lines it has never seen. The validation is the skill.
 
 ## Learn (~2.5 hrs)
 
@@ -75,3 +103,8 @@ cases (IPv6, lines with extra whitespace, slightly different sshd format version
 sample of the actual log lines you're parsing, ask it to name the groups, then test its output
 on at least five lines it has not seen. The validation step is the skill; the regex is just the
 draft.
+
+!!! question "Check yourself"
+    - What are the two ways a log-parsing regex can "succeed" while actually being broken?
+    - Why compile the pattern with `re.compile()` outside the loop instead of calling `re.match()` with a literal inside it?
+    - For windowed brute-force detection, why a `deque(maxlen=N)` rather than a growing list?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Type:** Build-&-Operate &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Data-residency and segmentation rules often forbid sending telemetry to a hosted model, so you
+    run it on infrastructure you control. **Quantisation** is what makes that practical — 4-bit
+    weights shrink a 7B model from ~14 GB to ~4 GB, laptop-sized. Ollama serves it behind an
+    OpenAI-compatible API, so the rest of the track swaps local↔frontier by changing one URL. The
+    one load-bearing judgment: measure throughput *and* answer quality on **your** alerts and **your**
+    hardware — never a leaderboard.
+
 ## Why this matters
 Sending sensitive telemetry to a hosted model is often a non-starter — data residency requirements,
 security classification policies, and network segmentation all push toward running the model on
@@ -37,6 +45,12 @@ That's the difference between "needs a high-end workstation" and "runs on a deve
 GGUF format (used by `llama.cpp` and Ollama) is the container format that packages quantised weights
 for CPU inference.
 
+!!! note "The mental model"
+    A model is just a big file of floating-point weights plus the code that multiplies them.
+    Quantisation trades a little numerical precision for a large drop in memory footprint, and the
+    OpenAI-compatible API means your integration code never cares whether the weights live on
+    `localhost:11434` or `api.openai.com` — local-vs-frontier becomes a config change, not a rewrite.
+
 Ollama's key abstraction is the **Modelfile** — a small configuration that points at a GGUF base
 model and layers in a system prompt, a context size, and any sampling parameters. When you run
 `ollama run tinyllama`, you're actually pulling a Modelfile plus a quantised GGUF, starting a
@@ -62,12 +76,24 @@ this move** into a held-out test set, a scorecard, and a regression gate; the qu
 do here is the seed of the discipline that becomes non-negotiable once a model is making decisions
 unattended. Measure here so you have the instinct before module 11 makes it rigorous.
 
+!!! warning "The gotcha"
+    A model card's benchmark number measures *some* model on *someone else's* task on *someone else's*
+    GPU. It does not tell you whether this quantisation answers *your* triage prompts fast enough on
+    *your* CPU. A model that does 40 tok/s at 92% beats one that does 8 tok/s at 94% if your queue
+    grows faster than it drains — throughput *and* quality, at the task you actually run.
+
 One important operational constraint: models don't update themselves. A local model's knowledge is
 frozen at its training cutoff. For threat intelligence — which evolves daily — this means the model
 can reason about *technique classes* (phishing, encoded execution, lateral movement) but will not
 know about a CVE disclosed last month. The operational pattern is "model classifies the technique;
 the analyst (or a tool) queries the live threat feed." The model handles the reasoning pattern;
 current data comes from tools (more on that in Modules 04–06).
+
+!!! tip "AI caveat"
+    Use a model to *interpret* your benchmark numbers — paste the throughput/quality table and ask
+    which tasks justify a larger model. It reasons about the tradeoff well, but it cannot know your
+    numbers; you supply the empirical measurements, and you own the recommendation precisely because
+    the data came from your hardware on your prompts, not its training set.
 
 ## Learn (~3 hrs)
 
@@ -97,3 +123,8 @@ it to explain which tasks benefit from a larger model and which are well-served 
 The model can reason about the tradeoff; you supply the empirical numbers it can't know — and you
 own the recommendation, because the numbers came from *your* hardware on *your* prompts, not its
 training set.
+
+!!! question "Check yourself"
+    - Why does 4-bit quantisation let a 7B model run on a laptop, and what does it cost you?
+    - You read that a model scores well on a public leaderboard. Why is that not enough to deploy it for your alert triage?
+    - A local model is frozen at its training cutoff. How does the operational pattern still let it help triage a CVE disclosed last week?

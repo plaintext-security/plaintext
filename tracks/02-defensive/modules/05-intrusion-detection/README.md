@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    NSM (module 04) gives you a record; an IDS like **Suricata** gives you opinions in real time —
+    "this matches a known exploit / a known C2 family, alert now." Two philosophies live in one
+    engine: signatures (precise, but catch only what someone already wrote a rule for) and
+    protocol/anomaly logic. Most of your value comes from community rulesets like Emerging Threats,
+    so you stand on others' work. The daily job is **tuning** — fire on the bad, stay quiet on the
+    good — because a noisy ruleset trains analysts to ignore alerts.
+
 ## Why this matters
 NSM (module 04) gives you visibility; an IDS like Suricata gives you *alerts*. Suricata matches
 traffic against rules — community rulesets like Emerging Threats encode thousands of real attacker
@@ -30,16 +38,23 @@ traffic). Most of your value comes from community signatures — the Emerging Th
 thousands of maintained rules encoding real attacker tradecraft — so, like SigmaHQ for the host, you
 stand on others' work rather than writing from zero.
 
-The distinction every network engineer already feels: an **IDS alerts; an IPS blocks.** Same engine,
-different placement and risk appetite — put it inline to block and a false positive becomes an
-outage, exactly the "detect vs. enforce" tension you live with on a firewall. Learning rule anatomy
-(action, header, options, `sid`) pays off because reading a rule tells you what it actually keys on —
-and whether it's brittle enough to evade with one changed byte.
+!!! note "The mental model"
+    The distinction every network engineer already feels: an **IDS alerts; an IPS blocks.** Same
+    engine, different placement and risk appetite — put it inline to block and a false positive
+    becomes an outage, exactly the "detect vs. enforce" tension you live with on a firewall.
+    Learning rule anatomy (action, header, options, `sid`) pays off because reading a rule tells you
+    what it actually keys on — and whether it's brittle enough to evade with one changed byte.
 
-The judgment: signatures are exact-match, which makes them simultaneously high-confidence and easy to
-*evade* (new domain, new TLS, a padded payload) and easy to *over-trigger*. Tuning — fires on the
-bad, stays quiet on the good — is the daily work, because a noisy ruleset trains analysts to ignore
-alerts, which is worse than having no IDS at all.
+!!! warning "The gotcha"
+    Signatures are exact-match, which makes them simultaneously high-confidence and easy to *evade*
+    (new domain, new TLS, a padded payload) and easy to *over-trigger*. Tuning — fires on the bad,
+    stays quiet on the good — is the daily work, because a noisy ruleset trains analysts to ignore
+    alerts, which is worse than having no IDS at all.
+
+!!! tip "AI caveat"
+    A model drafts and explains Suricata rules well — but a rule that's too broad floods the SOC and
+    one that's too narrow misses the variant. Test every generated rule against real traffic (fires
+    on the bad, stays quiet on the good) before trusting it.
 
 ## Learn (~4 hrs)
 
@@ -61,3 +76,9 @@ alerts, which is worse than having no IDS at all.
 A model drafts and explains Suricata rules well — but a rule that's too broad floods the SOC and one
 that's too narrow misses the variant. Test every generated rule against real traffic (fires on the
 bad, stays quiet on the good) before trusting it.
+
+!!! question "Check yourself"
+    - Zeek and Suricata both watch the same traffic — what does an IDS give you that NSM does not?
+    - It's the same engine, so what actually changes when you turn a Suricata IDS into an IPS, and
+      what's the new risk?
+    - Why is a noisy ruleset arguably worse than having no IDS at all?

@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Microsegmentation is the policy-as-code answer to the flat interior that turned a single poisoned
+    machine into Maersk's entire global network in NotPetya. The network's default flips from allow-all
+    to **deny-all, allow the minimum**, and the policy lives in version control as declarative,
+    label-scoped rules — not hand-maintained IP firewall rules that rot on every pod restart. You'll
+    deploy a default-deny Cilium policy in a kind cluster, prove the allow *and* the deny, try to pivot
+    around it, and encode the pair as a regression test.
+
 ## Why this matters
 
 On June 27, 2017, NotPetya entered Maersk through a poisoned update to Ukrainian accounting software on a single machine — and within a *minute or two* it had the entire global network. It spread two ways at once: **EternalBlue** (CVE-2017-0144, the SMBv1 RCE) hit every unpatched Windows host reachable on the internal network, and a Mimikatz-style credential dump plus pass-the-hash walked the rest using domain-admin tokens it found in memory. Maersk lost an estimated **$300 million**, rebuilt **4,000 servers and 45,000 PCs**, and ran on pen-and-paper for the better part of two weeks. The post-mortems converge on one root cause that has nothing to do with the exploit: the interior was **flat**. Any host could reach any other host, so a foothold on one box was a foothold on all of them. ([Wired's reconstruction](https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/) is the canonical account.)
@@ -22,11 +30,39 @@ Deploy a default-deny Cilium network policy in a kind cluster that restricts dat
 
 ## The core idea
 
+!!! note "The mental model"
+    Microsegmentation flips the network's default from *allow-all, block exceptions* to **deny-all,
+    allow the minimum** — and that posture lives in version control as declarative policy. In Kubernetes
+    the unit of segmentation is the *workload*, not the subnet: you label pods and write rules that are
+    **label-scoped, not IP-scoped** (pod IPs churn; labels follow the workload). The policy *is* the
+    perimeter now — there's no edge firewall doing this; the boundary is wherever the policy says it is.
+
 Microsegmentation is the **policy-as-code answer to the flat interior**: the network's default posture flips from *allow-all, block exceptions* to **deny-all, allow the minimum**, and that posture lives in version control as a declarative policy, not as a tangle of firewall rules someone maintains by hand. In Kubernetes the unit of segmentation is the workload, not the subnet: you label pods (`app: backend`, `tier: database`) and write a policy that says "pods labelled `tier: database` accept ingress *only* from pods labelled `app: backend`." Everything else is dropped because the policy exists at all — presence of an ingress rule on a pod is what makes its default deny. Crucially the rule is **label-scoped, not IP-scoped**: pod IPs churn on every restart, so IP rules rot constantly, while labels follow the workload. The policy *is* the perimeter now — there is no edge firewall doing this; the boundary is wherever the policy says it is.
 
 The load-bearing judgment of this module is **default-deny then allow the minimum, and prove both halves.** Cilium is a CNI built on eBPF, which matters for one reason: enforcement happens in the kernel, on the sending node, *before* a packet leaves the container — not at a perimeter firewall downstream. There is no "go around the network boundary" because the boundary is the kernel hook every packet already traverses; a pod on the *same node* as the database still goes through it. That is what makes the deny credible enough to red-team. But a policy you only tested on the allow path is theater. The discipline — and the thing this module makes you do — is to verify the *deny* directly, then attempt to pivot around it (a different source pod, a relabel, a direct dial to the service IP) and confirm it still drops. A default-deny baseline you haven't tried to break is a guess.
 
+!!! warning "The gotcha"
+    Two failures decide whether this works. **Default-deny silently breaks DNS** — a strict deny that
+    forgets to allow port 53 to kube-system kills name resolution for every governed pod, and the
+    symptom looks like an app bug, not a policy. And **label scope is the soft spot**: `fromEndpoints:
+    {app: backend}` allows *any* pod carrying that label in *any* namespace, so an attacker who can
+    schedule a pod labelled `app: backend` elsewhere inherits the allow. Bind app **and** namespace.
+
 Two gotchas decide whether this works in practice. First, **default-deny silently breaks DNS**: a strict deny that forgets to allow port 53 to kube-system kills name resolution for every governed pod, and the symptom looks like an application bug, not a network policy — so an explicit DNS allow is part of the baseline, not an afterthought. Second, **label scope is the soft spot**: `fromEndpoints: {app: backend}` allows *any* pod carrying that label, in any namespace; an attacker (or a careless teammate) who can schedule a pod with `app: backend` in some other namespace inherits the allow. Tightening the selector to require *both* the app label *and* the namespace is the difference between a policy that names a workload and one that names a string anyone can copy. The observability half closes the loop: Hubble and `cilium monitor` give a per-flow audit trail — "frontend tried database:80 at T, policy X dropped it" — correlated with pod/namespace/label metadata. That is the same structured telemetry module 09 turns into a lateral-movement detection.
+
+??? note "Go deeper: why eBPF enforcement leaves no path around the policy"
+    Cilium is a CNI built on eBPF, which matters for one reason: enforcement happens in the kernel, on
+    the *sending* node, before a packet ever leaves the container — not at a perimeter firewall
+    downstream. There is no "go around the network boundary" because the boundary *is* the kernel hook
+    every packet already traverses; even a pod on the *same node* as the database goes through it. That
+    is what makes the deny credible enough to red-team.
+
+!!! tip "AI caveat"
+    A model generates a `CiliumNetworkPolicy` from plain-English intent in seconds, and it skews open in
+    two predictable ways: it forgets the DNS allow (so you'll think a working policy is broken) and it
+    writes the allow as a bare app-label match with no namespace constraint. Never accept it on the
+    allow path alone — test the deny, then *try to pivot around it*. That verdict is what the lab's
+    `verify-policy.sh` makes permanent.
 
 ## Learn (~3 hrs)
 
@@ -53,3 +89,8 @@ Two gotchas decide whether this works in practice. First, **default-deny silentl
 ## AI acceleration
 
 A model will generate a `CiliumNetworkPolicy` from a plain-English intent in seconds — "backend pods reach database pods on port 80, deny everything else" — and that speed is exactly the risk, because **AI-generated network policy skews open in two predictable ways**: it forgets the DNS allow (so you'll think the policy is broken when it's actually working) and it writes the allow as a bare app-label match with no namespace constraint (so any namespace's `app: backend` pod inherits the allow). The posture holds — AI authors → you review every line → you own it — and here it has a concrete shape: never accept the policy on the allow path alone. Test the **deny** yourself, then *try to pivot around it*. That review is what the lab's required `verify-policy.sh` makes permanent: the secondary Judgment-as-Code beat is encoding your verdict ("frontend→db stays closed; backend→db stays open") as a script so a future edit that re-flattens the network turns the check red instead of going unnoticed.
+
+!!! question "Check yourself"
+    - Why is a label-scoped Cilium rule more durable than an IP-scoped firewall rule in a Kubernetes cluster?
+    - A default-deny policy is in place and an app suddenly can't resolve names — what did the policy most likely forget, and why does it look like an app bug?
+    - Why is `fromEndpoints: {app: backend}` (app label only) a weaker allow than one that pins both the app label and the namespace?

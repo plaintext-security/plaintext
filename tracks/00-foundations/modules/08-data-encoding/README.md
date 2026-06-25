@@ -10,6 +10,14 @@
 **Difficulty:** Beginner &nbsp;·&nbsp; **Estimated time:** ~3–4 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** Earlier Foundations modules
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The single misconception this module kills: **encoding is not encryption.** base64, hex, and
+    URL-encoding reshape data into a transport-safe alphabet — *reversible by anyone, no key.* That
+    `-EncodedCommand` base64 blob in a malware command line isn't secret; `base64 -d` reads it
+    instantly, and the `==` on the end is just padding, not a key. The transferable skill is that the
+    same one-layer-at-a-time peel decodes *any* encoded artifact — a config token, an API value, a
+    payload in a log — and you'll prove to yourself that none of it was ever locked. Only crypto (the
+    next module) locks data.
 
 ## The artifact
 
@@ -56,6 +64,17 @@ real, common, expensive error; you will find production secrets "protected" by n
 wild. **The mental model: encoding changes the *clothes* data wears, not whether it's *locked*. Only
 crypto — the next module — locks it.**
 
+!!! note "The mental model"
+    Encoding changes the *clothes* data wears, not whether it's *locked.* base64/hex/URL exist so
+    arbitrary bytes survive a picky channel — reversible by anyone, no key. Encryption is the
+    opposite kind of thing: unreadable without a key. Only crypto locks data.
+
+!!! warning "The gotcha"
+    "It's base64, so it's protected" is the expensive, common error this module exists to kill — you
+    will find production secrets "protected" by nothing but base64 in the wild. A trailing `=`/`==`
+    is a *tell that it's base64* (padding from the 3-byte → 4-char math), not a key, signature, or
+    checksum.
+
 **Q2 — None of those. You just decode it, and so can anyone.** `echo '<the blob>' | base64 -d` reverses
 it instantly. (PowerShell's `-enc` adds one wrinkle: it expects the text in UTF-16LE, so you pipe the
 result through `iconv -f utf-16le` to read it cleanly — an encoding detail, still not a secret.) Decoded,
@@ -86,6 +105,12 @@ lets you *see*, transformation by transformation. In the lab you'll peel a layer
 URL-decode an attack from a log, and query a real JSON feed — and prove to yourself that none of it was
 ever secret.
 
+!!! tip "AI caveat"
+    A model decodes an unknown blob fast, but it makes exactly this module's errors: it will
+    sometimes call a base64 blob "encrypted," and on *layered* data it guesses the wrong peel order
+    and hands you confident garbage. Decode it yourself — by hand or in CyberChef — and you catch
+    both.
+
 ## Learn (~2 hrs)
 
 *Deliberately short — the spine above is yours to own. Read these to nail the mechanics, not to relearn
@@ -111,3 +136,8 @@ as a first pass. But it's also a perfect adversary to check, because it makes ex
 module is about: it will sometimes call a base64 blob "encrypted," and on *layered* data it will guess the
 wrong peel order and hand you confident garbage. Decode it yourself — by hand or in CyberChef — and you'll
 catch both. The tool is fast; the confirmation is yours, and you own the verdict on what the artifact says.
+
+!!! question "Check yourself"
+    - A secret is stored base64-encoded in a config file. Is it protected? Why or why not?
+    - What does a trailing `==` actually tell you — and what does it *not* tell you?
+    - You're handed a blob that's URL-encoded around base64 around JSON. What's the move, and why does order matter?

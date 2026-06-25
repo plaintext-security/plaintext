@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    When the perimeter dissolves, identity is the only boundary left — so every access decision rides
+    on a cryptographic assertion (a JWT, a SAML token) signed by the IdP's private key. That makes the
+    signing key the master key to the whole estate: whoever holds it can *mint* a valid identity for
+    anyone, as Storm-0558 proved against Microsoft. You'll stand up Keycloak, run the OIDC token flow
+    end-to-end, and learn that token lifetime and claim scope aren't defaults to accept — they're your
+    blast-radius controls.
+
 ## Why this matters
 
 In a Zero Trust model the question "can this request proceed?" is answered by an access policy, not by
@@ -31,6 +39,12 @@ module is direct: standing up an IdP is the easy half; understanding that its si
 lifetime, and claim scope *are* your blast-radius controls is the half that makes you an architect.
 
 ## The core idea
+
+!!! note "The mental model"
+    **Identity is the new network perimeter.** Where a firewall once checked source IP against a zone, a
+    Zero Trust policy engine checks a cryptographically signed identity assertion against an access
+    policy — and the assertion travels *with* the request across any network, so it can be re-evaluated
+    at every hop without the request ever being "inside" anything.
 
 The mental-model shift is small but consequential: **identity is the new network perimeter.** Under the
 old model a firewall checked source IP against a zone. Under Zero Trust a policy engine checks a
@@ -59,6 +73,14 @@ roles*. Get that mapping wrong and the upstream IdP silently dictates your autho
 MITRE ATT&CK T1606.002, is the federation-trust equivalent of the Storm-0558 forge: steal the SAML
 signing key and you mint trusted assertions at will.)
 
+??? note "Go deeper: federation and the broker pattern"
+    The enterprise version of this is **federation**, and reasoning about it is what separates "I ran
+    the tutorial" from "I can run the IdP." Keycloak runs as an **identity broker**: it trusts assertions
+    from an upstream IdP (Okta, Entra ID) over SAML 2.0 / OIDC and issues *its own* downstream tokens.
+    To the app there is one issuer; to the user, their familiar SSO. The judgment is the trust mapping —
+    which upstream attributes map to which downstream claims, and which upstream groups are trusted to
+    grant elevated roles. Get it wrong and the upstream IdP silently dictates your authorization.
+
 **The one load-bearing judgment — token lifetime and claim scope are blast-radius controls, not
 defaults to accept.** Two failure modes recur. *Token-lifetime creep*: teams stretch `exp` to avoid
 re-auth interruptions, and a 24-hour access token quietly restores session-based trust — undoing the
@@ -68,6 +90,18 @@ group memberships from a sprawling AD sync isn't fine-grained access control —
 re-packaged as JSON. The discipline: issue only the claims the application needs, keep `exp` short, and
 scope each token to a single audience (`aud`) so it cannot be replayed against a different application.
 Every one of those settings is a number you must be able to *defend*, not a default you inherited.
+
+!!! warning "The gotcha"
+    Token-lifetime creep quietly restores session-based trust: stretch `exp` to a few hours to stop
+    re-auth complaints and you've undone the per-request evaluation ZT depends on — and widened the
+    window a forged or stolen token stays live. Keep `exp` short and scope each token to a single `aud`.
+
+!!! tip "AI caveat"
+    A model emits Keycloak realm JSON and `curl` OIDC flows that are *syntactically* correct — the trap.
+    The sharpest review is on the *validation* code: a model will happily produce a "validator" that
+    base64-decodes the payload and skips the signature, or accepts `alg: none` — that's the Storm-0558
+    failure mode in script form. Make it defend each realm setting (why `accessTokenLifespan: 300`, not
+    `3600`?) before you run it.
 
 ## Learn (~4 hrs)
 
@@ -108,3 +142,8 @@ base64-decodes the payload and skips the signature, or one that accepts `alg: no
 validator, it's the Storm-0558 failure mode in script form. Ask the model to justify each realm setting
 before you run it: if it can't defend `accessTokenLifespan: 300` versus `3600`, you don't yet know what
 you're running, so you don't yet own it.
+
+!!! question "Check yourself"
+    - Why does possessing the IdP's signing key let an attacker skip credentials, MFA, and sessions entirely?
+    - What does a short `exp` actually buy you that a 24-hour token gives away?
+    - In the broker pattern, where exactly does the trust decision live — and how could a wrong group→role mapping hand authorization to the upstream IdP?

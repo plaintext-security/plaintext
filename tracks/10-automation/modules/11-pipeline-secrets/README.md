@@ -10,6 +10,15 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The most secure secret in a pipeline is the one that doesn't exist. A stored long-lived cloud key is
+    standing, ambient authority — no expiry, copied into every fork and log line, the wound every
+    secret-scanner keeps dressing (Codecov, CircleCI, the endless "exposed CI token" write-ups).
+    **OIDC federation** dissolves it: the runner mints a signed per-run JWT, hands it to AWS STS via
+    `AssumeRoleWithWebIdentity`, and gets back credentials that are *already expiring* — nothing stored.
+    The security lives in the **IAM trust policy's `sub` condition**: pinned to the exact repo/ref it
+    admits only your pipeline; loose (`repo:org/*:*`) it's a wildcard grant any fork can mint.
+
 ## Why this matters
 
 This track has taught you to *hunt* leaked secrets thoroughly — `gitleaks` in Module 05, `trufflehog`
@@ -45,6 +54,13 @@ pipeline runs, and it survives every incident because nothing forces it to age o
 exists *because* this pattern exists. The move that dissolves the problem is to stop storing the key and
 instead **prove who you are at the moment you need access, and get a credential that's already expiring.**
 
+!!! note "The mental model"
+    Stop storing a secret; instead prove *who you are* at the moment you need access and receive a
+    credential that's already on a timer. The control plane moves from "protect and rotate a secret"
+    (a race you often lose) to "govern who is allowed to federate" — one declarative IAM document, with
+    every `AssumeRoleWithWebIdentity` call landing in CloudTrail as an audit trail the static key never
+    produced.
+
 **OIDC web-identity federation** is how a pipeline does that. The CI platform (GitHub Actions, GitLab,
 Buildkite) runs its own OpenID Connect identity provider: at job time it mints a short-lived **JWT** that
 *describes this specific run* — signed by the platform's private key, carrying claims like
@@ -67,6 +83,13 @@ OIDC equivalent of a wildcard IAM grant, and a documented real-world misconfigur
 you meant. The trust policy is the scope, and a loose condition is worth no more than the static key you
 removed.
 
+!!! warning "The gotcha"
+    The trust policy is the whole control, and a loose `sub` quietly rebuilds the problem you escaped: a
+    condition matching `repo:acme-corp/*:*` lets *any* branch of *any* fork mint your production
+    credential — the OIDC equivalent of a wildcard IAM grant, and a documented, exploited
+    misconfiguration. Pin `aud = sts.amazonaws.com` and a `sub` to the exact repo/ref (or a protected
+    environment). A loose condition is worth no more than the static key you just removed.
+
 Which reframes where the off-switch is. With a stored key, revocation means a human finding the secret in
 every store and rotating it before the attacker uses it — a race you often lose. With OIDC, there is no
 secret to find: you **edit the trust policy** (tighten the `sub`, remove the provider, narrow the role's
@@ -75,6 +98,14 @@ rotate a secret" to "govern who is allowed to federate" — declarative, in one 
 `AssumeRoleWithWebIdentity` call landing in CloudTrail as an audit trail the static key never produced.
 The same short-lived-token-per-request principle is exactly what Module 02's user OIDC and the ZTNA track's
 workload SVIDs do; here it's the pipeline that holds no standing secret.
+
+!!! tip "AI caveat"
+    A model writes the *plumbing* fluently — the `configure-aws-credentials` workflow, the
+    `create-open-id-connect-provider` call, the `AssumeRoleWithWebIdentity` request. Where you own the
+    judgment is the trust policy's **`sub` condition**: the model has no way to know which repo and
+    branch *should* federate, so it cheerfully emits a `StringLike` on `repo:org/*:*` — broad enough to
+    "just work," and broad enough to let any fork mint your production credential. Review every condition
+    against "could a workflow I didn't intend satisfy this `sub`?"
 
 ## Learn (~3 hrs)
 
@@ -110,3 +141,8 @@ production credential. Review every condition against "could a workflow I didn't
 `sub`?", pin it to the exact ref or a protected environment, and **prove it the way the lab does**:
 confirm no static key remains and that the minted credential carries a session token and a future expiry.
 AI drafts the federation; you scope the trust and verify the secret is genuinely gone.
+
+!!! question "Check yourself"
+    - Why is a stored long-lived access key "standing, ambient authority," and what makes OIDC's minted credential fundamentally different?
+    - A trust policy uses `StringLike` on `repo:acme-corp/*:*`. Concretely, who can now mint your production credential, and what's the fix?
+    - "We use OIDC" isn't proof. What two observable properties of the minted credential do you check to actually show the static key is gone?

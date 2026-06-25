@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Email lets anyone claim to be anyone — the enabler of phishing and business email compromise, the
+    costliest cybercrime category. Three DNS records fix it: SPF authorises sending IPs (but only checks
+    the invisible envelope sender), DKIM cryptographically signs the message including the From header,
+    and DMARC ties them together with *alignment* — forcing the authenticated domain to match the
+    visible From, the gap SPF alone leaves. The Google/Facebook $100M BEC fraud is exactly that missing
+    "is the From who it claims to be?" check. Deploy DMARC staged: `none` → `quarantine` → `reject`.
+
 ## Why this matters
 
 Between 2013 and 2015, a Lithuanian man named Evaldas Rimasauskas tricked **Google and Facebook into wiring over $100 million** to his accounts — by registering a company with the same name as a hardware supplier the two firms actually paid, then emailing convincing fake invoices to their finance teams ([U.S. DOJ, SDNY — "Lithuanian Man Pleads Guilty To Wire Fraud For Theft Of Over $100 Million In Fraudulent Business Email Compromise Scheme"](https://www.justice.gov/usao-sdny/pr/lithuanian-man-pleads-guilty-wire-fraud-theft-over-100-million-fraudulent-business)). The technical enabler of that whole category is that email, by default, lets anyone claim to be anyone — there is no built-in check that a message from "your supplier" actually came from your supplier's domain. Email spoofing is the enabler of phishing and business email compromise (BEC) — the most financially damaging cybercrime category. SPF, DKIM, and DMARC are the three DNS-based standards that, when correctly configured, tell receiving mail servers whether a message claiming to be from your domain actually came from an authorised source. Without them, an attacker can send email that appears to come from `cfo@corp-fictional.com` with no technical barrier. With all three correctly configured, spoofed email is either rejected or marked as spam before reaching the target's inbox. This is not a complex or expensive control — it is three DNS records — and its absence is a compliance finding in every email security audit.
@@ -20,13 +28,37 @@ Configure and validate SPF, DKIM, and DMARC records for a fictional domain using
 
 ## The core idea
 
+!!! note "The mental model"
+    Email has *two* From addresses: the envelope sender (SMTP `MAIL FROM`, invisible to users) and the
+    header From (what the user actually sees). SPF only checks the envelope; DKIM signs the header.
+    DMARC's whole job is *alignment* — forcing the thing SPF/DKIM authenticated to match the thing the
+    user sees. Once you internalise the two-From split, every gap in email auth becomes obvious.
+
 SPF (Sender Policy Framework) authorises which IP addresses or servers are allowed to send email on behalf of a domain. The receiving mail server checks whether the sending IP appears in the domain's SPF record; if not, the check fails. SPF alone does not prevent spoofing in the visible "From" header — it checks the envelope sender (the SMTP `MAIL FROM` command), which is not typically shown to users. A domain with a strong SPF record and no DMARC can still be spoofed in the visible From address (the "header from"), which is the address the user actually sees.
+
+!!! warning "The gotcha"
+    "We have SPF, so we can't be spoofed" is false — and dangerously so. SPF never inspects the visible
+    From, so an attacker can pass SPF on their own domain while displaying *yours* in the header. Without
+    DMARC alignment, a green SPF check and a perfectly spoofed inbox display coexist happily.
 
 DKIM (DomainKeys Identified Mail) adds a cryptographic signature to the message. The signing server generates an RSA or Ed25519 signature over selected headers (including the From address) and the message body, and includes it in a `DKIM-Signature` header. The receiving server fetches the public key from the sender's DNS (a TXT record at `selector._domainkey.domain.com`) and verifies the signature. A valid DKIM signature proves that the message content and the From header were not modified in transit and were signed by a party controlling the domain's private key. DKIM survives email forwarding (where SPF breaks because the forwarding server's IP is not in the SPF record).
 
 DMARC (Domain-based Message Authentication, Reporting and Conformance) is the policy layer that ties SPF and DKIM together and adds alignment and reporting. A DMARC record specifies what to do if a message fails both SPF and DKIM: `none` (monitor only), `quarantine` (spam folder), or `reject` (bounce). It also specifies alignment: the domain in the SPF check or the DKIM signature must match the domain in the visible From header (`d=` alignment). This is the alignment requirement that closes the gap SPF alone leaves — a DMARC `reject` policy with DKIM alignment prevents spoofing the visible From address even if the attacker passes the envelope SPF check. It is precisely this "is the From domain who it claims to be?" check that was missing in the Google/Facebook BEC fraud, where look-alike sender domains carried fake invoices straight to finance. DMARC also enables aggregate (`rua`) and forensic (`ruf`) reporting — receiving servers send reports back to the domain owner showing which sources are passing and failing authentication, which is how you audit your own email sending infrastructure before setting a `reject` policy.
 
 The operational pattern for DMARC deployment is a staged rollout: start with `p=none` (monitor), collect reports for 30–60 days to ensure all legitimate sending infrastructure passes SPF and DKIM, then move to `p=quarantine`, then to `p=reject`. Jumping to `reject` without a monitoring period routinely causes legitimate email to be bounced — newsletters, third-party SaaS sending on behalf of the domain, and marketing platforms all need to be authorised in SPF and DKIM-signed before `reject` is safe.
+
+??? note "Go deeper: why DKIM survives forwarding and SPF doesn't"
+    Forwarding is where SPF and DKIM diverge sharply. When a mailing list or `.forward` relays your
+    message, the *new* hop's IP isn't in your SPF record, so SPF breaks. DKIM's signature travels *with*
+    the message and covers the body and selected headers, so it still verifies after the forward —
+    provided the forwarder didn't rewrite signed headers. This is why DMARC accepts *either* an aligned
+    SPF *or* an aligned DKIM pass, and why DKIM is the more robust of the two in real mail flows.
+
+!!! tip "AI caveat"
+    An AI drafts syntactically plausible SPF/DKIM/DMARC TXT records fast, but a wrong record is a live
+    deliverability incident — a too-strict SPF or a premature `p=reject` bounces real mail. Validate
+    every generated record's syntax (`v=spf1`, `v=DMARC1`, a real `p=` key) against the RFCs and a tool
+    like MXToolbox, and never skip the `none` monitoring phase on the model's say-so.
 
 ## Learn (~3 hrs)
 
@@ -58,3 +90,8 @@ The operational pattern for DMARC deployment is a staged rollout: start with `p=
 ## AI acceleration
 
 Ask an AI to write the SPF, DKIM, and DMARC TXT records for a fictional domain with two authorised sending IPs. Then validate the records against the RFC syntax: is the SPF record a valid `v=spf1` record? Does the DMARC record include `v=DMARC1`? Does the DKIM record have a valid `p=` (public key)? Use [MXToolbox](https://mxtoolbox.com/SuperTool.aspx) to validate any records for a real domain you control.
+
+!!! question "Check yourself"
+    - A domain publishes a strict SPF record but no DMARC. Why can an attacker still spoof its visible From address?
+    - What does DMARC alignment require, and which exact attack does it close that SPF and DKIM alone do not?
+    - Why is jumping straight to `p=reject` risky, and what does the `none` monitoring phase let you discover first?

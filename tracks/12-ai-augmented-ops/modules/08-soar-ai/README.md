@@ -10,6 +10,15 @@
 **Type:** Build-&-Operate + Judgment-as-Code / Gate (Family II) &nbsp;·&nbsp; **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 01 — The Hybrid AI Pattern](../01-hybrid-ai-pattern/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    SOAR is great at deterministic workflows and breaks down on decisions needing judgment. The
+    temptation is to wire a model into that gap and let it *act* — which is the Knight Capital lesson
+    ($440M in 45 minutes from an autonomous system with no gate). So the model is a **worker inside a
+    deterministic frame**, not the orchestrator: it emits `{severity, confidence}`, n8n branches on
+    it, and **the AI never auto-contains**. The load-bearing rule: model fails / low-confidence /
+    unparseable → **escalate**, never → no action. The deliverable is the workflow plus a branch-logic
+    gate that proves it.
+
 ## Why this matters
 
 SOAR (Security Orchestration, Automation, and Response) platforms have been in enterprise SOCs for a
@@ -47,6 +56,13 @@ confidence}`, and hands it to the next branch. **The model is a worker inside th
 orchestrator.** Its job is to emit a structured classification; n8n's job is to decide what to do with
 it. That inversion is what keeps a non-deterministic component inside a deterministic frame.
 
+!!! note "The mental model"
+    Separation of concerns by strength: n8n owns the workflow graph, the branching, the connectors,
+    and the audit trail; Ollama owns one node that returns a structured classification. **The model
+    is a worker, not the orchestrator** — it emits a judgment, n8n decides what to do with it. That
+    inversion is what lets you put a non-deterministic component inside a deterministic, auditable
+    frame.
+
 The load-bearing judgment is **the human-in-the-loop threshold — what the AI is allowed to do without
 a human, and what it must hand up.** It is not a technical setting; it is an operational policy, and
 like the routing decision in [Module 01](../01-hybrid-ai-pattern/README.md), it is an **ADR-shaped
@@ -64,6 +80,14 @@ gated behind a human for HIGH and is never the model's unsupervised call. That i
 lesson encoded as policy: the faster and less deterministic the actor, the tighter the gate on its
 irreversible actions.
 
+!!! warning "The gotcha"
+    In a Python script a bad model response raises `json.JSONDecodeError` and you handle it. In n8n an
+    expression error **silently takes the default branch** — and if you built it naively that default
+    is "no action," leaving a CRITICAL alert unescalated. The rule is absolute: model fails /
+    low-confidence / unparseable → **escalate**, never → no action. "No AI → escalate" is the safe
+    failure; "No AI → no action" is the dangerous one. The branch-logic fixture exists to *prove* the
+    model-down case lands in the escalate branch, not the silent default.
+
 The second judgment is the **failure mode**, and it is where SOAR + AI quietly betrays you. In a
 Python script, a bad model response raises `json.JSONDecodeError` and you handle it. In n8n, an
 expression error **silently takes the default branch** — which, if you built it naively, is "no
@@ -80,6 +104,14 @@ mandate an audit trail) and a quality-control mechanism — the log is what lets
 decisions and discover the model systematically over-classifies a particular alert type. It is also
 how the branch-logic gate stays honest: the test reads the audit log to confirm each labelled alert
 took its expected branch.
+
+!!! tip "AI caveat"
+    A model fills n8n node JSON from a verbal description faster than the UI — but you own the gate,
+    not the JSON. It will route the *happy path* and leave the failure branch implicit (verify the
+    "AI call fails" path explicitly escalates, not the default node), and it treats "wait for approval"
+    and "proceed after a timeout" as interchangeable — they are not; a timeout-to-proceed turns your
+    human gate into theatre. Let it draft the branch-logic fixture, but label the expected branches
+    yourself.
 
 ## Learn (~2.5 hrs)
 
@@ -118,3 +150,8 @@ and a timeout-to-proceed turns your human gate into theatre. Then have a model *
 branch-logic test fixture** (the labelled alerts), but **label the expected branches yourself**: a
 model writing its own answer key is the contamination Module 11 warns about. The model drafts the
 JSON and proposes test cases; you own the branch semantics and the ground truth.
+
+!!! question "Check yourself"
+    - Why is the model a "worker, not orchestrator," and which component owns the decision about what to *do* with its classification?
+    - Why does the AI never auto-contain, even on a CRITICAL alert — and how does Knight Capital make the point?
+    - An n8n expression error silently takes the default branch. Why is that the most dangerous failure mode here, and what must the default branch be instead?

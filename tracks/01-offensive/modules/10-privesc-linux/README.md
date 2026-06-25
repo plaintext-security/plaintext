@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~5–7 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    Initial access lands you as `www-data`, not root; privilege escalation turns that foothold into
+    root, which is what makes an intrusion serious. The crucial shift: Linux privesc is overwhelmingly
+    about **misconfiguration, not exploits** — a writable SUID binary, a too-generous `sudo` rule, a
+    hijackable cron job. So the workflow is **enumerate first, exploit second**. The other branch is
+    the unpatched local CVE like **PwnKit (CVE-2021-4034)**. Every vector here is the same list a CIS
+    benchmark audits, read from the attacker's end.
+
 ## Why this matters
 Initial access usually lands you as a low-privilege user. Privilege escalation — turning that
 foothold into root — is what makes an intrusion serious, and it almost always comes from
@@ -32,20 +40,27 @@ root but will spawn a shell, a too-generous `sudo` rule, a cron job running a sc
 writable `PATH` entry. So the workflow is **enumerate first, exploit second**: inventory the
 misconfigurations before you try anything.
 
-GTFOBins makes this concrete — it's the catalog of how ordinary Unix binaries (`find`, `vim`, `tar`)
-become a root shell when they run with privilege in the wrong config. The other branch is the unpatched
-local exploit: PwnKit (CVE-2021-4034) is the canonical example — a SUID-root binary present by default
-on nearly every distribution, exploitable with no special config, which is why "is this box patched
-against the famous local-root CVEs?" is part of every enumeration. Tools like `linpeas` and `pspy`
-automate the enumeration so you're not checking every vector by hand, but they only *gather* — you
-still read the output and judge which lead is real.
+!!! note "The mental model"
+    The system *hands* you root when you find the one thing an admin set up wrong. GTFOBins makes this
+    concrete — it's the catalog of how ordinary Unix binaries (`find`, `vim`, `tar`) become a root
+    shell when they run with privilege in the wrong config. The other branch is the unpatched local
+    exploit: PwnKit (CVE-2021-4034) — a SUID-root binary present by default on nearly every
+    distribution, exploitable with no special config. Tools like `linpeas` and `pspy` automate the
+    enumeration, but they only *gather* — you read the output and judge which lead is real.
 
-The judgment, and the hardening bridge: every vector here is something the defensive side *removes* —
-this is the same list a CIS benchmark or a hardening script audits, read from the attacker's end (do
-this consciously and you can hand a defender the exact fix). A model reads `linpeas` output and proposes
-the likely vector fast, but it will also point confidently at a dead end, or at a kernel exploit that
-crashes the box — kernel exploits are the last resort precisely because they're unstable. Verify the
-vector against GTFOBins by hand before you pull the trigger.
+The hardening bridge: every vector here is something the defensive side *removes* — this is the same
+list a CIS benchmark or a hardening script audits, read from the attacker's end. Do this consciously
+and you can hand a defender the exact fix.
+
+!!! warning "The gotcha"
+    Kernel exploits are the **last resort**, not the first move — they're unstable and a wrong one
+    crashes the box and ends your access. Exhaust the misconfiguration vectors first; reach for a
+    kernel exploit only when nothing else works.
+
+!!! tip "AI caveat"
+    A model reads `linpeas` output and proposes the likely vector fast, but it will also point
+    confidently at a dead end, or at a kernel exploit that crashes the box. Verify the vector against
+    GTFOBins by hand before you pull the trigger.
 
 ## Learn (~4 hrs)
 
@@ -69,3 +84,8 @@ vector against GTFOBins by hand before you pull the trigger.
 A model reads `linpeas` output and suggests the likely vector fast — a real accelerator. But
 it also confidently points at a dead end or a kernel exploit that crashes the box. Verify the
 vector by hand (check GTFOBins) before you pull the trigger.
+
+!!! question "Check yourself"
+    - Why is "enumerate first, exploit second" the right workflow for Linux privesc?
+    - How does a SUID binary listed on GTFOBins turn into a root shell?
+    - When is a local-root CVE like PwnKit the right call versus a misconfiguration, and why are kernel exploits the last resort?

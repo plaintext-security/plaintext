@@ -10,6 +10,14 @@
 **Difficulty:** Intermediate &nbsp;·&nbsp; **Estimated time:** ~4–6 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    A hardening checklist was written for a generic enterprise box; your endpoint is not generic. A
+    threat model decides *what is actually worth defending* — which assets live on the host, which
+    adversary playbook targets a machine like yours, and which cheap control closes the most attack
+    paths. The output is a prioritised hardening backlog, not a compliance score. Colonial Pipeline
+    (2021) is the reminder: the breach started at one MFA-less VPN account, exactly the missing
+    access control a threat model surfaces before it's exploited.
+
 ## Why this matters
 
 Every hardening checklist was written for a generic "enterprise workstation." Your endpoint is not generic — it runs specific software, holds specific data, and sits in a specific network position. Applying a 300-item benchmark without understanding which 30 items actually matter for your threat model is how teams burn time patching theoretical risks while leaving real ones open. The threat model comes first because it determines which controls get prioritised, which can be deferred, and which benchmarks are the right starting point at all.
@@ -22,11 +30,28 @@ Produce a threat model for a representative financial-services endpoint — iden
 
 An endpoint threat model is a structured conversation about attacker economics. The host is not uniformly valuable — the threat model asks *what is on this machine that an adversary would want*, *how would they reach it from their likely entry point*, and *what is the cheapest control that closes or significantly narrows that path*. Most attackers are not targeting your specific company; they are running playbooks against the class of target you represent. The threat model's first job is to figure out which playbook. The **Colonial Pipeline ransomware attack (May 2021)** is the textbook reminder that the cheapest path is usually a missing endpoint/access control, not a zero-day: DarkSide got in through a single compromised password on an inactive VPN account that had no MFA — exactly the kind of weakness a host/access threat model is built to surface and prioritise *before* it is exploited.
 
+!!! note "The mental model"
+    The threat model is a question of attacker economics, not a checklist: *what on this host would
+    an adversary want, how cheaply can they reach it, and what is the cheapest control that closes
+    that path?* Its output is a prioritised backlog of controls, not a compliance percentage.
+
 The STRIDE model (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) is a useful lens for endpoints even though it was designed for applications. A workstation can be spoofed (credential theft lets an adversary impersonate the user), tampered with (a rootkit modifies the kernel or audit logs), and elevated against (a local privilege-escalation exploit moves the adversary from user to SYSTEM). Running STRIDE systematically prevents the "we only thought about malware" failure where teams harden against commodity threats but overlook the post-exploitation phase that actually causes breach impact.
+
+!!! warning "The gotcha"
+    Endpoint assets are rarely just files. Cached credentials (LSASS, browser passwords, SSH agent,
+    token caches), access context (which segments and cloud resources the host reaches), and domain
+    position (a machine that can enroll certs or edit GPO is a domain-takeover asset) are the
+    high-value targets — and the ones a "we protect the documents" model misses entirely.
 
 Assets on an endpoint are rarely just files. They include cached credentials (LSASS memory, browser-saved passwords, SSH agent, token caches), access context (what network segments and cloud resources this machine can reach), software supply chain risk (the developer laptop that can push to prod is a higher-value target than the lobby kiosk), and the host's position in the domain (a machine that can enroll new certificates or modify group policy is a domain takeover asset). The threat model must enumerate all of these — not just the sensitive documents in the user's home directory.
 
 Mitigations follow from the asset/path analysis. A control that doesn't close or narrow an attack path — even if it appears on the CIS benchmark — is low priority. A control that is not on the benchmark but does close a high-value path goes on the model anyway. The output of a good endpoint threat model is a prioritised list of controls, not a compliance score. Compliance scoring is the *measurement* of whether you implemented the controls; the threat model is what tells you which controls to implement.
+
+!!! tip "AI caveat"
+    A model will generate a plausible STRIDE analysis from a role description in seconds — but it
+    invents threats that don't apply to your OS or aren't observed in the wild, and it can't know
+    your organisation-specific paths. Validate every threat against ATT&CK; prune what it overreaches
+    on; add what only you know.
 
 ## Learn (~3 hrs)
 
@@ -54,3 +79,8 @@ Mitigations follow from the asset/path analysis. A control that doesn't close or
 ## AI acceleration
 
 Use an AI assistant to enumerate attack paths you might have missed — describe the endpoint's role (developer workstation, finance user, build server) and ask it to generate a STRIDE analysis for that role. Then *validate each threat* against ATT&CK: does the technique exist, is it commonly observed in the wild, does it apply to your OS version? AI is fast at generating lists; your job is to prune the implausible ones and add the organisation-specific ones it can't know.
+
+!!! question "Check yourself"
+    - Why is the deliverable of an endpoint threat model a prioritised control backlog rather than a compliance score?
+    - Name three endpoint assets that are *not* files but that an adversary would target.
+    - Colonial Pipeline started from one VPN account — what made it a threat-model finding rather than a zero-day?

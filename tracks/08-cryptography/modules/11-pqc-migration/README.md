@@ -10,6 +10,15 @@
 **Difficulty:** Advanced &nbsp;·&nbsp; **Estimated time:** ~6–8 hrs (study + lab) &nbsp;·&nbsp; **Prerequisites:** [Foundations](../../../00-foundations/README.md), [Module 05 — TLS Deep Dive](../05-tls-deep-dive/README.md) (the handshake you migrate)
 { .module-meta }
 
+!!! abstract "In 60 seconds"
+    The quantum threat isn't a future computer — it's harvest-now-decrypt-later: an adversary stores your
+    encrypted traffic *today* and reads it once a quantum machine exists. That targets the *key exchange*
+    (Shor breaks ECDHE), not symmetric crypto, so ML-KEM (FIPS 203) is the migration you do first;
+    signatures (204/205) follow on a slower clock. The fix is *hybrid* — run X25519 *and* ML-KEM and
+    combine both secrets, safe if either holds — added via the strangler-fig pattern so old clients keep
+    connecting. Done means a handshake capture proves the new path negotiates and the old one still works,
+    not that the config has the keyword.
+
 ## Why this matters
 
 The threat that makes this urgent is not a quantum computer you have to fear today — it is an adversary who copies your encrypted traffic *today* and decrypts it *later*, once a cryptographically relevant quantum computer exists. This is **harvest-now-decrypt-later (HNDL)**, and it inverts the usual "we'll upgrade when the attack is real" calculus: for anything that must stay confidential for years — health records, source code, diplomatic cables, long-lived secrets — the attack window is *now*, because the ciphertext an attacker stores this morning is the plaintext they read in 2035. The part of TLS that HNDL targets is the **key exchange** (the ECDHE handshake that establishes the session key), because that is what a future quantum computer running Shor's algorithm breaks — recover the key-exchange secret and you decrypt the whole captured session. Symmetric encryption (AES) and hashing are comparatively safe; the key *agreement* is the exposed surface, and it is exposed retroactively.
@@ -22,7 +31,27 @@ This is not a future exercise. **Hybrid key exchange is already live on the inte
 
 The skill this module builds is **crypto-agility**: the property that lets you change a system's algorithms without re-architecting it. Most brownfield crypto is the opposite — an algorithm name is hardcoded in a config, baked into a protocol assumption, or buried in a library default nobody has revisited since deploy. A system is crypto-agile when the algorithm is a *negotiated, swappable parameter*, not a constant. PQC migration is the forcing function that exposes whether you have agility or not: the teams that can flip on a hybrid group with a config line have it; the teams who discover the algorithm is welded into a binary do not. The deliverable that proves agility is the same one that proves the migration — a **crypto inventory** (what algorithm is used *where*, found by reading the actual handshake, not the documentation) followed by a controlled swap.
 
+!!! note "The mental model"
+    Migrating crypto is a brownfield refactor, not a math upgrade. The hard part isn't ML-KEM the
+    algorithm — it's that the algorithm is welded into configs, library defaults, and protocol
+    assumptions across a running estate that can't go down. Treat the algorithm as a parameter you
+    *negotiate*, prove the new path by reading the wire, and never cut the old one down in one stroke.
+
+!!! warning "The gotcha"
+    A config with `X25519MLKEM768` in it can silently fall back to classical X25519 — your library build
+    doesn't support the group, or the client never offers it — and you're exactly as exposed as before,
+    now with false confidence. Done is proven by the *handshake capture*, never by the config file. The
+    config lies; the `pcap` doesn't.
+
 The migration is **hybrid by design, and that design choice is the safety argument**. You do not rip out X25519 and bolt on ML-KEM; you run both and combine their secrets. The reasoning is hedged failure: ML-KEM is new, lattice cryptography is younger than elliptic curves, and a classical break of a fresh PQC scheme is not unthinkable (history is littered with PQC candidates that fell in analysis). X25519 is decades-hardened against classical attackers but quantum-broken in principle. Combine them and the session key derives from *both* shared secrets, so an attacker must break **both** X25519 (needs a quantum computer) **and** ML-KEM (needs a classical lattice break) to recover it. Hybrid is the bet that one of the two will always hold — it is strictly safer than either alone, which is exactly why the early internet deployments (`X25519MLKEM768`) are hybrid rather than pure-PQC.
+
+??? note "Go deeper: why key exchange migrates first and signatures wait"
+    The HNDL clock runs differently for confidentiality and authenticity. A *key exchange* secret stolen
+    today is decrypted whenever a quantum computer arrives — the harm is retroactive, so the window is
+    *now*, which is why ML-KEM (FIPS 203) is the urgent move. A *signature*, by contrast, only matters
+    *during* the live handshake it authenticates; you can't "harvest a signature now, forge it later"
+    because the connection it protected is long gone. So ML-DSA/SLH-DSA (FIPS 204/205) migrate on their
+    own, slower track — and conflating the two is a classic way PQC migrations stall.
 
 The migration *method* is the **strangler fig** (Martin Fowler's pattern: grow the new capability *around* the running system, move across incrementally, and never cut the old one down in a single stroke). Applied to a cipher: you do **not** flip the server to demand ML-KEM and call it done — a server that *only* offers the hybrid group will refuse every old client that does not understand it, and you have traded a quantum risk for an immediate outage. Instead you **add** the hybrid group to the server's supported list *alongside* the classical ones and let TLS negotiation do its job: a modern client offers `X25519MLKEM768` and gets the post-quantum-safe path; an old client offers only `X25519` and still connects classically. The estate's quantum-exposed surface shrinks toward zero one client-capability at a time, while interop is never broken. The four beats are: **inventory** (read the real handshake — what group/cipher is actually negotiated), **pick the hybrid suite** (`X25519MLKEM768`, the group Chrome/Cloudflare deployed), **migrate without breaking interop** (add the hybrid group, keep the classical fallback), and **prove nothing broke** (capture the handshake before and after, and show old clients still connect while new clients now negotiate hybrid).
 
@@ -54,3 +83,8 @@ The honest gotcha that separates a real migration from a checkbox one: **a PQC m
 
 ## AI acceleration
 A model is genuinely strong at the *inventory and translation* half of this work: point it at a `testssl.sh` run or an `openssl s_client` transcript and ask it to extract the negotiated group/cipher per endpoint into a crypto inventory table, classify each as quantum-exposed (key exchange) or not, and draft the OpenSSL/nginx config diff that *adds* the hybrid group while keeping the classical fallback. That is real leverage on the tedious bookkeeping. But the posture is strict, because the model's failure mode here is the same dangerous one a rushed engineer has: ask it to "make this server post-quantum" and it will happily hand you a config that sets the supported group to *only* `X25519MLKEM768` — a clean big-bang that breaks every legacy client — because demanding the new algorithm is the simplest thing to express and the model carries none of the operational fear of an interop outage. The judgment it cannot do for you is **verifying the proof**: asked to "confirm the migration worked," a model will read your config back to you and pronounce it done, missing that the handshake silently fell back to classical because your library didn't support the group. So: **AI drafts the inventory and the config diff → you keep the classical fallback in → you read the before/after handshake captures yourself** and confirm the negotiated group is actually the hybrid one for a modern client *and* that a legacy client still completes its classical handshake. AI authors the migration plan; you own the capture that proves nothing broke.
+
+!!! question "Check yourself"
+    - Why does harvest-now-decrypt-later make *key exchange* the urgent migration while signatures can wait — and which FIPS standard does each map to?
+    - In a hybrid X25519+ML-KEM exchange, what must an attacker break to recover the session key, and why is that strictly safer than pure-PQC?
+    - Your config has `X25519MLKEM768` and reloaded cleanly. Why is that not proof the migration worked, and what artifact actually proves it?
