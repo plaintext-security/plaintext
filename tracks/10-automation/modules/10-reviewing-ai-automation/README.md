@@ -1,6 +1,6 @@
 # Module 10 — Reviewing AI-Generated Automation
 
-*Variant D · adversarial review ("AI authors → you review → you own it," made into the whole lab). [Go to the hands-on lab →](lab.md)*
+*Type 14 · Adversarial Review — catch the subtly-wrong lines in fluent, plausible AI-generated automation and codify when to trust it; the deliverable is your review findings + the corrected artifact + a trust checklist for this kind of output. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

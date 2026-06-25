@@ -26,16 +26,18 @@ skill.*
 | 09 | [Detection-as-Code Pipelines](modules/09-detection-as-code-pipelines/README.md) | Versioned, tested detections in CI | `sigma`, `pytest` |
 | 10 | [Reviewing AI-Generated Automation](modules/10-reviewing-ai-automation/README.md) | Catching what the model got wrong | `checkov` |
 | 11 | [Secrets Handling in Pipelines](modules/11-pipeline-secrets/README.md) | Short-lived federated creds (OIDC) instead of stored pipeline secrets | `localstack`, OIDC |
+| 12 | [Click-ops → IaC Migration](modules/11-clickops-iac-migration/README.md) | Adopt running hand-built infra under IaC without an outage | `terraform import` |
 
 ## Phases & projects
 
-The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The twelve modules run in three phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours). Every project is reviewed,
 version-controlled code with a note on what AI generated vs. what you corrected.
 
-- **Phase 1 · Infrastructure & config as code** (01–04) — **Project:** define a small environment in
+- **Phase 1 · Infrastructure & config as code** (01–04, 12) — **Project:** define a small environment in
   Terraform/OpenTofu and configure it with Ansible, with `checkov`/`tfsec` gating misconfigurations —
-  proving a deliberately over-broad rule is *blocked* before apply.
+  proving a deliberately over-broad rule is *blocked* before apply — then adopt a running, hand-built
+  resource under IaC incrementally without an outage (strangler-fig).
 - **Phase 2 · Pipelines & portable tooling** (05–07, 11) — **Project:** a CI/CD pipeline that runs
   secret-scanning and security gates from commit to deploy, a containerised security tool that runs
   the same everywhere, and a scheduled enrichment pipeline feeding processed data downstream — and

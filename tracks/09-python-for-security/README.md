@@ -24,10 +24,11 @@ direct and review the ones AI writes.
 | 08 | [Driving Security Tools](modules/08-driving-security-tools/README.md) | Wrapping VirusTotal, MISP, and friends | `requests`, `pymisp` |
 | 09 | [Building an MCP Server](modules/09-building-mcp-server/README.md) | Exposing a tool to an LLM | `fastmcp` |
 | 10 | [Packaging, Testing & Owning AI Code](modules/10-packaging-testing/README.md) | Reviewing, testing, and shipping | `pytest`, `ruff` |
+| 11 | [Eval Harness for Security Tools](modules/11-eval-harness/README.md) | Measuring a tool's quality with a labelled corpus and a CI regression gate | `pytest` |
 
 ## Phases & projects
 
-The ten modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours). Each project carries the
 "AI authors → you review → you own it" habit into committed, tested code.
 
@@ -37,9 +38,10 @@ is the substantial, standalone unit — a single module is a few hours). Each pr
 - **Phase 2 · Talk to the network & the world** (04–07) — **Project:** an IOC enrichment CLI (with
   `typer`/`argparse`) that queries threat-intel APIs, plus a small network or scraping tool — error
   handling, rate limits, and responsible use built in.
-- **Phase 3 · Tooling, MCP & shipping** (08–10) — **Project:** the track capstone — wrap a security
+- **Phase 3 · Tooling, MCP & shipping** (08–11) — **Project:** the track capstone — wrap a security
   tool (VirusTotal/MISP) and expose it to an LLM as an MCP server, then package it with `pytest`/`ruff`
-  and a README — delivering the tool, its tests, and a write-up of what AI wrote vs. what you changed.
+  and a README, and build an eval harness that measures the tool's quality and gates regressions in CI
+  — delivering the tool, its tests, and a write-up of what AI wrote vs. what you changed.
 
 ## Prerequisites
 Complete Track 00 — Foundations (module 10 — Scripting & Automation).

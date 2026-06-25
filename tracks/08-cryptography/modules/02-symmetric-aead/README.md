@@ -40,6 +40,7 @@ ChaCha20-Poly1305 is the AEAD alternative to AES-GCM. It uses the ChaCha20 strea
 - [RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols](https://www.rfc-editor.org/rfc/rfc8439) — the spec for ChaCha20-Poly1305; read the Introduction and Section 2 for the construction overview.
 
 **IV reuse attack implementation**
+- [Böck, Zauner et al. — "Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS" (project page + paper)](https://github.com/nonce-disrespect/nonce-disrespect) — the practical write-up of the GCM "forbidden attack": one repeated nonce recovers the GHASH authentication key `H` and lets you forge messages. Read the README's attack summary — it is exactly the recovery you implement in the lab, found live against real TLS servers.
 
 **Python cryptography library**
 - [cryptography.io — Symmetric encryption with AEAD](https://cryptography.io/en/latest/hazmat/primitives/aead/) — the `AESGCM` and `ChaCha20Poly1305` API reference; understand the `nonce` parameter and the `InvalidTag` exception.

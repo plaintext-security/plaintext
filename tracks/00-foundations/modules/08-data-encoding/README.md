@@ -1,6 +1,6 @@
 # Module 08 — Data & Encoding
 
-*Variant D · misconception, predict-then-reveal ("call it before you read on"). [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — predict whether a base64 `-EncodedCommand` payload is "secret," then disprove it by decoding a real malware command line yourself: encoding is not encryption. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

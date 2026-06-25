@@ -1,6 +1,6 @@
 # Module 01 — Cloud Fundamentals & Shared Responsibility
 
-*Variant D · breach-driven, predict-then-reveal, interleaved ("render the verdict"). [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy (+ Type 3 · Blast-Radius) — walk the Capital One chain hop by hop and render a verdict on who owned each failed control, provider or customer. (Secondary: Blast-Radius — trace how one SSRF reached every bucket.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

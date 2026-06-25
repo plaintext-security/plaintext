@@ -28,7 +28,7 @@ attack the AI systems you just built.
 
 ## Phases & projects
 
-The ten modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours).
 
 - **Phase 1 · Run & ground models** (01–04) — **Project:** a local-model setup (Ollama/llama.cpp)
@@ -37,9 +37,10 @@ is the substantial, standalone unit — a single module is a few hours).
 - **Phase 2 · Build the copilot** (05–08) — **Project:** an MCP server exposing one real security
   tool, wired to the RAG corpus into a SoC copilot that triages at volume, plus a SOAR + AI playbook
   that drafts a response and waits for human approval.
-- **Phase 3 · Secure & attack the AI** (09–10) — **Project:** the track capstone — red-team the
+- **Phase 3 · Secure, attack & measure the AI** (09–11) — **Project:** the track capstone — red-team the
   copilot you built: demonstrate a prompt-injection or data-exfil weakness with `garak`/`promptfoo`,
-  then harden against it — delivering the copilot, the attack, and the fix.
+  then harden against it, and wire a held-out eval with a regression gate so the hardening can't
+  silently regress — delivering the copilot, the attack, the fix, and the eval.
 
 ## Prerequisites
 Complete Track 00 — Foundations; Track 09 — Python is strongly recommended.

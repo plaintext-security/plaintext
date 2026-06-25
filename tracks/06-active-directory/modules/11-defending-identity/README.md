@@ -1,6 +1,6 @@
 # Module 11 — Defending Identity
 
-*Type 10 · Design→Red-team-your-own→Harden — design a tiered administrative model for Corp that structurally breaks each hop in PATH-001 (module 08), implement it as GPO restrictions and group-membership rules, then re-walk PATH-001 against the new design to prove the path now dies, delivering the architecture plus a control matrix mapping each technique to the control that prevents it. (Secondary: Decision / ADR — defend the tradeoff calls, e.g. Protected Users vs Authentication Policy Silos, tier-by-OU vs tier-by-group.) [Go to the hands-on lab →](lab.md)*
+*Type 10 · Design → Red-team-your-own-design → Harden — design a tiered administrative model for Corp that structurally breaks each hop in PATH-001 (module 08), implement it as GPO restrictions and group-membership rules, then re-walk PATH-001 against the new design to prove the path now dies, delivering the architecture plus a control matrix mapping each technique to the control that prevents it. (Secondary: Decision / ADR — defend the tradeoff calls, e.g. Protected Users vs Authentication Policy Silos, tier-by-OU vs tier-by-group.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

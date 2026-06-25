@@ -1,6 +1,6 @@
 # Module 07 — Secrets Management & Detection
 
-*Variant D · breach-driven, build-first deepened ("a leak you can't rotate fast enough"). [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate (+ Type 4 · Audit→Build→Verify) — build the architecture that makes a leaked credential expire on its own: Vault-backed, dynamic, leased, fetched at runtime, auto-rotated. (Secondary: Audit→Build→Verify — find the hardcoded key in git history first.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

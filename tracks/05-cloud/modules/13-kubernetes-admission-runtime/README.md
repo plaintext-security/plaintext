@@ -1,6 +1,6 @@
 # Module 13 — Kubernetes: Admission & Runtime
 
-*Variant D · breach-driven, build-first ("encode the bouncer, then watch the room"). [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate (+ Type 5 · Detonate & Detect) — write Kyverno admission policies that deny non-compliant pods at the door and prove they block the bad spec while admitting the good one. (Secondary: Detonate & Detect — a Falco rule for what slips past at runtime.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

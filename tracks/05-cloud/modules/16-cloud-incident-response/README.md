@@ -1,6 +1,6 @@
 # Module 16 — Cloud Incident Response
 
-*Variant D · breach-driven, predict-what-fires / reconstruct ("the log is the crime scene — rebuild the timeline"). [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct (+ Type 5 · Detonate & Detect) — cloud IR is rebuilding the timeline from an immutable API log, not disk forensics; predict what the responders missed, then reconstruct the LastPass two-stage chain. (Secondary: Detonate & Detect — the track's payoff, run under pressure.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

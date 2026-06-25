@@ -1,6 +1,6 @@
 # Module 07 — Web & HTTP Fundamentals
 
-*Variant D · skill-first, one light predict ("render the verdict" vein). [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — read and manipulate the plaintext HTTP request/response fields (methods, headers, cookies) every web attack and defense turns on. (Secondary: Misconception Reveal — predict, then see, exactly what a Firesheep-style session-cookie capture lets an attacker do and why `Secure`/HTTPS-everywhere fixed it.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

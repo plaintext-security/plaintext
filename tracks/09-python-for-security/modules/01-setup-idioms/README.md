@@ -62,6 +62,7 @@ day one. Get into this habit on the first script; undoing it later is painful.
 - [Bandit — security linter for Python (PyCQA)](https://bandit.readthedocs.io/en/latest/) — skim the "Getting started" and "Tests" sections to understand the finding levels and how to suppress a false positive.
 
 **Security idioms (~30 min)**
+- [Python docs — `subprocess` "Security Considerations"](https://docs.python.org/3/library/subprocess.html#security-considerations) — the authoritative note on why `shell=True` with any untrusted input is a shell-injection bug, and how passing an argument *list* (no shell) avoids it. The single most common dangerous idiom in security tooling; read it, then audit your own scripts for it.
 
 ## Key concepts
 - Why virtual environments are a security boundary, not just a convenience

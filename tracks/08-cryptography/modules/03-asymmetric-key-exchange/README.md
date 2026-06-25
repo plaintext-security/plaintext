@@ -42,6 +42,7 @@ Forward secrecy deserves explicit attention because it is the property that make
 - [OpenSSL man pages — pkeyutl(1)](https://docs.openssl.org/3.0/man1/openssl-pkeyutl/) — signing, verification, and ECDH key derivation.
 
 **Forward secrecy**
+- [Cloudflare blog — "Why ephemeral Diffie-Hellman is the key to forward secrecy" (Keyless SSL: The Nitty Gritty Technical Details)](https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/) — read the "Forward secrecy" section: it contrasts static RSA key exchange (one stolen private key decrypts all past captured traffic) with ephemeral (EC)DHE, where each session's key is discarded. This is the practical reason DHE/ECDHE replaced RSA key transport in TLS 1.3.
 
 **Algorithm selection**
 - [Cryptographic right answers (Latacora)](https://www.latacora.com/blog/2018/04/03/cryptographic-right-answers/) — a concise, opinionated guide to current algorithm recommendations; read the asymmetric encryption and signatures sections.

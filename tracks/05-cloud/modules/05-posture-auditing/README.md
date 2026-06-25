@@ -1,6 +1,6 @@
 # Module 05 — Posture & Misconfiguration Auditing
 
-*Variant D · breach-driven, audit → remediate → verify ("a scanner is a linter; the skill is the triage"). [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — run a posture scanner over a live account, then do the real work: triage 400 findings to the one that matters, remediate it, and re-scan to verify. (Secondary: Concept Autopsy — why the scanner-trivial 2017 S3 leaks shipped anyway.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 05 — Building MCP Servers
 
-*Variant D · build-first ("ship a reusable tool, then prove it rejects a hostile argument"). [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — ship a reusable MCP server others can run (flags, README, tests) and prove it rejects a hostile argument, because every argument an LLM passes is untrusted input; the deliverable is the packaged, tested tool. (Secondary: Build-&-Operate — you stand it up and run a real client against it.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

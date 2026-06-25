@@ -123,6 +123,23 @@ A short recap checklist of "The core idea" — not the teaching itself.
 The specific way AI/automation speeds this up — and what you must review and own.
 ```
 
+### Required top line — the type tag
+Every module README opens with a one-line italic **type tag** in the form
+`*Type N · <Type Name> — <one-line, module-specific description>. (Secondary: <Type Name> — <short>.) [Go to the hands-on lab →](lab.md)*`,
+where the type is one of the constructs in [`planning/MODULE-TYPE-LIBRARY.md`](planning/MODULE-TYPE-LIBRARY.md)
+(Type 1 Concept Autopsy … Type 16 Drift/Steady-State). This is **not optional** and must match the
+module's actual shape. (An earlier `Variant D · …` scheme has been retired — do not use it.)
+
+### Optional presentation layer (the "deluxe" tier)
+A few exemplar modules — **offensive/06-web-injection**, **defensive/08-detection-as-code**,
+**defensive/18-detection-drift**, **defensive/19-reviewing-ai-detections** — add richer Material
+furniture on top of the baseline anatomy: a `!!! abstract "In 60 seconds"` summary, `!!! note/warning/tip`
+admonitions and a `??? note` "go deeper" collapsible inside *The core idea*, and a closing
+`!!! question "Check yourself"` self-quiz. **This is the preferred presentation and the template for
+new and substantially-edited modules** — it reads better and aids retention. It is **not** a blocking
+back-fill requirement for the existing baseline modules; adopt it incrementally as modules are touched.
+Keep the same section *content*; the furniture is presentation only.
+
 ## Bridge-prose quality checklist
 
 **"The core idea" is the bar a module lives or dies on.** It is the original-prose bridge — the part

@@ -43,6 +43,7 @@ Running a private CA with `step-ca` is the practical equivalent of what every PK
 - [step CLI documentation](https://smallstep.com/docs/step-cli/) — the command-line tool for interacting with step-ca; read the `step ca certificate` and `step certificate inspect` commands.
 
 **Revocation**
+- [Adam Langley — "Revocation still doesn't work" (ImperialViolet)](https://www.imperialviolet.org/2014/04/29/revocationagain.html) — the practitioner reality behind CRLs and OCSP: soft-fail clients treat a missing revocation response as "valid," so classic revocation does not stop an attacker who can block the check. Read it to understand why OCSP stapling, short-lived certs, and browser-pushed CRL sets (CRLite) emerged. Frames the revocation step in the lab.
 
 ## Key concepts
 

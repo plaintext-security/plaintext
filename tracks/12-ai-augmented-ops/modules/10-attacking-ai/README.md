@@ -1,6 +1,6 @@
 # Module 10 — Attacking AI Systems
 
-*Variant D · attack-first ("red-team it systematically, then turn the findings into a regression eval that re-runs in CI"). [Go to the hands-on lab →](lab.md)*
+*Type 15 · Red-team-the-AI — land prompt-injection / jailbreak / tool-abuse against an LLM·MCP·RAG system, because "just tell it not to" is the wrong intuition; the deliverable is the working exploit plus a regression eval that catches the hole if it silently reopens in CI. (Secondary: Eval Harness — the scored regression suite.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

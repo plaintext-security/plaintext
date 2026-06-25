@@ -1,6 +1,6 @@
 # Module 01 — The Automation Mindset
 
-*Variant D · concept autopsy, predict-then-reveal (+ an ADR deliverable). [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — take a real automated-deploy disaster apart and derive why "automation makes you safer" is wrong: it makes you faster, including at being wrong, so the gate is the point. (Secondary: Decision / ADR — the automate-or-not call you commit as an ADR.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

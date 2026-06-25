@@ -1,6 +1,6 @@
 # Module 04 — Cloud Network Security
 
-*Variant D · breach-driven, predict-the-reachability, audit→build→re-verify ("find the exposure, author the baseline, prove it holds"). [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — audit a VPC for what's actually reachable from the internet, then author a default-deny baseline as code and re-verify it holds. (Secondary: Blast-Radius — trace the transitive paths a foothold walks.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

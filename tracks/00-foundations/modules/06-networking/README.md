@@ -1,6 +1,6 @@
 # Module 06 — Networking Fundamentals
 
-*Variant D · skill-first, breach as stakes (one light predict). [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — capture and read traffic at the packet level until the TCP handshake and DNS resolution are legible on the wire. (Secondary: Reconstruct — pick a SUNBURST-style beaconing DNS lookup out of otherwise-normal traffic.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

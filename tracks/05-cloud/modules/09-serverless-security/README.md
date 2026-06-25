@@ -1,6 +1,6 @@
 # Module 09 — Serverless Security
 
-*Variant D · breach-driven, predict-then-reveal verdict + attacker→fixer ("the server is gone, the identity isn't"). [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — predict a Lambda's blast radius (the function or its execution role?), then prove the role's reach and the event-payload abuse. (Secondary: Audit→Build→Verify — least-privilege the role, close the injection, redeploy, and prove the path is gone.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

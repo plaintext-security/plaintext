@@ -1,6 +1,6 @@
 # Module 11 — Red-team Your Zero-Trust Deployment
 
-*Type 10 · Design → red-team-your-own-design → harden — you have already built the gated service (Modules 05/06); here you **attack your own design**, then harden the one finding that holds, then re-attack until it fails too. The deliverable is the attacks that *failed* (the design held, documented) plus the one that didn't, hardened. [Go to the hands-on lab →](lab.md)*
+*Type 10 · Design → Red-team-your-own-design → Harden — you have already built the gated service (Modules 05/06); here you **attack your own design**, then harden the one finding that holds, then re-attack until it fails too. The deliverable is the attacks that *failed* (the design held, documented) plus the one that didn't, hardened. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

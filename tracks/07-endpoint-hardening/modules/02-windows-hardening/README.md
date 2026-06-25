@@ -43,6 +43,7 @@ One common trap is treating benchmark compliance as security equivalence. CIS Le
 - [Windows security baselines (Microsoft Learn)](https://learn.microsoft.com/en-us/windows/security/operating-system-security/device-management/windows-security-configuration-framework/windows-security-baselines) — conceptual overview of the baseline program; read the "What is a security baseline?" section.
 
 **Group Policy as code**
+- [Microsoft — "LGPO.exe utility" (Security Baselines documentation)](https://techcommunity.microsoft.com/blog/microsoft-security-baselines/lgpo-exe-local-group-policy-object-utility-v1-0/701045) — how LGPO imports and *exports* policy as text-based `.PolicyRules` / registry.pol files, which is what makes a local GPO version-controllable and diffable. Read the import/export and parse-to-text sections so your hardening baseline lives in git, not a clicked-through UI.
 
 ## Key concepts
 

@@ -1,6 +1,6 @@
 # Module 04 — ZTNA Architectures
 
-*Variant D · Type 11 Decision / ADR — choose an architecture under constraints and defend it. [Go to the hands-on lab →](lab.md)*
+*Type 11 · Decision / ADR — choose a ZTNA architecture under real constraints (self-hosted vs cloud-delivered, threat model vs ops burden) and defend the pick; the deliverable is an Architecture Decision Record with options scored, a one-sentence decision, and the honest consequences. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

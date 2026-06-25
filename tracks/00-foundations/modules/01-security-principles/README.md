@@ -1,6 +1,6 @@
 # Module 01 — Security First Principles
 
-*Variant D · concept autopsy, predict-then-reveal. [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — take Equifax 2017 apart and name the specific first-principle that gave way at each step, predicting the "one thing that failed" before the reveal that there was no one thing. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

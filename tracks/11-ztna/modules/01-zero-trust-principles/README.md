@@ -1,6 +1,6 @@
 # Module 01 — Zero Trust Principles
 
-*Variant D · concept autopsy, predict-then-reveal. [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — take a real lateral-movement breach apart and derive the zero-trust principle: the perimeter held, but the flat, trusted interior was the breach; the deliverable is a one-page principle/boundary memo mapping each failure to a tenet. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

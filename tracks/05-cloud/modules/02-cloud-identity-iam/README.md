@@ -1,6 +1,6 @@
 # Module 02 — Cloud Identity & IAM
 
-*Variant D · breach-driven, predict-the-blast-radius, audit→build ("trace the reach, then close it"). [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — predict one leaked key's reach, then prove it with `simulate-principal-policy`. (Secondary: Audit→Build→Verify — author the least-privilege policy that closes the path and re-simulate.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

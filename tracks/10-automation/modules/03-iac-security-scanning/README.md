@@ -1,6 +1,6 @@
 # Module 03 — IaC Security Scanning
 
-*Variant D · build-first, judgment-as-code ("encode your verdict as a gate"). [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — encode your verdict on an IaC misconfiguration as a CI gate that fails-bad and passes-good, with one true finding correctly suppressed; the deliverable is the gate, proven both ways, not an essay. (Secondary: Build-&-Operate — you run a real scanner over real Terraform.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 10 — Container & Image Security
 
-*Variant D · breach-driven, predict-then-reveal verdict ("it runs — what else is in it?"). [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy (+ Type 4 · Audit→Build→Verify) — a working image tells you nothing about what's dormant in its layers; scan with trivy/grype and render a verdict on what's hidden. (Secondary: Audit→Build→Verify — triage CVEs by fixability, not count, and harden the image.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

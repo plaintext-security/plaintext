@@ -1,6 +1,6 @@
 # Module 12 — Threat Modeling
 
-*Variant D · concept autopsy, predict-then-reveal. [Go to the hands-on lab →](lab.md)*
+*Type 1 · Concept Autopsy — trace the Target 2013 kill chain to name the unguarded trust boundary, then carry that lens into modeling the lab system you built before touching a tool. [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 

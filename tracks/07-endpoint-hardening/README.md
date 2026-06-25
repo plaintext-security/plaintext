@@ -24,10 +24,12 @@ recognised benchmarks — as code, with compliance scoring and drift detection.
 | 09 | [Local Privilege-Escalation Defense](modules/09-privesc-defense/README.md) | Closing the paths Track 01 abuses | — |
 | 10 | [Detecting Host Compromise](modules/10-detecting-host-compromise/README.md) | Catching what the baseline didn't stop | `wazuh`, `sigma` |
 | 11 | [Host & Boot Integrity](modules/11-host-boot-integrity/README.md) | Proving files and the boot chain haven't been tampered with | `aide`, Secure Boot/TPM |
+| 12 | [Configuration & Posture Drift](modules/12-config-drift/README.md) | Detecting and reconciling drift from the baseline-as-code | `ansible`, `osquery`, `OpenSCAP` |
+| 13 | [Rolling a Baseline Across a Fleet](modules/13-fleet-migration/README.md) | Staged, ringed rollout that limits blast radius | `ansible` |
 
 ## Phases & projects
 
-The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The thirteen modules run in four phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours). Work on VMs you own, and
 snapshot before destructive changes.
 
@@ -37,10 +39,14 @@ snapshot before destructive changes.
 - **Phase 2 · Scale, score & patch** (05–08) — **Project:** stand up endpoint telemetry, push the
   baseline at scale with Ansible, score compliance with OpenSCAP, and run a patch/vuln-management
   loop — proving drift detection catches a deliberate misconfiguration.
-- **Phase 3 · Detect & defend** (09–11) — close the local privilege-escalation paths Track 01 abuses,
-  catch a simulated host compromise with telemetry, and prove files and the boot chain are intact with
-  file-integrity monitoring. **Project:** the track capstone — deliver the config-as-code, the
-  before/after score delta, the detection, and a tamper-evident integrity baseline.
+- **Phase 3 · Detect & defend** (09–11) — **Project:** close the local privilege-escalation paths
+  Track 01 abuses, catch a simulated host compromise with telemetry, and prove files and the boot chain
+  are intact with file-integrity monitoring — delivering the detections and a tamper-evident integrity
+  baseline.
+- **Phase 4 · Operate at scale** (12–13) — **Project:** the track capstone — keep the baseline-as-code
+  enforced with a drift loop that names *what* changed and against which control, and roll the baseline
+  across a fleet in staged rings that limit blast radius — delivering the config-as-code, the
+  before/after score delta, the drift report, and a staged rollout plan.
 
 ## Prerequisites
 Complete Track 00 — Foundations first.

@@ -23,10 +23,12 @@ cryptography, PKI, secrets management, and email authentication — and how to a
 | 08 | [Secret Detection & Leakage](modules/08-secret-detection/README.md) | Finding credentials in code and history | `gitleaks`, `trufflehog` |
 | 09 | [Email Authentication](modules/09-email-authentication/README.md) | SPF, DKIM, and DMARC in practice | `dig`, `openssl` |
 | 10 | [Auditing Applied-Crypto Failures](modules/10-auditing-crypto-failures/README.md) | Spotting the real-world mistakes | `testssl.sh` |
+| 11 | [Post-Quantum & Crypto-Agility Migration](modules/11-pqc-migration/README.md) | Migrating to hybrid PQC key exchange, proven by handshake capture | `openssl` 3.5, `oqs-provider` |
+| 12 | [Choosing Your Crypto: an ADR](modules/12-choosing-crypto/README.md) | Making and documenting a defensible crypto decision | `openssl` |
 
 ## Phases & projects
 
-The ten modules run in three phases; each ends in a **project** that integrates its modules (a phase
+The twelve modules run in four phases; each ends in a **project** that integrates its modules (a phase
 is the substantial, standalone unit — a single module is a few hours).
 
 - **Phase 1 · Primitives in your hands** (01–04) — **Project:** a small, tested crypto toolkit that
@@ -39,6 +41,9 @@ is the substantial, standalone unit — a single module is a few hours).
 - **Phase 3 · Secrets & applied audit** (07–10) — **Project:** the track capstone — audit a small
   system's full crypto posture (TLS config, cert hygiene, secrets handling, SPF/DKIM/DMARC), hunt for
   leaked credentials, fix each finding, and re-test — delivering the before/after audit report.
+- **Phase 4 · Migration & decisions** (11–12) — **Project:** migrate a service to hybrid post-quantum
+  key exchange and *prove* it with before/after handshake captures, then write the architecture
+  decision record (ADR) that justifies each crypto choice against current standards.
 
 ## Prerequisites
 Complete Track 00 — Foundations (module 09 — Cryptography Basics).

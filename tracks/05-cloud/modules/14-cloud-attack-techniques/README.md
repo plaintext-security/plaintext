@@ -1,6 +1,6 @@
 # Module 14 — Cloud Attack Techniques
 
-*Variant D · breach-driven, predict-the-blast-radius / detonate (purple-team — pure attack, no fix half by design). [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect (+ Type 3 · Blast-Radius) — run LastPass's three identity-first moves (login, pull, stage-out) as signed API calls and predict which screams in CloudTrail and which is nearly silent. (Secondary: Blast-Radius — pure attack, no fix half; the telemetry hands off to module 15.) [Go to the hands-on lab →](lab.md)*
 
 *Last reviewed: 2026-06*
 
