@@ -8,7 +8,7 @@
 |---|---|
 | **Level** | Intermediate — Foundations assumed; Track 09 (Python) helps |
 | **Format** | Self-paced · hands-on labs · one-command Docker |
-| **Shape** | 10 modules · 3 phases · 1 capstone |
+| **Shape** | 11 modules · 3 phases · 1 capstone |
 | **Prerequisites** | Track 00 — Foundations (Track 09 — Python helps) |
 | **Cost** | Free, forever. Open-source tools only. |
 
@@ -42,7 +42,7 @@ YAML, I own the YAML." There's no grading and no certificate. **Your repo is the
 
 | Phase | Modules | You'll finish with |
 |---|---|---|
-| **1 · Infrastructure & config as code** | The Automation Mindset · Infrastructure as Code · IaC Security Scanning · Configuration Management | A small environment defined in Terraform/OpenTofu and configured with Ansible, with a scanner *blocking* a deliberately over-broad rule before apply |
+| **1 · Infrastructure & config as code** | The Automation Mindset · Infrastructure as Code · IaC Security Scanning · Configuration Management · Click-ops → IaC Migration | A small environment defined in Terraform/OpenTofu and configured with Ansible, with a scanner *blocking* a deliberately over-broad rule before apply |
 | **2 · Pipelines & portable tooling** | CI/CD Pipelines & Gates · Containerising Tooling · Enrichment & Data Pipelines | A CI/CD pipeline running secret-scanning and gates from commit to deploy, a containerised tool that runs the same everywhere, and a scheduled enrichment pipeline |
 | **3 · Response & detection as code** | SOAR Fundamentals · Detection-as-Code Pipelines · Reviewing AI-Generated Automation | The capstone — a SOAR playbook that enriches → contains → tickets with a human approval step, detections-as-code tested in CI, and a review pass that catches what AI got wrong |
 

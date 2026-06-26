@@ -23,10 +23,12 @@ tools.
 | 07 | [Microsegmentation](modules/07-microsegmentation/README.md) | Limiting blast radius between workloads | `cilium` |
 | 08 | [Policy as Code](modules/08-policy-as-code/README.md) | Continuous, versioned authorization | `OPA` |
 | 09 | [Monitoring & Detection in Zero Trust](modules/09-monitoring-detection/README.md) | What "trust nothing" means for logging and detection | `sigma` |
+| 10 | [VPN → ZTNA Migration](modules/10-vpn-ztna-migration/README.md) | Replace a legacy VPN with identity-aware access — no outage (strangler-fig) | `Pomerium`, `WireGuard` |
+| 11 | [Red-team Your Zero-Trust Deployment](modules/11-redteam-zt-deployment/README.md) | Attack your own ZT design; harden the finding that holds | `curl`, `ffuf` |
 
 ## Phases & projects
 
-The nine modules run in three phases; each ends in a **project** that integrates its modules (a
+The eleven modules run in three phases; each ends in a **project** that integrates its modules (a
 phase is the substantial, standalone unit — a single module is a few hours). Identity-aware proxies
 touch real access — test only against resources you own.
 
@@ -36,10 +38,10 @@ touch real access — test only against resources you own.
 - **Phase 2 · Architectures & access** (04–06) — **Project:** publish a lab service with **no inbound
   ports** behind an identity-aware proxy — self-hosted (Pomerium/Tailscale) *and* cloud-delivered
   (Cloudflare Zero Trust) — and explain the trade-off you'd choose for which use case.
-- **Phase 3 · Segment, govern & monitor** (07–09) — **Project:** the track capstone — segment the
+- **Phase 3 · Segment, govern & monitor** (07–11) — **Project:** the track capstone — segment the
   workloads with Cilium, enforce authorization as code with OPA, and prove from the access logs that
   every request was authenticated and authorised — delivering the setup, the policy-as-code, and the
-  audit trail.
+  audit trail. Then migrate a legacy VPN onto this stack without an outage, and red-team your own deployment until the design holds.
 
 ## Prerequisites
 Complete Track 00 — Foundations; Track 05 — Cloud helps.

@@ -9,7 +9,7 @@
 |---|---|
 | **Level** | Intermediate — Foundations assumed; comfort with a cloud CLI helps |
 | **Format** | Self-paced · hands-on labs · one-command Docker, plus a cloud free-tier account where the domain needs it |
-| **Shape** | 16 modules · 3 phases · 1 capstone |
+| **Shape** | 17 modules · 3 phases · 1 capstone |
 | **Prerequisites** | Track 00 — Foundations |
 | **Cost** | Free — OSS-first; a cloud free-tier account where the domain needs it |
 
@@ -44,7 +44,7 @@ it.** There's no grading and no certificate. **Your repo is the credential.**
 
 | Phase | Modules | You'll finish with |
 |---|---|---|
-| **1 · Identity, posture & the pipeline** | Cloud Fundamentals · Cloud Identity & IAM · IAM Attack Paths · Cloud Network Security · Posture Auditing · IaC Security · Secrets Management · CI/CD Security | A walked IAM privesc path on a vulnerable account, closed as Terraform gated by a scanner in CI, with secrets pulled into a broker |
+| **1 · Identity, posture & the pipeline** | Cloud Fundamentals · Cloud Identity & IAM · IAM Attack Paths · Cloud Network Security · Posture Auditing · IaC Security · Secrets Management · CI/CD Security · Data Protection & KMS | A walked IAM privesc path on a vulnerable account, closed as Terraform gated by a scanner in CI, with secrets pulled into a broker |
 | **2 · Containers & Kubernetes** | Serverless Security · Container & Image Security · Container Escape & Runtime · Kubernetes RBAC & Network Policy · Kubernetes Admission & Runtime | A hardened workload end to end — scanned image, locked-down execution role, a Falco-caught breakout, and RBAC/NetworkPolicy/admission as code on a kind cluster |
 | **3 · Attack, detect & respond** | Cloud Attack Techniques · Cloud Logging & Detection · Cloud Incident Response | The capstone — a simulated cloud attack, detected from logs (native detector *and* a Sigma rule) and contained |
 

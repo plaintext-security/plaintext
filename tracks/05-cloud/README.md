@@ -29,16 +29,17 @@ the cloud the infrastructure *is* code. AWS/GCP/Azure plus containers and Kubern
 | 14 | [Cloud Attack Techniques](modules/14-cloud-attack-techniques/README.md) | Exploiting misconfig; simulating safely | `pacu`, `stratus-red-team` |
 | 15 | [Cloud Logging & Detection](modules/15-cloud-logging-detection/README.md) | Native detectors vs. open tools; tuning signal | `falco`, `sigma`; GuardDuty / Defender for Cloud / GCP SCC |
 | 16 | [Cloud Incident Response](modules/16-cloud-incident-response/README.md) | Investigating and containing in the cloud | `cloudtrail`, `hayabusa` |
+| 17 | [Data Protection & KMS](modules/17-data-protection-kms/README.md) | Envelope encryption and a scoped key policy — who can *use* the key | `KMS`, `openssl` |
 
 ## Phases & projects
 
-The sixteen modules run in three phases; each ends in a **project** that integrates its modules (a
+The seventeen modules run in three phases; each ends in a **project** that integrates its modules (a
 phase is the substantial, standalone unit — a single module is a few hours).
 
-- **Phase 1 · Identity, posture & the pipeline** (01–08) — **Project:** audit a deliberately
+- **Phase 1 · Identity, posture & the pipeline** (01–08, 17) — **Project:** audit a deliberately
   vulnerable account (CloudGoat/flaws.cloud) with `prowler`/`pmapper` to map an IAM privilege-escalation
   path, then close it as Terraform gated by `checkov`/`trivy` in CI, with secrets pulled out of code and
-  into a broker.
+  into a broker — and lock data at rest behind a scoped KMS key policy whose reach you prove.
 - **Phase 2 · Containers & Kubernetes** (09–13) — **Project:** harden a workload end to end — scan the
   image, lock down a serverless execution role, demonstrate a container breakout caught by Falco, and
   enforce RBAC, NetworkPolicy, and an admission policy as code on a kind cluster.
