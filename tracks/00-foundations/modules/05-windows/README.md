@@ -104,8 +104,7 @@ re-learn the model.*
 - [Microsoft Learn — PowerShell 101](https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/00-introduction) (~1 hr, hands-on) — enough PowerShell to inspect a system and automate the boring parts. Do the *Get-* and *filtering* chapters; skip the rest for now.
 - [Microsoft — Event 4688: A new process has been created](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4688) (~15 min, skim) — the primary source for the event that carries the command line. Read the field list and note that **Process Command Line** is off by default — a real gap.
 - [MITRE ATT&CK — T1543.003: Windows Service](https://attack.mitre.org/techniques/T1543/003/) and [T1059.001: PowerShell](https://attack.mitre.org/techniques/T1059/001/) (~15 min) — the two techniques you'll name in the lab, with real detection guidance. Read the *Detection* rows.
-- [MITRE ATT&CK — Emotet (S0367)](https://attack.mitre.org/software/S0367/) (~10 min) — the techniques this real malware actually uses, by ID. Corroborates the case above.
-- [CISA AA20-280A — Emotet Malware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-280a) (~15 min, skim) — the primary advisory for the anchor; skim the technical detail and IOCs.
+- [Fortinet FortiGuard Labs — A Deep Dive into the Emotet Malware](https://www.fortinet.com/blog/threat-research/deep-dive-into-emotet-malware) (~20 min) — a malware analyst's anatomy of the anchor: the custom packer, the service-install persistence, and the obfuscated execution and C2. It's the *why* behind the two events you triage here — the once-only service install (7045) and the encoded PowerShell (4688).
 
 ## Key concepts
 - The registry and the event log are Windows's ground truth — persistence and execution both leave specific, named traces there.
