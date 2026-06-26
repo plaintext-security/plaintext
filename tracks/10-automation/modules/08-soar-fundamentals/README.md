@@ -69,6 +69,14 @@ ticket, notify) auto-execute; the irreversible, high-blast-radius step (block, i
 waits for a human. That line — drawn by reversibility and blast radius, not by what's technically
 possible to automate — is the design judgment you're committing to.
 
+```mermaid
+flowchart LR
+    T["trigger<br/>(SIEM webhook)"] --> E["enrich<br/>(threat-intel, asset DB)"]
+    E --> D{"decide<br/>(escalation bar)"}
+    D -->|"reversible: ticket, notify"| AUTO["auto-execute"]
+    D -->|"irreversible: block, isolate"| GATE["one-click<br/>human decision"]
+```
+
 !!! warning "The gotcha"
     Fully automated containment executes a mistake at machine speed and scale — *automation makes you
     faster, including at being wrong* — and fully human-gated response is how the alert that mattered

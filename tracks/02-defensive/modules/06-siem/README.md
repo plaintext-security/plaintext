@@ -47,6 +47,15 @@ leap beyond a log store is **correlation**: turning many low-value events into o
     whichever your shop runs, but the durable skill is knowing *what behaviour is worth alerting on*
     and expressing it so it fires on the real thing without burying the analyst.
 
+```mermaid
+flowchart LR
+    L1["50 failed logons<br/>(from one source)"] --> COR{correlate}
+    L2["1 successful logon<br/>(same source)"] --> COR
+    COR -->|sequence matches| A["1 high-value alert:<br/>brute-force success"]
+    L1 -.->|each event alone| N["noise"]
+    L2 -.->|each event alone| N
+```
+
 The lab makes that loop legible on a minimal harness — ingest/normalise → correlate → alert → query
 over a SQLite event store — so you can read every line of the correlation logic instead of fighting a
 cluster. Wazuh is the open-source SIEM/XDR you'd run this on for real (decoders, rules, dashboards,

@@ -35,6 +35,14 @@ In a Zero Trust architecture this matters more than in a perimeter model, becaus
 
 Open Policy Agent is a general-purpose policy engine. You describe your authorization logic in **Rego** (a declarative, logic-programming query language built for policy), feed it a JSON document representing the request (`input`), and OPA returns a structured decision — `{"allow": true}` or `{"deny": ["pod runs as root"]}` — which *your* infrastructure then enforces. The design insight is that OPA is **decoupled from enforcement**: it doesn't sit in the data path. Your app, your Kubernetes admission webhook, or your identity-aware proxy (module 06) *calls* OPA and acts on the answer. Because the policy and the enforcement point are separate, you can test the policy in milliseconds without standing up the whole stack — which is precisely what makes it gate-able in CI. **That gate is the deliverable of this module:** the verdict encoded so it can't regress when someone copies the policy next quarter.
 
+```mermaid
+flowchart LR
+    E["Enforcer<br/>(proxy / admission webhook / app)"] -->|"JSON input (the request)"| O["OPA + Rego policy"]
+    O -->|"decision: allow / deny[...]"| E
+    E -->|"acts on the answer"| R["forward or reject"]
+    O -.->|same policy| CI["CI gate: opa test<br/>(milliseconds, no stack)"]
+```
+
 Now the centerpiece gotcha, and the reason this is a *judgment-as-code* module and not a "learn Rego" page. Rego is declarative: you write *what must be true* for a rule to fire, not a sequence of if-statements. A rule that is never satisfied is not an error — it is **silently absent**. So if you write a `deny` rule but a condition inside it is never true (a typo'd field, a `==` that should be `!=`, an `input.user.role` that the request actually spells `input.user.roles`), the rule simply never fires, *no deny is produced, and the default applies.* If your evaluation is structured so that "no deny" means "allow," you have just shipped a policy that **fails open**: it denies nothing, passes every test you only wrote for the allow path, and grants access to exactly the case you thought you'd blocked. This is the single most dangerous class of OPA mistake, and the worst part is that it is invisible — the policy looks complete, the demo is green, and the hole is the rule you *meant* to write. **The skill is testing the deny path explicitly, and structuring the query so absence-of-decision means deny, not allow.**
 
 !!! warning "The gotcha"

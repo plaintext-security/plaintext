@@ -30,6 +30,14 @@ Enumerate live hosts and their SMB signing status using CrackMapExec (netexec), 
 
 Lateral movement in a Windows domain fundamentally relies on three things: a credential (password hash, Kerberos ticket, or plaintext), a protocol that accepts it (SMB, WMI/DCOM, WinRM, RDP), and a remote execution primitive that the protocol enables (service creation, WMI process, PowerShell remoting, GUI session). The attacker's choice of technique is driven by what artefacts it leaves, not by which one "works" — they all work in a poorly defended environment.
 
+```mermaid
+flowchart LR
+    CRED["Credential<br/>(hash / ticket / password)"] --> P{Protocol + primitive}
+    P -->|"SMB service"| PS["psexec.py"] --> E1["Event 7045 + binary on disk"]
+    P -->|"SMB temp service"| SE["smbexec.py"] --> E2["Event 7045, no binary"]
+    P -->|"WMI / DCOM"| WE["wmiexec.py"] --> E3["Event 4688"]
+```
+
 !!! note "The mental model"
     Lateral movement decomposes into a fixed triple: **credential + protocol + execution
     primitive**. Once you see it that way, the tools stop being a list to memorise — `psexec.py`,

@@ -86,6 +86,14 @@ axes drive the call:
   query is recoverable; triggering containment or pushing a firewall rule to prod is not. *Moffatt*
   is what an irrecoverable, unreviewed output costs.
 
+```mermaid
+flowchart TB
+    T["security task"] --> A{"sensitive data?<br/>complex reasoning?<br/>recoverable if wrong?"}
+    A -->|"sensitive · simple · recoverable"| L["<b>local</b><br/>(triage on internal logs)"]
+    A -->|"scrubbed · complex · recoverable"| F["<b>frontier</b><br/>(post-incident summary)"]
+    A -->|"irreversible / max stakes"| H["<b>human</b><br/>(ransom decision; model only briefs)"]
+```
+
 Map the tasks against those axes and the routing falls out. Alert triage on internal logs —
 high-sensitivity, recoverable, pattern-match — is **local**. A scrubbed post-incident executive
 summary — medium-sensitivity, recoverable, high-complexity — earns **frontier**. Deciding whether

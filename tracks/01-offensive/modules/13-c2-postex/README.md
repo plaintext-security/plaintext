@@ -32,6 +32,19 @@ Stand up an open-source C2, get a managed session on a lab host, and perform pos
 The shell you got from exploitation is fragile and loud: one dropped connection and you're out, and
 every command crosses the wire in the clear. A **C2 framework** is the upgrade — a managed, encrypted,
 resilient session, where an implant beacons back on a schedule, reconnects, and survives a reboot.
+
+```mermaid
+sequenceDiagram
+    participant I as Implant (victim)
+    participant S as C2 server
+    loop every interval (a timing signature)
+        I->>S: beacon — "any tasks?"
+        S->>I: encrypted task
+        I->>S: results
+    end
+    Note over I,S: regular timing is what blue-team hunting catches
+```
+
 **Post-exploitation** is the tradecraft of doing useful work through that channel — enumerate, collect,
 persist, move — *without getting caught*. Open-source C2 like Sliver is used by real red teams and real
 threat actors alike, which is exactly why understanding it serves attack and detection equally.

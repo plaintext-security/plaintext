@@ -46,6 +46,15 @@ report → reconcile**, run on a schedule forever. The reason this is a *defensi
 ops hygiene is that the gap is an attacker's window: the interval between a source going dark and you
 noticing is exactly the interval in which something can happen in the dark.
 
+```mermaid
+flowchart LR
+    DEC["declared state<br/>(expected sources<br/>+ detections)"] --> DIFF{diff}
+    OBS["observed state<br/>(arriving + firing<br/>right now)"] --> DIFF
+    DIFF -->|match| OK["steady state"]
+    DIFF -->|drift| REC["reconcile<br/>(runbook)"]
+    REC -.->|update baseline<br/>or fix source/rule| DEC
+```
+
 **Telemetry drift is a heartbeat problem; detection drift is a re-scoring problem.** They decay
 differently, so you watch them differently. A *source* drifts by **volume and recency**: the clean
 signal is a heartbeat — "endpoint X last logged at HH:MM, expected every N minutes" — plus a volume

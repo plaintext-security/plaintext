@@ -57,6 +57,17 @@ industry. The VT response tells you the detection ratio (how many engines flagge
 that as a `comment` or a `vt-report` object to the MISP attribute. The event then carries both
 the raw IOC and the enrichment in one place, queryable and shareable via MISP's federated sync.
 
+```mermaid
+flowchart LR
+    E["create event<br/>(metadata)"] --> A["add attributes<br/>(ip-dst, sha256)"]
+    A --> T["tag<br/>(TLP, ATT&CK)"]
+    A --> VT["query VT-shaped feed"]
+    VT --> AB["attach verdict back<br/>(comment / vt-report)"]
+    T --> H{"human review"}
+    AB --> H
+    H -->|approved| P["publish / sync"]
+```
+
 !!! warning "The gotcha"
     Write automation that produces events you'd be comfortable having a human review — and gate it.
     Never create MISP events automatically at scale without a human-in-the-loop step, at least for the

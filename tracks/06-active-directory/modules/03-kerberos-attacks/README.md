@@ -31,6 +31,18 @@ Execute Kerberoasting (T1558.003) and AS-REP roasting (T1558.004) against a live
 
 The Kerberos protocol was designed with a subtle trust model: when a client wants to talk to a service, it asks the KDC for a **service ticket (TGS)**, which the KDC encrypts with the **service account's password hash**. The client receives this encrypted blob and delivers it directly to the service — no one checks that the client actually *uses* the ticket to do anything legitimate. **Kerberoasting** exploits this: any authenticated domain user can request a service ticket for any SPN in the domain, receive the KDC's encrypted blob, and then take it offline to crack. The attack is entirely protocol-compliant. There is no brute-force lockout, no failed logon, no authentication anomaly. The only observable signal is the TGS-REQ on the wire or a Windows Event 4769 on the DC — and only if you're logging and watching for Kerberoasting-shaped patterns (RC4 encryption type from an account that normally uses AES).
 
+```mermaid
+sequenceDiagram
+    participant A as Attacker (any domain user)
+    participant KDC as KDC (on DC)
+    participant HC as hashcat (offline)
+    A->>KDC: TGS-REQ for target SPN (request RC4)
+    KDC->>A: Service ticket — encrypted with service account's hash
+    Note over KDC: Event 4769 logged — looks legitimate
+    A->>HC: Crack ticket offline — no lockout, no failed logon
+    HC->>A: service account password
+```
+
 !!! note "The mental model"
     Both roasts are the same trick: **get the KDC to hand you something encrypted with a user's
     password hash, then crack it offline where there are no lockouts or logging.** Kerberoasting

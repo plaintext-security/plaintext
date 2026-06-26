@@ -41,6 +41,15 @@ Every AD object — a user, group, computer, OU, or GPO — has a security descr
 
 Resource-Based Constrained Delegation (RBCD) is a newer mechanism that reverses where the delegation configuration lives: instead of the front-end service specifying what it can impersonate to, the back-end resource specifies which services can impersonate users to it. The attack consequence: if an attacker has `GenericWrite` on any computer object, they can set the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute on that computer to allow an attacker-controlled account to impersonate any user to it — including local administrators — without being a Domain Admin.
 
+```mermaid
+flowchart LR
+    A([Attacker-controlled account]) -->|"GenericWrite on"| C["Computer object<br/>(e.g. SRV-FILE-01)"]
+    A -.writes.-> ATTR["msDS-AllowedToAct...<br/>= attacker's account"]
+    ATTR --> C
+    A -->|"now impersonate any user to"| C
+    C --> ADMIN(["Local Administrator on SRV-FILE-01"])
+```
+
 !!! warning "The gotcha"
     These are the findings that survive a "we patched everything" domain. An org can run LAPS,
     Credential Guard, and strong passwords and still be owned in two hops because one service account

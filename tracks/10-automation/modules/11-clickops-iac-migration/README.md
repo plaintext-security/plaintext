@@ -91,6 +91,15 @@ touches *state*, backing a single resource out is `tofu state rm <address>` — 
 resource, the resource keeps running exactly as it was, and you're back to where you started for that
 slice with the old path never having stopped serving.
 
+```mermaid
+flowchart LR
+    W["write matching<br/>HCL block"] --> I["import real object<br/>(touches state only)"]
+    I --> P["plan"]
+    P --> Q{"diff?"}
+    Q -->|"yes — edit the CODE<br/>(never the resource)"| P
+    Q -->|"<code>No changes</code>"| DONE["resource under<br/>management → next one"]
+```
+
 !!! tip "AI caveat"
     A model is useful at the tedious half — drafting the matching HCL block, or cleaning up
     `-generate-config-out` output — and that's exactly where the brownfield danger lives. It doesn't

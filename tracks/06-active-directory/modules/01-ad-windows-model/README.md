@@ -31,7 +31,28 @@ Describe how Windows authenticates a user, how it decides what that user can acc
 
 Windows security is built on two separable concerns: **authentication** (proving who you are) and **authorization** (deciding what you're allowed to do). They interact through a single object — the **access token** — that Windows creates when you log in and attaches to every process you start. The token carries your SID (a unique identifier), the SIDs of your groups, and a set of privilege flags. When your process tries to open a file, pipe, registry key, or AD object, Windows compares the token against the object's **security descriptor** — a structured list of who can do what (the DACL) and who gets told when (the SACL). Every access decision in the OS reduces to this: does the token satisfy any `ALLOW` ACE in the descriptor, and does no `DENY` ACE come first?
 
+```mermaid
+flowchart LR
+    T["Access token<br/>your SID + group SIDs"] --> C{"Compare against<br/>security descriptor"}
+    O["Object's DACL<br/>(list of ACEs)"] --> C
+    C -->|"matching DENY ACE"| D["Access denied"]
+    C -->|"matching ALLOW ACE,<br/>no prior DENY"| A["Access granted"]
+```
+
 Active Directory extends this model to the domain. Instead of a local SAM database, a Domain Controller holds a replicated LDAP directory of every user, computer, group, and service account. Authentication flows through **Kerberos** (default since Windows 2000) or NTLM (fallback). In Kerberos, the Key Distribution Centre on the DC issues tickets: a **Ticket Granting Ticket (TGT)** proves who you are to the KDC, and **service tickets (TGS)** prove it to individual services. The critical insight: tickets are cryptographic blobs encrypted with the *service's* key, not the user's. The service decrypts it, reads your SID and group SIDs from the embedded PAC, and makes an access decision — exactly like a local token, but assembled from the ticket rather than the SAM.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant KDC as KDC (on DC)
+    participant S as Service (e.g. file server)
+    C->>KDC: AS-REQ — prove identity
+    KDC->>C: TGT (encrypted with krbtgt key)
+    C->>KDC: TGS-REQ — present TGT, ask for service
+    KDC->>C: Service ticket (encrypted with service's key)
+    C->>S: Present service ticket
+    Note over S: decrypts ticket, reads SIDs from PAC,<br/>makes the same token-vs-DACL decision
+```
 
 !!! note "The mental model"
     Every access decision in Windows is the same comparison: **token vs. security descriptor**. A

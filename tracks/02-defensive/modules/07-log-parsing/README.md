@@ -38,6 +38,17 @@ one detection that works across sources, and you cannot correlate them: a "suspi
 would need rewriting for every vendor. Normalisation is what lets one rule mean the same thing
 everywhere.
 
+```mermaid
+flowchart LR
+    A["Apache log<br/>(clientip)"] --> PA[parse] --> NA[normalise]
+    S["sshd log<br/>(rhost)"] --> PS[parse] --> NS[normalise]
+    F["firewall log<br/>(src)"] --> PF[parse] --> NF[normalise]
+    NA --> ECS["source.ip<br/>(ECS)"]
+    NS --> ECS
+    NF --> ECS
+    ECS --> D["one detection<br/>works across all"]
+```
+
 !!! note "The mental model"
     Two steps: *parse* (unstructured text → fields, via grok/regex/VRL), then *normalise* (rename
     those fields into a shared vocabulary). For the network engineer it's the exact reason you map

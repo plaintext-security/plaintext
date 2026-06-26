@@ -90,6 +90,17 @@ strict and every PR fails on noise, too loose and real misconfigs slip through. 
 with justification, never start permissive and tighten later.** The gate is where you encode that
 verdict so it can't regress.
 
+```mermaid
+flowchart LR
+    PR["PR diff<br/>(.tf change)"] --> S["scanner<br/>(checkov / tfsec)"]
+    S --> F{"finding?"}
+    F -->|"none"| OK["merge → <code>tofu apply</code>"]
+    F -->|"true false-positive"| SUP["suppress inline<br/>+ rationale + check-ID"]
+    SUP --> OK
+    F -->|"real misconfig"| BLOCK["exit non-zero<br/>— block the merge"]
+```
+
+
 !!! tip "AI caveat"
     AI is excellent at writing Terraform that *passes a scanner* — and just as good at hiding an IAM
     over-grant behind it. It will "fix" a finding by moving a wildcard from `Action` to `Resource`

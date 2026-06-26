@@ -47,6 +47,20 @@ public detections are written directly against.
     fires on.) Learning to read the tree — with command lines attached — is the core endpoint skill,
     and it's why Event ID 1 is the workhorse of endpoint detection.
 
+```mermaid
+flowchart TD
+    W["winword.exe"] --> P["powershell.exe -enc &lt;base64&gt;"]
+    P --> C["cmd.exe"]
+    P --> N["network connection to C2"]
+    classDef bad fill:#5a1f1f,stroke:#e06c6c,color:#fff;
+    class P,C,N bad
+```
+
+!!! note ""
+    No single node is damning — `powershell.exe` runs all day. The *lineage* `winword.exe →
+    powershell.exe` is the macro dropper. Sysmon Event ID 1 carries the parent, which is what makes
+    the chain visible.
+
 The judgment call: Sysmon's power is also its trap. Log everything and you drown in volume and cost
 while burying the very signal you're after — so **the config *is* the detection strategy.** The
 community baseline (SwiftOnSecurity's config) encodes years of "what's worth collecting and what's

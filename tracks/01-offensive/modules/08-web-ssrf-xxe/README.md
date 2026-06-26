@@ -38,6 +38,18 @@ case is SSRF against the cloud metadata endpoint (`169.254.169.254`): the server
 control, you aim it at the metadata service, and you walk off with the host's IAM credentials. That is
 precisely the 2019 Capital One breach — 100M+ records — from one SSRF.
 
+```mermaid
+sequenceDiagram
+    participant A as Attacker
+    participant S as Server (the deputy)
+    participant M as Metadata (169.254.169.254)
+    A->>S: fetch this URL → 169.254.169.254
+    S->>M: GET /iam/security-credentials/
+    M->>S: IAM access keys
+    S->>A: keys echoed back
+    Note over A,M: Capital One, 2019 — 100M+ records
+```
+
 !!! note "The mental model"
     The unifying model is the **confused deputy**: a powerful component — the HTTP fetcher, the XML
     parser, the deserializer — acting on attacker input without realising it's been redirected. XXE is

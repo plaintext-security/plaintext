@@ -69,6 +69,16 @@ copilot *evaluable*.
     prompt so the model knows which facts are authoritative documents, which are live lookups, and
     which are its own priors. "Showing its work" is what makes it both auditable and evaluable.
 
+```mermaid
+flowchart TB
+    Q([SOC question]) --> R["retrieve KB chunks<br/>(ChromaDB)"]
+    Q --> T["call live tools<br/>(threat-intel, open incident?)"]
+    R --> P["build prompt<br/>(chunks + tool results + question)"]
+    T --> P
+    P --> G[generation model]
+    G --> A(["auditable answer<br/>+ shown evidence"])
+```
+
 The one load-bearing judgment of this module is that **a system that compounds three components fails
 in three independent ways, and a single answer-quality glance sees none of them cleanly.** This is the
 exact trap Module 11 names — a non-deterministic system that performed on the handful of inputs you

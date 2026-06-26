@@ -100,6 +100,15 @@ without praying. This is the duality the build modules lacked: **garak is the sy
 promptfoo is the red-team frozen into a regression gate.** One finds the EchoLeak-shaped hole; the
 other proves it stays closed.
 
+```mermaid
+flowchart LR
+    C([SoC copilot]) --> G["garak<br/>broad probes →<br/>pass rate per class"]
+    G -->|finding above threshold| PF["promptfoo case<br/>(assert attack refused)"]
+    PF --> CI{"CI gate"}
+    CI -->|model/prompt swap reopens hole| RED["build red"]
+    CI -->|attack still blocked| GREEN["build green"]
+```
+
 **The threat model is the synthesis — and it ties findings to named risk vocabulary, not the other
 way round.** OWASP LLM Top 10 and MITRE ATLAS are how you *label* what you found (LLM01 Prompt
 Injection, LLM02/LLM06 Sensitive-Information Disclosure, ATLAS technique IDs), so a reader can map

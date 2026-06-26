@@ -30,6 +30,16 @@ Use Wazuh and sigma-cli to match Sigma detection rules against a set of Wazuh-sh
 
 Host compromise has a recognisable pattern. Regardless of the initial access technique, most post-compromise activity follows a playbook: execution (running commands), persistence (ensuring access survives reboots), privilege escalation (reaching root or SYSTEM), credential access (dumping LSASS, reading /etc/shadow, extracting browser credentials), and lateral movement (using those credentials to pivot). Each of these phases produces observable artefacts on the host — process creation events, file modifications, authentication attempts, network connections. Detection is the practice of writing rules that fire on those artefacts.
 
+```mermaid
+flowchart LR
+    EX["Execution"] --> PE["Persistence"] --> PR["Privilege<br/>escalation"] --> CA["Credential<br/>access"] --> LM["Lateral<br/>movement"]
+    EX -.-> A1["process events"]
+    PE -.-> A2["cron / file writes"]
+    CA -.-> A3["/etc/shadow, LSASS reads"]
+    LM -.-> A4["auth attempts"]
+    A1 & A2 & A3 & A4 --> RULE(["Sigma rule fires →<br/>ATT&CK coverage"])
+```
+
 !!! note "The mental model"
     Initial access varies, but post-compromise activity follows a playbook — and every phase of it
     leaves observable artefacts (process events, file writes, auth attempts). Detection is writing

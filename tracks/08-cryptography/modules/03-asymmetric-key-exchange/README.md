@@ -42,7 +42,21 @@ Asymmetric cryptography is built on mathematical trapdoors: operations that are 
 
 The difference between RSA and elliptic curve (EC) schemes is not security level — it is key size. A 256-bit EC key provides roughly the same security as a 3072-bit RSA key. For equivalent security, EC keys are orders of magnitude smaller, making them faster to generate, faster to sign with, and cheaper to transmit. This is why modern TLS, SSH, and code-signing infrastructure has migrated to ECDSA and Ed25519. RSA is not broken — but at 2048 bits it is marginal for long-lived keys, and generating new RSA infrastructure today should use at least 3072 bits.
 
-Diffie-Hellman key exchange (DH) is the mechanism that allows two parties to establish a shared secret without transmitting the secret itself. Each party generates an ephemeral keypair, exchanges public keys, and computes the shared secret using their private key and the other party's public key. The shared secret is never transmitted — it is computed independently on each side and used to derive symmetric session keys. ECDH (Elliptic Curve Diffie-Hellman) is the EC variant; it is what TLS 1.3's key exchange uses. The "ephemeral" part is critical: if the server reuses the same DH parameters across sessions, past sessions can be decrypted if the server's long-term private key is later compromised — the forward secrecy property is lost.
+Diffie-Hellman key exchange (DH) is the mechanism that allows two parties to establish a shared secret without transmitting the secret itself. Each party generates an ephemeral keypair, exchanges public keys, and computes the shared secret using their private key and the other party's public key. The shared secret is never transmitted — it is computed independently on each side and used to derive symmetric session keys:
+
+```mermaid
+sequenceDiagram
+    participant A as Alice
+    participant B as Corp server
+    Note over A,B: each generates an ephemeral keypair
+    A->>B: public key A
+    B->>A: public key B
+    Note over A: secret = privA · pubB
+    Note over B: secret = privB · pubA
+    Note over A,B: same shared secret — never sent on the wire
+```
+
+ECDH (Elliptic Curve Diffie-Hellman) is the EC variant; it is what TLS 1.3's key exchange uses. The "ephemeral" part is critical: if the server reuses the same DH parameters across sessions, past sessions can be decrypted if the server's long-term private key is later compromised — the forward secrecy property is lost.
 
 Forward secrecy deserves explicit attention because it is the property that makes ephemeral key exchange valuable. A session has forward secrecy if compromising the long-term key does not allow decryption of past sessions. With static DH or RSA key exchange (the old TLS 1.2 pattern), the server's private key can decrypt any session recorded in the past. With ephemeral ECDH (ECDHE), each session's key is derived from a freshly generated ephemeral key that is discarded after the session — so even if the long-term key is compromised, past sessions remain encrypted. This is why "perfect forward secrecy" (PFS) appears in TLS audit reports as a positive finding.
 

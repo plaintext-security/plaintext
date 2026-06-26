@@ -28,7 +28,21 @@ Configure a local nginx server with both a weak and a strong TLS configuration, 
 
 ## The core idea
 
-A TLS session establishes three properties: the server's identity (verified via the certificate chain), a shared secret (negotiated via a key exchange), and a secure channel (encrypted and authenticated using that shared secret). The TLS handshake is the negotiation that establishes all three. In TLS 1.3, the handshake is simplified and the protocol mandates: ECDHE for key exchange (forward secrecy), AEAD cipher suites only (no CBC, no stream ciphers), and SHA-256 or better for the hash function. Every handshake in TLS 1.3 is forward-secret and authenticated by construction. TLS 1.2 is configurable — and therefore misconfigurable.
+A TLS session establishes three properties: the server's identity (verified via the certificate chain), a shared secret (negotiated via a key exchange), and a secure channel (encrypted and authenticated using that shared secret). The TLS handshake is the negotiation that establishes all three:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Corp server
+    C->>S: ClientHello — TLS version, cipher suites, key share
+    S->>C: ServerHello — chosen suite, key share
+    S->>C: Certificate (chain) + Finished
+    Note over C,S: both derive the same session keys
+    C->>S: Finished
+    Note over C,S: encrypted, authenticated application data flows
+```
+
+In TLS 1.3, the handshake is simplified and the protocol mandates: ECDHE for key exchange (forward secrecy), AEAD cipher suites only (no CBC, no stream ciphers), and SHA-256 or better for the hash function. Every handshake in TLS 1.3 is forward-secret and authenticated by construction. TLS 1.2 is configurable — and therefore misconfigurable.
 
 !!! note "The mental model"
     A TLS finding falls into exactly one of three buckets: *protocol version*, *cipher suite*, or

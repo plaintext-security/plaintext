@@ -63,6 +63,19 @@ tamper-evident seal, and the application is the enforcer. *No valid signature, n
 exactly why the private key is the crown jewel, and why a forged-token incident like Storm-0558 is
 catastrophic rather than merely bad.
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant K as Keycloak (IdP)
+    participant A as Application
+    U->>K: authenticate (password / TOTP / passkey)
+    K-->>U: signed JWT (private key) — sub, aud, roles, exp
+    U->>A: request + JWT
+    A->>K: fetch public key (JWKS, cached)
+    A->>A: validate signature, aud, exp — decide from claims
+    Note over A: no valid signature, no access
+```
+
 The enterprise version of this is **federation**, and reasoning about it is the operator skill that
 separates "I ran the tutorial" from "I can run the IdP." An organization rarely wants a second identity
 silo, so Keycloak runs as an **identity broker**: it trusts assertions from an upstream IdP (Okta, Entra

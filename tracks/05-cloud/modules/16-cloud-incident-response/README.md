@@ -122,6 +122,19 @@ the move doesn't.
     heterogeneous source on *time*, sort, tag by phase, filter to the attacker — that ordered narrative
     *is* the incident report, and the raw records are the evidence beneath it.
 
+```mermaid
+flowchart LR
+    CT["CloudTrail<br/>(control plane: who called what)"]
+    FL["VPC flow logs<br/>(data plane: bytes out, to where)"]
+    GD["GuardDuty findings"]
+    M{{"merge on time, sort,<br/>tag by kill-chain phase"}}
+    T(["super-timeline =<br/>defensible narrative"])
+    CT --> M
+    FL --> M
+    GD --> M
+    M --> T
+```
+
 ??? note "Go deeper: why two planes beat one"
     Control plane (CloudTrail) tells you *what API was called by whom*; data plane (flow logs) tells you
     *how many bytes left, to where*. Either alone is a lead. An `AssumeRole` + mass `GetObject` in

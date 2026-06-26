@@ -47,6 +47,14 @@ A memory image is a dump of physical RAM at a moment in time — every bit of ev
 
 **Network connections in memory** are often more complete than the OS's own `netstat`, because the memory image captures the kernel's socket and connection tables directly, including connections that may have been opened and closed recently. `netstat` (in Volatility3) shows established connections, listening ports, and recently-closed connections — all tied to the owning process. A connection from `svchost.exe` to a non-Microsoft external IP is immediately suspicious. A connection from `notepad.exe` to port 443 is definitive evidence of injection, because `notepad.exe` has no legitimate reason to make network calls.
 
+```mermaid
+flowchart LR
+    I["Memory image<br/>+ matching symbol table"] --> P["pstree / cmdline<br/>— parent-child anomaly?"]
+    P --> M["malfind<br/>— injected code in a process?"]
+    M --> N["netscan<br/>— that process talking out?"]
+    N --> F["Finding:<br/>injection confirmed by correlation"]
+```
+
 ??? note "Go deeper: why process injection makes memory forensics essential"
     Injection (MITRE ATT&CK T1055) is the technique that hides malicious activity inside a trusted
     process name — shellcode or a DLL injected into `svchost.exe`, `explorer.exe`, or `notepad.exe`

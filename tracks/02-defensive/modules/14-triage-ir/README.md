@@ -47,6 +47,21 @@ says "real": a disciplined sequence so you don't improvise under pressure and sk
     the discipline — observables, timeline, and verdict in one place, so nothing critical lives only
     in one analyst's head.
 
+```mermaid
+flowchart LR
+    P["Preparation"] --> D["Detection<br/>& analysis"]
+    D --> C["Containment"]
+    C --> E["Eradication"]
+    E --> R["Recovery"]
+    R --> PI["Post-incident<br/>review"]
+    PI -.->|feeds new detections| P
+```
+
+!!! note ""
+    The order is load-bearing: **contain before you eradicate** (or the attacker walks back in), and
+    the loop closes at the post-incident review — the phase most often skipped, and the only one that
+    turns an incident into a new detection.
+
 !!! warning "The gotcha"
     The classic failures here are emotional, not technical: eradicating before you understand scope
     (so the attacker simply walks back in), or containing so abruptly that you destroy the evidence

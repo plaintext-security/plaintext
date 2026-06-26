@@ -38,6 +38,19 @@ The telemetry architecture has two modes. Interactive queries (via `osqueryi`) a
 
 Wazuh extends the telemetry model from query-based polling to real-time event streaming. The Wazuh agent collects system logs, audit events (via `auditd`), file integrity monitoring (FIM) events, and osquery results, then forwards them to the Wazuh manager for alerting and correlation. The combined osquery + Wazuh stack covers both the "what is the state right now" query use case and the "alert me when something changes" real-time use case. For an endpoint-monitoring programme, this means every process creation, privileged command, and configuration change is visible and searchable in near-real-time.
 
+```mermaid
+flowchart LR
+    subgraph host["Host"]
+        OSI["osqueryi<br/>(ad-hoc SQL)"]
+        OSD["osquery scheduled packs"]
+        WA["Wazuh agent<br/>(auditd · FIM · osquery)"]
+    end
+    OSI --> ANALYST(["analyst, on-host"])
+    OSD --> MGR["Wazuh manager<br/>(rules + correlation)"]
+    WA --> MGR
+    MGR --> ALERT(["alert / SIEM"])
+```
+
 !!! warning "The gotcha"
     Telemetry without alerting is archaeology; alerting without telemetry is guesswork. osquery's
     scheduled packs collect — but collection alone only helps *after* an incident, in hindsight. The

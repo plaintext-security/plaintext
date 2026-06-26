@@ -67,6 +67,20 @@ consequence for the lab: a machine without the registered private key **cannot j
 unenrolled device is denied by construction, not by a rule someone remembered to write. That is the
 thing you'll prove.
 
+```mermaid
+flowchart TB
+    HS["headscale<br/>(control plane)"]
+    subgraph mesh["WireGuard mesh (data plane — peer-to-peer)"]
+        D1["corp-managed device<br/>(registered pubkey)"]
+        T["tag:target service"]
+        DX["unenrolled device<br/>(no keypair)"]
+    end
+    HS -. distributes keys + ACLs .-> D1
+    HS -. distributes keys + ACLs .-> T
+    D1 -->|"ACL allow"| T
+    DX -. cannot join — no key .-x T
+```
+
 **The one judgment that makes this good ZT, not just a VPN: default-deny on the ACL.** A WireGuard
 mesh that lets every enrolled device reach everything is just a flatter network with better crypto —
 you've moved the perimeter, not removed it. Zero Trust requires that the ACL *start* from deny and

@@ -49,12 +49,30 @@ reading and adapting prior art, not inventing from a blank file.
     Sigma is the intermediate representation, and each SIEM is just a compile target — write the
     detection once, convert it to whatever backend you run.
 
+```mermaid
+flowchart LR
+    Y["Sigma rule<br/>(one YAML)"] --> C["sigma convert"]
+    C --> SPL["Splunk SPL"]
+    C --> DSL["Elastic DSL"]
+    C --> KQL["Sentinel KQL"]
+```
+
 **The skill is testing, not YAML.** Here's the part that separates a detection engineer from
 someone who pastes rules: it is easy to write a logically valid Sigma rule that matches the wrong
 field, misses an obvious variant of the technique, or fires on every backup job at 2 a.m. The skill
 was never the YAML — an AI drafts that in seconds — it's the false-positive economics: run the rule
 against real attack telemetry to prove it *catches* the thing, then against a benign baseline to
 prove it won't *bury* the SOC.
+
+```mermaid
+flowchart LR
+    R["rule (file in git)"] --> PR["pull request"]
+    PR --> KB{"fires on<br/>known-bad?"}
+    KB -->|no| FAIL["CI fails"]
+    KB -->|yes| KG{"quiet on<br/>known-good?"}
+    KG -->|no| FAIL
+    KG -->|yes| LIVE["merge → live"]
+```
 
 !!! warning "The gotcha"
     A rule you haven't tested against both known-bad *and* known-good is a liability, not a

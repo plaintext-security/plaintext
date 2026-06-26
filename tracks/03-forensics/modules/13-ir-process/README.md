@@ -58,6 +58,23 @@ contained and when, and what was learned.
     you re-enter as new hosts are scoped in. Use them to audit a response: what did the team know and
     when, what was decided, what was contained, what was learned.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Preparation
+    Preparation --> Detection: incident reported
+    Detection --> Containment: scoped
+    Containment --> Detection: new host found
+    Containment --> Eradication
+    Eradication --> Recovery
+    Recovery --> PostIncident
+    PostIncident --> Preparation: lessons learned
+    Detection: Detection & Analysis
+    Containment: Containment
+    Eradication: Eradication
+    Recovery: Recovery
+    PostIncident: Post-Incident Activity
+```
+
 The phase that responders most consistently execute poorly is **Containment**, and the failure
 mode is almost always one of two things: containing too early (before scoping is complete, so
 the attacker pivots to a host you haven't identified yet) or containing too late (waiting for

@@ -28,7 +28,16 @@ Use `step-ca` to initialise a private Certificate Authority, issue a leaf certif
 
 ## The core idea
 
-A certificate chain is a delegation of trust. At the root is a self-signed CA certificate — the trust anchor, whose public key is distributed to clients out-of-band (in a browser's trust store, in an OS keychain, or in a TLS client's configuration). This delegation is also the weak point: the DigiNotar 2011 compromise produced a chain that validated perfectly to a trusted root, which is why a CA breach defeats the entire model rather than one site. The root CA signs intermediate CA certificates; the intermediate CA signs leaf (end-entity) certificates. This three-tier structure separates the high-value root CA (which can be offline and air-gapped) from the operational intermediate CA (which issues certificates day-to-day), limiting the blast radius of a CA private key compromise.
+A certificate chain is a delegation of trust. At the root is a self-signed CA certificate — the trust anchor, whose public key is distributed to clients out-of-band (in a browser's trust store, in an OS keychain, or in a TLS client's configuration). This delegation is also the weak point: the DigiNotar 2011 compromise produced a chain that validated perfectly to a trusted root, which is why a CA breach defeats the entire model rather than one site. The root CA signs intermediate CA certificates; the intermediate CA signs leaf (end-entity) certificates:
+
+```mermaid
+flowchart TD
+    R["Root CA (self-signed)<br/>offline, air-gapped — trust anchor"] -->|signs| I["Intermediate CA<br/>operational, issues daily"]
+    I -->|signs| L["Leaf cert<br/>corp.example — a server"]
+    T["Client trust store"] -.->|trusts| R
+```
+
+This three-tier structure separates the high-value root CA (which can be offline and air-gapped) from the operational intermediate CA (which issues certificates day-to-day), limiting the blast radius of a CA private key compromise.
 
 !!! note "The mental model"
     A certificate doesn't prove "this server is trustworthy" — it proves "an authority you already

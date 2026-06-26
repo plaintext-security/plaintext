@@ -53,6 +53,17 @@ The foundational move in digital forensics is the same one accountants call "clo
     of the first judgment calls in a real IR, and there is no universally right answer — it depends
     on what the investigation needs most.
 
+    Collect in that order — most volatile first:
+
+    ```mermaid
+    flowchart TB
+        A["CPU registers / cache<br/>— gone in nanoseconds"]
+        B["RAM<br/>— process state, keys, live connections"]
+        C["Disk<br/>— files, slack, unallocated"]
+        D["Archives / offline backups<br/>— durable"]
+        A -->|"more volatile"| B --> C -->|"less volatile"| D
+    ```
+
 !!! tip "AI caveat"
     Let a model draft the chain-of-custody log and the report scaffold — never let it stand in for
     running the hash. Computing the hash is the tool's job, not the model's; the dead-box-vs-live

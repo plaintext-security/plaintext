@@ -37,6 +37,13 @@ users-- ` stops being a search term and becomes new query *structure*. That's th
 parser was handed a blend of trusted template and untrusted input with no boundary between the two,
 so the attacker gets to finish writing the developer's query.
 
+```mermaid
+flowchart LR
+    A["attacker input<br/>' UNION SELECT ...--"] --> APP["app concatenates<br/>into query string"]
+    APP --> DB[("database parser<br/>— no data/code boundary")]
+    DB -->|"parsed as structure,<br/>not data"| X["attacker's query runs"]
+```
+
 **SQL injection isn't really about SQL.** It's the same shape as OS command injection, LDAP
 injection, XSS, server-side template injection, even log injection — untrusted data crossing into
 some interpreter's control plane. You can find injection in any technology, including ones that

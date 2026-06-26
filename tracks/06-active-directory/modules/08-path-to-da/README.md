@@ -39,6 +39,14 @@ A BloodHound graph of a real domain can have thousands of nodes and tens of thou
 
 Reading a BloodHound graph well requires internalising what each edge type means operationally. The practitioner translation, expanded: `MemberOf` is free — it requires no action. `GenericWrite` on a group requires one LDAP write operation. `AdminTo` means local admin via PTH or Kerberos. `HasSession` means a privileged user's credential is cached in memory on a reachable host — one of the most valuable edges because it converts host access directly into a new credential. `CanPSRemote` means WinRM execution. Each edge has an approximate noise level, a required precondition, and a resulting access level. A practitioner reads the graph and chooses the path that minimises noise and maximises reach — and knows that an edge BloodHound *shows* may still be a dead end on the day, because the session it relied on has logged off or the precondition no longer holds. The graph is a hypothesis to walk, not a guarantee.
 
+```mermaid
+flowchart LR
+    J(["jsmith"]) -->|"Kerberoast<br/>T1558.003"| SVC["svc-sql"]
+    SVC -->|"GenericWrite<br/>T1222"| GRP["IT-Admins"]
+    GRP -->|"AdminTo / PTH<br/>T1550.002"| WS["WS-IT-07"]
+    WS -->|"HasSession<br/>(cached DA cred)"| DA(["Domain Admins"])
+```
+
 !!! warning "The gotcha"
     A BloodHound edge is a *hypothesis*, not a guarantee. `HasSession` in particular is a snapshot —
     the privileged user may have logged off by the time you arrive, and the edge evaporates. Walk the

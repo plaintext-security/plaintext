@@ -37,6 +37,14 @@ a ladder of increasing reach: a single **port-forward** (reach one internal serv
 (reach many, via proxychains), or a full **tunnel interface** (ligolo-ng gives your machine an actual
 route into the internal subnet). You climb that ladder as you need more.
 
+```mermaid
+flowchart LR
+    A["attacker"] -->|"direct: blocked"| I["internal subnet<br/>(10.10.0.0/24)"]
+    A -->|"tunnel"| F["foothold<br/>(compromised host)"]
+    F -->|"routes your traffic"| I
+    I --> T["second target"]
+```
+
 !!! note "The mental model"
     For the network engineer this is the offensive mirror of segmentation: every pivot defeats a
     boundary someone deliberately drew — and understanding the tunnel is exactly how you argue for the

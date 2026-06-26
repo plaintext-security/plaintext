@@ -88,6 +88,16 @@ Read it that way and configuration management becomes a control loop, not a one-
   often run `--check`/alert in prod and full enforcement in lower environments. Either way: **the loop runs
   itself, or it isn't a control.**
 
+```mermaid
+stateDiagram-v2
+    [*] --> SteadyState: apply role
+    SteadyState --> SteadyState: scheduled --check<br/>(0 changed)
+    SteadyState --> Drifted: out-of-band change
+    Drifted --> Detected: --check --diff<br/>(reports changed)
+    Detected --> SteadyState: re-run, enforcing<br/>(reconcile)
+```
+
+
 !!! warning "The gotcha"
     "Set and forget" *is* the failure. A loop only protects you if it runs **without a human
     deciding to run it** — a scheduled `--check` (configuration synchronization) catches drift in

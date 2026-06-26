@@ -39,6 +39,13 @@ Deploy a default-deny Cilium network policy in a kind cluster that restricts dat
 
 Microsegmentation is the **policy-as-code answer to the flat interior**: the network's default posture flips from *allow-all, block exceptions* to **deny-all, allow the minimum**, and that posture lives in version control as a declarative policy, not as a tangle of firewall rules someone maintains by hand. In Kubernetes the unit of segmentation is the workload, not the subnet: you label pods (`app: backend`, `tier: database`) and write a policy that says "pods labelled `tier: database` accept ingress *only* from pods labelled `app: backend`." Everything else is dropped because the policy exists at all — presence of an ingress rule on a pod is what makes its default deny. Crucially the rule is **label-scoped, not IP-scoped**: pod IPs churn on every restart, so IP rules rot constantly, while labels follow the workload. The policy *is* the perimeter now — there is no edge firewall doing this; the boundary is wherever the policy says it is.
 
+```mermaid
+flowchart LR
+    B["pod: app=backend"] -->|allow ingress| DB[("pod: tier=database")]
+    F["pod: app=frontend"] -.->|dropped (default-deny)| DB
+    X["pod: any other label"] -.->|dropped| DB
+```
+
 The load-bearing judgment of this module is **default-deny then allow the minimum, and prove both halves.** Cilium is a CNI built on eBPF, which matters for one reason: enforcement happens in the kernel, on the sending node, *before* a packet leaves the container — not at a perimeter firewall downstream. There is no "go around the network boundary" because the boundary is the kernel hook every packet already traverses; a pod on the *same node* as the database still goes through it. That is what makes the deny credible enough to red-team. But a policy you only tested on the allow path is theater. The discipline — and the thing this module makes you do — is to verify the *deny* directly, then attempt to pivot around it (a different source pod, a relabel, a direct dial to the service IP) and confirm it still drops. A default-deny baseline you haven't tried to break is a guess.
 
 !!! warning "The gotcha"

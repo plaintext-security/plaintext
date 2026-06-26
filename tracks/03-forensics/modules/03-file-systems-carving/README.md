@@ -35,6 +35,15 @@ Every filesystem is a data structure — a tree of metadata (inodes, MFT entries
     layer, which tells you what its output will and won't contain. Most SleuthKit confusion is a
     layer mismatch — asking `fls` for inode detail, or expecting `icat` to know a filename.
 
+```mermaid
+flowchart TB
+    V["Volume — partitions"] -->|"mmls"| F["Filesystem — layout"]
+    F -->|"fsstat"| M["Metadata — inode / MFT entry"]
+    M -->|"istat"| N["Filename — directory entry"]
+    N -->|"fls"| D["Data — content clusters"]
+    D -->|"icat"| O["bytes out"]
+```
+
 **File carving** is a different and complementary technique: instead of navigating the filesystem metadata, you scan the raw byte stream looking for known file signatures (magic bytes) and carve the data into a file regardless of whether any metadata exists for it. `foremost` uses a configuration file of header/footer byte patterns (PNG: `\x89PNG\r\n\x1a\n`; JPEG: `\xff\xd8\xff`; ZIP: `PK\x03\x04`) to locate and extract file-shaped content from unallocated space. Carving finds things the filesystem doesn't know about anymore, but it can't tell you the original filename, creation time, or path — the metadata is gone, only the content remains. You need both approaches: inode-based recovery when the metadata still exists, carving when it doesn't.
 
 !!! warning "The gotcha"

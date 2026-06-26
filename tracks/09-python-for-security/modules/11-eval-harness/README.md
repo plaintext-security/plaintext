@@ -111,6 +111,16 @@ catch anything. The green-on-good / red-on-regressed contrast *is* the lesson; i
 teammate refactor the parser on a Friday without praying. Unit tests prove the code didn't *break*;
 the eval gate proves the tool didn't get *worse*.
 
+```mermaid
+flowchart LR
+    C["held-out corpus<br/>(attack / benign / malformed)"] --> R["run parser<br/>over every line"]
+    R --> CM["compare verdicts<br/>to answer key"]
+    CM --> SC["scorecard:<br/>precision / recall"]
+    SC --> G{"recall ≥ floor?"}
+    G -->|yes| PASS["CI green — merge"]
+    G -->|"no (planted regression)"| FAIL["CI red — exit non-zero"]
+```
+
 !!! tip "AI caveat"
     A model writes the mechanical parts well — confusion-matrix counting, the scorecard, the Actions
     YAML. What it quietly gets wrong is the judgment: it defaults to *accuracy* (override it to recall),

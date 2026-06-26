@@ -37,7 +37,21 @@ Vault's security model separates *secrets storage* from *secrets access*. Secret
     scoped credential is worth almost nothing the moment after it's issued. Reframe "where do I store
     the secret?" as "how short-lived and narrowly-scoped can I make it?"
 
-The critical insight is that the secret itself never needs to leave Vault in most architectures. Dynamic secrets take this further: instead of storing a long-lived database password, Vault creates an ephemeral database credential on demand, with a short lease, and revokes it when the lease expires. An application that uses dynamic secrets never holds a long-lived credential — if the application is compromised, the attacker gets a credential that expires in minutes. This is the opposite of a hardcoded password: the application gets a fresh, expiring credential every time it connects. Had Uber's S3 access been a short-lived dynamic credential rather than a static key checked into a repo, the 2016 leak would have yielded a credential already expired by the time it was found.
+The critical insight is that the secret itself never needs to leave Vault in most architectures. Dynamic secrets take this further: instead of storing a long-lived database password, Vault creates an ephemeral database credential on demand, with a short lease, and revokes it when the lease expires:
+
+```mermaid
+sequenceDiagram
+    participant App as Corp app
+    participant V as Vault
+    participant DB as Database
+    App->>V: authenticate (token / role)
+    V->>DB: create short-lived user
+    V->>App: ephemeral credential + lease
+    App->>DB: connect with credential
+    Note over V,DB: lease expires → Vault revokes the user
+```
+
+An application that uses dynamic secrets never holds a long-lived credential — if the application is compromised, the attacker gets a credential that expires in minutes. This is the opposite of a hardcoded password: the application gets a fresh, expiring credential every time it connects. Had Uber's S3 access been a short-lived dynamic credential rather than a static key checked into a repo, the 2016 leak would have yielded a credential already expired by the time it was found.
 
 !!! warning "The gotcha"
     "We deployed Vault, so secrets are solved" is the trap — secrets management is a *discipline*, not

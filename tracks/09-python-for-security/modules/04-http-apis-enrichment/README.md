@@ -70,6 +70,19 @@ up to a cap. Do not retry indefinitely — set a max retry count (three is usual
 log and skip the IOC. An enrichment script that hangs or crashes on rate-limiting is worse than
 one that skips a few IOCs and finishes.
 
+```mermaid
+flowchart TD
+    Q["query IOC<br/>(explicit timeout)"] --> S{"status?"}
+    S -->|"2xx"| V["record verdict"]
+    S -->|"404"| K["log + skip IOC"]
+    S -->|"429"| RA["sleep Retry-After"]
+    S -->|"5xx"| BO["exponential backoff<br/>(1s, 2s, 4s)"]
+    RA --> M{"retries < max?"}
+    BO --> M
+    M -->|yes| Q
+    M -->|no| K
+```
+
 ??? note "Go deeper: why a session, not per-call headers"
     `httpx.Client(headers={"X-API-Key": os.environ["VT_API_KEY"]})` sets auth once for every request
     in the session and reuses the connection. That connection reuse matters for rate-limiting — a

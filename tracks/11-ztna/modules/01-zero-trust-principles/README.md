@@ -98,6 +98,15 @@ the moment. With Colonial, a per-request model would have forced the attacker to
 they were, on a device the org could vet, for every resource — instead of buying the whole interior
 with one login.
 
+```mermaid
+flowchart LR
+    R(["Request<br/>(user + device)"]) --> PEP["Policy enforcement point<br/>(proxy / gateway)"]
+    PEP --> PDP{"Policy decision point<br/>evaluate identity +<br/>device + context"}
+    PDP -->|all signals pass| A["Allow — minimum for<br/>this one request"]
+    PDP -->|any signal fails| D["Deny"]
+    A -.re-evaluated next request.-> R
+```
+
 **Verify explicitly, every time — identity *and* device.** "It required a password" is single-factor
 authentication evaluated once. ZT says verify *explicitly*: a strong identity assertion (MFA, FIDO2,
 mTLS, a short-lived token) **and** a signal about the device's posture (is it managed? patched?

@@ -78,6 +78,16 @@ means auditing **both** doors — the IAM policy and the key policy — for ever
     key, because a permissive key policy opened a second door you never audited. Audit *both* doors, every
     key.
 
+```mermaid
+flowchart LR
+    P([principal]) --> D1["door 1: IAM policy<br/>(only reaches key if key policy delegates to IAM)"]
+    P --> D2["door 2: key policy<br/>(root of authority)"]
+    P --> D3["door 3: grant<br/>(temporary usage)"]
+    D1 --> Key[("KMS key<br/>kms:Decrypt")]
+    D2 --> Key
+    D3 --> Key
+```
+
 ??? note "Go deeper: default encryption and rotation are baseline, not the control"
     Turn on default encryption for S3/EBS/snapshots so nothing lands unencrypted by accident — it's free
     and you should — but it defends only against the stolen-disk threat. Rotation is the same shape:

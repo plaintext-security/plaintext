@@ -24,7 +24,20 @@ Every hardening lab in this track — Modules 02, 03, 06 — starts from a host 
 
 The naive move is the one almost every team is first tempted to make, and it is the disaster this module exists to prevent: push the hardening baseline to the entire fleet at once. It feels efficient — one Ansible run, all hosts, done by lunch. It is the **big-bang rollout**, and it fails for a reason that has nothing to do with whether the baseline is *correct*: it changes *every host simultaneously*, so when a control breaks something (and on an un-inventoried brownfield estate, something always breaks), you've broken it *everywhere at once*, you can't tell which of the dozens of controls did it, and you can't roll back one host to bisect — you're debugging a fleet-wide outage live. This is not hypothetical. On 19 July 2024, **CrowdStrike pushed a single content update to its entire Windows fleet at once**; a malformed channel file caused an out-of-bounds read and blue-screened ~8.5 million machines globally within about an hour — hospitals, airlines, banks. The defect was real, but the *blast radius* was a choice: a change validated and shipped to everything simultaneously, with no staged ring to catch it on a handful of machines first. The lesson the whole industry re-learned that day is the lesson of this module — **it's not whether your change is good; it's how many machines you bet on being right.**
 
-The correct path is **test ring → canary → fleet**, the staged rollout every team that has done this at scale runs. You do not push to everything. You apply the baseline to a small **test ring** first (a handful of representative hosts, off the critical path), prove with a *service-health check* that nothing the host serves went down, then to a slightly larger **canary** (real production hosts, but a tiny fraction — if a control breaks here it's a small, recoverable blast radius), prove health again, and only then to the **fleet**, in batches, health-checked at each batch, with a **rollback ready at every step**. Two things make it safe that the big-bang has neither: a **service-health check before and after each ring** (the host is still hardened *and* still doing its job — a host that's compliant but down is a failed rollout), and an **exception carve-out** for the host class the benchmark would genuinely break (the legacy app that needs the weak cipher) — a *defended, documented* exception, not a silent skip. The un-hardened surface shrinks toward zero one provable ring at a time, and no control reaches the whole fleet until it's survived contact with a small, recoverable slice.
+The correct path is **test ring → canary → fleet**, the staged rollout every team that has done this at scale runs. You do not push to everything. You apply the baseline to a small **test ring** first (a handful of representative hosts, off the critical path), prove with a *service-health check* that nothing the host serves went down, then to a slightly larger **canary** (real production hosts, but a tiny fraction — if a control breaks here it's a small, recoverable blast radius), prove health again, and only then to the **fleet**, in batches, health-checked at each batch, with a **rollback ready at every step**.
+
+```mermaid
+flowchart LR
+    TR["Test ring<br/>(non-critical hosts)"] --> H1{"health-check:<br/>hardened AND serving?"}
+    H1 -- no --> RB1["roll ring back"]
+    H1 -- yes --> CAN["Canary<br/>(small prod slice)"]
+    CAN --> H2{"health-check?"}
+    H2 -- no --> RB2["roll ring back"]
+    H2 -- yes --> FLEET["Fleet<br/>(in batches)"]
+    FLEET --> H3{"health-check?"}
+    H3 -- no --> RB3["roll batch back"]
+    H3 -- yes --> DONE(["fleet hardened"])
+``` Two things make it safe that the big-bang has neither: a **service-health check before and after each ring** (the host is still hardened *and* still doing its job — a host that's compliant but down is a failed rollout), and an **exception carve-out** for the host class the benchmark would genuinely break (the legacy app that needs the weak cipher) — a *defended, documented* exception, not a silent skip. The un-hardened surface shrinks toward zero one provable ring at a time, and no control reaches the whole fleet until it's survived contact with a small, recoverable slice.
 
 ## Objective
 

@@ -52,6 +52,16 @@ and does the nearest-neighbour search. A **generation model** (served by Ollama)
 chunks plus the question and writes the answer. Swap ChromaDB for Qdrant or `nomic-embed` for
 `all-minilm` and the rest of the pipeline is unchanged. That is the build, and it is the easy half.
 
+```mermaid
+flowchart LR
+    Q([query]) --> E[embed]
+    E --> R{"nearest-neighbour<br/>search"}
+    VS[("vector store<br/>(embedded corpus)")] --> R
+    R -->|top-k chunks| P["augment prompt<br/>(chunks + question)"]
+    P --> G[generation model]
+    G --> A([answer])
+```
+
 !!! note "The mental model"
     RAG is three independently swappable parts: an **embedder** maps text to points in semantic space,
     a **vector store** does nearest-neighbour search, a **generation model** writes the answer from

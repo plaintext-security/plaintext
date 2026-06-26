@@ -59,6 +59,18 @@ the broken behavior, confirm it fails, fix the code, confirm it passes. This seq
 you actually fixed the bug and not just made the symptom disappear. A fix that makes the test
 pass is a fix you can trust.
 
+```mermaid
+flowchart LR
+    B["spot bug<br/>(review / bandit)"] --> W["write test for<br/>broken behavior"]
+    W --> RF{"run: fails?"}
+    RF -->|"no — passes"| W2["test doesn't<br/>pin the bug; rewrite"]
+    W2 --> RF
+    RF -->|"yes — red"| FX["fix the code"]
+    FX --> RG{"run: green?"}
+    RG -->|no| FX
+    RG -->|yes| D["bug pinned shut"]
+```
+
 !!! note "The mental model"
     Write the failing test *before* the fix. If you fix first and the test passes, you've proven
     nothing — you can't tell a real fix from a coincidence. The test that you watched fail, then watched

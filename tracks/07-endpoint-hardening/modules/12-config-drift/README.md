@@ -38,6 +38,17 @@ Take a host already hardened to a baseline-as-code, **declare** that baseline ex
 
 Drift is the gap between **declared state** and **observed state** as a function of time. Configuration management (Module 06) declares the state: "this host *should* have `PermitRootLogin no`, this sysctl set, this umask, auditd running." At `t=0`, right after you converge the host, observed equals declared and the gap is zero. Then the world acts on the host — package updates, operators, drift from other automation — and the gap opens. The steady-state discipline is a loop with four beats that runs *forever*, not a scan you run once: **detect** (re-measure observed state on a schedule), **diff** (compare it to declared and report the delta), **reconcile** (re-apply the baseline so observed converges back to declared), and **alert** (tell a human *what* changed, because a drift that auto-heals silently hides the fact that something keeps re-breaking it). The mental model is the same one a thermostat uses: declare the target, continuously measure the actual, and correct the difference — except here the "actual" is your security posture and the corrections are auditable.
 
+```mermaid
+stateDiagram-v2
+    [*] --> SteadyState: t=0, observed = declared
+    SteadyState --> Detect: scheduled check
+    Detect --> SteadyState: no delta
+    Detect --> Diff: delta found
+    Diff --> Reconcile: re-apply baseline
+    Reconcile --> Alert: tell a human what changed
+    Alert --> SteadyState
+```
+
 The single most important design judgment in this loop — and the thing most teams get wrong — is the **diff must report *what* changed and against *which control*, not just a score.** Module 07 gave you a compliance *score*: "94/100, you dropped two points." That number tells you that you drifted but not *how*, and a score that goes from 94 to 92 is almost useless operationally — you can't act on it. The drift loop's output has to be a *delta*: "`/etc/ssh/sshd_config:PermitRootLogin` changed from `no` to `yes` (control CIS-5.2.10) at the 03:00 check; `net.ipv4.conf.all.rp_filter` changed from `1` to `0` (CIS-3.3.7) — both reconciled." This is the difference between a smoke detector that beeps and a panel that says *which room is on fire*. Tooling makes this directly available and you should use the native mechanism rather than re-inventing it: Ansible's **`--check --diff`** mode reports exactly which tasks *would* change and shows the before/after lines (a pending change in check mode *is* a drift); OpenSCAP re-scans against the SCAP/CIS content and produces a per-rule pass/fail with the rule ID; osquery lets you *query* observed host state (the actual `sshd_config` line, the live sysctl, the SUID set) as data you can diff. The same "compare declared to observed, report the named delta" pattern is what AWS Config does in the cloud (continuous evaluation against config rules, flag the noncompliant resource) and what `terraform plan` does for IaC (compare prior state to real infrastructure, propose the change set) — drift detection is one idea wearing many tool-shaped hats.
 
 !!! warning "The gotcha"

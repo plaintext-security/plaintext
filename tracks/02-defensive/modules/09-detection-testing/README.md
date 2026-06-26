@@ -44,6 +44,16 @@ doesn't — on demand rather than during the breach.
     down together while knowing they trade against each other. This is also where module 08's Sigma
     rule finally gets tested under fire: write the rule, run the atomic, confirm it fires.
 
+```mermaid
+flowchart LR
+    A["attack<br/>(run the atomic)"] --> DT{"detection<br/>fires?"}
+    DT -->|MISSED<br/>false negative| FIX["fix coverage"]
+    DT -->|FIRED on benign<br/>false positive| TUNE["tune down noise"]
+    DT -->|FIRED on the<br/>real thing| PASS["validated"]
+    FIX --> A
+    TUNE --> A
+```
+
 !!! warning "The gotcha"
     **Coverage is a moving target, not a milestone.** "We detect T1059" is true only until the next
     variant or config change, so testing is a continuous practice, not a one-time audit — and "it

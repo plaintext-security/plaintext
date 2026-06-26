@@ -60,7 +60,17 @@ rent a vendor's global edge that provides those controls — and more — as a s
 The architectural core is the **tunnel**. `cloudflared` runs next to your app and opens an
 *outbound-only* encrypted connection to the edge. No inbound ports, no firewall rule, no listener.
 The app is unreachable from the internet unless the request arrives through the edge — which
-evaluates your **Access policy** first. That policy is an ordered rule list (allow this email / this
+evaluates your **Access policy** first.
+
+```mermaid
+flowchart LR
+    U([User]) --> E["SASE edge<br/>(evaluates Access policy)"]
+    A(["Attacker scanning your IP"]) -. nothing to hit .-x O
+    E -->|allowed requests only| O["origin app<br/>(no inbound ports)"]
+    O -. cloudflared dials OUT .-> E
+```
+
+That policy is an ordered rule list (allow this email / this
 domain / this IdP group / this device-posture check), and the building blocks are additive: email
 OTP today, federated SSO tomorrow, posture-gated access after that, with the tunnel model unchanged.
 The gotcha to internalise: `include` is an **OR** (any matching rule lets you in) and `require` is

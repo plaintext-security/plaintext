@@ -35,6 +35,16 @@ built and cloud-native targets. The recurring path: a web SSRF (module 08) reach
 endpoint and yields IAM credentials; a leaked key unlocks a storage bucket; a container escape lands you
 on the node.
 
+```mermaid
+flowchart LR
+    SSRF["web SSRF"] --> META["metadata endpoint"] --> CRED["IAM credentials"]
+    KEY["leaked key"] --> BUCKET["storage bucket"]
+    ESC["container escape"] --> NODE["the node"]
+    CRED --> CLOUD["cloud account<br/>(identity = the perimeter)"]
+    BUCKET --> CLOUD
+    NODE --> CLOUD
+```
+
 !!! note "The mental model"
     **Identity is the perimeter.** There's no "inside the network" to fight toward — what you can do is
     whatever the credential or role you steal is allowed to do, so privilege escalation here is about

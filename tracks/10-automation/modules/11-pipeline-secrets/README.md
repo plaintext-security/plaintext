@@ -72,6 +72,20 @@ policy, and — if it all matches — returns **temporary credentials**: an acce
 session token, stamped with an expiry minutes to an hour out.* No secret was stored anywhere. The runner
 arrived with nothing and left with a credential that's already on a timer.
 
+```mermaid
+sequenceDiagram
+    participant R as Runner (CI job)
+    participant I as CI OIDC provider
+    participant S as AWS STS
+    R->>I: request per-run token
+    I-->>R: signed JWT (iss/aud/sub)
+    R->>S: AssumeRoleWithWebIdentity(JWT)
+    S->>I: fetch JWKS, verify signature
+    S->>S: check sub/aud vs trust policy
+    S-->>R: temp creds + SessionToken + Expiration
+    Note over R,S: nothing stored — credential already expiring
+```
+
 The piece that carries the security is the **trust policy**, and this is where the judgment lives. Setting
 up the IAM OIDC provider establishes *that* you trust GitHub's issuer; the trust policy on the role decides
 *which workflows* may assume it, by asserting conditions on the JWT's claims — `aud` must equal

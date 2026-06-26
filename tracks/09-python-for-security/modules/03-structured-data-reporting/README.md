@@ -69,6 +69,20 @@ the security tool ecosystem (many popular OSS tools use it), it requires no spec
 and its output degrades gracefully when piped. Keep the structured data pipeline and the
 presentation layer separate: compute and filter first, render last.
 
+```mermaid
+flowchart LR
+    J["JSON alerts<br/>(json.loads)"] --> G{".get() —<br/>fields present?"}
+    G -->|no| SK["skip record"]
+    G -->|yes| FP["fingerprint tuple<br/>(rule_id, src_ip, dst_port)"]
+    FP --> D{"seen in set?"}
+    D -->|yes| SK
+    D -->|no| A["accumulate"]
+    subgraph render["presentation — render last"]
+        A --> CSV["csv.DictWriter<br/>(machine)"]
+        A --> RT["rich Table<br/>(human)"]
+    end
+```
+
 ??? note "Go deeper: dedup-by-fingerprint and the scale boundary"
     Define a fingerprint — a tuple of the fields that make two alerts the "same thing"
     (`(rule_id, source_ip, dst_port)`) — and track seen fingerprints in a `set` as you iterate. It's

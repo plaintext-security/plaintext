@@ -73,6 +73,15 @@ HTTP from workstations. Each of these is an actionable finding; the root cause i
 in the causal chain that the organisation could have reasonably addressed. **Root cause is not the
 first thing that went wrong; it's the last place a control could have stopped the chain.**
 
+Each dotted gate is a control that could have broken the chain; the *root* cause is the earliest one:
+
+```mermaid
+flowchart TB
+    P["Phishing email arrives"] -.->|"DMARC enforce<br/>would stop here"| M["Macro executes"]
+    M -.->|"block internet-origin<br/>macros would stop here"| C["Beacon to C2"]
+    C -.->|"egress filtering<br/>would stop here"| R["Compromise"]
+```
+
 !!! warning "The gotcha"
     Scope language is where imprecision becomes liability. "The attacker *had access to* all systems
     reachable from the account" is a defensible finding; "the attacker *accessed* all those systems"

@@ -113,6 +113,15 @@ ever seen pass is not a gate; you have not shown it can catch anything. The cont
 good system, red on the regressed one — *is* the lesson, and it is what lets a team upgrade a model
 on a Friday without praying.
 
+```mermaid
+flowchart LR
+    S([AI system]) --> E["score on held-out set<br/>(recall on malicious class)"]
+    HO[("held-out set<br/>— never tuned on")] --> E
+    E --> G{"≥ declared threshold?"}
+    G -->|yes| PASS["build green"]
+    G -->|"no (planted regression)"| FAIL["build red"]
+```
+
 This module is the measurement layer the rest of the track was missing. **Modules 04 (RAG), 06 (SoC
 copilot), and 07 (triage) each plug into it**: 07's confusion matrix becomes a held-out scorecard with
 a gate; 04's "where retrieval fails" becomes retrieval@k with a regression threshold; 06's summaries

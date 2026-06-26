@@ -68,6 +68,14 @@ via `tshark -r capture.pcap -Y "ip.addr==<suspect>"` for exact-packet inspection
     transaction) you can grep at scale; *then* you pivot to tshark/Wireshark for packet-level proof
     on the handful of flows Zeek flagged. Breadth first, depth second.
 
+```mermaid
+flowchart LR
+    PCAP["PCAP (50 GB)"] --> Z["Zeek"]
+    Z --> Logs["conn.log · dns.log<br/>http.log · files.log"]
+    Logs -->|"grep for the<br/>suspect flow"| Pivot["flagged IP / session"]
+    Pivot --> T["tshark / Wireshark<br/>— packet-level proof,<br/>export the object"]
+```
+
 HTTP forensics adds a layer that many responders underuse: **content reconstruction.** Zeek's
 `http.log` records the URI, host, method, and `resp_mime_types` for every transaction, and its
 `files.log` records MD5 hashes of every transferred file. If an attacker staged a dropper at

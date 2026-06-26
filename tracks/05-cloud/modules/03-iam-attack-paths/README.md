@@ -93,7 +93,20 @@ power?"** If yes, it's an edge. The 21 methods are 21 answers to that one questi
 `iam:PassRole` and `lambda:UpdateFunctionConfiguration` — so she updates an existing Lambda's execution
 role to `AdminRole` and invokes it (hop 2). Now her code runs with `iam:*` and `s3:*`. **No
 single principal in that chain has an obvious over-grant**; the escalation lives in the *edges between*
-them, which is exactly why flat policy review misses it and why `pmapper` exists. The mental model to
+them, which is exactly why flat policy review misses it and why `pmapper` exists.
+
+```mermaid
+flowchart LR
+    A(["dev-alice<br/>no iam:*, no admin"])
+    L["LambdaRole<br/>iam:PassRole, UpdateFunctionConfiguration"]
+    F["Lambda function<br/>(re-pointed to AdminRole)"]
+    Adm["AdminRole<br/>iam:* s3:*"]
+    A -- "hop 1: sts:AssumeRole" --> L
+    L -- "hop 2: PassRole + update + invoke" --> F
+    F -- "runs as" --> Adm
+```
+
+The mental model to
 keep: **the account is a directed graph, an edge is a permission that lets one principal become another,
 and privilege escalation is just reachability to an admin node.** Once you see it that way, "find all
 privesc paths" becomes "graph search from every principal to every `is_admin` node" — milliseconds, not

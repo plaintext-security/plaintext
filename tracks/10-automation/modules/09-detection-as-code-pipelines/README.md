@@ -108,6 +108,16 @@ gate you have only ever watched pass is not a gate — you have not shown it can
 GREEN on the good rules, RED on the regressed ones — *is* the lesson, and it is what lets a team refactor a
 detection on a Friday without praying.
 
+```mermaid
+flowchart LR
+    R["rule change<br/>(Sigma YAML)"] --> SC["sigma check<br/>(syntax)"]
+    SC --> PT["pytest intent table<br/>(tuning set)"]
+    PT --> EV["eval.py over<br/>held-out corpus"]
+    EV --> G{"recall ≥ floor<br/>FP-rate ≤ ceiling?"}
+    G -->|"yes"| GREEN["merge"]
+    G -->|"no — regression"| RED["fail build<br/>(non-zero)"]
+```
+
 !!! tip "AI caveat"
     A model writes the mechanical parts well (syntax, the `pytest` skeleton, the confusion-matrix
     arithmetic) and quietly gets the judgment wrong. It hands back "benign" FP-test events that *still

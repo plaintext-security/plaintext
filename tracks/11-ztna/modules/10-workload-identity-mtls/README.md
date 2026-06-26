@@ -73,6 +73,15 @@ issued only to a process whose selectors say `docker:label:com.corp.svc:ledger`)
 the right SVID. No bootstrap secret is ever shipped to the workload — its identity is *derived from what it
 demonstrably is*, which is why a workload with no matching entry simply gets nothing.
 
+```mermaid
+flowchart TB
+    AGENT["SPIRE agent (on node)"] -->|"1. node attestation"| SERVER["SPIRE server"]
+    WL["workload: ledger"] -->|"2. asks Workload API for SVID"| AGENT
+    AGENT -->|"3. attest selectors<br/>(UID, k8s SA, image)<br/>vs registration entries"| AGENT
+    AGENT -->|"match → SVID for<br/>spiffe://corp.local/ledger"| WL
+    WLX["unregistered workload"] -. no matching entry → no SVID .-x AGENT
+```
+
 That reframes the security control from "protect the key" to "**get the attestation right**," and it's
 where the judgment lives. Selectors that are too loose — attesting on a Unix UID that every container
 shares, or a label any deployment can set — let the wrong workload claim an identity, the workload-identity

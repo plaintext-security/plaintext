@@ -45,6 +45,23 @@ high-volume "is this even interesting?", a frontier model for the genuinely hard
     (it acts on production, hard to undo). Shuffle gives you an OSS platform to build the whole loop
     for free.
 
+```mermaid
+flowchart LR
+    T["trigger<br/>(alert)"] --> EN["enrich<br/>(read-only)"]
+    EN --> DE["decide<br/>(AI triage)"]
+    DE --> G{"human<br/>gate"}
+    G -->|approve| AC["contain<br/>(acts on prod)"]
+    classDef safe fill:#1f3a1f,stroke:#6ce06c,color:#fff;
+    classDef risk fill:#5a1f1f,stroke:#e06c6c,color:#fff;
+    class EN safe
+    class AC risk
+```
+
+!!! note ""
+    The whole skill is *where the gate goes*. Enrichment (green) is read-only and reversible — run it
+    unattended. Containment (red) acts on production at machine speed — a wrong auto-contain takes the
+    box down before any human can intervene, so it sits behind the gate.
+
 !!! warning "The gotcha"
     This is where automation stops being advisory and *becomes the deliverable*, so **AI authors →
     you review → you own it** bites hardest. An AI triage step that auto-closes alerts will

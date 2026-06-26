@@ -93,6 +93,16 @@ straight to `Enforce` on a live cluster is how a CronJob can't start at 2 AM.
     Admission is cheap prevention that runs once against the manifest; runtime detection is the
     backstop for everything the manifest never reveals. Neither replaces the other.
 
+```mermaid
+flowchart LR
+    K(["kubectl apply<br/>pod spec"]) --> API["API server"]
+    API --> Adm{"Kyverno admission<br/>(the bouncer)"}
+    Adm -- "bad spec: deny" --> Rej(["rejected"])
+    Adm -- "compliant: admit" --> Run["pod runs on node"]
+    Run -- "syscalls" --> Falco{"Falco<br/>(the camera)"}
+    Falco -- "exec into pod, proc from /tmp" --> Alert(["runtime alert"])
+```
+
 !!! warning "The gotcha"
     "Obviously dangerous" and "actually blocked" are two different states — prevention only exists if
     someone *encoded* the verdict. And the most common bad spec isn't `privileged`; it's the silent

@@ -74,6 +74,15 @@ alert's own UUID gives you that for free. The alternative — delete the input f
 wrong. The directory-as-queue is transparent on top of being durable: `ls pending/` shows you the
 backlog, no database or admin console required.
 
+```mermaid
+flowchart LR
+    COL["collector"] -->|"write alert-&lt;uuid&gt;.json"| PEND["pending/"]
+    PEND --> PROC["processor<br/>(enrich)"]
+    PROC -->|"write output, then delete input"| DONE["processed/"]
+    PROC -->|"timeout / malformed"| ERR["errors/<br/>(dead-letter)"]
+    ERR -.->|"drain on recovery"| PEND
+```
+
 **Failures are routed, not swallowed.** An enrichment call that times out should not crash the
 processor and should not silently drop the alert — it moves the file to an `errors/` directory (a
 **dead-letter queue**) where it is visible, countable, and drainable once the API recovers. A

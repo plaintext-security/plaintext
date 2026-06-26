@@ -46,6 +46,16 @@ When you image a disk forensically, you are not copying files — you are copyin
 
 The practical workflow on a modern IR engagement runs like this: for a suspected compromised host, you arrive with a forensic kit (write blockers, bootable forensic USB, `avml` or equivalent pre-staged), capture memory first (highest volatility), then image the disk with a write blocker in place if the machine is being imaged live, or boot to a forensic OS and image with the machine powered off. Every step is documented with timestamps, tool versions, and hash values in your case notes. A forensic acquisition that can't be reproduced in a court room is not forensic — it's a guess.
 
+```mermaid
+flowchart LR
+    A["Capture memory<br/>(avml — highest volatility)"] --> B{"Dead-box<br/>or live?"}
+    B -->|"dead-box"| C["Power off,<br/>write-block,<br/>image disk"]
+    B -->|"live"| D["Image disk<br/>with write blocker<br/>(system in motion)"]
+    C --> E["Verify inline hash"]
+    D --> E
+    E --> F["Document time,<br/>tool version, hash"]
+```
+
 ??? note "Go deeper: raw vs. E01 image formats"
     Raw (`dd`-style) images are maximally compatible — every tool reads them — but large. E01
     (Expert Witness Format) is the industry standard: compressed, split into segments, with built-in

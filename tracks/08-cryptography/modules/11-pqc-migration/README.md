@@ -43,7 +43,18 @@ The skill this module builds is **crypto-agility**: the property that lets you c
     now with false confidence. Done is proven by the *handshake capture*, never by the config file. The
     config lies; the `pcap` doesn't.
 
-The migration is **hybrid by design, and that design choice is the safety argument**. You do not rip out X25519 and bolt on ML-KEM; you run both and combine their secrets. The reasoning is hedged failure: ML-KEM is new, lattice cryptography is younger than elliptic curves, and a classical break of a fresh PQC scheme is not unthinkable (history is littered with PQC candidates that fell in analysis). X25519 is decades-hardened against classical attackers but quantum-broken in principle. Combine them and the session key derives from *both* shared secrets, so an attacker must break **both** X25519 (needs a quantum computer) **and** ML-KEM (needs a classical lattice break) to recover it. Hybrid is the bet that one of the two will always hold — it is strictly safer than either alone, which is exactly why the early internet deployments (`X25519MLKEM768`) are hybrid rather than pure-PQC.
+The migration is **hybrid by design, and that design choice is the safety argument**. You do not rip out X25519 and bolt on ML-KEM; you run both and combine their secrets:
+
+```mermaid
+flowchart LR
+    X["X25519 exchange"] --> SX["classical secret"]
+    K["ML-KEM-768 encapsulation"] --> SK["post-quantum secret"]
+    SX --> COMB["combine (concatenate)"]
+    SK --> COMB
+    COMB --> SK2["session key — safe if either holds"]
+```
+
+The reasoning is hedged failure: ML-KEM is new, lattice cryptography is younger than elliptic curves, and a classical break of a fresh PQC scheme is not unthinkable (history is littered with PQC candidates that fell in analysis). X25519 is decades-hardened against classical attackers but quantum-broken in principle. Combine them and the session key derives from *both* shared secrets, so an attacker must break **both** X25519 (needs a quantum computer) **and** ML-KEM (needs a classical lattice break) to recover it. Hybrid is the bet that one of the two will always hold — it is strictly safer than either alone, which is exactly why the early internet deployments (`X25519MLKEM768`) are hybrid rather than pure-PQC.
 
 ??? note "Go deeper: why key exchange migrates first and signatures wait"
     The HNDL clock runs differently for confidentiality and authenticity. A *key exchange* secret stolen

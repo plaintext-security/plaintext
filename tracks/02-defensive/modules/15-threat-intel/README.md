@@ -56,6 +56,15 @@ the result in at scale.
     positives; an over-trusted feed quietly poisons your detections. Garbage intel, automated, is
     worse than none.
 
+```mermaid
+flowchart LR
+    F["abuse.ch feed<br/>(raw IOC)"] --> E["enrich<br/>(context)"]
+    E --> A["age + confidence<br/>(assessment)"]
+    A --> J{"act on it?"}
+    J -->|fresh, high-confidence| Y["detection / block"]
+    J -->|stale, low-confidence| D["drop — manufactures FPs"]
+```
+
 ??? note "Go deeper: intelligence shared so defenders can act"
     When Mandiant disclosed SUNBURST in December 2020, they didn't just publish a report — they
     pushed YARA rules, Snort signatures, and IOCs to a public repo so every defender could

@@ -75,6 +75,17 @@ The default split, mapped to recoverability:
 - **CRITICAL** → auto-escalate immediately and log for human post-review. Waiting would lose minutes
   during active ransomware; the *escalation* is the action, and escalation is recoverable.
 
+```mermaid
+flowchart TB
+    A([webhook alert]) --> M["Ollama node<br/>{severity, confidence}"]
+    M --> B{n8n branch}
+    B -->|LOW / MEDIUM| E["enrich-only"]
+    B -->|HIGH| H["wait for human approval<br/>then contain"]
+    B -->|CRITICAL| X["auto-escalate"]
+    B -->|"model fails / low-conf / unparseable"| X
+    X -.->|never| Z["no action"]
+```
+
 Notice what is missing: **the AI never auto-contains.** Containment — the one irreversible action — is
 gated behind a human for HIGH and is never the model's unsupervised call. That is the Knight Capital
 lesson encoded as policy: the faster and less deterministic the actor, the tighter the gate on its

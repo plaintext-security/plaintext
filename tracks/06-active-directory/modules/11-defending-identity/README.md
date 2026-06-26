@@ -30,6 +30,23 @@ Design a tiered administrative model for Corp that structurally breaks each hop 
 
 The Microsoft tiered admin model (now evolved into the "Enterprise Access Model") divides the environment into three tiers based on control scope: **Tier 0** controls the entire identity plane (DCs, AD itself, PKI, federation); **Tier 1** controls enterprise servers and applications; **Tier 2** controls workstations and user devices. The central rule: credentials from a higher tier must never be exposed on a lower-tier host. A domain admin who logs on to a user workstation to fix a printer driver has just exposed their credential to whatever is running on that workstation — a keylogger, a credential-harvesting tool, or simply a stale LSASS dump.
 
+```mermaid
+flowchart TB
+    subgraph T0["Tier 0 — identity plane"]
+        DC["DCs / AD / PKI"]
+        PAW["PAW (only host T0 creds touch)"]
+    end
+    subgraph T1["Tier 1 — servers"]
+        SRV["Enterprise servers"]
+    end
+    subgraph T2["Tier 2 — workstations"]
+        WS["User workstations"]
+    end
+    PAW -.->|"manages"| DC
+    T0 -- "credentials NEVER flow down" --x T2
+    T0 -- "credentials NEVER flow down" --x T1
+```
+
 !!! note "The mental model"
     Every attack path in modules 03–08 depends on **credential co-location** — a privileged hash
     landing in memory on a host an attacker can reach. Tiering attacks the precondition, not the

@@ -38,6 +38,15 @@ A **golden ticket** is a forged Kerberos TGT — crafted without involving the K
 
 A **silver ticket** is a forged service ticket, encrypted with the *service account's* hash rather than the `krbtgt` hash. It is more targeted — valid only for a specific service/host — and completely bypasses the KDC, meaning there is no TGS-REQ event on the DC at all. Silver tickets are useful for persistent access to specific services (a file server, an MSSQL instance) even after the domain is partially cleaned up. They are harder to detect than golden tickets because the KDC is never consulted during their use.
 
+```mermaid
+flowchart LR
+    K["krbtgt hash"] --> GT["Forge golden ticket<br/>(TGT — any user, any group)"]
+    GT --> KDC["KDC / DC<br/>presents TGT for service tickets"]
+    KDC --> SVC(["Any service in the domain"])
+    SH["Service account hash"] --> ST["Forge silver ticket<br/>(service ticket)"]
+    ST -.->|"bypasses KDC entirely — no 4769"| SVC
+```
+
 **DCSync persistence** takes a different form: instead of forging tickets, it adds `DS-Replication-Get-Changes` and `DS-Replication-Get-Changes-All` rights to an attacker-controlled account on the domain object. These are the rights that allow a DC to replicate credentials from another DC — and that allow `secretsdump.py` to pull all hashes without touching NTDS.dit on disk. With these rights, an attacker doesn't need DA privileges; they can pull fresh credentials any time from a low-privilege-looking account. This misconfiguration is often missed in incident response because the attacker-added ACEs on the domain object don't show up in the normal group membership review.
 
 The practical detection challenge is that all three persistence mechanisms leave minimal footprint during use: golden and silver tickets are used exactly like legitimate Kerberos tickets; DCSync traffic looks like normal DC replication. The detection window is narrow — Event 4768 with an unusual source IP for a TGT that nobody requested, Event 4662 for an account exercising replication rights when it has no business doing so. The key insight for defenders: the remediation is not just removing the attacker's account — it is rotating `krbtgt` (twice), auditing the domain object's ACL for replication rights, auditing AdminSDHolder for added ACEs, and checking for rogue DCs. Anything less and the attacker likely remains.

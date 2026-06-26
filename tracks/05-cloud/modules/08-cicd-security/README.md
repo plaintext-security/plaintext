@@ -83,6 +83,16 @@ separates someone who *audits* a pipeline from someone who *recites* "shift left
 the code, it's the **distance between trusted source and trusted signature**, and nothing in a normal
 pipeline was watching that distance.
 
+```mermaid
+flowchart LR
+    Dev([dev commits]) --> Repo["source repo<br/>review, branch protection"]
+    Repo --> Build["BUILD: compile, package"]
+    Build --> Sign["SIGN with cert"]
+    Sign --> Pub([publish / deploy])
+    X["SUNBURST injects here:<br/>after checkout, before signing"]
+    X -. "swaps in backdoored source" .-> Build
+```
+
 !!! note "The mental model"
     The dangerous gap in a pipeline isn't the code — code review, branch protection, and signed commits
     already guard that arrow. It's the **distance between trusted source and trusted signature**: the

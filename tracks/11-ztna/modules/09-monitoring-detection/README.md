@@ -51,7 +51,18 @@ This is a build-first module with three staged builds: **the detection** (Type 6
     And a regression gate you have only ever seen *pass* is not a gate — prove it goes RED on a too-broad
     or too-narrow copy.
 
-**The drift detector: "trust nothing" is an over-time posture.** The detection above watches the *traffic*. The drift detector watches the *posture* — because the Zero Trust property you proved at deployment is not self-sustaining. The pattern is the steady-state loop: **declare** the intended baseline as data (max token lifetime, the set of allowed policy exceptions, which posture checks must be enforced), **observe** the running configuration, **diff** the two, **report** the delta, and **reconcile** back to the baseline. The three drifts to catch are real and silent: *token-lifetime creep* (a 15-minute access token quietly bumped to 8 hours to stop re-auth complaints — every stolen token now lives 32× longer), *accreted allow-exceptions* (the temporary "let the contractor reach the DB" rule that outlived the contractor), and *silently-disabled posture checks* (device-compliance enforcement flipped to "log only" and never flipped back). None of these throw an error; the system keeps working, just less Zero-Trust each week. The detector's deliverable is the same honor-system artifact pattern as the eval: a baseline declared as code, a diff that exits non-zero when observed ≠ declared, and a reconciliation step that restores it — so "is it still Zero Trust?" becomes a number CI can answer, not a hope.
+**The drift detector: "trust nothing" is an over-time posture.** The detection above watches the *traffic*. The drift detector watches the *posture* — because the Zero Trust property you proved at deployment is not self-sustaining. The pattern is the steady-state loop: **declare** the intended baseline as data (max token lifetime, the set of allowed policy exceptions, which posture checks must be enforced), **observe** the running configuration, **diff** the two, **report** the delta, and **reconcile** back to the baseline.
+
+```mermaid
+flowchart LR
+    DECL["Declare<br/>intended baseline<br/>(as code)"] --> OBS["Observe<br/>running posture"]
+    OBS --> DIFF{"Diff:<br/>observed = declared?"}
+    DIFF -->|yes| OK["steady state"]
+    DIFF -->|"no (drift)"| REP["Report delta →<br/>Reconcile to baseline"]
+    REP --> OBS
+```
+
+The three drifts to catch are real and silent: *token-lifetime creep* (a 15-minute access token quietly bumped to 8 hours to stop re-auth complaints — every stolen token now lives 32× longer), *accreted allow-exceptions* (the temporary "let the contractor reach the DB" rule that outlived the contractor), and *silently-disabled posture checks* (device-compliance enforcement flipped to "log only" and never flipped back). None of these throw an error; the system keeps working, just less Zero-Trust each week. The detector's deliverable is the same honor-system artifact pattern as the eval: a baseline declared as code, a diff that exits non-zero when observed ≠ declared, and a reconciliation step that restores it — so "is it still Zero Trust?" becomes a number CI can answer, not a hope.
 
 ??? note "Go deeper: the three silent drifts"
     The ZT property you proved at deployment is not self-sustaining. *Token-lifetime creep* — a

@@ -32,6 +32,14 @@ Active Directory is, at its core, a publicly readable LDAP directory. Any authen
 
 The conceptual leap with **BloodHound** is that it doesn't just list those objects — it *graphs* the relationships. BloodHound ingests the raw data from SharpHound (or the Python equivalent, `bloodhound-python`) and builds a directed graph where nodes are users, groups, computers, OUs, and GPOs, and edges are the relationships: `MemberOf`, `AdminTo`, `GenericWrite`, `HasSession`, `CanRBCD`. The attack-path query then becomes a graph shortest-path problem: "what is the minimum number of hops from `jsmith` to `Domain Admins`?" A domain that looks locked down in a spreadsheet view of group memberships can have a three-hop path to DA that only becomes visible when you ask the graph.
 
+```mermaid
+flowchart LR
+    J([jsmith]) -->|MemberOf| H["Helpdesk"]
+    H -->|GenericWrite| G["IT-Admins group"]
+    G -->|AdminTo| W["WS-FIN-01"]
+    W -->|HasSession| DA(["Domain Admins"])
+```
+
 !!! note "The mental model"
     Stop thinking of enumeration as "listing objects" and start thinking of it as **building a
     graph**. Group membership is a table; attack paths are a graph problem. BloodHound's value isn't

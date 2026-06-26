@@ -71,6 +71,16 @@ non-zero on a finding, and is a **required status check** — that "required" se
 a gate rather than a suggestion. A green pipeline is the proof; a red one that *blocks the merge* is
 the deliverable.
 
+```mermaid
+flowchart LR
+    C["commit /<br/>pull_request"] --> SS["secret-scan<br/>(gitleaks)"]
+    SS --> IS["IaC-scan<br/>(checkov)"]
+    IS --> SB["SBOM<br/>(syft)"]
+    SB --> G{"all green?<br/>(required check)"}
+    G -->|"yes"| D["merge → deploy"]
+    G -->|"any finding<br/>= non-zero exit"| B["block the merge"]
+```
+
 **The trust boundary is the whole security model.** GitHub Actions runs your YAML on a runner that
 holds the repo's secrets, and the security model has two axes you control:
 

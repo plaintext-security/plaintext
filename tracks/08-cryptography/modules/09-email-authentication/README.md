@@ -45,6 +45,21 @@ DKIM (DomainKeys Identified Mail) adds a cryptographic signature to the message.
 
 DMARC (Domain-based Message Authentication, Reporting and Conformance) is the policy layer that ties SPF and DKIM together and adds alignment and reporting. A DMARC record specifies what to do if a message fails both SPF and DKIM: `none` (monitor only), `quarantine` (spam folder), or `reject` (bounce). It also specifies alignment: the domain in the SPF check or the DKIM signature must match the domain in the visible From header (`d=` alignment). This is the alignment requirement that closes the gap SPF alone leaves — a DMARC `reject` policy with DKIM alignment prevents spoofing the visible From address even if the attacker passes the envelope SPF check. It is precisely this "is the From domain who it claims to be?" check that was missing in the Google/Facebook BEC fraud, where look-alike sender domains carried fake invoices straight to finance. DMARC also enables aggregate (`rua`) and forensic (`ruf`) reporting — receiving servers send reports back to the domain owner showing which sources are passing and failing authentication, which is how you audit your own email sending infrastructure before setting a `reject` policy.
 
+At the receiving server, the three checks run in sequence, and DMARC's verdict turns on *alignment* — does the SPF- or DKIM-authenticated domain match the visible From?
+
+```mermaid
+flowchart TD
+    M["inbound mail<br/>From: corp.example"] --> SPF{"SPF pass<br/>+ aligned?"}
+    M --> DKIM{"DKIM pass<br/>+ aligned?"}
+    SPF -->|yes| OK["deliver"]
+    DKIM -->|yes| OK
+    SPF -->|no| D{"DMARC policy"}
+    DKIM -->|no| D
+    D -->|p=none| OK
+    D -->|p=quarantine| SPAM["spam folder"]
+    D -->|p=reject| REJ["bounce / reject"]
+```
+
 The operational pattern for DMARC deployment is a staged rollout: start with `p=none` (monitor), collect reports for 30–60 days to ensure all legitimate sending infrastructure passes SPF and DKIM, then move to `p=quarantine`, then to `p=reject`. Jumping to `reject` without a monitoring period routinely causes legitimate email to be bounced — newsletters, third-party SaaS sending on behalf of the domain, and marketing platforms all need to be authorised in SPF and DKIM-signed before `reject` is safe.
 
 ??? note "Go deeper: why DKIM survives forwarding and SPF doesn't"

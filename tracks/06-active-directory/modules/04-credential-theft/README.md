@@ -38,6 +38,16 @@ Windows stores a user's credential as an **NT hash** — specifically, the MD4 h
 
 Where do hashes live? The primary sources are: the **SAM database** on local machines (protected by SYSKEY, but extractable with SYSTEM privileges), **LSASS memory** on any machine where the user has authenticated (protected by PPL — Protected Process Light — on newer Windows, but bypassed by various techniques), and most importantly for a DC, **the NTDS.dit database** — the Active Directory credential store on the domain controller. `secretsdump.py` can extract from all three sources, using different techniques: VSS shadow copy + offline parsing for NTDS.dit, or live DRSUAPI replication (DCSync) when the attacker has sufficient rights.
 
+```mermaid
+flowchart LR
+    SAM["SAM<br/>(local, SYSTEM)"] --> SD["secretsdump.py"]
+    LSASS["LSASS memory<br/>(authenticated user)"] --> SD
+    NTDS["NTDS.dit on DC<br/>(via DCSync)"] --> SD
+    SD --> H["NT hash"]
+    H --> PTH["psexec.py / smbexec.py<br/>— authenticate with the hash"]
+    PTH --> TARGET(["Remote host as that user"])
+```
+
 The reason PTH is so dangerous in practice is that Windows historically used the *same* NTLM hash for local and domain authentication, and local admin credentials were historically shared across machines (the same local admin password on every workstation). LAPS (Local Administrator Password Solution) was introduced precisely to break this — it rotates the local admin password per machine and stores it in AD. Without LAPS, one cracked or stolen local admin hash gives you lateral movement across the entire estate. Even with LAPS, you still face the domain credential hash problem: a domain account that logs on to multiple machines leaves its NTLM hash in LSASS on every one of them.
 
 !!! warning "The gotcha"

@@ -66,6 +66,17 @@ right tool for the sliding window. Neither requires a database — for a few tho
 in-memory structure is fast enough and simpler to reason about. The moment your window needs
 persistence across restarts, you add a database; don't add one before you need it.
 
+```mermaid
+flowchart LR
+    L["auth.log<br/>(line by line)"] --> R["compiled regex<br/>(named groups)"]
+    R -->|"failed login"| C["Counter<br/>per source IP"]
+    R -->|"failed login"| W["deque(maxlen=N)<br/>sliding window"]
+    C --> T{"over threshold<br/>in window?"}
+    W --> T
+    T -->|yes| F["flag: brute-force"]
+    T -->|no| S["ignore"]
+```
+
 ??? note "Go deeper: why named groups and `re.compile` aren't optional"
     `(?P<ip>\d{1,3}(?:\.\d{1,3}){3})` is self-documenting and returns a dict you can reason about;
     `(\d+\.\d+\.\d+\.\d+)` is a mystery three months later. And compile the pattern once outside the

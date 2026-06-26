@@ -43,6 +43,14 @@ The four attacks map one-to-one onto the design's load-bearing tenets. **(1) No 
 
 The third attack is the one this module exists for: **identity-header forgery.** An identity-aware proxy works by *injecting* the validated caller into the upstream request as a header — Pomerium's signed `X-Pomerium-Jwt-Assertion`, plus context like `X-Forwarded-For` / `X-Forwarded-User`. The whole model holds right up until the backend trusts a header that an attacker can *also* set. `curl -H "X-Forwarded-User: admin@corp.com"` costs nothing; a forged value of a *signed* assertion costs the proxy's private key, which you don't have. So the rule the backend must follow is exact: **trust the identity in `X-Pomerium-Jwt-Assertion` only after verifying its signature against the proxy's JWKS (`/.well-known/pomerium/jwks.json`), plus `aud`/`iss`/`exp` — and never trust a plain, client-supplied identity header.** The lab ships *two* backends so you can see both sides: a properly-verifying one (the forgery is refused — a documented pass) and a deliberately naive one that believes a raw `X-Forwarded-User` header (the forgery *succeeds* — your one finding). Hardening the naive backend to verify the signed assertion, then watching the same forgery fail, is the harden-and-re-attack beat that *is* the deliverable.
 
+```mermaid
+flowchart LR
+    F(["curl -H 'X-Forwarded-User: admin@corp.com'"]) --> V["verifying backend<br/>(checks signed assertion vs JWKS)"]
+    F --> N["naive backend<br/>(trusts the raw header)"]
+    V -->|"refused — documented PASS"| OK[deny held]
+    N -->|"impersonation succeeds — your finding"| BAD[harden, then re-attack]
+```
+
 !!! warning "The gotcha"
     The model holds right up until the backend trusts a header an attacker can *also* set. `curl -H
     "X-Forwarded-User: admin@corp.com"` costs nothing; forging a *signed* `X-Pomerium-Jwt-Assertion`

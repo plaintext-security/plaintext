@@ -30,6 +30,21 @@ Demonstrate AES-GCM authenticated encryption and the concrete failure mode of IV
 
 AES-GCM is a composed construction: it uses AES in Counter Mode (CTR) for encryption and GHASH for authentication. The CTR keystream is generated from the key and nonce (IV); if the same nonce is used with the same key, the same keystream is generated. When an attacker has two ciphertexts encrypted with the same key/nonce pair, XORing them cancels the keystream and produces the XOR of the two plaintexts — a known-plaintext or crib-dragging attack can then recover both. This is "nonce misuse" and it completely breaks the confidentiality guarantee, regardless of the fact that GCM otherwise provides authenticated encryption. This is the same arithmetic that doomed WEP — only the cipher changed from RC4 to AES-CTR.
 
+The same three inputs — key, nonce, plaintext — feed both halves of the construction, and both outputs (ciphertext *and* tag) travel together; verification on the receiving side recomputes the tag and refuses the message if it doesn't match:
+
+```mermaid
+flowchart LR
+    K["key"] --> ENC
+    N["nonce (clear)"] --> ENC
+    P["plaintext"] --> ENC["AES-CTR + GHASH"]
+    ENC --> C["ciphertext"]
+    ENC --> T["auth tag"]
+    C --> DEC["decrypt + verify tag"]
+    T --> DEC
+    DEC -->|tag matches| OK["plaintext"]
+    DEC -->|tag fails| REJ["InvalidTag — reject"]
+```
+
 !!! note "The mental model"
     A nonce is not a key and not a secret — it travels in the clear next to the ciphertext. Its one
     job is to be *unique per key*. Think of it as a serial number the keystream is built from: reuse

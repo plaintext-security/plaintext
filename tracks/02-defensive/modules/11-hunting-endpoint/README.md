@@ -37,6 +37,16 @@ discipline: you're hunting precisely the thing your rules didn't have a signatur
 "they'd do discovery with built-in tools") and then interrogate your endpoint data to confirm or
 refute it. A hunt that ends in "ruled out" is a result, not a failure.
 
+```mermaid
+flowchart LR
+    H["hypothesis<br/>('attacker persists<br/>via a Run key')"] --> Q["query endpoint data<br/>(VQL / osquery)"]
+    Q --> R{confirm<br/>or refute?}
+    R -->|refuted| RO["ruled out<br/>(a result)"]
+    R -->|confirmed| IR["investigate /<br/>respond"]
+    IR --> DET["codify as a detection"]
+    DET -.->|hunt it by hand once| H
+```
+
 !!! note "The mental model"
     The organising principle is the **Pyramid of Pain**: hunt *behaviours*, not atomic indicators. A
     hash or IP is trivial for an attacker to change (bottom of the pyramid); their techniques cost

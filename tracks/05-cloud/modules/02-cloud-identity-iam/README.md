@@ -69,7 +69,21 @@ anything. The over-broad developer policy you'll enumerate grants `s3:*` on `*` 
 `*` — so "dev-alice" can read and delete *every* bucket in the account, and, far worse, **pass any role
 to a service she controls.** `iam:PassRole` + `ec2:RunInstances` is the canonical escalation: launch an
 EC2 instance attached to the admin role, and the instance — and through it, the attacker — *is* admin.
-That isn't a bug in IAM; it's two legitimate permissions that **compose** into root. The blast radius of
+That isn't a bug in IAM; it's two legitimate permissions that **compose** into root.
+
+```mermaid
+flowchart LR
+    A["dev-alice<br/>(iam:PassRole + ec2:RunInstances on *)"]
+    E["EC2 instance<br/>(launched by alice)"]
+    R["AdminRole<br/>(iam:* s3:*)"]
+    T(["Account admin"])
+    A -- "RunInstances, attach role" --> E
+    A -. "PassRole the admin role" .-> E
+    E -- "assumes its instance-profile role" --> R
+    R --> T
+```
+
+The blast radius of
 a key is never what its name suggests — it's the transitive closure of everything its permissions can
 reach, including the permissions it can grant itself. People reliably under-guess this, and the
 under-guess is how a "dev" key ends a company.

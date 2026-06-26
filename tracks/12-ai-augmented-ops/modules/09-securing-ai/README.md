@@ -72,6 +72,15 @@ the instructions it was supposed to obey.
     stream (louder, more specific, formatted to look like a directive) can simply win. This is the LLM
     analog of SQL injection: control-plane instructions and untrusted data share one channel.
 
+```mermaid
+flowchart LR
+    SP["system prompt<br/>('never obey injected text')"] --> CW
+    AL["alert text"] --> CW
+    RC["retrieved chunk"] --> CW
+    TR["tool result"] --> CW
+    CW["one context window<br/>— undifferentiated tokens,<br/>no trust boundary"] --> LLM([model])
+```
+
 So if "tell it not to" is not the fix, what is? **You move the defense out of the prompt and into the
 architecture**, in three layers that match the three the copilot exposes:
 

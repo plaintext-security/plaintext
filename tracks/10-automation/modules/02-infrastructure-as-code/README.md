@@ -58,6 +58,17 @@ Terraform and its open-source fork **OpenTofu** share the same declarative model
 current and executes only that. The lifecycle is four verbs: `init` (download providers), `plan`
 (show the delta), `apply` (execute it), `destroy` (tear it down).
 
+```mermaid
+flowchart LR
+    D["desired state<br/>(your HCL)"] --> P
+    A["actual state<br/>(tfstate + real world)"] --> P
+    P["<b>plan</b><br/>compute the delta"] --> R{"review<br/>the diff"}
+    R -->|"<code>~ update</code> — safe"| AP["<b>apply</b>"]
+    R -->|"<code>-/+</code> replace · <code>-</code> destroy"| STOP["stop — prod dies here"]
+    AP --> A
+```
+
+
 **The plan-diff is your safety surface — and the whole discipline is: review the diff, never the
 apply.** `tofu plan` prints exactly what will be created, changed, or destroyed *before* anything
 happens. A change that reads as `~ update in-place` is safe; one that reads as `-/+ destroy and then

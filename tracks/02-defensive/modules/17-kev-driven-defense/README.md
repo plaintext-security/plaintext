@@ -56,6 +56,16 @@ Then comes the half that pays the rent: **detection.** Exploiting the bug proves
 the detection is the deliverable. The discipline is to write the rule against *the same traffic your
 exploit produced*, then prove it stays silent on benign requests.
 
+```mermaid
+flowchart LR
+    P["pull KEV catalog"] --> D["diff vs last time<br/>(what's new)"]
+    D --> X{"reproducible<br/>target? (Vulhub)"}
+    X -->|no| SKIP["note, move on"]
+    X -->|yes| E["exploit in lab"]
+    E --> W["write detection on<br/>that exploit traffic"]
+    W --> V["prove: fires on attack,<br/>quiet on benign"]
+```
+
 !!! warning "The gotcha"
     Log4Shell (CVE-2021-44228, KEV-listed, ransomware-flagged) is the cleanest teaching case: the
     `${jndi:ldap://…}` lookup string lands in the URI, a header, *or* the User-Agent, and a detector

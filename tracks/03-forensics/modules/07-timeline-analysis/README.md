@@ -34,6 +34,17 @@ Think of a super-timeline as a database index on time. Plaso's `log2timeline.py`
     reconciles each source's clock to UTC so the chain of events appears in one sorted view instead
     of six tool outputs you correlate by hand.
 
+```mermaid
+flowchart LR
+    E["EVTX"] --> L["log2timeline.py<br/>(normalize to UTC)"]
+    B["Browser history"] --> L
+    P["Prefetch"] --> L
+    R["Registry"] --> L
+    S["System logs"] --> L
+    L --> Q["psort<br/>(sort + filter)"]
+    Q --> T["One time-ordered narrative"]
+```
+
 That reconciliation is also where the work goes wrong. **The single most common timeline mistake is a timezone error** — an artifact parsed in local time and silently shifted by hours against everything else, which fabricates a sequence that never happened. Pin the source timezone at ingest (`--timezone`), and treat any "impossible" ordering (an effect before its cause) as a clock problem to disprove before it's a finding to report. Order of operations matters too: ingest everything first, *then* filter with `psort` — narrowing the input before you can see the full picture is how you cut the one event the whole case turns on.
 
 !!! warning "The gotcha"

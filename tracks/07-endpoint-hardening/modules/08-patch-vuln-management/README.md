@@ -38,6 +38,13 @@ Vulnerability management fails in one of two ways: organisations either patch no
 
 osquery's role in vulnerability management is asset inventory: it knows exactly what is installed on each host (package names, versions, paths), when packages were last updated, and what processes are running. This is the "what do we have" question. grype is the scanner that answers "what CVEs apply to what we have" — it compares the package inventory against the NVD (National Vulnerability Database), GitHub Advisory Database, and other vulnerability feeds and produces a finding list with CVE IDs, severity ratings, and the fixed version that closes each finding. Together, osquery (inventory) and grype (CVE matching) replace the expensive commercial vulnerability scanner for most endpoint use cases.
 
+```mermaid
+flowchart LR
+    OSQ["osquery<br/><i>what do we have</i><br/>(packages, versions)"] --> GRYPE["grype<br/><i>what CVEs apply</i><br/>(vs NVD, advisories)"]
+    GRYPE --> TRIAGE["Triage model<br/>CVSS × KEV × reachability × fix"]
+    TRIAGE --> LIST(["Single-page<br/>priority list"])
+```
+
 !!! warning "The gotcha"
     Sorting by CVSS alone inverts your priorities — it floats a network-unreachable memory-corruption
     bug above an actively-exploited auth bypass. The base score is a property of the *vulnerability*,

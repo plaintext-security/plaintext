@@ -36,6 +36,13 @@ but not at the *API* (the server still answers if you ask directly). So the atta
 change `id=123` to `124` and read someone else's record (IDOR), call the admin endpoint as a normal
 user (vertical escalation), or reach a peer's data (horizontal). No payload, no cleverness.
 
+```mermaid
+flowchart LR
+    U["attacker"] -->|"clicks UI"| UI["UI hides<br/>others' records"]
+    U -->|"asks API directly:<br/>id=123 → id=124"| API["server answers<br/>— no authz check"]
+    API --> D["someone else's<br/>record returned"]
+```
+
 !!! note "The mental model"
     Seen through the lens of injection, this is the same disease in a new organ: **the server trusting
     the client.** Injection is the server trusting client *input*; broken access control is the server

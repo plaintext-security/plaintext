@@ -75,7 +75,18 @@ Hold your answers against these.
 public address and its own group only trusts `app-sg`. A per-rule scan calls it clean. But `app-sg`
 exposes `:22` to the world — so an attacker reaches the app instance, lands a shell, and *from there*
 is a member of `app-sg`, which the database explicitly trusts. The database **is** reachable from the
-internet; just not in one hop. **The mental model: a Security Group is the stateful host firewall you've
+internet; just not in one hop.
+
+```mermaid
+flowchart LR
+    Net(["Internet<br/>0.0.0.0/0"])
+    App["app instance<br/>(app-sg)"]
+    DB[("database<br/>db-sg, private subnet")]
+    Net -- ":22 open to the world" --> App
+    App -- "member of app-sg, which db-sg trusts" --> DB
+```
+
+**The mental model: a Security Group is the stateful host firewall you've
 written for years, but applied per-network-interface and composable — so reachability is a graph, not a
 table.** You don't read down the rules; you ask "what can the internet touch, and what can *that* touch,"
 following group-references like edges. People reliably under-count this, and the under-count is how a

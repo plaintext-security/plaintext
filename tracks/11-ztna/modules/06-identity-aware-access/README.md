@@ -39,6 +39,18 @@ Stand up Pomerium as an identity-aware proxy in front of a backend service; obse
 
 An identity-aware proxy is, stripped of marketing, a **reverse proxy that speaks OIDC**. Instead of a firewall rule that allows TCP/443, you have a process that requires a signed JWT (issued by your IdP) on every request, validates its signature, expiry, and claims against a policy, then either forwards the request or rejects it. The backend has no knowledge of any of this — it just sees HTTP arriving with user-identity headers the proxy injected. Pomerium bundles the three pieces you would otherwise wire by hand: an **authenticate** service (the OIDC redirect dance with your IdP), an **authorize** service (policy evaluation against claims), and a **proxy** (the actual forwarding). The lab runs all three in one container for legibility; production splits them for scale and blast radius.
 
+```mermaid
+flowchart LR
+    C([Client request]) --> P{"Proxy: valid signed JWT?<br/>(authenticate + authorize)"}
+    P -->|yes| B["Backend<br/>(no public listener)"]
+    P -->|no| X["Dropped — not a 401, no packet"]
+    F(["Forged X-Forwarded-User header"]) -. only works if backend<br/>trusts an unsigned header .-> B
+    Y(["Direct-to-backend bypass"]) -. only works if backend<br/>is reachable around proxy .-> B
+```
+
+The proxy's verdict is the *only* way in **only if** the two dashed paths are closed: the backend trusts
+nothing but the proxy's signed assertion, and no route reaches it around the proxy.
+
 **The load-bearing judgment of this module is the deny path, and the gotcha that defeats it is header trust.** The proxy terminates TLS inbound, so the backend sees internal HTTP from the proxy, not HTTPS from the user. Identity arrives as injected headers — the signed `X-Pomerium-Jwt-Assertion` (a JWT the proxy signs with its own key) plus context like `X-Forwarded-For`. The mistake that turns a Zero-Trust deployment into theater: **the backend must trust *only* the proxy's signed assertion, never a client-supplied identity header.** Headers are trivially forgeable — `curl -H "X-Forwarded-User: admin@corp.com"` costs nothing — so a backend that reads an *unsigned* identity header and believes it has handed authentication to the attacker. Pomerium's own guidance is explicit: the upstream verifies the assertion cryptographically — the JWT was signed by Pomerium's key (fetched from the `/.well-known/pomerium/jwks.json` JWKS endpoint), the `aud`/`iss` match the service, and `exp` is in the future — *before* trusting any identity inside it. A signed assertion is unforgeable without the proxy's private key; a plain header is not. That distinction is the entire security boundary.
 
 !!! warning "The gotcha"

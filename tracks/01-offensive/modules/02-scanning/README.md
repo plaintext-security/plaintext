@@ -35,6 +35,13 @@ detection (what software, which version) → deep enumeration (what that service
 stage narrows toward an attack path. Nmap is the field standard not because it sends packets but
 because it does all four, and its output is the lingua franca attackers and defenders both read.
 
+```mermaid
+flowchart LR
+    A["host discovery<br/>(what's alive)"] --> B["port scan<br/>(what's listening)"]
+    B --> C["version detection<br/>(what software)"]
+    C --> D["deep enumeration<br/>(the way in)"]
+```
+
 !!! note "The mental model"
     **A port number is a hypothesis, not an answer.** 443 doesn't mean HTTPS; it means "something is
     listening here" — version detection and the Nmap Scripting Engine turn that guess into ground

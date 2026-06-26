@@ -61,6 +61,19 @@ the contract you can express is richer than "a flat bag of strings.")
     schema can't drift. So the tool description is API docs for a caller who has never seen your code
     (because it hasn't): a precise description yields precise calls; a vague one yields vague calls.
 
+```mermaid
+sequenceDiagram
+    participant M as Model
+    participant C as MCP client
+    participant S as MCP server (your tool)
+    M->>C: requests tools/call (name + args)
+    C->>S: JSON-RPC tools/call
+    Note over S: validate every arg as untrusted
+    S->>C: structured result (or {"error": ...})
+    C->>M: result injected into context
+    Note over M: model reads output as text — never runs code
+```
+
 **Treating a tool as a build means three contracts have to be explicit, not incidental.** *Schema:*
 the parameter types and the docstring are what the model reads to decide how to call you — a vague
 description (`search(query: str)`) yields vague calls; a precise one

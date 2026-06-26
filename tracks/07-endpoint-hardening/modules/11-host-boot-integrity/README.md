@@ -48,6 +48,17 @@ File integrity stops where the running OS stops, though, and that's the boundary
 
 The synthesis a practitioner carries is a **layered "known-good" stack**: Secure Boot gates what runs before the OS, measured boot/TPM attests that the pre-OS chain was untouched, FDE protects the data while powered off, and AIDE watches the files once the system is live. Each layer covers a window the others can't see, and each has the same Achilles' heel — the *reference* it compares against (the signature DB, the expected PCR values, the AIDE baseline) is the actual asset. Get the reference right and protected, and you can answer "was this host tampered with?" from the silicon up. Lose control of the reference and every green checkmark above it is meaningless.
 
+```mermaid
+flowchart LR
+    FW["UEFI firmware"] --> BL["Bootloader"] --> K["Kernel + initramfs"] --> OS["Running OS<br/>(files mounted)"]
+    SB["Secure Boot<br/>— <b>prevent</b>: verify signature"] -.-> BL
+    SB -.-> K
+    MB["Measured boot → TPM PCRs<br/>— <b>detect</b>: attest the chain"] -.-> BL
+    MB -.-> K
+    FDE["FDE / LUKS<br/>— <b>protect at rest</b>"] -.-> OS
+    AIDE["AIDE baseline<br/>— <b>detect</b>: file integrity"] -.-> OS
+```
+
 ??? note "Go deeper: three boot-chain jobs, not one"
     File integrity is blind before the OS mounts, and the pre-OS chain has *three distinct* jobs you
     should be able to place precisely. **Secure Boot** is *prevention* — UEFI verifies a signature on

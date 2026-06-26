@@ -51,6 +51,19 @@ leaves the chat window; the enrichment is automatic; the human provides the judg
 block it"). This is the "AI authors → you review → you own it" posture applied to tool use:
 the AI does the API call, you decide what to do with the result.
 
+```mermaid
+sequenceDiagram
+    participant H as Host (Claude)
+    participant S as MCP server
+    participant API as Threat-intel API
+    H->>S: tools/call enrich_ip("185.220.101.1")
+    Note over S: validate arg<br/>(untrusted input)
+    S->>API: GET /ip/185.220.101.1
+    API-->>S: {abuse_score, asn, ...}
+    S-->>H: {"verdict": "malicious", ...}
+    Note over H: explains result;<br/>human decides
+```
+
 The operational discipline for MCP servers in security contexts: every tool should be read-only
 unless the LLM is explicitly designed and scoped for write actions. An `enrich_ip` tool that
 only queries is safe. An `block_ip(ip: str)` tool that writes a firewall rule is a tool that
