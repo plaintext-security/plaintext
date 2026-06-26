@@ -75,6 +75,16 @@ handshake**, how every TCP connection begins. The client sends a **SYN** ("I'd l
 those three flags and you can find the start of any connection in a sea of packets — which is also why
 port scanners, firewalls, and SYN-flood attacks all manipulate exactly this exchange.
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: SYN — "I'd like to talk" (synchronize)
+    S->>C: SYN-ACK — "go ahead, and I acknowledge"
+    C->>S: ACK — "acknowledged, we're connected"
+    Note over C,S: only now does data flow
+```
+
 The second is **DNS**, the internet's phone book: it turns a name (`example.com`) into an IP address
 your computer can actually connect to. A lookup is usually two small packets over UDP port 53 — a
 **query** ("what's the A record for `example.com`?") and an **answer** ("it's 93.184.216.34"). DNS is

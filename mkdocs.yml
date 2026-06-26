@@ -49,7 +49,13 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      # Render ```mermaid fenced blocks as diagrams (Material bundles mermaid.js).
+      # Diagrams-as-text: they diff in PRs and commit no binary assets.
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true

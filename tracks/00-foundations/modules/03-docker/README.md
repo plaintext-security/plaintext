@@ -72,6 +72,21 @@ gets compromised still has a kernel and a hypervisor between it and the host. A 
 compromised is already a process *on the host's kernel* — the only thing keeping it boxed in is those
 namespace and cgroup restrictions. Weaken them and the box opens.
 
+```mermaid
+flowchart TB
+    subgraph H[Host machine]
+        subgraph N1["namespaces + cgroups"]
+            A["container A<br/>= a process,<br/>restricted view"]
+        end
+        subgraph N2["namespaces + cgroups"]
+            B["container B<br/>= a process,<br/>restricted view"]
+        end
+        K["the host's <b>single kernel</b> — shared by every container"]
+        A --> K
+        B --> K
+    end
+```
+
 !!! note "The mental model"
     A container is a *process with a restricted view of the system, not a machine.* Namespaces are
     what it can **see**; cgroups are what it can **use**; the host's single kernel is shared. So a

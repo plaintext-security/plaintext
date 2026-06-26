@@ -75,6 +75,16 @@ Anyone with the repo can run `git log -p` (show every commit *with its diff*) or
 commit>` and read the key, plainly, as if you'd never "deleted" it. Deleting the file in a later
 commit changes the *present*; it does nothing to the *past* the repo is built to preserve.
 
+```mermaid
+gitGraph
+    commit id: "key committed" type: HIGHLIGHT
+    commit id: "key line deleted"
+    commit id: "add README"
+```
+
+The highlighted snapshot still sits in the chain — `git log -p` or `git show` reads the key from it
+plainly, no matter what later commits did.
+
 !!! warning "The gotcha"
     "I deleted the line and committed again, so I'm safe" is exactly wrong. The first snapshot — with
     the key — is still in the chain; `git log -p` reads it plainly. Rewriting history

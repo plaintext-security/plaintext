@@ -101,7 +101,24 @@ boundary. The cheapest place to catch this was a whiteboard in 2012, not a foren
 
 Threat modeling is four questions asked in order: **what are we building, what can go wrong, what are
 we doing about it, did we do a good job?** The first question is a *diagram* — the elements (browser,
-server, database), the flows between them, and the trust boundaries those flows cross. The second
+server, database), the flows between them, and the trust boundaries those flows cross — like this:
+
+```mermaid
+flowchart LR
+    U([User / browser])
+    subgraph edge["trust boundary: internet → app"]
+        W[Web server]
+    end
+    subgraph core["trust boundary: app → data"]
+        DB[(Database)]
+    end
+    U -- HTTPS request --> W
+    W -- SQL query --> DB
+    DB -- rows --> W
+    W -- response --> U
+```
+
+Every arrow that crosses a boundary box is a place to ask "what can go wrong?" The second
 question is where it gets systematic instead of vibes, and that's what **STRIDE** is for. STRIDE is a
 checklist of the six things that can go wrong at a boundary — walk each crossing and ask one question
 per letter:

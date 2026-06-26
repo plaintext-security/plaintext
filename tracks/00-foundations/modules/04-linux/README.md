@@ -71,6 +71,14 @@ who launches it. That's intentional and necessary for a few tools (`passwd` has 
 file), but it's also the seed of half of Linux privilege escalation: find an unexpected SUID-root binary
 an attacker dropped, and you've found a backdoor that hands anyone root.
 
+```mermaid
+flowchart LR
+    A([alice runs it]) --> N[normal binary]
+    A --> S[SUID-root binary]
+    N --> NP["runs as <b>alice</b><br/>— your privileges"]
+    S --> SP["runs as <b>root</b><br/>— the owner's, no matter who launches it"]
+```
+
 !!! warning "The gotcha"
     SUID is easy to dismiss as a one-bit curiosity. It's the seed of half of Linux privilege
     escalation: a SUID-root binary runs as root no matter who launches it, so an *unexpected* one is
