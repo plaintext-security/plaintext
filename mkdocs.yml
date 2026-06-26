@@ -80,7 +80,8 @@ nav:
   - Office Hours: office-hours.md
   - Instructor & Cohort Guide: instructor-guide.md
   - Foundations:
-      - Overview: 00-foundations/README.md
+      - Course Overview: 00-foundations/course.md
+      - Syllabus: 00-foundations/README.md
       - "01 · Security First Principles":
           - Concept: 00-foundations/modules/01-security-principles/README.md
           - Lab: 00-foundations/modules/01-security-principles/lab.md
@@ -118,7 +119,8 @@ nav:
           - Concept: 00-foundations/modules/12-threat-modeling/README.md
           - Lab: 00-foundations/modules/12-threat-modeling/lab.md
   - Offensive Security:
-      - Overview: 01-offensive/README.md
+      - Course Overview: 01-offensive/course.md
+      - Syllabus: 01-offensive/README.md
       - "01 · Reconnaissance & OSINT":
           - Concept: 01-offensive/modules/01-recon/README.md
           - Lab: 01-offensive/modules/01-recon/lab.md
@@ -171,7 +173,8 @@ nav:
           - Concept: 01-offensive/modules/17-reporting/README.md
           - Lab: 01-offensive/modules/17-reporting/lab.md
   - Defensive Operations:
-      - Overview: 02-defensive/README.md
+      - Course Overview: 02-defensive/course.md
+      - Syllabus: 02-defensive/README.md
       - "01 · Telemetry & Log Centralisation":
           - Concept: 02-defensive/modules/01-telemetry/README.md
           - Lab: 02-defensive/modules/01-telemetry/lab.md
@@ -224,7 +227,8 @@ nav:
           - Concept: 02-defensive/modules/17-kev-driven-defense/README.md
           - Lab: 02-defensive/modules/17-kev-driven-defense/lab.md
   - Digital Forensics & IR:
-      - Overview: 03-forensics/README.md
+      - Course Overview: 03-forensics/course.md
+      - Syllabus: 03-forensics/README.md
       - "01 · Forensic Fundamentals & Evidence Handling":
           - Concept: 03-forensics/modules/01-forensic-fundamentals/README.md
           - Lab: 03-forensics/modules/01-forensic-fundamentals/lab.md
@@ -268,7 +272,8 @@ nav:
           - Concept: 03-forensics/modules/14-reporting-root-cause/README.md
           - Lab: 03-forensics/modules/14-reporting-root-cause/lab.md
   - Malware Analysis:
-      - Overview: 04-malware/README.md
+      - Course Overview: 04-malware/course.md
+      - Syllabus: 04-malware/README.md
       - "01 · Analysis Lab Setup & Safety":
           - Concept: 04-malware/modules/01-analysis-lab-setup/README.md
           - Lab: 04-malware/modules/01-analysis-lab-setup/lab.md
@@ -309,7 +314,8 @@ nav:
           - Concept: 04-malware/modules/13-detection-reporting/README.md
           - Lab: 04-malware/modules/13-detection-reporting/lab.md
   - Cloud & Container Security:
-      - Overview: 05-cloud/README.md
+      - Course Overview: 05-cloud/course.md
+      - Syllabus: 05-cloud/README.md
       - "01 · Cloud Fundamentals":
           - Concept: 05-cloud/modules/01-cloud-fundamentals/README.md
           - Lab: 05-cloud/modules/01-cloud-fundamentals/lab.md
@@ -362,7 +368,8 @@ nav:
           - Concept: 05-cloud/modules/17-data-protection-kms/README.md
           - Lab: 05-cloud/modules/17-data-protection-kms/lab.md
   - Active Directory & Windows:
-      - Overview: 06-active-directory/README.md
+      - Course Overview: 06-active-directory/course.md
+      - Syllabus: 06-active-directory/README.md
       - "01 · AD & Windows Security Model":
           - Concept: 06-active-directory/modules/01-ad-windows-model/README.md
           - Lab: 06-active-directory/modules/01-ad-windows-model/lab.md
@@ -397,7 +404,8 @@ nav:
           - Concept: 06-active-directory/modules/11-defending-identity/README.md
           - Lab: 06-active-directory/modules/11-defending-identity/lab.md
   - Endpoint & Host Hardening:
-      - Overview: 07-endpoint-hardening/README.md
+      - Course Overview: 07-endpoint-hardening/course.md
+      - Syllabus: 07-endpoint-hardening/README.md
       - "01 · Endpoint Threat Model":
           - Concept: 07-endpoint-hardening/modules/01-endpoint-threat-model/README.md
           - Lab: 07-endpoint-hardening/modules/01-endpoint-threat-model/lab.md
@@ -429,7 +437,8 @@ nav:
           - Concept: 07-endpoint-hardening/modules/10-detecting-host-compromise/README.md
           - Lab: 07-endpoint-hardening/modules/10-detecting-host-compromise/lab.md
   - Cryptography, PKI & Secrets:
-      - Overview: 08-cryptography/README.md
+      - Course Overview: 08-cryptography/course.md
+      - Syllabus: 08-cryptography/README.md
       - "01 · Primitives in Practice":
           - Concept: 08-cryptography/modules/01-primitives-practice/README.md
           - Lab: 08-cryptography/modules/01-primitives-practice/lab.md
@@ -461,7 +470,8 @@ nav:
           - Concept: 08-cryptography/modules/10-auditing-crypto-failures/README.md
           - Lab: 08-cryptography/modules/10-auditing-crypto-failures/lab.md
   - Python for Security:
-      - Overview: 09-python-for-security/README.md
+      - Course Overview: 09-python-for-security/course.md
+      - Syllabus: 09-python-for-security/README.md
       - "01 · Setup & Security Idioms":
           - Concept: 09-python-for-security/modules/01-setup-idioms/README.md
           - Lab: 09-python-for-security/modules/01-setup-idioms/lab.md
@@ -493,7 +503,8 @@ nav:
           - Concept: 09-python-for-security/modules/10-packaging-testing/README.md
           - Lab: 09-python-for-security/modules/10-packaging-testing/lab.md
   - Security Automation:
-      - Overview: 10-automation/README.md
+      - Course Overview: 10-automation/course.md
+      - Syllabus: 10-automation/README.md
       - "01 · The Automation Mindset":
           - Concept: 10-automation/modules/01-automation-mindset/README.md
           - Lab: 10-automation/modules/01-automation-mindset/lab.md
@@ -528,7 +539,8 @@ nav:
           - Concept: 10-automation/modules/11-clickops-iac-migration/README.md
           - Lab: 10-automation/modules/11-clickops-iac-migration/lab.md
   - Zero Trust Network Access:
-      - Overview: 11-ztna/README.md
+      - Course Overview: 11-ztna/course.md
+      - Syllabus: 11-ztna/README.md
       - "01 · Zero Trust Principles":
           - Concept: 11-ztna/modules/01-zero-trust-principles/README.md
           - Lab: 11-ztna/modules/01-zero-trust-principles/lab.md
@@ -563,7 +575,8 @@ nav:
           - Concept: 11-ztna/modules/11-redteam-zt-deployment/README.md
           - Lab: 11-ztna/modules/11-redteam-zt-deployment/lab.md
   - AI-Augmented Security Ops:
-      - Overview: 12-ai-augmented-ops/README.md
+      - Course Overview: 12-ai-augmented-ops/course.md
+      - Syllabus: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":
           - Concept: 12-ai-augmented-ops/modules/01-hybrid-ai-pattern/README.md
           - Lab: 12-ai-augmented-ops/modules/01-hybrid-ai-pattern/lab.md
