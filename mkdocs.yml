@@ -91,6 +91,7 @@ nav:
       - "03 · Docker & Containers":
           - Concept: 00-foundations/modules/03-docker/README.md
           - Lab: 00-foundations/modules/03-docker/lab.md
+      - "Phase 1 Project · Stand Up Your Lab": 00-foundations/phase-1-project.md
       - "04 · Linux for Security":
           - Concept: 00-foundations/modules/04-linux/README.md
           - Lab: 00-foundations/modules/04-linux/lab.md
@@ -103,6 +104,7 @@ nav:
       - "07 · Web & HTTP Fundamentals":
           - Concept: 00-foundations/modules/07-web-http/README.md
           - Lab: 00-foundations/modules/07-web-http/lab.md
+      - "Phase 2 Project · Host & Network Triage": 00-foundations/phase-2-project.md
       - "08 · Data & Encoding":
           - Concept: 00-foundations/modules/08-data-encoding/README.md
           - Lab: 00-foundations/modules/08-data-encoding/lab.md

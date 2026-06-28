@@ -47,13 +47,14 @@ story. The recurring move, lightened for beginners:
 
 ## Phases & projects
 
-Twelve modules in three phases; each ends in a **project** that integrates its modules.
+Twelve modules in three phases; each phase ends in a **project** — its own brief and self-check rubric —
+that *integrates* the phase's module deliverables into one portfolio-worthy artifact.
 
-- **Phase 1 · Lab & first principles (01–03)** — **Project:** stand up your isolated, reproducible lab
-  (VM + containers), captured as a rebuild-from-zero script, and threat-model it.
-- **Phase 2 · Hosts & networks (04–07)** — **Project:** a scripted triage toolkit that profiles a Linux
-  *and* a Windows host (users, SUID/services, logon events) and pulls the DNS + handshake from a real capture.
-- **Phase 3 · Data, crypto, automation & git (08–12)** — **Project (the capstone):** a Python "foundations
+- **Phase 1 · Lab & first principles (01–03)** — **Project** ([brief & rubric →](phase-1-project.md)):
+  stand up your isolated, reproducible lab (VM + containers), captured as a rebuild-from-zero script, and threat-model it.
+- **Phase 2 · Hosts & networks (04–07)** — **Project** ([brief & rubric →](phase-2-project.md)):
+  a scripted triage toolkit that profiles a Linux *and* a Windows host (users, SUID/services, logon events) and pulls the DNS + handshake from a real capture.
+- **Phase 3 · Data, crypto, automation & git (08–12)** — **Project (the capstone** — [brief & rubric →](#capstone)**):** a Python "foundations
   toolkit" repo that decodes a real artifact, checks crypto the right way, and parses a real log, committed
   with secret hygiene and a STRIDE model.
 
@@ -61,7 +62,7 @@ Twelve modules in three phases; each ends in a **project** that integrates its m
 Complete beginners and anyone solidifying fundamentals before a specialisation track. No prior security
 experience assumed.
 
-## Capstone — "Prove the literacy on real artifacts"
+## Capstone — "Prove the literacy on real artifacts" { #capstone }
 Stand up your isolated lab and a portfolio repo, then prove the core literacy in one committed artifact:
 capture and walk an HTTP exchange end to end (DNS → TCP handshake → TLS), **decode a real layered encoded
 blob by committed script** (not just CyberChef clicks), check crypto the right way (a salted hash, not
