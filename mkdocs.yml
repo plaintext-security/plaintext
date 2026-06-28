@@ -132,6 +132,7 @@ nav:
       - "03 · Vulnerability Identification":
           - Concept: 01-offensive/modules/03-vuln-id/README.md
           - Lab: 01-offensive/modules/03-vuln-id/lab.md
+      - "Phase 1 Project · Attack-Surface Map & Prioritised Target List": 01-offensive/phase-1-project.md
       - "04 · Exploitation Fundamentals":
           - Concept: 01-offensive/modules/04-exploitation/README.md
           - Lab: 01-offensive/modules/04-exploitation/lab.md
@@ -147,6 +148,7 @@ nav:
       - "08 · Web — SSRF, XXE & Deserialization":
           - Concept: 01-offensive/modules/08-web-ssrf-xxe/README.md
           - Lab: 01-offensive/modules/08-web-ssrf-xxe/lab.md
+      - "Phase 2 Project · Replayable PoC & Exploit Writeup": 01-offensive/phase-2-project.md
       - "09 · Password & Credential Attacks":
           - Concept: 01-offensive/modules/09-password-attacks/README.md
           - Lab: 01-offensive/modules/09-password-attacks/lab.md
@@ -171,6 +173,7 @@ nav:
       - "16 · Cloud & Container Attack Primer":
           - Concept: 01-offensive/modules/16-cloud-primer/README.md
           - Lab: 01-offensive/modules/16-cloud-primer/lab.md
+      - "Phase 3 Project · Single Attack Chain from Foothold": 01-offensive/phase-3-project.md
       - "17 · Reporting & Remediation":
           - Concept: 01-offensive/modules/17-reporting/README.md
           - Lab: 01-offensive/modules/17-reporting/lab.md
@@ -198,6 +201,7 @@ nav:
       - "07 · Log Parsing & Normalisation":
           - Concept: 02-defensive/modules/07-log-parsing/README.md
           - Lab: 02-defensive/modules/07-log-parsing/lab.md
+      - "Phase 1 Project · Host + Network Telemetry Pipeline": 02-defensive/phase-1-project.md
       - "08 · Detection-as-Code":
           - Concept: 02-defensive/modules/08-detection-as-code/README.md
           - Lab: 02-defensive/modules/08-detection-as-code/lab.md
@@ -216,6 +220,7 @@ nav:
       - "13 · PowerShell Logging & Hunting":
           - Concept: 02-defensive/modules/13-powershell-logging-hunting/README.md
           - Lab: 02-defensive/modules/13-powershell-logging-hunting/lab.md
+      - "Phase 2 Project · Tested Detection Set + Documented Hunt": 02-defensive/phase-2-project.md
       - "14 · Alert Triage & Incident Response":
           - Concept: 02-defensive/modules/14-triage-ir/README.md
           - Lab: 02-defensive/modules/14-triage-ir/lab.md
@@ -240,6 +245,7 @@ nav:
       - "03 · File Systems & Carving":
           - Concept: 03-forensics/modules/03-file-systems-carving/README.md
           - Lab: 03-forensics/modules/03-file-systems-carving/lab.md
+      - "Phase 1 Project · Forensically Sound Acquisition Kit": 03-forensics/phase-1-project.md
       - "04 · Windows Artifacts":
           - Concept: 03-forensics/modules/04-windows-artifacts/README.md
           - Lab: 03-forensics/modules/04-windows-artifacts/lab.md
@@ -255,6 +261,7 @@ nav:
       - "08 · Triage & Live Response":
           - Concept: 03-forensics/modules/08-triage-live-response/README.md
           - Lab: 03-forensics/modules/08-triage-live-response/lab.md
+      - "Phase 2 Project · Compromised-Host Super-Timeline": 03-forensics/phase-2-project.md
       - "09 · Network Forensics":
           - Concept: 03-forensics/modules/09-network-forensics/README.md
           - Lab: 03-forensics/modules/09-network-forensics/lab.md
@@ -267,6 +274,7 @@ nav:
       - "12 · Malware Artifacts in IR":
           - Concept: 03-forensics/modules/12-malware-artifacts-ir/README.md
           - Lab: 03-forensics/modules/12-malware-artifacts-ir/lab.md
+      - "Phase 3 Project · Off-the-Box Investigation": 03-forensics/phase-3-project.md
       - "13 · Incident Response Process":
           - Concept: 03-forensics/modules/13-ir-process/README.md
           - Lab: 03-forensics/modules/13-ir-process/lab.md
@@ -288,6 +296,7 @@ nav:
       - "04 · Static Analysis — Capabilities":
           - Concept: 04-malware/modules/04-static-capabilities/README.md
           - Lab: 04-malware/modules/04-static-capabilities/lab.md
+      - "Phase 1 Project · Static-Triage Lab & Verdict": 04-malware/phase-1-project.md
       - "05 · Dynamic Analysis — Behavioural":
           - Concept: 04-malware/modules/05-dynamic-behavioural/README.md
           - Lab: 04-malware/modules/05-dynamic-behavioural/lab.md
@@ -306,6 +315,7 @@ nav:
       - "10 · Anti-Analysis Techniques":
           - Concept: 04-malware/modules/10-anti-analysis/README.md
           - Lab: 04-malware/modules/10-anti-analysis/lab.md
+      - "Phase 2 Project · Behaviour Report, Dynamic + Static": 04-malware/phase-2-project.md
       - "11 · Document & Script Malware":
           - Concept: 04-malware/modules/11-document-script-malware/README.md
           - Lab: 04-malware/modules/11-document-script-malware/lab.md
@@ -342,6 +352,7 @@ nav:
       - "08 · CI/CD Pipeline Security":
           - Concept: 05-cloud/modules/08-cicd-security/README.md
           - Lab: 05-cloud/modules/08-cicd-security/lab.md
+      - "Phase 1 Project · Account Audit to Fix-as-Code Pipeline": 05-cloud/phase-1-project.md
       - "09 · Serverless Security":
           - Concept: 05-cloud/modules/09-serverless-security/README.md
           - Lab: 05-cloud/modules/09-serverless-security/lab.md
@@ -357,6 +368,7 @@ nav:
       - "13 · Kubernetes — Admission & Runtime":
           - Concept: 05-cloud/modules/13-kubernetes-admission-runtime/README.md
           - Lab: 05-cloud/modules/13-kubernetes-admission-runtime/lab.md
+      - "Phase 2 Project · Harden a Workload End to End": 05-cloud/phase-2-project.md
       - "14 · Cloud Attack Techniques":
           - Concept: 05-cloud/modules/14-cloud-attack-techniques/README.md
           - Lab: 05-cloud/modules/14-cloud-attack-techniques/lab.md
@@ -387,6 +399,7 @@ nav:
       - "05 · ACL & Delegation Abuse":
           - Concept: 06-active-directory/modules/05-acl-delegation-abuse/README.md
           - Lab: 06-active-directory/modules/05-acl-delegation-abuse/lab.md
+      - "Phase 1 Project · Map & Break In": 06-active-directory/phase-1-project.md
       - "06 · Lateral Movement":
           - Concept: 06-active-directory/modules/06-lateral-movement/README.md
           - Lab: 06-active-directory/modules/06-lateral-movement/lab.md
@@ -396,6 +409,7 @@ nav:
       - "08 · Path to Domain Admin":
           - Concept: 06-active-directory/modules/08-path-to-da/README.md
           - Lab: 06-active-directory/modules/08-path-to-da/lab.md
+      - "Phase 2 Project · Own the Domain": 06-active-directory/phase-2-project.md
       - "09 · Detecting AD Attacks":
           - Concept: 06-active-directory/modules/09-detecting-ad-attacks/README.md
           - Lab: 06-active-directory/modules/09-detecting-ad-attacks/lab.md
@@ -420,6 +434,7 @@ nav:
       - "04 · Exploit Mitigation & Allowlisting":
           - Concept: 07-endpoint-hardening/modules/04-exploit-mitigations/README.md
           - Lab: 07-endpoint-hardening/modules/04-exploit-mitigations/lab.md
+      - "Phase 1 Project · Model-Driven CIS Baseline": 07-endpoint-hardening/phase-1-project.md
       - "05 · Endpoint Telemetry & EDR":
           - Concept: 07-endpoint-hardening/modules/05-endpoint-telemetry/README.md
           - Lab: 07-endpoint-hardening/modules/05-endpoint-telemetry/lab.md
@@ -432,6 +447,7 @@ nav:
       - "08 · Patch & Vulnerability Management":
           - Concept: 07-endpoint-hardening/modules/08-patch-vuln-management/README.md
           - Lab: 07-endpoint-hardening/modules/08-patch-vuln-management/lab.md
+      - "Phase 2 Project · Compliance-as-Code Pipeline": 07-endpoint-hardening/phase-2-project.md
       - "09 · Local Privilege-Escalation Defense":
           - Concept: 07-endpoint-hardening/modules/09-privesc-defense/README.md
           - Lab: 07-endpoint-hardening/modules/09-privesc-defense/lab.md
@@ -453,12 +469,14 @@ nav:
       - "04 · Hashing, MACs & Passwords":
           - Concept: 08-cryptography/modules/04-hashing-macs-passwords/README.md
           - Lab: 08-cryptography/modules/04-hashing-macs-passwords/lab.md
+      - "Phase 1 Project · Crypto Primitives Toolkit": 08-cryptography/phase-1-project.md
       - "05 · TLS Deep Dive":
           - Concept: 08-cryptography/modules/05-tls-deep-dive/README.md
           - Lab: 08-cryptography/modules/05-tls-deep-dive/lab.md
       - "06 · PKI & Certificate Management":
           - Concept: 08-cryptography/modules/06-pki-certificates/README.md
           - Lab: 08-cryptography/modules/06-pki-certificates/lab.md
+      - "Phase 2 Project · Private CA to TLS Scan": 08-cryptography/phase-2-project.md
       - "07 · Secrets Management":
           - Concept: 08-cryptography/modules/07-secrets-management/README.md
           - Lab: 08-cryptography/modules/07-secrets-management/lab.md
@@ -519,6 +537,7 @@ nav:
       - "04 · Configuration Management":
           - Concept: 10-automation/modules/04-configuration-management/README.md
           - Lab: 10-automation/modules/04-configuration-management/lab.md
+      - "Phase 1 Project · Infrastructure & Config as Code": 10-automation/phase-1-project.md
       - "05 · CI/CD Pipelines & Gates":
           - Concept: 10-automation/modules/05-cicd-pipelines/README.md
           - Lab: 10-automation/modules/05-cicd-pipelines/lab.md
@@ -528,6 +547,7 @@ nav:
       - "07 · Enrichment & Data Pipelines":
           - Concept: 10-automation/modules/07-enrichment-pipelines/README.md
           - Lab: 10-automation/modules/07-enrichment-pipelines/lab.md
+      - "Phase 2 Project · Pipelines & Portable Tooling": 10-automation/phase-2-project.md
       - "08 · SOAR Fundamentals":
           - Concept: 10-automation/modules/08-soar-fundamentals/README.md
           - Lab: 10-automation/modules/08-soar-fundamentals/lab.md
@@ -552,6 +572,7 @@ nav:
       - "03 · Device Trust & Posture":
           - Concept: 11-ztna/modules/03-device-trust-posture/README.md
           - Lab: 11-ztna/modules/03-device-trust-posture/lab.md
+      - "Phase 1 Project · Identity Control Plane & Device Trust": 11-ztna/phase-1-project.md
       - "04 · ZTNA Architectures":
           - Concept: 11-ztna/modules/04-ztna-architectures/README.md
           - Lab: 11-ztna/modules/04-ztna-architectures/lab.md
@@ -561,6 +582,7 @@ nav:
       - "06 · Identity-Aware Access":
           - Concept: 11-ztna/modules/06-identity-aware-access/README.md
           - Lab: 11-ztna/modules/06-identity-aware-access/lab.md
+      - "Phase 2 Project · No-Inbound-Port Access, Self-Hosted and Managed": 11-ztna/phase-2-project.md
       - "07 · Microsegmentation":
           - Concept: 11-ztna/modules/07-microsegmentation/README.md
           - Lab: 11-ztna/modules/07-microsegmentation/lab.md
@@ -591,6 +613,7 @@ nav:
       - "04 · Retrieval-Augmented Generation":
           - Concept: 12-ai-augmented-ops/modules/04-rag/README.md
           - Lab: 12-ai-augmented-ops/modules/04-rag/lab.md
+      - "Phase 1 Project · Run & Ground Models": 12-ai-augmented-ops/phase-1-project.md
       - "05 · Building MCP Servers":
           - Concept: 12-ai-augmented-ops/modules/05-building-mcp-servers/README.md
           - Lab: 12-ai-augmented-ops/modules/05-building-mcp-servers/lab.md
@@ -603,6 +626,7 @@ nav:
       - "08 · SOAR + AI":
           - Concept: 12-ai-augmented-ops/modules/08-soar-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/08-soar-ai/lab.md
+      - "Phase 2 Project · Build the Copilot": 12-ai-augmented-ops/phase-2-project.md
       - "09 · Securing the AI You Run":
           - Concept: 12-ai-augmented-ops/modules/09-securing-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/09-securing-ai/lab.md

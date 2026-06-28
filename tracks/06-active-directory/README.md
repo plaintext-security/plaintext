@@ -31,13 +31,13 @@ The eleven modules run in three phases; each ends in a **project** that integrat
 phase is the substantial, standalone unit — a single module is a few hours). Build and attack your
 own lab domain (GOAD or a local eval VM) only.
 
-- **Phase 1 · Map & break in** (01–05) — **Project:** from a single low-privilege user, enumerate the
+- **Phase 1 · Map & break in** (01–05) — **Project** ([brief & rubric →](phase-1-project.md)): from a single low-privilege user, enumerate the
   domain with BloodHound, then execute and document the core credential attacks — Kerberoast/AS-REP,
   pass-the-hash/ticket, and one ACL or delegation abuse — each tied to its ATT&CK technique.
-- **Phase 2 · Own the domain** (06–08) — **Project:** chain those findings into a single, replayable
+- **Phase 2 · Own the domain** (06–08) — **Project** ([brief & rubric →](phase-2-project.md)): chain those findings into a single, replayable
   path from foothold to Domain Admin — lateral movement, a persistence foothold (golden/silver
   ticket), and the BloodHound path that explains why it works.
-- **Phase 3 · Detect & defend** (09–11) — **Project:** the track capstone — close the path you walked:
+- **Phase 3 · Detect & defend** (09–11) — **Project** ([brief & rubric →](#capstone)): the track capstone — close the path you walked:
   write detections for each step, harden AD as code, and report the before/after PingCastle posture
   score alongside the attack path and the detections.
 
@@ -47,7 +47,7 @@ Complete Track 00 — Foundations; Track 01 — Offensive helps.
 > Build your own lab domain (e.g. GOAD — Game of Active Directory, or a local Windows eval
 > VM). Only attack environments you own.
 
-## Capstone
+## Capstone { #capstone }
 Find an attack path from a low-privilege user to Domain Admin in a lab domain, walk it,
 then close it: harden as code and write detections for each step you used. **Deliverable:**
 the attack path, the before/after posture score, and the detections.

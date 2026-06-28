@@ -32,13 +32,13 @@ The eleven modules run in three phases; each ends in a **project** that integrat
 phase is the substantial, standalone unit — a single module is a few hours). Identity-aware proxies
 touch real access — test only against resources you own.
 
-- **Phase 1 · Principles & identity** (01–03) — **Project:** stand up an identity control plane with
+- **Phase 1 · Principles & identity** (01–03) — **Project** ([brief & rubric →](phase-1-project.md)): stand up an identity control plane with
   Keycloak (OIDC/SAML) and tie access to device posture — passkeys/FIDO2 and a Tailscale/Headscale
   mesh — with a short written map of the Zero Trust tenets each control satisfies.
-- **Phase 2 · Architectures & access** (04–06) — **Project:** publish a lab service with **no inbound
+- **Phase 2 · Architectures & access** (04–06) — **Project** ([brief & rubric →](phase-2-project.md)): publish a lab service with **no inbound
   ports** behind an identity-aware proxy — self-hosted (Pomerium/Tailscale) *and* cloud-delivered
   (Cloudflare Zero Trust) — and explain the trade-off you'd choose for which use case.
-- **Phase 3 · Segment, govern & monitor** (07–11) — **Project:** the track capstone — segment the
+- **Phase 3 · Segment, govern & monitor** (07–11) — **Project** ([brief & rubric →](#capstone)): the track capstone — segment the
   workloads with Cilium, enforce authorization as code with OPA, and prove from the access logs that
   every request was authenticated and authorised — delivering the setup, the policy-as-code, and the
   audit trail. Then migrate a legacy VPN onto this stack without an outage, and red-team your own deployment until the design holds.
@@ -49,7 +49,7 @@ Complete Track 00 — Foundations; Track 05 — Cloud helps.
 > Build with your own accounts and lab hosts. Identity-aware proxies touch real access —
 > test against resources you own.
 
-## Capstone
+## Capstone { #capstone }
 Publish a lab service with **no inbound ports** behind an identity-aware proxy (Pomerium or
 Cloudflare Tunnel + Access), enforce an access policy as code with OPA, and show the access
 logs that prove every request was authenticated and authorised. **Deliverable:** the working

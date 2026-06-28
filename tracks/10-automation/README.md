@@ -33,13 +33,13 @@ The eleven modules run in three phases; each ends in a **project** that integrat
 is the substantial, standalone unit — a single module is a few hours). Every project is reviewed,
 version-controlled code with a note on what AI generated vs. what you corrected.
 
-- **Phase 1 · Infrastructure & config as code** (01–04, 11) — **Project:** define a small environment in
+- **Phase 1 · Infrastructure & config as code** (01–04, 11) — **Project** ([brief & rubric →](phase-1-project.md)): define a small environment in
   Terraform/OpenTofu and configure it with Ansible, with `checkov`/`tfsec` gating misconfigurations —
   proving a deliberately over-broad rule is *blocked* before apply — then bring a running, hand-built resource under that same IaC incrementally, with zero drift.
-- **Phase 2 · Pipelines & portable tooling** (05–07) — **Project:** a CI/CD pipeline that runs
+- **Phase 2 · Pipelines & portable tooling** (05–07) — **Project** ([brief & rubric →](phase-2-project.md)): a CI/CD pipeline that runs
   secret-scanning and security gates from commit to deploy, a containerised security tool that runs
   the same everywhere, and a scheduled enrichment pipeline feeding processed data downstream.
-- **Phase 3 · Response & detection as code** (08–10) — **Project:** the track capstone — a SOAR
+- **Phase 3 · Response & detection as code** (08–10) — **Project** ([brief & rubric →](#capstone)): the track capstone — a SOAR
   playbook that enriches → contains → tickets with a human approval step, plus detections-as-code
   tested in CI — and a review pass that catches what an AI-generated version got wrong.
 
@@ -49,7 +49,7 @@ Complete Track 00 — Foundations; Track 09 — Python helps.
 > Run automation against your own accounts and lab infrastructure only. Generated IaC can
 > create real, billable, internet-facing resources — review before you apply.
 
-## Capstone
+## Capstone { #capstone }
 Build a pipeline that gates a misconfiguration before deploy *and* a SOAR playbook that
 responds to an alert with a human approval step — both as reviewed, version-controlled
 code. **Deliverable:** the pipeline, the playbook, and a note on what AI generated vs. what

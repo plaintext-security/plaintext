@@ -36,13 +36,16 @@ telemetry in, tested detections out, mapped to attacker behaviour.
 
 The modules run in three phases; each ends in a **project** that integrates its modules.
 
-- **Phase 1 · Get the data** (01–07) — **Project:** a working telemetry pipeline that ingests host
-  *and* network data into a searchable SIEM, with a real attack dataset flowing through it.
-- **Phase 2 · Find the attacker** (08–13) — **Project:** a set of detections-as-code mapped to MITRE
-  ATT&CK, tested against a real attack dataset, plus one documented threat hunt.
-- **Phase 3 · Respond & stay current** (14–17) — **Project:** an incident handled from alert to root
-  cause, with an automated enrich → contain → ticket step, plus a KEV-driven coverage loop (exploit a
-  current exploited-in-the-wild CVE and ship the detection for it) — the track capstone.
+- **Phase 1 · Get the data** (01–07) — **Project** ([brief & rubric →](phase-1-project.md)): a working
+  telemetry pipeline that ingests host *and* network data into a searchable SIEM, with a real attack
+  dataset flowing through it.
+- **Phase 2 · Find the attacker** (08–13) — **Project** ([brief & rubric →](phase-2-project.md)): a set
+  of detections-as-code mapped to MITRE ATT&CK, tested against a real attack dataset, plus one documented
+  threat hunt.
+- **Phase 3 · Respond & stay current** (14–17) — **Project** ([brief & rubric →](#capstone)): an incident
+  handled from alert to root cause, with an automated enrich → contain → ticket step, plus a KEV-driven
+  coverage loop (exploit a current exploited-in-the-wild CVE and ship the detection for it) — the track
+  capstone.
 
 > **Standalone by design.** Every detection lab here sources a **real public dataset** (and a
 > generate-it-here option), so you can complete this track without having done Offensive. If you
@@ -54,7 +57,7 @@ Complete Track 00 — Foundations first.
 > Labs use open-source tooling and free sample datasets (Malware-Traffic-Analysis.net,
 > public PCAPs, EVTX-ATTACK-SAMPLES). Only analyse data you're authorised to handle.
 
-## Capstone
+## Capstone { #capstone }
 Stand up a telemetry pipeline, simulate an attack (Atomic Red Team or a replayed PCAP),
 and catch it: ship the logs, write the detection-as-code mapped to ATT&CK, and produce an
 incident write-up from alert to root cause. **Deliverable:** the tested detections plus the

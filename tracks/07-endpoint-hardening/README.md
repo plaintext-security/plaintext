@@ -30,13 +30,13 @@ The ten modules run in three phases; each ends in a **project** that integrates 
 is the substantial, standalone unit — a single module is a few hours). Work on VMs you own, and
 snapshot before destructive changes.
 
-- **Phase 1 · Model & baseline** (01–04) — **Project:** an endpoint threat model that drives a CIS
+- **Phase 1 · Model & baseline** (01–04) — **Project** ([brief & rubric →](phase-1-project.md)): an endpoint threat model that drives a CIS
   baseline applied to a Windows *and* a Linux host — including exploit mitigations and application
   allowlisting — with each control justified against the model.
-- **Phase 2 · Scale, score & patch** (05–08) — **Project:** stand up endpoint telemetry, push the
+- **Phase 2 · Scale, score & patch** (05–08) — **Project** ([brief & rubric →](phase-2-project.md)): stand up endpoint telemetry, push the
   baseline at scale with Ansible, score compliance with OpenSCAP, and run a patch/vuln-management
   loop — proving drift detection catches a deliberate misconfiguration.
-- **Phase 3 · Detect & defend** (09–10) — **Project:** the track capstone — close the local
+- **Phase 3 · Detect & defend** (09–10) — **Project** ([brief & rubric →](#capstone)): the track capstone — close the local
   privilege-escalation paths Track 01 abuses, show telemetry firing on a simulated host compromise,
   and deliver the config-as-code, the before/after score delta, and the detection.
 
@@ -45,7 +45,7 @@ Complete Track 00 — Foundations first.
 
 > Work on VMs or containers you own. Some hardening is destructive — snapshot first.
 
-## Capstone
+## Capstone { #capstone }
 Harden a Windows and a Linux host to CIS as code, score the before/after compliance, prove
 drift detection catches a deliberate misconfiguration, and show telemetry firing on a
 simulated attack. **Deliverable:** the config-as-code, the score delta, and the detection.

@@ -36,14 +36,14 @@ the cloud the infrastructure *is* code. AWS/GCP/Azure plus containers and Kubern
 The seventeen modules run in three phases; each ends in a **project** that integrates its modules (a
 phase is the substantial, standalone unit — a single module is a few hours).
 
-- **Phase 1 · Identity, posture & the pipeline** (01–08, 17) — **Project:** audit a deliberately
+- **Phase 1 · Identity, posture & the pipeline** (01–08, 17) — **Project** ([brief & rubric →](phase-1-project.md)): audit a deliberately
   vulnerable account (CloudGoat/flaws.cloud) with `prowler`/`pmapper` to map an IAM privilege-escalation
   path, then close it as Terraform gated by `checkov`/`trivy` in CI, with secrets pulled out of code and
   into a broker — and lock data at rest behind a scoped KMS key policy whose reach you prove.
-- **Phase 2 · Containers & Kubernetes** (09–13) — **Project:** harden a workload end to end — scan the
+- **Phase 2 · Containers & Kubernetes** (09–13) — **Project** ([brief & rubric →](phase-2-project.md)): harden a workload end to end — scan the
   image, lock down a serverless execution role, demonstrate a container breakout caught by Falco, and
   enforce RBAC, NetworkPolicy, and an admission policy as code on a kind cluster.
-- **Phase 3 · Attack, detect & respond** (14–16) — **Project:** the track capstone — simulate a cloud
+- **Phase 3 · Attack, detect & respond** (14–16) — **Project** ([brief & rubric →](#capstone)): the track capstone — simulate a cloud
   attack with `stratus-red-team`/`pacu`, detect it from cloud logs (native detector *and* a Sigma rule),
   and investigate-and-contain it — delivering the attack path, the fix-as-code, and the detection.
 
@@ -54,7 +54,7 @@ Complete Track 00 — Foundations first.
 > flaws.cloud). Never test accounts or tenants you don't own, and tear down billable
 > resources when done.
 
-## Capstone
+## Capstone { #capstone }
 The capstone is the Phase 3 project — it integrates all three phases. Run the full cloud-attack loop
 against a deliberately vulnerable account: **simulate** a real attack (`stratus-red-team` / Pacu),
 **detect** it from cloud logs (a native detection *and* a Sigma rule), then **investigate and
