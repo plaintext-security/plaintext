@@ -54,9 +54,8 @@ jobs:
       # project, so we create a real Pages project here in CI (idempotent — a
       # no-op once it exists) and deploy to it. Independent of anything made by
       # hand in the dashboard.
-      # TODO: SHA-pin cloudflare/wrangler-action to match the repo convention.
       - name: Ensure Pages project exists
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd  # v3.15.0
         continue-on-error: true
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -64,7 +63,7 @@ jobs:
           command: pages project create plaintext-security --production-branch=main
 
       - name: Deploy to Cloudflare Pages (Direct Upload)
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd  # v3.15.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
