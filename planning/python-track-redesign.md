@@ -59,10 +59,17 @@ Two things make it land, and both are things a copilot *doesn't* default to:
 1. **A modern stack the copilot under-uses.** Copilots still reach for `pip`/`venv`, `requests`,
    `argparse`, `setup.py`, `.get()` soup, sync loops. The track standardizes the learner on **`uv` ·
    `ruff` · `pydantic v2` · `httpx` async · `pyright`/`ty` · `structlog` · `polars`/`duckdb` ·
-   `hypothesis` · `pytest` · `pip-audit` · `FastAPI` · MCP** — and gates them in CI.
+   `hypothesis` · `pytest` · `pip-audit` · `FastAPI` · MCP · `instructor` · `pydantic-evals`** — and gates them in CI.
 2. **Each module targets a copilot failure-class.** Unvalidated input, races in concurrency, subtly-wrong
    types, `shell=True` injection, resource leaks, dependency risk, prompt injection. The whole track *is*
    reviewing the copilot at a higher level — the most on-brand way to honor "you review → you own it."
+
+**Pydantic as the backbone (the through-line).** The spine is the Pydantic-native stack end to end:
+`pydantic` validates untrusted **API input** (M2) → `pydantic-settings` handles config/secrets →
+`instructor` validates untrusted **LLM output** (M7) → `pydantic-evals` **measures** the whole thing
+(M9). One discipline — *parse, don't trust* — applied at the input edge, the AI edge, and the
+measurement layer. That coherent, opinionated stack is a distinctive identity no other security
+curriculum teaches as a spine.
 
 ## The module arc (type-tagged, anchored)
 
@@ -90,9 +97,9 @@ before authoring (marked **⟨anchor⟩** where still to be finalized).
 
 | # | Module | Type(s) | Anchor | Owned artifact |
 |---|--------|---------|--------|----------------|
-| 7 | LLM-native Python & MCP | **9 Tool-Build** | the MCP tool ecosystem | an MCP server exposing the tool, with structured outputs + function-calling |
+| 7 | LLM-native Python & MCP | **9 Tool-Build** | the MCP tool ecosystem | an MCP server exposing the tool, with structured outputs + function-calling — **`instructor`** for typed LLM output, validated like an API response (the AI-edge twin of Module 2's input validation) |
 | 8 | Red-team your own MCP server | **15 Red-team-the-AI** (+ #13) | ⟨Air Canada 2024 / the Chevy "$1 car" bot / agentic MCP tool-poisoning research⟩ | a working prompt-injection exploit against your own `enrich` tool + the eval that catches the regression |
-| 9 | Eval harness, property tests & supply chain | **13 Eval Harness** + **14 Adversarial Review** | "you can't trust what you can't measure" + ⟨a real dependency incident⟩ | a held-out corpus + scorecard + CI regression gate; `hypothesis` property tests fuzzing the validator; a `pip-audit`/lockfile-hash supply-chain gate |
+| 9 | Eval harness, property tests & supply chain | **13 Eval Harness** + **14 Adversarial Review** | "you can't trust what you can't measure" + ⟨a real dependency incident⟩ | a held-out corpus + scorecard + CI regression gate built with **`pydantic-evals`** (the shared eval framework with Track 12 — Python evals *the tool*, ai-ops evals *the AI system*); `hypothesis` property tests fuzzing the validator; a `pip-audit`/lockfile-hash supply-chain gate |
 
 ### Capstone
 
@@ -140,6 +147,15 @@ This arc is not a detour from the redesign — it *advances* it. It instantiates
    arc.
 6. **Update the published track front-door** (`tracks/09-python-for-security/course.md` already reflects
    this design) and the `README.md` syllabus + `mkdocs.yml` nav at promotion.
+
+## Caveats (the opinionated bets)
+
+- **Ecosystem concentration.** Leaning the spine on the Pydantic ecosystem is a deliberate call.
+  `AUTHORING.md` says "reach beyond one vendor where it proves the point is provider-agnostic" — so teach
+  the *pattern* (typed boundaries, eval-as-code) as provider-agnostic, and present the Pydantic tools as
+  the concrete (OSS, near-ubiquitous) instance, not the only way.
+- **API churn.** `instructor`, `pydantic-ai`, and `pydantic-evals` are newer and still moving. Pin
+  versions, teach the durable pattern, and note the API is evolving — the same treatment we give the MCP spec.
 
 ## Honesty note
 
