@@ -1,6 +1,6 @@
 # Module 09 — Cryptography Basics
 
-*Type 2 · Misconception Reveal — predict whether Adobe's "encrypted" passwords were safe, then exercise the primitives with `openssl` to see why "encrypted" ≠ safe and why a password must be hashed, never encrypted. [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — predict whether Adobe's "encrypted" passwords were safe, then exercise the primitives with `openssl` to see why "encrypted" ≠ safe and why a password must be hashed, never encrypted. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

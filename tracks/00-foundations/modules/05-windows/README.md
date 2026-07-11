@@ -1,6 +1,6 @@
 # Module 05 — Windows for Security
 
-*Type 7 · Build-&-Operate — build the Windows literacy (filesystem, registry, services, event logs, PowerShell) to triage a host the way a defender does. (Secondary: Reconstruct — read a real event-log sample to surface Emotet-style persistence and obfuscated execution by Event ID.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — build the Windows literacy (filesystem, registry, services, event logs, PowerShell) to triage a host the way a defender does. (Secondary: Reconstruct — read a real event-log sample to surface Emotet-style persistence and obfuscated execution by Event ID.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

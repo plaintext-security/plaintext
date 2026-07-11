@@ -127,30 +127,38 @@ nav:
       - "03 · Docker & Containers":
           - Concept: 00-foundations/modules/03-docker/README.md
           - Lab: 00-foundations/modules/03-docker/lab.md
+          - Cheat sheet: 00-foundations/modules/03-docker/cheatsheet.md
       - "04 · Linux for Security":
           - Concept: 00-foundations/modules/04-linux/README.md
           - Lab: 00-foundations/modules/04-linux/lab.md
+          - Cheat sheet: 00-foundations/modules/04-linux/cheatsheet.md
       - "05 · Windows for Security":
           - Concept: 00-foundations/modules/05-windows/README.md
           - Lab: 00-foundations/modules/05-windows/lab.md
+          - Cheat sheet: 00-foundations/modules/05-windows/cheatsheet.md
       - "06 · Networking Fundamentals":
           - Concept: 00-foundations/modules/06-networking/README.md
           - Lab: 00-foundations/modules/06-networking/lab.md
+          - Cheat sheet: 00-foundations/modules/06-networking/cheatsheet.md
       - "07 · Web & HTTP Fundamentals":
           - Concept: 00-foundations/modules/07-web-http/README.md
           - Lab: 00-foundations/modules/07-web-http/lab.md
+          - Cheat sheet: 00-foundations/modules/07-web-http/cheatsheet.md
       - "08 · Data & Encoding":
           - Concept: 00-foundations/modules/08-data-encoding/README.md
           - Lab: 00-foundations/modules/08-data-encoding/lab.md
+          - Cheat sheet: 00-foundations/modules/08-data-encoding/cheatsheet.md
       - "09 · Cryptography Basics":
           - Concept: 00-foundations/modules/09-cryptography/README.md
           - Lab: 00-foundations/modules/09-cryptography/lab.md
+          - Cheat sheet: 00-foundations/modules/09-cryptography/cheatsheet.md
       - "10 · Scripting & Automation":
           - Concept: 00-foundations/modules/10-scripting/README.md
           - Lab: 00-foundations/modules/10-scripting/lab.md
       - "11 · Version Control & Working in the Open":
           - Concept: 00-foundations/modules/11-version-control/README.md
           - Lab: 00-foundations/modules/11-version-control/lab.md
+          - Cheat sheet: 00-foundations/modules/11-version-control/cheatsheet.md
       - "12 · Threat Modeling":
           - Concept: 00-foundations/modules/12-threat-modeling/README.md
           - Lab: 00-foundations/modules/12-threat-modeling/lab.md

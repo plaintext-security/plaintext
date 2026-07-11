@@ -1,6 +1,6 @@
 # Module 11 — Version Control & Working in the Open
 
-*Type 7 · Build-&-Operate — get fluent in the everyday branch→commit→push→PR git workflow and wire a pre-commit hook that stops the next secret. (Secondary: Misconception Reveal — plant a secret, then prove that "I deleted it" doesn't remove it from history.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — get fluent in the everyday branch→commit→push→PR git workflow and wire a pre-commit hook that stops the next secret. (Secondary: Misconception Reveal — plant a secret, then prove that "I deleted it" doesn't remove it from history.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

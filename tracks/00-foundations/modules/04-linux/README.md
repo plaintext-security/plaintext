@@ -1,6 +1,6 @@
 # Module 04 — Linux for Security
 
-*Type 7 · Build-&-Operate — operate confidently on the Linux command line and fold the shell/permissions/text-pipeline skills into a reusable host-triage script. (Secondary: Reconstruct — investigate a Mirai-style compromised host to establish who got in, how, and what they can now reach.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — operate confidently on the Linux command line and fold the shell/permissions/text-pipeline skills into a reusable host-triage script. (Secondary: Reconstruct — investigate a Mirai-style compromised host to establish who got in, how, and what they can now reach.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

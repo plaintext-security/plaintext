@@ -1,6 +1,6 @@
 # Module 03 — Docker & Containers
 
-*Type 7 · Build-&-Operate — build and run images and read the isolation model first-hand, the container literacy every later lab assumes. (Secondary: Misconception Reveal — predict, then disprove, the "a container is a sealed little VM" intuition the 2018 exposed-daemon wave fed on.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — build and run images and read the isolation model first-hand, the container literacy every later lab assumes. (Secondary: Misconception Reveal — predict, then disprove, the "a container is a sealed little VM" intuition the 2018 exposed-daemon wave fed on.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 
