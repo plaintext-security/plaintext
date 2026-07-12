@@ -40,7 +40,12 @@
   .px-hero h1 { position:relative; font-family:var(--md-code-font); font-size:clamp(2.5rem,7vw,5.5rem); font-weight:700; line-height:.98; letter-spacing:-.04em; margin:0 0 1.25rem; }
   .px-hero h1 .a { color:var(--accent); }
   .px-hero h1 .d { color:var(--muted); }
-  .px-sub { position:relative; max-width:480px; color:var(--muted); line-height:1.6; margin-bottom:2.25rem; font-size:1.05rem; }
+  .px-sub { position:relative; max-width:480px; color:var(--muted); line-height:1.6; margin-bottom:1.5rem; font-size:1.05rem; }
+  .px-stats { position:relative; display:flex; flex-wrap:wrap; width:fit-content; margin:0 0 2.25rem; border:1px solid var(--border); background:var(--surface); }
+  .px-stats div { padding:.75rem 1.4rem; border-right:1px solid var(--border); }
+  .px-stats div:last-child { border-right:0; }
+  .px-stats .v { font-family:var(--md-code-font); font-size:1.35rem; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; line-height:1.2; }
+  .px-stats .k { font-family:var(--md-code-font); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
   .px-actions { position:relative; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
   .px-btn { background:var(--accent); color:var(--btn-fg) !important; padding:.8rem 1.8rem; font-family:var(--md-code-font); font-size:.85rem; font-weight:700; letter-spacing:.04em; border-radius:2px; transition:transform .15s, box-shadow .15s; }
   .px-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px var(--btn-glow); }
@@ -91,6 +96,12 @@
     <div class="px-prompt">security education, no paywalls</div>
     <h1>Learn security<br><span class="a">in the open.</span><br><span class="d">All of it.</span></h1>
     <p class="px-sub">Professional-grade, hands-on, AI-augmented cybersecurity training built on open tools and community knowledge. Job-ready, not theory. Every track, every lab, forever free.</p>
+    <div class="px-stats">
+      <div><div class="v">13</div><div class="k">tracks live</div></div>
+      <div><div class="v">178</div><div class="k">modules</div></div>
+      <div><div class="v">$0</div><div class="k">forever</div></div>
+      <div><div class="v">CC&nbsp;BY</div><div class="k">4.0 licensed</div></div>
+    </div>
     <div class="px-actions">
       <a class="px-btn" href="{{ 'start-here/' | url }}">New here? Start Here →</a>
       <a class="px-ghost" href="{{ '00-foundations/' | url }}">Jump to Foundations</a>
@@ -132,7 +143,7 @@
   <section class="px-section" id="tracks">
     <div class="px-tag">Learning Tracks</div>
     <h2>Pick your path.<br>Own the domain.</h2>
-    <p class="px-desc">Structured, hands-on paths from zero to job-ready. Every track uses the real tools you'll use on the job — open source first — with AI woven through as the force multiplier. <b style="color:var(--accent)">All 13 tracks are live</b> — 134 modules, every one with a validated lab environment.</p>
+    <p class="px-desc">Structured, hands-on paths from zero to job-ready. Every track uses the real tools you'll use on the job — open source first — with AI woven through as the force multiplier. <b style="color:var(--accent)">All 13 tracks are live</b> — 178 modules, every one with a validated lab environment.</p>
     <div class="px-tracks">
       <a class="px-track" href="{{ '00-foundations/' | url }}">
         <div class="n">TRACK_00 · <span class="px-live">12 modules live</span></div><span class="ic">◆</span>
@@ -147,13 +158,13 @@
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '02-defensive/' | url }}">
-        <div class="n">TRACK_02 · <span class="px-live">16 modules live</span></div><span class="ic">●</span>
+        <div class="n">TRACK_02 · <span class="px-live">19 modules live</span></div><span class="ic">●</span>
         <h3>Defensive Operations</h3><p>Telemetry, SIEM, detection-as-code, threat hunting, and incident response.</p>
         <div class="px-tools"><b>elastic</b><b>zeek</b><b>suricata</b><b>wazuh</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '03-forensics/' | url }}">
-        <div class="n">TRACK_03 · <span class="px-live">14 modules live</span></div><span class="ic">■</span>
+        <div class="n">TRACK_03 · <span class="px-live">16 modules live</span></div><span class="ic">■</span>
         <h3>Digital Forensics &amp; IR</h3><p>Disk, memory, and network forensics to a root-cause incident report.</p>
         <div class="px-tools"><b>volatility3</b><b>sleuthkit</b><b>plaso</b><b>velociraptor</b></div>
         <div class="px-more">View curriculum →</div>
@@ -171,43 +182,43 @@
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '06-active-directory/' | url }}">
-        <div class="n">TRACK_06 · <span class="px-live">11 modules live</span></div><span class="ic">▣</span>
+        <div class="n">TRACK_06 · <span class="px-live">13 modules live</span></div><span class="ic">▣</span>
         <h3>Active Directory &amp; Windows</h3><p>Attack the enterprise's backbone, then close the paths as code.</p>
         <div class="px-tools"><b>BloodHound</b><b>impacket</b><b>crackmapexec</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '07-endpoint-hardening/' | url }}">
-        <div class="n">TRACK_07 · <span class="px-live">10 modules live</span></div><span class="ic">□</span>
+        <div class="n">TRACK_07 · <span class="px-live">13 modules live</span></div><span class="ic">□</span>
         <h3>Endpoint &amp; Host Hardening</h3><p>Harden Windows and Linux to CIS as code, with scoring and drift detection.</p>
         <div class="px-tools"><b>ansible</b><b>OpenSCAP</b><b>osquery</b><b>wazuh</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '08-cryptography/' | url }}">
-        <div class="n">TRACK_08 · <span class="px-live">10 modules live</span></div><span class="ic">◇</span>
+        <div class="n">TRACK_08 · <span class="px-live">12 modules live</span></div><span class="ic">◇</span>
         <h3>Cryptography, PKI &amp; Secrets</h3><p>Applied crypto, TLS, PKI, secrets management, and email authentication.</p>
         <div class="px-tools"><b>openssl</b><b>vault</b><b>step-ca</b><b>testssl.sh</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '09-python-for-security/' | url }}">
-        <div class="n">TRACK_09 · <span class="px-live">10 modules live</span></div><span class="ic">△</span>
+        <div class="n">TRACK_09 · <span class="px-live">11 modules live</span></div><span class="ic">△</span>
         <h3>Python for Security</h3><p>Stop running tools and start writing them — and own the ones AI writes.</p>
         <div class="px-tools"><b>python</b><b>requests</b><b>scapy</b><b>fastmcp</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '10-automation/' | url }}">
-        <div class="n">TRACK_10 · <span class="px-live">10 modules live</span></div><span class="ic">✶</span>
+        <div class="n">TRACK_10 · <span class="px-live">12 modules live</span></div><span class="ic">✶</span>
         <h3>Security Automation</h3><p>IaC, CI/CD security gates, SOAR, and detection-as-code pipelines.</p>
         <div class="px-tools"><b>opentofu</b><b>ansible</b><b>checkov</b><b>n8n</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '11-ztna/' | url }}">
-        <div class="n">TRACK_11 · <span class="px-live">9 modules live</span></div><span class="ic">◉</span>
+        <div class="n">TRACK_11 · <span class="px-live">12 modules live</span></div><span class="ic">◉</span>
         <h3>Zero Trust Network Access</h3><p>Identity-aware access with no inbound ports — the perimeter is dead.</p>
         <div class="px-tools"><b>pomerium</b><b>OPA</b><b>keycloak</b><b>cilium</b></div>
         <div class="px-more">View curriculum →</div>
       </a>
       <a class="px-track" href="{{ '12-ai-augmented-ops/' | url }}">
-        <div class="n">TRACK_12 · <span class="px-live">10 modules live</span></div><span class="ic">◎</span>
+        <div class="n">TRACK_12 · <span class="px-live">11 modules live</span></div><span class="ic">◎</span>
         <h3>AI-Augmented Security Ops</h3><p>Local models, RAG, MCP copilots — then attack and harden the AI you built.</p>
         <div class="px-tools"><b>ollama</b><b>chromadb</b><b>fastmcp</b><b>garak</b></div>
         <div class="px-more">View curriculum →</div>
