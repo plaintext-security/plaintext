@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/08-driving-security-tools/lab.md

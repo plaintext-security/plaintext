@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/09-building-mcp-server/lab.md

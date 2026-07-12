@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/11-eval-harness/lab.md

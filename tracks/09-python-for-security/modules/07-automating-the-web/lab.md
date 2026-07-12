@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/07-automating-the-web/lab.md

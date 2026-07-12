@@ -580,45 +580,42 @@ nav:
           - Lab: 08-cryptography/modules/12-choosing-crypto/lab.md
   - Python for Security:
       - Overview: 09-python-for-security/README.md
-      - "01 · Setup & Security Idioms":
-          - Concept: 09-python-for-security/modules/01-setup-idioms/README.md
-          - Lab: 09-python-for-security/modules/01-setup-idioms/lab.md
-      - "02 · Files, Regex & Log Parsing":
-          - Concept: 09-python-for-security/modules/02-files-regex-parsing/README.md
-          - Lab: 09-python-for-security/modules/02-files-regex-parsing/lab.md
-          - Cheat sheet: 09-python-for-security/modules/02-files-regex-parsing/cheatsheet.md
-      - "03 · Structured Data & Reporting":
-          - Concept: 09-python-for-security/modules/03-structured-data-reporting/README.md
-          - Lab: 09-python-for-security/modules/03-structured-data-reporting/lab.md
-          - Cheat sheet: 09-python-for-security/modules/03-structured-data-reporting/cheatsheet.md
-      - "04 · HTTP & APIs for Enrichment":
-          - Concept: 09-python-for-security/modules/04-http-apis-enrichment/README.md
-          - Lab: 09-python-for-security/modules/04-http-apis-enrichment/lab.md
-          - Cheat sheet: 09-python-for-security/modules/04-http-apis-enrichment/cheatsheet.md
-      - "05 · Building CLI Tools":
-          - Concept: 09-python-for-security/modules/05-building-cli-tools/README.md
-          - Lab: 09-python-for-security/modules/05-building-cli-tools/lab.md
-          - Cheat sheet: 09-python-for-security/modules/05-building-cli-tools/cheatsheet.md
-      - "06 · Network Programming":
-          - Concept: 09-python-for-security/modules/06-network-programming/README.md
-          - Lab: 09-python-for-security/modules/06-network-programming/lab.md
-          - Cheat sheet: 09-python-for-security/modules/06-network-programming/cheatsheet.md
-      - "07 · Automating the Web":
-          - Concept: 09-python-for-security/modules/07-automating-the-web/README.md
-          - Lab: 09-python-for-security/modules/07-automating-the-web/lab.md
-          - Cheat sheet: 09-python-for-security/modules/07-automating-the-web/cheatsheet.md
-      - "08 · Driving Security Tools":
-          - Concept: 09-python-for-security/modules/08-driving-security-tools/README.md
-          - Lab: 09-python-for-security/modules/08-driving-security-tools/lab.md
-      - "09 · Building an MCP Server":
-          - Concept: 09-python-for-security/modules/09-building-mcp-server/README.md
-          - Lab: 09-python-for-security/modules/09-building-mcp-server/lab.md
-      - "10 · Packaging, Testing & Owning AI Code":
-          - Concept: 09-python-for-security/modules/10-packaging-testing/README.md
-          - Lab: 09-python-for-security/modules/10-packaging-testing/lab.md
-      - "11 · Eval Harness for Security Tools":
-          - Concept: 09-python-for-security/modules/11-eval-harness/README.md
-          - Lab: 09-python-for-security/modules/11-eval-harness/lab.md
+      - "01 · Modern Toolchain & Spec-Driven Skeleton":
+          - Concept: 09-python-for-security/modules/01-modern-toolchain/README.md
+          - Lab: 09-python-for-security/modules/01-modern-toolchain/lab.md
+          - Cheat sheet: 09-python-for-security/modules/01-modern-toolchain/cheatsheet.md
+      - "02 · Parse, Don't Validate":
+          - Concept: 09-python-for-security/modules/02-parse-dont-validate/README.md
+          - Lab: 09-python-for-security/modules/02-parse-dont-validate/lab.md
+          - Cheat sheet: 09-python-for-security/modules/02-parse-dont-validate/cheatsheet.md
+      - "03 · Data at Scale & Structured Logs":
+          - Concept: 09-python-for-security/modules/03-data-at-scale/README.md
+          - Lab: 09-python-for-security/modules/03-data-at-scale/lab.md
+          - Cheat sheet: 09-python-for-security/modules/03-data-at-scale/cheatsheet.md
+      - "04 · Async & Structured Concurrency":
+          - Concept: 09-python-for-security/modules/04-async-concurrency/README.md
+          - Lab: 09-python-for-security/modules/04-async-concurrency/lab.md
+          - Cheat sheet: 09-python-for-security/modules/04-async-concurrency/cheatsheet.md
+      - "05 · Driving Tools Safely":
+          - Concept: 09-python-for-security/modules/05-driving-tools-safely/README.md
+          - Lab: 09-python-for-security/modules/05-driving-tools-safely/lab.md
+          - Cheat sheet: 09-python-for-security/modules/05-driving-tools-safely/cheatsheet.md
+      - "06 · Two Surfaces, One Core":
+          - Concept: 09-python-for-security/modules/06-cli-and-api/README.md
+          - Lab: 09-python-for-security/modules/06-cli-and-api/lab.md
+          - Cheat sheet: 09-python-for-security/modules/06-cli-and-api/cheatsheet.md
+      - "07 · LLM-Native Python & MCP":
+          - Concept: 09-python-for-security/modules/07-llm-native-mcp/README.md
+          - Lab: 09-python-for-security/modules/07-llm-native-mcp/lab.md
+          - Cheat sheet: 09-python-for-security/modules/07-llm-native-mcp/cheatsheet.md
+      - "08 · Red-Team Your Own MCP Server":
+          - Concept: 09-python-for-security/modules/08-redteam-your-mcp/README.md
+          - Lab: 09-python-for-security/modules/08-redteam-your-mcp/lab.md
+          - Cheat sheet: 09-python-for-security/modules/08-redteam-your-mcp/cheatsheet.md
+      - "09 · Eval Harness, Property Tests & Supply Chain":
+          - Concept: 09-python-for-security/modules/09-eval-property-supplychain/README.md
+          - Lab: 09-python-for-security/modules/09-eval-property-supplychain/lab.md
+          - Cheat sheet: 09-python-for-security/modules/09-eval-property-supplychain/cheatsheet.md
   - Security Automation:
       - Overview: 10-automation/README.md
       - "01 · The Automation Mindset":

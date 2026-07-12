@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/03-structured-data-reporting/lab.md

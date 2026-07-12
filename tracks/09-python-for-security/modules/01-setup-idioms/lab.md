@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/01-setup-idioms/lab.md

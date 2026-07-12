@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/10-packaging-testing/lab.md

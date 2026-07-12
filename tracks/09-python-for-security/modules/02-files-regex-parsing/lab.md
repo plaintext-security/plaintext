@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/02-files-regex-parsing/lab.md

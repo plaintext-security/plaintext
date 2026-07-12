@@ -1,6 +1,6 @@
 # Module 01 — Modern Toolchain & Spec-Driven Skeleton
 
-*Type 12 · Migration — take a real legacy security script and migrate it, without breaking it, into a modern `uv`/`ruff`/`pyright` project with a CI gate and a spec-driven workflow. (Secondary: Type 11 · ADR — record the toolchain and spec-workflow decision honestly.) [Go to the hands-on lab →](lab.md)*
+*Type 12 · Migration — take a real legacy security script and migrate it, without breaking it, into a modern `uv`/`ruff`/`pyright` project with a CI gate and a spec-driven workflow. (Secondary: Type 11 · ADR — record the toolchain and spec-workflow decision honestly.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-07*
 

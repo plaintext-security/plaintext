@@ -25,7 +25,7 @@ from the Markdown under `tracks/`.
 | 06 | [Active Directory & Windows](tracks/06-active-directory/) | impacket, BloodHound CE, crackmapexec |
 | 07 | [Endpoint & Host Hardening](tracks/07-endpoint-hardening/) | OpenSCAP, Lynis, osquery, ansible |
 | 08 | [Cryptography, PKI & Secrets](tracks/08-cryptography/) | openssl, step-ca, vault, testssl.sh |
-| 09 | [Python for Security](tracks/09-python-for-security/) | requests, scapy, fastmcp, pytest |
+| 09 | [Python for Security](tracks/09-python-for-security/) | uv, pydantic, httpx, fastmcp, pydantic-evals |
 | 10 | [Security Automation](tracks/10-automation/) | opentofu, ansible, sigma, n8n |
 | 11 | [Zero Trust Network Access](tracks/11-ztna/) | keycloak, headscale, pomerium, OPA |
 | 12 | [AI-Augmented Security Ops](tracks/12-ai-augmented-ops/) | ollama, chromadb, fastmcp, garak |

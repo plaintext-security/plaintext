@@ -1,1 +1,0 @@
-../../../../plaintext-labs/python-for-security/06-network-programming/lab.md
