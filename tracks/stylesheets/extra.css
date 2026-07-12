@@ -1,24 +1,38 @@
 /* Nudge Material toward the Plaintext terminal aesthetic on content pages.
-   The landing hero carries its own scoped styles in overrides/home.html. */
+   The landing hero carries its own scoped styles in overrides/home.html.
 
-:root > * {
-  --md-accent-fg-color: #00ff88;
-}
+   Both color schemes are supported (mkdocs.yml defines a slate/default palette
+   toggle). The terminal neon (#00ff88) only works on dark grounds, so light
+   mode swaps in contrast-legible equivalents. All rules below read the
+   --px-* tokens — never a hardcoded color. */
 
 [data-md-color-scheme="slate"] {
   --md-accent-fg-color: #00ff88;
   --md-typeset-a-color: #00aaff;
+  --px-accent: #00ff88;
+  --px-code-fg: #8affc8;
+  --px-tint: rgba(0, 255, 136, 0.06);
+  --px-tint-strong: rgba(0, 255, 136, 0.08);
+}
+
+[data-md-color-scheme="default"] {
+  --md-accent-fg-color: #067a4b;
+  --md-typeset-a-color: #0b63a8;
+  --px-accent: #067a4b;
+  --px-code-fg: #056b42;
+  --px-tint: rgba(6, 122, 75, 0.07);
+  --px-tint-strong: rgba(6, 122, 75, 0.1);
 }
 
 /* Blockquotes are used for the standing authorization / safety notes —
    give them a green left rule so they read as a callout. */
 .md-typeset blockquote {
-  border-left: 0.2rem solid #00ff88;
+  border-left: 0.2rem solid var(--px-accent);
 }
 
 /* Inline code: subtle green, matching the curriculum's tool references. */
 .md-typeset code {
-  color: #8affc8;
+  color: var(--px-code-fg);
 }
 
 /* Per-module metadata strip (difficulty · time · prerequisites) rendered
@@ -26,8 +40,8 @@
 .md-typeset p.module-meta {
   margin: 0.6rem 0 1rem;
   padding: 0.5rem 0.8rem;
-  border-left: 0.2rem solid #00ff88;
-  background: rgba(0, 255, 136, 0.06);
+  border-left: 0.2rem solid var(--px-accent);
+  background: var(--px-tint);
   border-radius: 0.1rem;
   font-size: 0.72rem;
   line-height: 1.6;
@@ -49,7 +63,7 @@
 .module-progress input[type="checkbox"] {
   width: 1.05rem;
   height: 1.05rem;
-  accent-color: #00ff88;
+  accent-color: var(--px-accent);
   cursor: pointer;
   margin: 0;
 }
@@ -60,8 +74,8 @@
 }
 
 .module-progress.is-done {
-  border-color: #00ff88;
-  background: rgba(0, 255, 136, 0.08);
+  border-color: var(--px-accent);
+  background: var(--px-tint-strong);
 }
 
 .module-progress .module-progress__reset {
