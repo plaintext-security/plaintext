@@ -1,6 +1,6 @@
 # Module 09 — Network Forensics
 
-*Type 6 · Reconstruct — reconstruct an attack from a PCAP with Zeek and tshark — trace the suspicious DNS query, rebuild the HTTP session that followed, and extract the transferred payload — into artifact-cited findings. (Secondary: Tool-Build — turn the Zeek-log triage into a reusable script.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct an attack from a PCAP with Zeek and tshark — trace the suspicious DNS query, rebuild the HTTP session that followed, and extract the transferred payload — into artifact-cited findings. (Secondary: Tool-Build — turn the Zeek-log triage into a reusable script.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 10 — Workload Identity & mTLS (SPIFFE/SPIRE)
 
-*Type 7 · Build-&-Operate — stand up a SPIFFE/SPIRE trust domain, issue each workload a short-lived SVID, and establish identity-keyed mTLS; the deliverable is the running, reviewed system and its verified deny — an unregistered workload gets no identity — not an essay. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a SPIFFE/SPIRE trust domain, issue each workload a short-lived SVID, and establish identity-keyed mTLS; the deliverable is the running, reviewed system and its verified deny — an unregistered workload gets no identity — not an essay. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

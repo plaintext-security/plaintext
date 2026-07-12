@@ -1,6 +1,6 @@
 # Module 07 — Timeline Analysis
 
-*Type 6 · Reconstruct — build a multi-source super-timeline from mixed artifacts with `log2timeline.py`/`psort`, pivot to the key events in the incident, and produce a timeline extract that anchors the incident report. (Secondary: Misconception Reveal — surface timezone-error and timestomp caveats that quietly corrupt a timeline.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — build a multi-source super-timeline from mixed artifacts with `log2timeline.py`/`psort`, pivot to the key events in the incident, and produce a timeline extract that anchors the incident report. (Secondary: Misconception Reveal — surface timezone-error and timestomp caveats that quietly corrupt a timeline.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 04 — Credential Theft & Replay
 
-*Type 5 · Detonate & Detect — extract NTLM hashes with `secretsdump.py`, replay them via pass-the-hash through `psexec.py`/`smbexec.py` (T1550.002), and establish the conditions that make PTH possible vs. impossible, delivering the executed attack plus its detection seam. (Secondary: Blast-Radius Trace — show how one local-admin hash reaches the whole estate and where LAPS draws the boundary.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — extract NTLM hashes with `secretsdump.py`, replay them via pass-the-hash through `psexec.py`/`smbexec.py` (T1550.002), and establish the conditions that make PTH possible vs. impossible, delivering the executed attack plus its detection seam. (Secondary: Blast-Radius Trace — show how one local-admin hash reaches the whole estate and where LAPS draws the boundary.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

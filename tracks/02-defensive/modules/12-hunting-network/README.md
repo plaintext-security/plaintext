@@ -1,6 +1,6 @@
 # Module 12 — Threat Hunting: Network
 
-*Type 6 · Reconstruct — hunt for C2 beaconing and other anomalies in Zeek logs from real malicious traffic, using RITA and your own analysis; you commit the hunt findings and the reasoning that separated beacon from noise. (Secondary: Eval Harness — a small precision check so CDN/benign periodicity doesn't flood the result.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — hunt for C2 beaconing and other anomalies in Zeek logs from real malicious traffic, using RITA and your own analysis; you commit the hunt findings and the reasoning that separated beacon from noise. (Secondary: Eval Harness — a small precision check so CDN/benign periodicity doesn't flood the result.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

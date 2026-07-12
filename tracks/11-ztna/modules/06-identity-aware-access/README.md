@@ -1,6 +1,6 @@
 # Module 06 — Identity-Aware Access
 
-*Type 7 · Build-&-Operate — stand up an identity-aware proxy and run it; the deliverable is the operating proxy and its verified deny path, not an essay. (Secondary: Judgment-as-Code — the regression test that proves the deny path can't silently open.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up an identity-aware proxy and run it; the deliverable is the operating proxy and its verified deny path, not an essay. (Secondary: Judgment-as-Code — the regression test that proves the deny path can't silently open.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 05 — TLS Deep Dive
 
-*Type 4 · Audit→Build→Verify — build a weak and a strong TLS config, scan both with testssl.sh, and map every finding back to its property and its named attack (Heartbleed / POODLE / BEAST / DROWN); the deliverable is the audited, remediated config. (Secondary: Misconception Reveal.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — build a weak and a strong TLS config, scan both with testssl.sh, and map every finding back to its property and its named attack (Heartbleed / POODLE / BEAST / DROWN); the deliverable is the audited, remediated config. (Secondary: Misconception Reveal.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

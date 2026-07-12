@@ -1,6 +1,6 @@
 # Module 05 — Endpoint Telemetry & EDR
 
-*Type 7 · Build-&-Operate — stand up osquery endpoint telemetry and author security-focused queries against processes, connections, users, and scheduled tasks, delivering a detection query for a specific attack behaviour grounded in the telemetry schema. (Secondary: Detonate & Detect — each query maps to an ATT&CK technique it is meant to surface.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up osquery endpoint telemetry and author security-focused queries against processes, connections, users, and scheduled tasks, delivering a detection query for a specific attack behaviour grounded in the telemetry schema. (Secondary: Detonate & Detect — each query maps to an ATT&CK technique it is meant to surface.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

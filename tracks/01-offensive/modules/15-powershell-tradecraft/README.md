@@ -1,6 +1,6 @@
 # Module 15 — PowerShell Offensive Tradecraft
 
-*Type 5 · Detonate & Detect — build the core PowerShell primitives (download cradle, EncodedCommand, obfuscation, AMSI bypass) and pair each with the exact telemetry it leaves (4104 script-block logging) — quiet, not invisible. (Secondary: Misconception Reveal — the trusted, signed shell is still loud.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — build the core PowerShell primitives (download cradle, EncodedCommand, obfuscation, AMSI bypass) and pair each with the exact telemetry it leaves (4104 script-block logging) — quiet, not invisible. (Secondary: Misconception Reveal — the trusted, signed shell is still loud.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 **Offensive Security** — *the attacker's favourite tool is already installed, signed, and trusted on every Windows box.*

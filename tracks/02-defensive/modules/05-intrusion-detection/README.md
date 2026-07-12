@@ -1,6 +1,6 @@
 # Module 05 — Intrusion Detection
 
-*Type 5 · Detonate & Detect — run Suricata with the ET community ruleset over real traffic, read the alerts it produces, and write a rule of your own that fires on the malicious flow; you commit the rule and its alert evidence. (Secondary: Judgment-as-Code/Gate — tuning is the detect-versus-enforce decision.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — run Suricata with the ET community ruleset over real traffic, read the alerts it produces, and write a rule of your own that fires on the malicious flow; you commit the rule and its alert evidence. (Secondary: Judgment-as-Code/Gate — tuning is the detect-versus-enforce decision.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

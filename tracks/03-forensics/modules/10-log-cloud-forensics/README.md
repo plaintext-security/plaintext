@@ -1,6 +1,6 @@
 # Module 10 — Log & Cloud Forensics
 
-*Type 6 · Reconstruct — reconstruct the attack chain from the paper trail when the disk is gone: triage EVTX with Hayabusa and Chainsaw, then parse AWS CloudTrail to find the API-call sequence that preceded the account compromise. (Secondary: Tool-Build — make the CloudTrail parser an explicit reusable tool.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct the attack chain from the paper trail when the disk is gone: triage EVTX with Hayabusa and Chainsaw, then parse AWS CloudTrail to find the API-call sequence that preceded the account compromise. (Secondary: Tool-Build — make the CloudTrail parser an explicit reusable tool.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

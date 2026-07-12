@@ -1,6 +1,6 @@
 # Module 11 — Anti-Forensics & Detecting It
 
-*Type 2 · Misconception Reveal — disprove "timestomping erases the trail" by comparing NTFS Standard-Information vs File-Name timestamps on a manipulated file with The Sleuth Kit, then codify the SI/FN divergence into a Python detector. (Secondary: Tool-Build — the mismatch-flagging script is a real reusable detection tool.) [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — disprove "timestomping erases the trail" by comparing NTFS Standard-Information vs File-Name timestamps on a manipulated file with The Sleuth Kit, then codify the SI/FN divergence into a Python detector. (Secondary: Tool-Build — the mismatch-flagging script is a real reusable detection tool.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

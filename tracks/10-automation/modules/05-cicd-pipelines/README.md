@@ -1,6 +1,6 @@
 # Module 05 — CI/CD Pipelines & Gates
 
-*Type 7 · Build-&-Operate (secondary: Gate) — build a running pipeline gate, then operate it. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate (secondary: Gate) — build a running pipeline gate, then operate it. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

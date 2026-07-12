@@ -1,6 +1,6 @@
 # Module 06 — Infrastructure-as-Code Security
 
-*Type 8 · Judgment-as-Code / Gate (+ Type 4 · Audit→Build→Verify) — scan Terraform in the diff, then encode your verdict as a CI gate that blocks the merge on the bad pattern and passes on the fix. (Secondary: Audit→Build→Verify — find the misconfig, author the corrected HCL.) [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate (+ Type 4 · Audit→Build→Verify) — scan Terraform in the diff, then encode your verdict as a CI gate that blocks the merge on the bad pattern and passes on the fix. (Secondary: Audit→Build→Verify — find the misconfig, author the corrected HCL.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 09 — Monitoring & Detection in Zero Trust
 
-*Type 6 · Reconstruct — write a detection against an immutable identity-aware access log, then prove it works. (Secondary: Type 13 · Eval Harness — score the detection on a held-out corpus with a regression gate; Type 16 · Drift/Steady-State — detect when the Zero Trust posture itself rots over time.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — write a detection against an immutable identity-aware access log, then prove it works. (Secondary: Type 13 · Eval Harness — score the detection on a held-out corpus with a regression gate; Type 16 · Drift/Steady-State — detect when the Zero Trust posture itself rots over time.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

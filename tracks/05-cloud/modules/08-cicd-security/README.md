@@ -1,6 +1,6 @@
 # Module 08 — CI/CD Pipeline Security
 
-*Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — predict where in commit→signed-artifact the attacker injects, scan the pipeline (gitleaks, trivy, SBOM), then author the hardened pipeline where the prediction lands. (Secondary: Blast-Radius — trace the SUNBURST build-system injection.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — predict where in commit→signed-artifact the attacker injects, scan the pipeline (gitleaks, trivy, SBOM), then author the hardened pipeline where the prediction lands. (Secondary: Blast-Radius — trace the SUNBURST build-system injection.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

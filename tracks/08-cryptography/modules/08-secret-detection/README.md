@@ -1,6 +1,6 @@
 # Module 08 — Secret Detection & Leakage
 
-*Type 2 · Misconception Reveal — you predict that deleting a committed secret removes it, then find it alive in git history; the fix is revoke-and-rotate plus a pre-commit/CI gate that stops the next one. (Secondary: Judgment-as-Code / Gate.) [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — you predict that deleting a committed secret removes it, then find it alive in git history; the fix is revoke-and-rotate plus a pre-commit/CI gate that stops the next one. (Secondary: Judgment-as-Code / Gate.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

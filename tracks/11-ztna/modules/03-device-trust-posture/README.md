@@ -1,6 +1,6 @@
 # Module 03 — Device Trust & Posture
 
-*Type 7 · Build-&-Operate — stand up a working device-identity mesh, enroll a device, and prove access is bound to that device; the deliverable is the running, reviewed system, not an essay. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a working device-identity mesh, enroll a device, and prove access is bound to that device; the deliverable is the running, reviewed system, not an essay. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

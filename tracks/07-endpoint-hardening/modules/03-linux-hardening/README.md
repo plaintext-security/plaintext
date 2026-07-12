@@ -1,6 +1,6 @@
 # Module 03 — Linux Hardening to CIS
 
-*Type 4 · Audit→Build→Verify — scan a Linux host with Lynis and OpenSCAP, interpret the findings, apply a representative set of remediations, and rescan to prove a measurable score improvement. (Secondary: Decision / ADR — the Lynis-vs-OpenSCAP "which tool when" call and "accept with justification" exceptions are a latent benchmark/tooling decision.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify — scan a Linux host with Lynis and OpenSCAP, interpret the findings, apply a representative set of remediations, and rescan to prove a measurable score improvement. (Secondary: Decision / ADR — the Lynis-vs-OpenSCAP "which tool when" call and "accept with justification" exceptions are a latent benchmark/tooling decision.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

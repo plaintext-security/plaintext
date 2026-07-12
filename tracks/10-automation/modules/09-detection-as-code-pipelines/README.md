@@ -1,6 +1,6 @@
 # Module 09 — Detection-as-Code Pipelines
 
-*Type 13 · Eval Harness — measure a detection against a held-out labelled corpus with a metric and a CI regression gate, not the demo's good luck; the deliverable is eval-as-code — corpus + scorecard + a gate that fails on a planted regression. (Secondary: Judgment-as-Code / Gate — the merge gate that blocks a regressing rule.) [Go to the hands-on lab →](lab.md)*
+*Type 13 · Eval Harness — measure a detection against a held-out labelled corpus with a metric and a CI regression gate, not the demo's good luck; the deliverable is eval-as-code — corpus + scorecard + a gate that fails on a planted regression. (Secondary: Judgment-as-Code / Gate — the merge gate that blocks a regressing rule.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

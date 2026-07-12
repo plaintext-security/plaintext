@@ -1,6 +1,6 @@
 # Module 02 — Windows & Endpoint Telemetry
 
-*Type 7 · Build-&-Operate — deploy Sysmon with a good config, read the process/network/persistence events real detections rely on, then author and prove a detection that fires on the malicious chain and stays quiet on benign activity; you commit the config plus a verified detection. (Secondary: Concept Autopsy — the config *is* the detection strategy.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — deploy Sysmon with a good config, read the process/network/persistence events real detections rely on, then author and prove a detection that fires on the malicious chain and stays quiet on benign activity; you commit the config plus a verified detection. (Secondary: Concept Autopsy — the config *is* the detection strategy.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

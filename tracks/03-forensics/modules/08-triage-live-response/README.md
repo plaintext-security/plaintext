@@ -1,6 +1,6 @@
 # Module 08 — Triage & Live Response
 
-*Type 7 · Build-&-Operate — stand up a Velociraptor server and endpoint agent in Docker and operate it to collect processes, connections, and recently modified files via VQL, interpreting the output against the running investigation. (Secondary: Tool-Build — package the VQL into a reusable triage artifact pack.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a Velociraptor server and endpoint agent in Docker and operate it to collect processes, connections, and recently modified files via VQL, interpreting the output against the running investigation. (Secondary: Tool-Build — package the VQL into a reusable triage artifact pack.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

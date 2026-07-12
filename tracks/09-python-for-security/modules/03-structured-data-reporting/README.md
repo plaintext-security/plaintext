@@ -1,6 +1,6 @@
 # Module 03 — Structured Data & Reporting
 
-*Type 9 · Tool-Build — build a JSON→CSV→`rich` reporting pipeline that filters and deduplicates a set of security alert records (dedup-by-fingerprint) and renders a formatted terminal table. (Secondary: Build-&-Operate — a reusable reporting pattern you run over real alert data.) [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build a JSON→CSV→`rich` reporting pipeline that filters and deduplicates a set of security alert records (dedup-by-fingerprint) and renders a formatted terminal table. (Secondary: Build-&-Operate — a reusable reporting pattern you run over real alert data.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

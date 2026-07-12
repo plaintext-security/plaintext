@@ -1,6 +1,6 @@
 # Module 06 — Network Programming
 
-*Type 9 · Tool-Build — build a port scanner and banner grabber on raw Python `socket`, parse a packet trace with `scapy`, and prove the scanner with a test pinning OPEN/CLOSED verdicts plus a SYN-ACK/RST check. Test only systems you own or have written permission to. (Secondary: Concept Autopsy — understand what happens at each layer of the wire, not just the tool output.) [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build a port scanner and banner grabber on raw Python `socket`, parse a packet trace with `scapy`, and prove the scanner with a test pinning OPEN/CLOSED verdicts plus a SYN-ACK/RST check. Test only systems you own or have written permission to. (Secondary: Concept Autopsy — understand what happens at each layer of the wire, not just the tool output.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 07 — Microsegmentation
 
-*Type 7 · Build-&-Operate — stand up a default-deny segmentation policy in a real cluster and run it; the deliverable is the policy-as-code and its proven allow+deny pair, not an essay. (Secondary: Judgment-as-Code — the regression test that proves the denied path can't silently reopen.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a default-deny segmentation policy in a real cluster and run it; the deliverable is the policy-as-code and its proven allow+deny pair, not an essay. (Secondary: Judgment-as-Code — the regression test that proves the denied path can't silently reopen.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

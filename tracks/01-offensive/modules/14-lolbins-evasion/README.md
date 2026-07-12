@@ -1,6 +1,6 @@
 # Module 14 — Living-off-the-Land & Evasion
 
-*Type 5 · Detonate & Detect — accomplish download/execute/persist using only native LOLBAS/GTFOBins binaries and pair each with the behavioural telemetry it still leaves (why `certutil` spawned by Word is anomalous). (Secondary: Misconception Reveal — evasion shifts detection from signature to behaviour, it doesn't make you invisible.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect — accomplish download/execute/persist using only native LOLBAS/GTFOBins binaries and pair each with the behavioural telemetry it still leaves (why `certutil` spawned by Word is anomalous). (Secondary: Misconception Reveal — evasion shifts detection from signature to behaviour, it doesn't make you invisible.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

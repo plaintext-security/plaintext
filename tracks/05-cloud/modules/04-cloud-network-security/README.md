@@ -1,6 +1,6 @@
 # Module 04 — Cloud Network Security
 
-*Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — audit a VPC for what's actually reachable from the internet, then author a default-deny baseline as code and re-verify it holds. (Secondary: Blast-Radius — trace the transitive paths a foothold walks.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — audit a VPC for what's actually reachable from the internet, then author a default-deny baseline as code and re-verify it holds. (Secondary: Blast-Radius — trace the transitive paths a foothold walks.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

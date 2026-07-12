@@ -1,6 +1,6 @@
 # Module 02 — Identity as the Control Plane
 
-*Type 7 · Build-&-Operate — stand up a working identity provider and run the full OIDC token flow through it; the deliverable is the running IdP and a minted, signature-validated token, not an essay. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — stand up a working identity provider and run the full OIDC token flow through it; the deliverable is the running IdP and a minted, signature-validated token, not an essay. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 08 — Policy as Code
 
-*Type 8 · Judgment-as-Code / Gate — the deliverable is a policy gate that fails-bad and passes-good in CI; you prove it both ways and catch a fail-open gap. (Secondary: Build-&-Operate — you run real OPA over real Rego.) [Go to the hands-on lab →](lab.md)*
+*Type 8 · Judgment-as-Code / Gate — the deliverable is a policy gate that fails-bad and passes-good in CI; you prove it both ways and catch a fail-open gap. (Secondary: Build-&-Operate — you run real OPA over real Rego.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

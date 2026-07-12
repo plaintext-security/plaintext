@@ -1,6 +1,6 @@
 # Module 03 — File Systems & Carving
 
-*Type 6 · Reconstruct — recover a deleted file from a raw disk image with SleuthKit (`fls`/`icat`/`fsstat`) and `foremost`, reconstructing the inodes and paths that prove the file existed and was deleted. (Secondary: Tool-Build — turn the carve/recover step into a reusable parser.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — recover a deleted file from a raw disk image with SleuthKit (`fls`/`icat`/`fsstat`) and `foremost`, reconstructing the inodes and paths that prove the file existed and was deleted. (Secondary: Tool-Build — turn the carve/recover step into a reusable parser.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 03 — Linux Telemetry
 
-*Type 7 · Build-&-Operate — configure Linux audit logging, query host state with osquery, and capture the execution telemetry detections rely on; you commit a working "Linux Sysmon" config and the queries that read it. (Secondary: Misconception Reveal — the container blind-spot your host telemetry quietly misses.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — configure Linux audit logging, query host state with osquery, and capture the execution telemetry detections rely on; you commit a working "Linux Sysmon" config and the queries that read it. (Secondary: Misconception Reveal — the container blind-spot your host telemetry quietly misses.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

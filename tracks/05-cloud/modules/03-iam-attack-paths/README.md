@@ -1,6 +1,6 @@
 # Module 03 — IAM Attack Paths
 
-*Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — model the account as a graph and predict which ordinary permissions chain to admin. (Secondary: Audit→Build→Verify — find the minimum cut-set, implement it, and re-run the graph to prove the edge is gone.) [Go to the hands-on lab →](lab.md)*
+*Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — model the account as a graph and predict which ordinary permissions chain to admin. (Secondary: Audit→Build→Verify — find the minimum cut-set, implement it, and re-run the graph to prove the edge is gone.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

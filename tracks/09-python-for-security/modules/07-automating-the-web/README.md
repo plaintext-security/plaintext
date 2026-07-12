@@ -1,6 +1,6 @@
 # Module 07 — Automating the Web
 
-*Type 9 · Tool-Build — build an `httpx` + `beautifulsoup4` scraper that extracts links, finds hidden endpoints, and follows redirect chains against a bounded local target, proven by a `test_scraper.py` that pins endpoint discovery, the off-host scope guard, and 404 resilience. Only scrape hosts you own or are permitted to test. (Secondary: Build-&-Operate — scope and session handling that keeps the crawl safe at scale.) [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build an `httpx` + `beautifulsoup4` scraper that extracts links, finds hidden endpoints, and follows redirect chains against a bounded local target, proven by a `test_scraper.py` that pins endpoint discovery, the off-host scope guard, and 404 resilience. Only scrape hosts you own or are permitted to test. (Secondary: Build-&-Operate — scope and session handling that keeps the crawl safe at scale.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

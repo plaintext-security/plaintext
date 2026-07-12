@@ -1,6 +1,6 @@
 # Module 04 — HTTP & APIs for Enrichment
 
-*Type 7 · Build-&-Operate — build an `httpx` IOC-enrichment client that handles the error paths (timeouts, 429 retry/backoff, rate limits) and prove it with a `test_enrich.py` pinning the 429-retry and the malicious/clean/404 verdicts. (Secondary: Tool-Build — the enrichment function later modules wrap into a CLI and an MCP server.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — build an `httpx` IOC-enrichment client that handles the error paths (timeouts, 429 retry/backoff, rate limits) and prove it with a `test_enrich.py` pinning the 429-retry and the malicious/clean/404 verdicts. (Secondary: Tool-Build — the enrichment function later modules wrap into a CLI and an MCP server.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

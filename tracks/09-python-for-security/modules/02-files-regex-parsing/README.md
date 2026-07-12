@@ -1,6 +1,6 @@
 # Module 02 — Files, Regex & Log Parsing
 
-*Type 9 · Tool-Build — build a stdlib-only log parser (`re`, `pathlib`, `collections`) that extracts failed-login IPs from a realistic SSH auth log, flags brute-force patterns, and reports the top offenders. (Secondary: Eval Harness — verify the parser on positive and negative cases, not just the happy path.) [Go to the hands-on lab →](lab.md)*
+*Type 9 · Tool-Build — build a stdlib-only log parser (`re`, `pathlib`, `collections`) that extracts failed-login IPs from a realistic SSH auth log, flags brute-force patterns, and reports the top offenders. (Secondary: Eval Harness — verify the parser on positive and negative cases, not just the happy path.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

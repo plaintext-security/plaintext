@@ -1,6 +1,6 @@
 # Module 11 — Secrets Handling in Pipelines (OIDC)
 
-*Type 7 · Build-&-Operate — refactor a deploy pipeline from a stored long-lived key to OIDC federation, then prove no static secret remains and the minted credential is short-lived; the deliverable is the working federated pipeline and its verification, not an essay. (Secondary: Judgment-as-Code — the IAM trust policy whose `sub` scope is the real control.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — refactor a deploy pipeline from a stored long-lived key to OIDC federation, then prove no static secret remains and the minted credential is short-lived; the deliverable is the working federated pipeline and its verification, not an essay. (Secondary: Judgment-as-Code — the IAM trust policy whose `sub` scope is the real control.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

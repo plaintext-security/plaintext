@@ -1,6 +1,6 @@
 # Module 11 — Container Escape & Runtime
 
-*Type 5 · Detonate & Detect (+ Type 1 · Concept Autopsy) — reproduce the real CVE-2019-5736 runc escape from inside a container, then write the runtime detection that catches the next one. (Secondary: Concept Autopsy — prove the wall is the shared kernel by going through it.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect (+ Type 1 · Concept Autopsy) — reproduce the real CVE-2019-5736 runc escape from inside a container, then write the runtime detection that catches the next one. (Secondary: Concept Autopsy — prove the wall is the shared kernel by going through it.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

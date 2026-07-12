@@ -1,6 +1,6 @@
 # Module 17 — Data Protection & KMS
 
-*Type 7 · Build-&-Operate (+ Type 3 · Blast-Radius) — build envelope encryption and a scoped key policy, then prove who can actually use the key. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate (+ Type 3 · Blast-Radius) — build envelope encryption and a scoped key policy, then prove who can actually use the key. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

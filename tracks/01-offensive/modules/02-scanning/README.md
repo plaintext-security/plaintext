@@ -1,6 +1,6 @@
 # Module 02 — Scanning & Enumeration
 
-*Type 2 · Misconception Reveal — predict what an open port "means," then prove a port number is a hypothesis not an answer by enumerating live hosts, versions, and a real attack path. (Secondary: Detonate & Detect — your scan is the T1595 telemetry the blue team sees.) [Go to the hands-on lab →](lab.md)*
+*Type 2 · Misconception Reveal — predict what an open port "means," then prove a port number is a hypothesis not an answer by enumerating live hosts, versions, and a real attack path. (Secondary: Detonate & Detect — your scan is the T1595 telemetry the blue team sees.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 02 — Infrastructure as Code
 
-*Type 7 · Build-&-Operate — ship a working, reproducible infrastructure definition and run its full lifecycle; the deliverable is the running, reviewed config, not an essay. [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — ship a working, reproducible infrastructure definition and run its full lifecycle; the deliverable is the running, reviewed config, not an essay. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

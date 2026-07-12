@@ -1,6 +1,6 @@
 # Module 12 — Kubernetes: RBAC & Network Policy
 
-*Type 4 · Audit→Build→Verify (+ Type 8 · Judgment-as-Code) — ship a cluster the way Tesla shipped it (cluster-admin SA, flat pod network), prove the cost, then author least-privilege RBAC and a default-deny NetworkPolicy and re-verify the cut. (Secondary: Judgment-as-Code — a gate that fails the over-broad binding before merge.) [Go to the hands-on lab →](lab.md)*
+*Type 4 · Audit→Build→Verify (+ Type 8 · Judgment-as-Code) — ship a cluster the way Tesla shipped it (cluster-admin SA, flat pod network), prove the cost, then author least-privilege RBAC and a default-deny NetworkPolicy and re-verify the cut. (Secondary: Judgment-as-Code — a gate that fails the over-broad binding before merge.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

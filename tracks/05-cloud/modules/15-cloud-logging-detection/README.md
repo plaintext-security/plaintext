@@ -1,6 +1,6 @@
 # Module 15 — Cloud Logging & Detection
 
-*Type 5 · Detonate & Detect (+ Type 13 · Eval Harness) — take module 14's telemetry, predict which actions the default log captured, and write a Sigma rule for the one worth detecting. (Secondary: Eval Harness — tune against benign noise until it fires on the attack and not the noise, with an explicit false-positive analysis.) [Go to the hands-on lab →](lab.md)*
+*Type 5 · Detonate & Detect (+ Type 13 · Eval Harness) — take module 14's telemetry, predict which actions the default log captured, and write a Sigma rule for the one worth detecting. (Secondary: Eval Harness — tune against benign noise until it fires on the attack and not the noise, with an explicit false-positive analysis.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

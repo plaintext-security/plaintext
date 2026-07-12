@@ -139,12 +139,14 @@ nav:
       - "02 · Scanning & Enumeration":
           - Concept: 01-offensive/modules/02-scanning/README.md
           - Lab: 01-offensive/modules/02-scanning/lab.md
+          - Cheat sheet: 01-offensive/modules/02-scanning/cheatsheet.md
       - "03 · Vulnerability Identification":
           - Concept: 01-offensive/modules/03-vuln-id/README.md
           - Lab: 01-offensive/modules/03-vuln-id/lab.md
       - "04 · Exploitation Fundamentals":
           - Concept: 01-offensive/modules/04-exploitation/README.md
           - Lab: 01-offensive/modules/04-exploitation/lab.md
+          - Cheat sheet: 01-offensive/modules/04-exploitation/cheatsheet.md
       - "05 · Memory Corruption Primer":
           - Concept: 01-offensive/modules/05-memory-corruption/README.md
           - Lab: 01-offensive/modules/05-memory-corruption/lab.md
@@ -160,24 +162,31 @@ nav:
       - "09 · Password & Credential Attacks":
           - Concept: 01-offensive/modules/09-password-attacks/README.md
           - Lab: 01-offensive/modules/09-password-attacks/lab.md
+          - Cheat sheet: 01-offensive/modules/09-password-attacks/cheatsheet.md
       - "10 · Privilege Escalation — Linux":
           - Concept: 01-offensive/modules/10-privesc-linux/README.md
           - Lab: 01-offensive/modules/10-privesc-linux/lab.md
+          - Cheat sheet: 01-offensive/modules/10-privesc-linux/cheatsheet.md
       - "11 · Privilege Escalation — Windows":
           - Concept: 01-offensive/modules/11-privesc-windows/README.md
           - Lab: 01-offensive/modules/11-privesc-windows/lab.md
+          - Cheat sheet: 01-offensive/modules/11-privesc-windows/cheatsheet.md
       - "12 · Pivoting & Lateral Movement":
           - Concept: 01-offensive/modules/12-pivoting/README.md
           - Lab: 01-offensive/modules/12-pivoting/lab.md
+          - Cheat sheet: 01-offensive/modules/12-pivoting/cheatsheet.md
       - "13 · C2 & Post-Exploitation":
           - Concept: 01-offensive/modules/13-c2-postex/README.md
           - Lab: 01-offensive/modules/13-c2-postex/lab.md
+          - Cheat sheet: 01-offensive/modules/13-c2-postex/cheatsheet.md
       - "14 · Living-off-the-Land & Evasion":
           - Concept: 01-offensive/modules/14-lolbins-evasion/README.md
           - Lab: 01-offensive/modules/14-lolbins-evasion/lab.md
+          - Cheat sheet: 01-offensive/modules/14-lolbins-evasion/cheatsheet.md
       - "15 · PowerShell Offensive Tradecraft":
           - Concept: 01-offensive/modules/15-powershell-tradecraft/README.md
           - Lab: 01-offensive/modules/15-powershell-tradecraft/lab.md
+          - Cheat sheet: 01-offensive/modules/15-powershell-tradecraft/cheatsheet.md
       - "16 · Cloud & Container Attack Primer":
           - Concept: 01-offensive/modules/16-cloud-primer/README.md
           - Lab: 01-offensive/modules/16-cloud-primer/lab.md
@@ -192,24 +201,30 @@ nav:
       - "02 · Windows & Endpoint Telemetry":
           - Concept: 02-defensive/modules/02-endpoint-telemetry/README.md
           - Lab: 02-defensive/modules/02-endpoint-telemetry/lab.md
+          - Cheat sheet: 02-defensive/modules/02-endpoint-telemetry/cheatsheet.md
       - "03 · Linux Telemetry":
           - Concept: 02-defensive/modules/03-linux-telemetry/README.md
           - Lab: 02-defensive/modules/03-linux-telemetry/lab.md
+          - Cheat sheet: 02-defensive/modules/03-linux-telemetry/cheatsheet.md
       - "04 · Network Security Monitoring":
           - Concept: 02-defensive/modules/04-network-monitoring/README.md
           - Lab: 02-defensive/modules/04-network-monitoring/lab.md
+          - Cheat sheet: 02-defensive/modules/04-network-monitoring/cheatsheet.md
       - "05 · Intrusion Detection":
           - Concept: 02-defensive/modules/05-intrusion-detection/README.md
           - Lab: 02-defensive/modules/05-intrusion-detection/lab.md
+          - Cheat sheet: 02-defensive/modules/05-intrusion-detection/cheatsheet.md
       - "06 · SIEM Fundamentals":
           - Concept: 02-defensive/modules/06-siem/README.md
           - Lab: 02-defensive/modules/06-siem/lab.md
       - "07 · Log Parsing & Normalisation":
           - Concept: 02-defensive/modules/07-log-parsing/README.md
           - Lab: 02-defensive/modules/07-log-parsing/lab.md
+          - Cheat sheet: 02-defensive/modules/07-log-parsing/cheatsheet.md
       - "08 · Detection-as-Code":
           - Concept: 02-defensive/modules/08-detection-as-code/README.md
           - Lab: 02-defensive/modules/08-detection-as-code/lab.md
+          - Cheat sheet: 02-defensive/modules/08-detection-as-code/cheatsheet.md
       - "09 · Detection Testing & Tuning":
           - Concept: 02-defensive/modules/09-detection-testing/README.md
           - Lab: 02-defensive/modules/09-detection-testing/lab.md
@@ -219,12 +234,15 @@ nav:
       - "11 · Threat Hunting — Endpoint":
           - Concept: 02-defensive/modules/11-hunting-endpoint/README.md
           - Lab: 02-defensive/modules/11-hunting-endpoint/lab.md
+          - Cheat sheet: 02-defensive/modules/11-hunting-endpoint/cheatsheet.md
       - "12 · Threat Hunting — Network":
           - Concept: 02-defensive/modules/12-hunting-network/README.md
           - Lab: 02-defensive/modules/12-hunting-network/lab.md
+          - Cheat sheet: 02-defensive/modules/12-hunting-network/cheatsheet.md
       - "13 · PowerShell Logging & Hunting":
           - Concept: 02-defensive/modules/13-powershell-logging-hunting/README.md
           - Lab: 02-defensive/modules/13-powershell-logging-hunting/lab.md
+          - Cheat sheet: 02-defensive/modules/13-powershell-logging-hunting/cheatsheet.md
       - "14 · Alert Triage & Incident Response":
           - Concept: 02-defensive/modules/14-triage-ir/README.md
           - Lab: 02-defensive/modules/14-triage-ir/lab.md
@@ -237,6 +255,7 @@ nav:
       - "17 · KEV-Driven Defense":
           - Concept: 02-defensive/modules/17-kev-driven-defense/README.md
           - Lab: 02-defensive/modules/17-kev-driven-defense/lab.md
+          - Cheat sheet: 02-defensive/modules/17-kev-driven-defense/cheatsheet.md
       - "18 · Detection & Telemetry Drift":
           - Concept: 02-defensive/modules/18-detection-drift/README.md
           - Lab: 02-defensive/modules/18-detection-drift/lab.md
@@ -251,36 +270,47 @@ nav:
       - "02 · Acquisition & Imaging":
           - Concept: 03-forensics/modules/02-acquisition-imaging/README.md
           - Lab: 03-forensics/modules/02-acquisition-imaging/lab.md
+          - Cheat sheet: 03-forensics/modules/02-acquisition-imaging/cheatsheet.md
       - "03 · File Systems & Carving":
           - Concept: 03-forensics/modules/03-file-systems-carving/README.md
           - Lab: 03-forensics/modules/03-file-systems-carving/lab.md
+          - Cheat sheet: 03-forensics/modules/03-file-systems-carving/cheatsheet.md
       - "04 · Windows Artifacts":
           - Concept: 03-forensics/modules/04-windows-artifacts/README.md
           - Lab: 03-forensics/modules/04-windows-artifacts/lab.md
+          - Cheat sheet: 03-forensics/modules/04-windows-artifacts/cheatsheet.md
       - "05 · Browser & App Artifacts":
           - Concept: 03-forensics/modules/05-browser-app-artifacts/README.md
           - Lab: 03-forensics/modules/05-browser-app-artifacts/lab.md
+          - Cheat sheet: 03-forensics/modules/05-browser-app-artifacts/cheatsheet.md
       - "06 · Memory Forensics":
           - Concept: 03-forensics/modules/06-memory-forensics/README.md
           - Lab: 03-forensics/modules/06-memory-forensics/lab.md
+          - Cheat sheet: 03-forensics/modules/06-memory-forensics/cheatsheet.md
       - "07 · Timeline Analysis":
           - Concept: 03-forensics/modules/07-timeline-analysis/README.md
           - Lab: 03-forensics/modules/07-timeline-analysis/lab.md
+          - Cheat sheet: 03-forensics/modules/07-timeline-analysis/cheatsheet.md
       - "08 · Triage & Live Response":
           - Concept: 03-forensics/modules/08-triage-live-response/README.md
           - Lab: 03-forensics/modules/08-triage-live-response/lab.md
+          - Cheat sheet: 03-forensics/modules/08-triage-live-response/cheatsheet.md
       - "09 · Network Forensics":
           - Concept: 03-forensics/modules/09-network-forensics/README.md
           - Lab: 03-forensics/modules/09-network-forensics/lab.md
+          - Cheat sheet: 03-forensics/modules/09-network-forensics/cheatsheet.md
       - "10 · Log & Cloud Forensics":
           - Concept: 03-forensics/modules/10-log-cloud-forensics/README.md
           - Lab: 03-forensics/modules/10-log-cloud-forensics/lab.md
+          - Cheat sheet: 03-forensics/modules/10-log-cloud-forensics/cheatsheet.md
       - "11 · Anti-Forensics & Detecting It":
           - Concept: 03-forensics/modules/11-anti-forensics/README.md
           - Lab: 03-forensics/modules/11-anti-forensics/lab.md
+          - Cheat sheet: 03-forensics/modules/11-anti-forensics/cheatsheet.md
       - "12 · Malware Artifacts in IR":
           - Concept: 03-forensics/modules/12-malware-artifacts-ir/README.md
           - Lab: 03-forensics/modules/12-malware-artifacts-ir/lab.md
+          - Cheat sheet: 03-forensics/modules/12-malware-artifacts-ir/cheatsheet.md
       - "13 · Incident Response Process":
           - Concept: 03-forensics/modules/13-ir-process/README.md
           - Lab: 03-forensics/modules/13-ir-process/lab.md
@@ -301,33 +331,42 @@ nav:
       - "02 · File Triage & Identification":
           - Concept: 04-malware/modules/02-file-triage/README.md
           - Lab: 04-malware/modules/02-file-triage/lab.md
+          - Cheat sheet: 04-malware/modules/02-file-triage/cheatsheet.md
       - "03 · Static Analysis — Strings & PE":
           - Concept: 04-malware/modules/03-static-strings-pe/README.md
           - Lab: 04-malware/modules/03-static-strings-pe/lab.md
+          - Cheat sheet: 04-malware/modules/03-static-strings-pe/cheatsheet.md
       - "04 · Static Analysis — Capabilities":
           - Concept: 04-malware/modules/04-static-capabilities/README.md
           - Lab: 04-malware/modules/04-static-capabilities/lab.md
+          - Cheat sheet: 04-malware/modules/04-static-capabilities/cheatsheet.md
       - "05 · Dynamic Analysis — Behavioural":
           - Concept: 04-malware/modules/05-dynamic-behavioural/README.md
           - Lab: 04-malware/modules/05-dynamic-behavioural/lab.md
+          - Cheat sheet: 04-malware/modules/05-dynamic-behavioural/cheatsheet.md
       - "06 · Dynamic Analysis — Network":
           - Concept: 04-malware/modules/06-dynamic-network/README.md
           - Lab: 04-malware/modules/06-dynamic-network/lab.md
+          - Cheat sheet: 04-malware/modules/06-dynamic-network/cheatsheet.md
       - "07 · Disassembly Basics":
           - Concept: 04-malware/modules/07-disassembly-basics/README.md
           - Lab: 04-malware/modules/07-disassembly-basics/lab.md
+          - Cheat sheet: 04-malware/modules/07-disassembly-basics/cheatsheet.md
       - "08 · Decompilation & Code Analysis":
           - Concept: 04-malware/modules/08-decompilation-code-analysis/README.md
           - Lab: 04-malware/modules/08-decompilation-code-analysis/lab.md
       - "09 · Unpacking & Obfuscation":
           - Concept: 04-malware/modules/09-unpacking-obfuscation/README.md
           - Lab: 04-malware/modules/09-unpacking-obfuscation/lab.md
+          - Cheat sheet: 04-malware/modules/09-unpacking-obfuscation/cheatsheet.md
       - "10 · Anti-Analysis Techniques":
           - Concept: 04-malware/modules/10-anti-analysis/README.md
           - Lab: 04-malware/modules/10-anti-analysis/lab.md
+          - Cheat sheet: 04-malware/modules/10-anti-analysis/cheatsheet.md
       - "11 · Document & Script Malware":
           - Concept: 04-malware/modules/11-document-script-malware/README.md
           - Lab: 04-malware/modules/11-document-script-malware/lab.md
+          - Cheat sheet: 04-malware/modules/11-document-script-malware/cheatsheet.md
       - "12 · IOC Extraction & ATT&CK Mapping":
           - Concept: 04-malware/modules/12-ioc-extraction-attck/README.md
           - Lab: 04-malware/modules/12-ioc-extraction-attck/lab.md
@@ -342,51 +381,64 @@ nav:
       - "02 · Cloud Identity & IAM":
           - Concept: 05-cloud/modules/02-cloud-identity-iam/README.md
           - Lab: 05-cloud/modules/02-cloud-identity-iam/lab.md
+          - Cheat sheet: 05-cloud/modules/02-cloud-identity-iam/cheatsheet.md
       - "03 · IAM Attack Paths":
           - Concept: 05-cloud/modules/03-iam-attack-paths/README.md
           - Lab: 05-cloud/modules/03-iam-attack-paths/lab.md
+          - Cheat sheet: 05-cloud/modules/03-iam-attack-paths/cheatsheet.md
       - "04 · Cloud Network Security":
           - Concept: 05-cloud/modules/04-cloud-network-security/README.md
           - Lab: 05-cloud/modules/04-cloud-network-security/lab.md
+          - Cheat sheet: 05-cloud/modules/04-cloud-network-security/cheatsheet.md
       - "05 · Posture & Misconfiguration Auditing":
           - Concept: 05-cloud/modules/05-posture-auditing/README.md
           - Lab: 05-cloud/modules/05-posture-auditing/lab.md
+          - Cheat sheet: 05-cloud/modules/05-posture-auditing/cheatsheet.md
       - "06 · Infrastructure-as-Code Security":
           - Concept: 05-cloud/modules/06-iac-security/README.md
           - Lab: 05-cloud/modules/06-iac-security/lab.md
+          - Cheat sheet: 05-cloud/modules/06-iac-security/cheatsheet.md
       - "07 · Secrets Management & Detection":
           - Concept: 05-cloud/modules/07-secrets-management/README.md
           - Lab: 05-cloud/modules/07-secrets-management/lab.md
+          - Cheat sheet: 05-cloud/modules/07-secrets-management/cheatsheet.md
       - "08 · CI/CD Pipeline Security":
           - Concept: 05-cloud/modules/08-cicd-security/README.md
           - Lab: 05-cloud/modules/08-cicd-security/lab.md
+          - Cheat sheet: 05-cloud/modules/08-cicd-security/cheatsheet.md
       - "09 · Serverless Security":
           - Concept: 05-cloud/modules/09-serverless-security/README.md
           - Lab: 05-cloud/modules/09-serverless-security/lab.md
       - "10 · Container & Image Security":
           - Concept: 05-cloud/modules/10-container-image-security/README.md
           - Lab: 05-cloud/modules/10-container-image-security/lab.md
+          - Cheat sheet: 05-cloud/modules/10-container-image-security/cheatsheet.md
       - "11 · Container Escape & Runtime":
           - Concept: 05-cloud/modules/11-container-escape-runtime/README.md
           - Lab: 05-cloud/modules/11-container-escape-runtime/lab.md
+          - Cheat sheet: 05-cloud/modules/11-container-escape-runtime/cheatsheet.md
       - "12 · Kubernetes — RBAC & Network Policy":
           - Concept: 05-cloud/modules/12-kubernetes-rbac-network/README.md
           - Lab: 05-cloud/modules/12-kubernetes-rbac-network/lab.md
+          - Cheat sheet: 05-cloud/modules/12-kubernetes-rbac-network/cheatsheet.md
       - "13 · Kubernetes — Admission & Runtime":
           - Concept: 05-cloud/modules/13-kubernetes-admission-runtime/README.md
           - Lab: 05-cloud/modules/13-kubernetes-admission-runtime/lab.md
+          - Cheat sheet: 05-cloud/modules/13-kubernetes-admission-runtime/cheatsheet.md
       - "14 · Cloud Attack Techniques":
           - Concept: 05-cloud/modules/14-cloud-attack-techniques/README.md
           - Lab: 05-cloud/modules/14-cloud-attack-techniques/lab.md
       - "15 · Cloud Logging & Detection":
           - Concept: 05-cloud/modules/15-cloud-logging-detection/README.md
           - Lab: 05-cloud/modules/15-cloud-logging-detection/lab.md
+          - Cheat sheet: 05-cloud/modules/15-cloud-logging-detection/cheatsheet.md
       - "16 · Cloud Incident Response":
           - Concept: 05-cloud/modules/16-cloud-incident-response/README.md
           - Lab: 05-cloud/modules/16-cloud-incident-response/lab.md
       - "17 · Data Protection & KMS":
           - Concept: 05-cloud/modules/17-data-protection-kms/README.md
           - Lab: 05-cloud/modules/17-data-protection-kms/lab.md
+          - Cheat sheet: 05-cloud/modules/17-data-protection-kms/cheatsheet.md
   - Active Directory & Windows:
       - Overview: 06-active-directory/README.md
       - "01 · AD & Windows Security Model":
@@ -395,21 +447,27 @@ nav:
       - "02 · Enumeration":
           - Concept: 06-active-directory/modules/02-enumeration/README.md
           - Lab: 06-active-directory/modules/02-enumeration/lab.md
+          - Cheat sheet: 06-active-directory/modules/02-enumeration/cheatsheet.md
       - "03 · Kerberos Attacks":
           - Concept: 06-active-directory/modules/03-kerberos-attacks/README.md
           - Lab: 06-active-directory/modules/03-kerberos-attacks/lab.md
+          - Cheat sheet: 06-active-directory/modules/03-kerberos-attacks/cheatsheet.md
       - "04 · Credential Theft & Replay":
           - Concept: 06-active-directory/modules/04-credential-theft/README.md
           - Lab: 06-active-directory/modules/04-credential-theft/lab.md
+          - Cheat sheet: 06-active-directory/modules/04-credential-theft/cheatsheet.md
       - "05 · ACL & Delegation Abuse":
           - Concept: 06-active-directory/modules/05-acl-delegation-abuse/README.md
           - Lab: 06-active-directory/modules/05-acl-delegation-abuse/lab.md
+          - Cheat sheet: 06-active-directory/modules/05-acl-delegation-abuse/cheatsheet.md
       - "06 · Lateral Movement":
           - Concept: 06-active-directory/modules/06-lateral-movement/README.md
           - Lab: 06-active-directory/modules/06-lateral-movement/lab.md
+          - Cheat sheet: 06-active-directory/modules/06-lateral-movement/cheatsheet.md
       - "07 · Persistence in AD":
           - Concept: 06-active-directory/modules/07-persistence-ad/README.md
           - Lab: 06-active-directory/modules/07-persistence-ad/lab.md
+          - Cheat sheet: 06-active-directory/modules/07-persistence-ad/cheatsheet.md
       - "08 · Path to Domain Admin":
           - Concept: 06-active-directory/modules/08-path-to-da/README.md
           - Lab: 06-active-directory/modules/08-path-to-da/lab.md
@@ -419,6 +477,7 @@ nav:
       - "10 · Hardening AD as Code":
           - Concept: 06-active-directory/modules/10-hardening-ad/README.md
           - Lab: 06-active-directory/modules/10-hardening-ad/lab.md
+          - Cheat sheet: 06-active-directory/modules/10-hardening-ad/cheatsheet.md
       - "11 · Defending Identity":
           - Concept: 06-active-directory/modules/11-defending-identity/README.md
           - Lab: 06-active-directory/modules/11-defending-identity/lab.md
@@ -436,33 +495,41 @@ nav:
       - "02 · Windows Hardening to CIS":
           - Concept: 07-endpoint-hardening/modules/02-windows-hardening/README.md
           - Lab: 07-endpoint-hardening/modules/02-windows-hardening/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/02-windows-hardening/cheatsheet.md
       - "03 · Linux Hardening to CIS":
           - Concept: 07-endpoint-hardening/modules/03-linux-hardening/README.md
           - Lab: 07-endpoint-hardening/modules/03-linux-hardening/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/03-linux-hardening/cheatsheet.md
       - "04 · Exploit Mitigation & Allowlisting":
           - Concept: 07-endpoint-hardening/modules/04-exploit-mitigations/README.md
           - Lab: 07-endpoint-hardening/modules/04-exploit-mitigations/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/04-exploit-mitigations/cheatsheet.md
       - "05 · Endpoint Telemetry & EDR":
           - Concept: 07-endpoint-hardening/modules/05-endpoint-telemetry/README.md
           - Lab: 07-endpoint-hardening/modules/05-endpoint-telemetry/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/05-endpoint-telemetry/cheatsheet.md
       - "06 · Configuration Management":
           - Concept: 07-endpoint-hardening/modules/06-configuration-management/README.md
           - Lab: 07-endpoint-hardening/modules/06-configuration-management/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/06-configuration-management/cheatsheet.md
       - "07 · Compliance Scoring & Auditing":
           - Concept: 07-endpoint-hardening/modules/07-compliance-auditing/README.md
           - Lab: 07-endpoint-hardening/modules/07-compliance-auditing/lab.md
       - "08 · Patch & Vulnerability Management":
           - Concept: 07-endpoint-hardening/modules/08-patch-vuln-management/README.md
           - Lab: 07-endpoint-hardening/modules/08-patch-vuln-management/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/08-patch-vuln-management/cheatsheet.md
       - "09 · Local Privilege-Escalation Defense":
           - Concept: 07-endpoint-hardening/modules/09-privesc-defense/README.md
           - Lab: 07-endpoint-hardening/modules/09-privesc-defense/lab.md
       - "10 · Detecting Host Compromise":
           - Concept: 07-endpoint-hardening/modules/10-detecting-host-compromise/README.md
           - Lab: 07-endpoint-hardening/modules/10-detecting-host-compromise/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/10-detecting-host-compromise/cheatsheet.md
       - "11 · Host & Boot Integrity":
           - Concept: 07-endpoint-hardening/modules/11-host-boot-integrity/README.md
           - Lab: 07-endpoint-hardening/modules/11-host-boot-integrity/lab.md
+          - Cheat sheet: 07-endpoint-hardening/modules/11-host-boot-integrity/cheatsheet.md
       - "12 · Configuration & Posture Drift":
           - Concept: 07-endpoint-hardening/modules/12-config-drift/README.md
           - Lab: 07-endpoint-hardening/modules/12-config-drift/lab.md
@@ -486,15 +553,19 @@ nav:
       - "05 · TLS Deep Dive":
           - Concept: 08-cryptography/modules/05-tls-deep-dive/README.md
           - Lab: 08-cryptography/modules/05-tls-deep-dive/lab.md
+          - Cheat sheet: 08-cryptography/modules/05-tls-deep-dive/cheatsheet.md
       - "06 · PKI & Certificate Management":
           - Concept: 08-cryptography/modules/06-pki-certificates/README.md
           - Lab: 08-cryptography/modules/06-pki-certificates/lab.md
+          - Cheat sheet: 08-cryptography/modules/06-pki-certificates/cheatsheet.md
       - "07 · Secrets Management":
           - Concept: 08-cryptography/modules/07-secrets-management/README.md
           - Lab: 08-cryptography/modules/07-secrets-management/lab.md
+          - Cheat sheet: 08-cryptography/modules/07-secrets-management/cheatsheet.md
       - "08 · Secret Detection & Leakage":
           - Concept: 08-cryptography/modules/08-secret-detection/README.md
           - Lab: 08-cryptography/modules/08-secret-detection/lab.md
+          - Cheat sheet: 08-cryptography/modules/08-secret-detection/cheatsheet.md
       - "09 · Email Authentication":
           - Concept: 08-cryptography/modules/09-email-authentication/README.md
           - Lab: 08-cryptography/modules/09-email-authentication/lab.md
@@ -515,21 +586,27 @@ nav:
       - "02 · Files, Regex & Log Parsing":
           - Concept: 09-python-for-security/modules/02-files-regex-parsing/README.md
           - Lab: 09-python-for-security/modules/02-files-regex-parsing/lab.md
+          - Cheat sheet: 09-python-for-security/modules/02-files-regex-parsing/cheatsheet.md
       - "03 · Structured Data & Reporting":
           - Concept: 09-python-for-security/modules/03-structured-data-reporting/README.md
           - Lab: 09-python-for-security/modules/03-structured-data-reporting/lab.md
+          - Cheat sheet: 09-python-for-security/modules/03-structured-data-reporting/cheatsheet.md
       - "04 · HTTP & APIs for Enrichment":
           - Concept: 09-python-for-security/modules/04-http-apis-enrichment/README.md
           - Lab: 09-python-for-security/modules/04-http-apis-enrichment/lab.md
+          - Cheat sheet: 09-python-for-security/modules/04-http-apis-enrichment/cheatsheet.md
       - "05 · Building CLI Tools":
           - Concept: 09-python-for-security/modules/05-building-cli-tools/README.md
           - Lab: 09-python-for-security/modules/05-building-cli-tools/lab.md
+          - Cheat sheet: 09-python-for-security/modules/05-building-cli-tools/cheatsheet.md
       - "06 · Network Programming":
           - Concept: 09-python-for-security/modules/06-network-programming/README.md
           - Lab: 09-python-for-security/modules/06-network-programming/lab.md
+          - Cheat sheet: 09-python-for-security/modules/06-network-programming/cheatsheet.md
       - "07 · Automating the Web":
           - Concept: 09-python-for-security/modules/07-automating-the-web/README.md
           - Lab: 09-python-for-security/modules/07-automating-the-web/lab.md
+          - Cheat sheet: 09-python-for-security/modules/07-automating-the-web/cheatsheet.md
       - "08 · Driving Security Tools":
           - Concept: 09-python-for-security/modules/08-driving-security-tools/README.md
           - Lab: 09-python-for-security/modules/08-driving-security-tools/lab.md
@@ -550,18 +627,23 @@ nav:
       - "02 · Infrastructure as Code":
           - Concept: 10-automation/modules/02-infrastructure-as-code/README.md
           - Lab: 10-automation/modules/02-infrastructure-as-code/lab.md
+          - Cheat sheet: 10-automation/modules/02-infrastructure-as-code/cheatsheet.md
       - "03 · IaC Security Scanning":
           - Concept: 10-automation/modules/03-iac-security-scanning/README.md
           - Lab: 10-automation/modules/03-iac-security-scanning/lab.md
+          - Cheat sheet: 10-automation/modules/03-iac-security-scanning/cheatsheet.md
       - "04 · Configuration Management":
           - Concept: 10-automation/modules/04-configuration-management/README.md
           - Lab: 10-automation/modules/04-configuration-management/lab.md
+          - Cheat sheet: 10-automation/modules/04-configuration-management/cheatsheet.md
       - "05 · CI/CD Pipelines & Gates":
           - Concept: 10-automation/modules/05-cicd-pipelines/README.md
           - Lab: 10-automation/modules/05-cicd-pipelines/lab.md
+          - Cheat sheet: 10-automation/modules/05-cicd-pipelines/cheatsheet.md
       - "06 · Containerising Tooling":
           - Concept: 10-automation/modules/06-containerising-tooling/README.md
           - Lab: 10-automation/modules/06-containerising-tooling/lab.md
+          - Cheat sheet: 10-automation/modules/06-containerising-tooling/cheatsheet.md
       - "07 · Enrichment & Data Pipelines":
           - Concept: 10-automation/modules/07-enrichment-pipelines/README.md
           - Lab: 10-automation/modules/07-enrichment-pipelines/lab.md
@@ -571,15 +653,18 @@ nav:
       - "09 · Detection-as-Code Pipelines":
           - Concept: 10-automation/modules/09-detection-as-code-pipelines/README.md
           - Lab: 10-automation/modules/09-detection-as-code-pipelines/lab.md
+          - Cheat sheet: 10-automation/modules/09-detection-as-code-pipelines/cheatsheet.md
       - "10 · Reviewing AI-Generated Automation":
           - Concept: 10-automation/modules/10-reviewing-ai-automation/README.md
           - Lab: 10-automation/modules/10-reviewing-ai-automation/lab.md
       - "11 · Secrets Handling in Pipelines":
           - Concept: 10-automation/modules/11-pipeline-secrets/README.md
           - Lab: 10-automation/modules/11-pipeline-secrets/lab.md
+          - Cheat sheet: 10-automation/modules/11-pipeline-secrets/cheatsheet.md
       - "12 · Click-ops → IaC Migration":
           - Concept: 10-automation/modules/11-clickops-iac-migration/README.md
           - Lab: 10-automation/modules/11-clickops-iac-migration/lab.md
+          - Cheat sheet: 10-automation/modules/11-clickops-iac-migration/cheatsheet.md
   - Zero Trust Network Access:
       - Overview: 11-ztna/README.md
       - "01 · Zero Trust Principles":
@@ -588,36 +673,45 @@ nav:
       - "02 · Identity as the Control Plane":
           - Concept: 11-ztna/modules/02-identity-control-plane/README.md
           - Lab: 11-ztna/modules/02-identity-control-plane/lab.md
+          - Cheat sheet: 11-ztna/modules/02-identity-control-plane/cheatsheet.md
       - "03 · Device Trust & Posture":
           - Concept: 11-ztna/modules/03-device-trust-posture/README.md
           - Lab: 11-ztna/modules/03-device-trust-posture/lab.md
+          - Cheat sheet: 11-ztna/modules/03-device-trust-posture/cheatsheet.md
       - "04 · ZTNA Architectures":
           - Concept: 11-ztna/modules/04-ztna-architectures/README.md
           - Lab: 11-ztna/modules/04-ztna-architectures/lab.md
       - "05 · SASE & Cloud-Delivered Zero Trust":
           - Concept: 11-ztna/modules/05-sase-cloud-delivered/README.md
           - Lab: 11-ztna/modules/05-sase-cloud-delivered/lab.md
+          - Cheat sheet: 11-ztna/modules/05-sase-cloud-delivered/cheatsheet.md
       - "06 · Identity-Aware Access":
           - Concept: 11-ztna/modules/06-identity-aware-access/README.md
           - Lab: 11-ztna/modules/06-identity-aware-access/lab.md
+          - Cheat sheet: 11-ztna/modules/06-identity-aware-access/cheatsheet.md
       - "07 · Microsegmentation":
           - Concept: 11-ztna/modules/07-microsegmentation/README.md
           - Lab: 11-ztna/modules/07-microsegmentation/lab.md
+          - Cheat sheet: 11-ztna/modules/07-microsegmentation/cheatsheet.md
       - "08 · Policy as Code":
           - Concept: 11-ztna/modules/08-policy-as-code/README.md
           - Lab: 11-ztna/modules/08-policy-as-code/lab.md
+          - Cheat sheet: 11-ztna/modules/08-policy-as-code/cheatsheet.md
       - "09 · Monitoring & Detection":
           - Concept: 11-ztna/modules/09-monitoring-detection/README.md
           - Lab: 11-ztna/modules/09-monitoring-detection/lab.md
+          - Cheat sheet: 11-ztna/modules/09-monitoring-detection/cheatsheet.md
       - "10 · VPN → ZTNA Migration":
           - Concept: 11-ztna/modules/10-vpn-ztna-migration/README.md
           - Lab: 11-ztna/modules/10-vpn-ztna-migration/lab.md
       - "11 · Red-team Your Zero-Trust Deployment":
           - Concept: 11-ztna/modules/11-redteam-zt-deployment/README.md
           - Lab: 11-ztna/modules/11-redteam-zt-deployment/lab.md
+          - Cheat sheet: 11-ztna/modules/11-redteam-zt-deployment/cheatsheet.md
       - "12 · Workload Identity & mTLS":
           - Concept: 11-ztna/modules/10-workload-identity-mtls/README.md
           - Lab: 11-ztna/modules/10-workload-identity-mtls/lab.md
+          - Cheat sheet: 11-ztna/modules/10-workload-identity-mtls/cheatsheet.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":

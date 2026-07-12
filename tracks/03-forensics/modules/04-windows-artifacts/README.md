@@ -1,6 +1,6 @@
 # Module 04 — Windows Artifacts
 
-*Type 6 · Reconstruct — reconstruct attacker activity on a Windows host from EVTX-ATTACK-SAMPLES logs with `chainsaw` and registry-hive parsing, surfacing the authentication and execution events that show what ran. (Secondary: Tool-Build — grow the hive-parsing step into a reusable registry parser.) [Go to the hands-on lab →](lab.md)*
+*Type 6 · Reconstruct — reconstruct attacker activity on a Windows host from EVTX-ATTACK-SAMPLES logs with `chainsaw` and registry-hive parsing, surfacing the authentication and execution events that show what ran. (Secondary: Tool-Build — grow the hive-parsing step into a reusable registry parser.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

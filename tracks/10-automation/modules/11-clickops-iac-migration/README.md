@@ -1,6 +1,6 @@
 # Module 11 — Click-ops → IaC Migration
 
-*Type 12 · Migration / Brownfield — adopt a running, hand-built resource under Infrastructure as Code *incrementally, without an outage* (strangler-fig); the deliverable is the migration runbook + proof that the imported reality equals the code (zero drift) + a rollback note, not an essay. [Go to the hands-on lab →](lab.md)*
+*Type 12 · Migration / Brownfield — adopt a running, hand-built resource under Infrastructure as Code *incrementally, without an outage* (strangler-fig); the deliverable is the migration runbook + proof that the imported reality equals the code (zero drift) + a rollback note, not an essay. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06 · (placement: after IaC scanning; final number TBD at promotion)*
 
