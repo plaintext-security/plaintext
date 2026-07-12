@@ -89,7 +89,7 @@ into every module that follows.
 
 - [OpenSpec — README and quickstart](https://github.com/Fission-AI/OpenSpec) (~30 min) — the concrete
   spec-driven workflow this track leads with: write a change spec, drive the AI from it, review against
-  it. <!-- VALIDATE: confirm current OpenSpec repo URL and quickstart path -->
+  it.
 - [GitHub `spec-kit`](https://github.com/github/spec-kit) (~20 min) — the mainstream, Python-native
   alternative; read its "specify → plan → tasks" loop so you understand the pattern is tool-agnostic.
 
@@ -97,7 +97,7 @@ into every module that follows.
 
 - [PyTorch security advisory — "Compromised PyTorch-nightly dependency chain (Dec 2022)"](https://pytorch.org/blog/compromised-nightly-dependency/)
   (~10 min) — the primary source for the `torchtriton` dependency-confusion attack; read what the
-  malicious package actually did. <!-- VALIDATE: confirm exact advisory URL/slug on pytorch.org -->
+  malicious package actually did.
 
 ## Key concepts
 - **`uv` / `ruff` / `pyright`** are the current default toolchain — the copilot still reaches for the old one.

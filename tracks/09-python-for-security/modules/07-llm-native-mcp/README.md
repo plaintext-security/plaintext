@@ -64,12 +64,12 @@ treat the specific API as replaceable — the discipline outlives the library.
   "Core concepts" (tools, resources) and the trust model; you're building a server, so focus on the tool interface.
 - [FastMCP / the Python MCP SDK — quickstart](https://github.com/modelcontextprotocol/python-sdk)
   (~25 min) — the `@mcp.tool()` decorator, type-hint-as-schema, and stdio transport.
-  <!-- VALIDATE: confirm current Python MCP SDK / FastMCP repo URL and quickstart path -->
+ 
 
 **Typed LLM output**
 
 - [`instructor` documentation — getting started](https://python.useinstructor.com/) (~30 min) — patching
-  a client to return a `pydantic` model, and how it re-asks on validation failure. <!-- VALIDATE: confirm instructor docs URL -->
+  a client to return a `pydantic` model, and how it re-asks on validation failure.
 - [Anthropic API — tool use / structured output](https://docs.claude.com/en/docs/build-with-claude/tool-use)
   (~20 min) — the underlying mechanism `instructor` builds on; use a current model id like
   `claude-sonnet-5` (capable) or `claude-haiku-4-5-20251001` (cheap/fast). <!-- VALIDATE: confirm docs URL -->

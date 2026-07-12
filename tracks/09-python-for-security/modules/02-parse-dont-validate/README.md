@@ -25,7 +25,7 @@ its fields are the type and shape you assumed, you've built the bug. The sharpes
 **unsafe deserialization**: `yaml.load()` on untrusted YAML in older PyYAML would construct arbitrary
 Python objects — including ones that execute code — turning "parse this config" into remote code
 execution (the class tracked as CVE-2017-18342; `pickle.loads` on untrusted data is the same trap and
-has no safe mode at all). <!-- VALIDATE: confirm CVE id + NVD URL --> The fix pattern is identical
+has no safe mode at all). The fix pattern is identical
 whether the payload is a YAML bomb or a merely-malformed alert: **don't hand untrusted bytes to
 something that builds live objects unchecked — parse them through a schema that only admits the shapes
 you allow.**
@@ -110,7 +110,7 @@ instead of as a confusing `None` mid-request, and the key never lives in the sou
   thesis: push the untrusted-to-trusted conversion to the boundary and let the type carry the proof.
 - [NVD — CVE-2017-18342 (PyYAML `yaml.load()` arbitrary code execution)](https://nvd.nist.gov/vuln/detail/CVE-2017-18342)
   (~10 min) — the anchor CVE: how deserializing untrusted YAML into live objects becomes RCE, and why
-  `yaml.safe_load` / a schema is the fix. <!-- VALIDATE: confirm CVE id + NVD URL -->
+  `yaml.safe_load` / a schema is the fix.
 
 ## Key concepts
 - **Parse, don't validate:** convert untrusted input to a typed object *once* at the boundary; the type then carries the invariant everywhere downstream.

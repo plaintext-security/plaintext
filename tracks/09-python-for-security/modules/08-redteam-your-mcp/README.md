@@ -30,7 +30,7 @@ MCP **tool-poisoning** research showed that a malicious tool *description* — o
 one tool — can hijack an agent into calling other tools it shouldn't, exfiltrating data the user never
 authorized. Microsoft's **EchoLeak** (CVE-2025-32711) was a zero-click version of exactly this: content
 that arrived as *data* (an email) was interpreted as *instructions* and drove M365 Copilot to leak
-data. <!-- VALIDATE: confirm BCCRT citation, Chevrolet report, Invariant Labs MCP tool-poisoning post, and CVE-2025-32711 links --> Your `sift` MCP server is a smaller version of the same machine. If you
+data. Your `sift` MCP server is a smaller version of the same machine. If you
 haven't attacked it yourself, you don't know whether it does what the words say — and the words are
 attacker-controlled.
 
@@ -86,7 +86,7 @@ control.
 
 - [OWASP Top 10 for LLM Applications — **LLM01: Prompt Injection**](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
   (~25 min) — read the direct vs. **indirect** injection split and the "prevention" section; it names why
-  a prompt instruction is not a mitigation. <!-- VALIDATE: confirm current OWASP GenAI LLM01 URL/slug -->
+  a prompt instruction is not a mitigation.
 - [Simon Willison — "Prompt injection: what's the worst that can happen?"](https://simonwillison.net/2023/Apr/14/worst-that-can-happen/)
   (~15 min) — the clearest plain-English framing of *why* you can't prompt your way out of prompt
   injection; the "trust" argument you'll test in the lab. <!-- VALIDATE: confirm exact post URL/date -->
@@ -104,10 +104,10 @@ control.
 
 - [**garak** — LLM vulnerability scanner (docs + probe list)](https://docs.garak.ai/)
   (~20 min) — the open-source scanner you'll point at your MCP-backed model; read the `promptinject` and
-  `leakage`/`exfiltration` probe families. <!-- VALIDATE: confirm garak docs URL -->
+  `leakage`/`exfiltration` probe families.
 - [**promptfoo** — red-team & eval quickstart](https://www.promptfoo.dev/docs/red-team/)
   (~20 min) — read how to write an **assertion** that fails when a jailbreak/injection succeeds; this is
-  the regression gate you'll wire into CI. <!-- VALIDATE: confirm promptfoo red-team docs path -->
+  the regression gate you'll wire into CI.
 
 **The anchors (why this is a real class, not a party trick)**
 
@@ -115,7 +115,7 @@ control.
   (~10 min) — read the ruling: the company was bound by its own bot's invented policy. <!-- VALIDATE: confirm CanLII citation URL -->
 - [NVD — **CVE-2025-32711 (EchoLeak)**](https://nvd.nist.gov/vuln/detail/CVE-2025-32711)
   (~10 min) — the zero-click M365 Copilot indirect-injection exfiltration; the enterprise version of your
-  poisoned-record attack. <!-- VALIDATE: confirm NVD entry is live -->
+  poisoned-record attack.
 
 ## Key concepts
 - **A tool call is a trust boundary** — every argument the LLM passes your tool is attacker-controlled input.

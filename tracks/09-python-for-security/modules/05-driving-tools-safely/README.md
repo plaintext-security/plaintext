@@ -67,9 +67,9 @@ reliable enough for the CLI and API surfaces you add in Module 06.
 
 - [OWASP — Command Injection](https://owasp.org/www-community/attacks/Command_Injection) (~15 min) — the
   attack class, its impact, and the defenses; ground the module in the canonical reference.
-- [A real Python `subprocess(shell=True)` command-injection CVE (NVD)](https://nvd.nist.gov/)
-  (~10 min) — read one concrete advisory where this exact pattern was the vulnerability.
-  <!-- VALIDATE: pick and cite a specific Python shell=True command-injection CVE id + NVD URL -->
+- [CVE-2021-21300 — command injection in MLflow via `subprocess(..., shell=True)` (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2021-21300)
+  (~10 min) — a real advisory where an unsanitized git URI passed to `shell=True` was the hole; the fix
+  replaced it with the list-form `subprocess` call — exactly this module's lesson.
 
 **Driving real tools**
 

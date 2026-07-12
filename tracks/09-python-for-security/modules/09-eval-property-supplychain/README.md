@@ -120,7 +120,7 @@ build red for the same reason a triage regression does.
   resolves your locked graph against the advisory DB, and how to wire it as a CI failure.
 - [PyTorch security advisory — "Compromised PyTorch-nightly dependency chain (Dec 2022)"](https://pytorch.org/blog/compromised-nightly-dependency/)
   (~10 min) — the `torchtriton` anchor, revisited: what the malicious package did and why hash-locking is
-  the control. <!-- VALIDATE: confirm exact advisory URL/slug on pytorch.org -->
+  the control.
 
 ## Key concepts
 - **Eval-as-code:** inputs + expected labels + a scorer → a number you can assert on in CI (`pydantic-evals`: `Case`/`Dataset`/evaluator).

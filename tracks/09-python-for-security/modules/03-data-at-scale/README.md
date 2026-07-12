@@ -75,9 +75,10 @@ run in production needs logs you can query, not prose you have to grep. It's als
 
 **The spine dataset**
 
-- [abuse.ch URLhaus — full dataset / API](https://urlhaus.abuse.ch/api/) (~10 min) — the real,
-  redistributable malicious-URL feed `sift` triages; note the full CSV dump size and the CC0 terms.
-  <!-- VALIDATE: confirm URLhaus dump URL, current size, and redistribution/CC0 license -->
+- [abuse.ch URLhaus — full dataset / API](https://urlhaus.abuse.ch/api/) (~10 min) — the real
+  malicious-URL feed `sift` triages; the full CSV dump regenerates every 5 minutes. Note it's abuse.ch
+  **Fair Use** terms (free, but the full dump now needs a registered Auth-Key), not a public-domain
+  license — respect that when you redistribute.
 
 ## Key concepts
 - **Stream, don't slurp** — a generator keeps memory flat on feeds of any size; `json.load()` doesn't.
