@@ -720,31 +720,41 @@ nav:
       - "02 · Running Local Models":
           - Concept: 12-ai-augmented-ops/modules/02-running-local-models/README.md
           - Lab: 12-ai-augmented-ops/modules/02-running-local-models/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/02-running-local-models/cheatsheet.md
       - "03 · Prompt Patterns for Security":
           - Concept: 12-ai-augmented-ops/modules/03-prompt-patterns/README.md
           - Lab: 12-ai-augmented-ops/modules/03-prompt-patterns/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/03-prompt-patterns/cheatsheet.md
       - "04 · Retrieval-Augmented Generation":
           - Concept: 12-ai-augmented-ops/modules/04-rag/README.md
           - Lab: 12-ai-augmented-ops/modules/04-rag/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/04-rag/cheatsheet.md
       - "05 · Building MCP Servers":
           - Concept: 12-ai-augmented-ops/modules/05-building-mcp-servers/README.md
           - Lab: 12-ai-augmented-ops/modules/05-building-mcp-servers/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/05-building-mcp-servers/cheatsheet.md
       - "06 · A SoC Copilot (MCP + RAG)":
           - Concept: 12-ai-augmented-ops/modules/06-soc-copilot/README.md
           - Lab: 12-ai-augmented-ops/modules/06-soc-copilot/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/06-soc-copilot/cheatsheet.md
       - "07 · AI-Assisted Detection & Triage":
           - Concept: 12-ai-augmented-ops/modules/07-ai-detection-triage/README.md
           - Lab: 12-ai-augmented-ops/modules/07-ai-detection-triage/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/07-ai-detection-triage/cheatsheet.md
       - "08 · SOAR + AI":
           - Concept: 12-ai-augmented-ops/modules/08-soar-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/08-soar-ai/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/08-soar-ai/cheatsheet.md
       - "09 · Securing the AI You Run":
           - Concept: 12-ai-augmented-ops/modules/09-securing-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/09-securing-ai/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/09-securing-ai/cheatsheet.md
       - "10 · Attacking AI Systems":
           - Concept: 12-ai-augmented-ops/modules/10-attacking-ai/README.md
           - Lab: 12-ai-augmented-ops/modules/10-attacking-ai/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/10-attacking-ai/cheatsheet.md
       - "11 · AI Evaluation & Observability":
           - Concept: 12-ai-augmented-ops/modules/11-ai-evaluation/README.md
           - Lab: 12-ai-augmented-ops/modules/11-ai-evaluation/lab.md
+          - Cheat sheet: 12-ai-augmented-ops/modules/11-ai-evaluation/cheatsheet.md
   - Glossary: glossary.md

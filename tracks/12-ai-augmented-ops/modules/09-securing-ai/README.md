@@ -1,6 +1,6 @@
 # Module 09 — Securing the AI You Run
 
-*Type 15 · Red-team-the-AI — attack your own SOC copilot (prompt injection, corpus poisoning, tool abuse), mitigate, then re-attack; the deliverable is the attack log, the fixes, and a documented residual-risk note. (Secondary: Audit→Build→Verify.) [Go to the hands-on lab →](lab.md)*
+*Type 15 · Red-team-the-AI — attack your own SOC copilot (prompt injection, corpus poisoning, tool abuse), mitigate, then re-attack; the deliverable is the attack log, the fixes, and a documented residual-risk note. (Secondary: Audit→Build→Verify.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

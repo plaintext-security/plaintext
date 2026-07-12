@@ -1,6 +1,6 @@
 # Module 03 — Prompt Patterns for Security
 
-*Type 14 · Adversarial Review — treat prompts as versioned artifacts and adversarially test them; the deliverable is a prompt suite in git with a CI check that catches a regression. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)*
+*Type 14 · Adversarial Review — treat prompts as versioned artifacts and adversarially test them; the deliverable is a prompt suite in git with a CI check that catches a regression. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

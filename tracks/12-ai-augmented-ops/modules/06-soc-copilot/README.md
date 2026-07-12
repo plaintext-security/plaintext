@@ -1,6 +1,6 @@
 # Module 06 — A SoC Copilot (MCP + RAG)
 
-*Type 7 · Build-&-Operate — integrate RAG + MCP + a local model into an auditable SOC copilot and score it end-to-end; the deliverable is the running copilot and its answer-quality scorecard. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)*
+*Type 7 · Build-&-Operate — integrate RAG + MCP + a local model into an auditable SOC copilot and score it end-to-end; the deliverable is the running copilot and its answer-quality scorecard. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

@@ -1,6 +1,6 @@
 # Module 07 — AI-Assisted Detection & Triage
 
-*Type 13 · Eval Harness — score an AI triage model against a ground-truth label set (confusion matrix, precision/recall) and gate it at a threshold; the deliverable is the labelled corpus + scorecard + a re-eval cadence. (Secondary: Build-&-Operate.) [Go to the hands-on lab →](lab.md)*
+*Type 13 · Eval Harness — score an AI triage model against a ground-truth label set (confusion matrix, precision/recall) and gate it at a threshold; the deliverable is the labelled corpus + scorecard + a re-eval cadence. (Secondary: Build-&-Operate.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 

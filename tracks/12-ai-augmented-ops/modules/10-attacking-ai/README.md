@@ -1,6 +1,6 @@
 # Module 10 — Attacking AI Systems
 
-*Type 15 · Red-team-the-AI — land prompt-injection / jailbreak / tool-abuse against an LLM·MCP·RAG system, because "just tell it not to" is the wrong intuition; the deliverable is the working exploit plus a regression eval that catches the hole if it silently reopens in CI. (Secondary: Eval Harness — the scored regression suite.) [Go to the hands-on lab →](lab.md)*
+*Type 15 · Red-team-the-AI — land prompt-injection / jailbreak / tool-abuse against an LLM·MCP·RAG system, because "just tell it not to" is the wrong intuition; the deliverable is the working exploit plus a regression eval that catches the hole if it silently reopens in CI. (Secondary: Eval Harness — the scored regression suite.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-06*
 
