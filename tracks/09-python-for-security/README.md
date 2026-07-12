@@ -1,81 +1,106 @@
 # Track 09 — Python for Security
 
-**Build your own tools.** Most security work is one good script away from automated. This
-track turns you from someone who *runs* tools into someone who *writes* them — and who can
-direct and review the ones AI writes.
+**You already write Python; the copilot writes the boilerplate.** This track is about the skill that's
+left: **engineering security tooling that survives adversarial input, runs concurrently at scale, is
+typed, observable, and tested — and directing and catching the AI where it reliably fails.** You build
+**one tool**, `sift`, and grow it across nine modules into a portfolio centerpiece.
+
+> **This is an intermediate-plus track.** It assumes you're comfortable with Python (functions, classes,
+> the stdlib) *and* work with an AI copilot. If you don't yet write Python, start at
+> [Foundations · Module 10 — Scripting & Automation](../00-foundations/modules/10-scripting/README.md)
+> and come back.
 
 ## What you'll be able to do
-- Parse, enrich, and reshape security data confidently.
-- Talk to APIs and security tools programmatically.
-- Build usable CLI tools and a security-focused MCP server.
-- Review and own AI-generated code instead of pasting it blindly.
+- Drive the copilot with **spec-driven development** — write the spec, let AI implement, review the
+  implementation *against the spec* — instead of pasting unread output.
+- Validate untrusted input at the boundary with `pydantic` — *parse, don't trust* — and carry that same
+  discipline to the AI edge (`instructor`) and the measurement layer (`pydantic-evals`).
+- Build async, concurrent enrichment that handles rate limits and backoff without introducing races.
+- Drive external tools safely (no `shell=True`), and serve one core as a CLI, an HTTP API, and an MCP server.
+- Red-team the MCP server you built, then prove the fix holds with an eval regression gate.
+- Review and own AI-generated code — catch the `shell=True`, the subtly-wrong type, the resource leak.
+
+## The spine — one evolving tool
+
+The whole track builds **`sift`**, an alert enrichment-and-triage tool: ingest a feed → **validate** →
+**enrich** (threat-intel APIs) → **score/triage** → **serve** (CLI · API · MCP). Every module adds a
+real capability *and* targets a bug-class the copilot reliably ships.
 
 ## Modules
 
-| # | Module | What you'll learn | OSS tools |
-|---|--------|-------------------|-----------|
-| 01 | [Setup & Security Idioms](modules/01-setup-idioms/README.md) | A clean, repeatable Python toolchain | `python3`, `venv` |
-| 02 | [Files, Regex & Log Parsing](modules/02-files-regex-parsing/README.md) | Extracting signal from raw logs | `re`, `pathlib` |
-| 03 | [Structured Data & Reporting](modules/03-structured-data-reporting/README.md) | JSON/CSV in and out; readable output | `json`, `csv`, `rich` |
-| 04 | [HTTP & APIs for Enrichment](modules/04-http-apis-enrichment/README.md) | Querying threat-intel and tool APIs | `requests`, `httpx` |
-| 05 | [Building CLI Tools](modules/05-building-cli-tools/README.md) | Real tools with arguments and help | `argparse`, `typer` |
-| 06 | [Network Programming](modules/06-network-programming/README.md) | Sockets and packet crafting | `socket`, `scapy` |
-| 07 | [Automating the Web](modules/07-automating-the-web/README.md) | Responsible scraping and session handling | `requests`, `beautifulsoup4` |
-| 08 | [Driving Security Tools](modules/08-driving-security-tools/README.md) | Wrapping VirusTotal, MISP, and friends | `requests`, `pymisp` |
-| 09 | [Building an MCP Server](modules/09-building-mcp-server/README.md) | Exposing a tool to an LLM | `fastmcp` |
-| 10 | [Packaging, Testing & Owning AI Code](modules/10-packaging-testing/README.md) | Reviewing, testing, and shipping | `pytest`, `ruff` |
-| 11 | [Eval Harness for Security Tools](modules/11-eval-harness/README.md) | Measuring a tool's quality with a labelled corpus and a CI regression gate | `pytest` |
+| # | Module | Type | What you add to `sift` | Modern stack |
+|---|--------|------|------------------------|--------------|
+| 01 | [Modern Toolchain & Spec-Driven Skeleton](modules/01-modern-toolchain/README.md) | Migration + ADR | Migrate a legacy script into a `uv` project with a CI gate; adopt a spec-driven workflow; write the toolchain ADR | `uv`, `ruff`, `pyright`, `openspec` |
+| 02 | [Parse, Don't Validate](modules/02-parse-dont-validate/README.md) | Tool-Build | Typed domain models that reject adversarial input at the boundary | `pydantic v2`, `pydantic-settings` |
+| 03 | [Data at Scale & Structured Logs](modules/03-data-at-scale/README.md) | Tool-Build | A streaming parser + columnar triage queries + JSON logs | `polars`/`duckdb`, `structlog` |
+| 04 | [Async & Structured Concurrency](modules/04-async-concurrency/README.md) | Build-&-Operate | An async enricher with bounded concurrency, backoff, rate-limit handling | `httpx` async, `asyncio` |
+| 05 | [Driving Tools Safely](modules/05-driving-tools-safely/README.md) | Tool-Build + Review | Safe `subprocess` wrappers (no `shell=True`) + robust output parsers | `subprocess`, `shlex` |
+| 06 | [Two Surfaces, One Core](modules/06-cli-and-api/README.md) | Build-&-Operate | A `typer` CLI **and** a `FastAPI` service sharing the same models | `typer`, `FastAPI` |
+| 07 | [LLM-Native Python & MCP](modules/07-llm-native-mcp/README.md) | Tool-Build | An MCP server exposing `sift`; typed LLM output validated like an API response | MCP, `instructor` |
+| 08 | [Red-Team Your Own MCP Server](modules/08-redteam-your-mcp/README.md) | Red-team-the-AI | A working prompt-injection exploit against your `enrich` tool + the eval that catches it | `promptfoo`/`garak` |
+| 09 | [Eval Harness, Property Tests & Supply Chain](modules/09-eval-property-supplychain/README.md) | Eval Harness + Review | A held-out corpus + scorecard + CI regression gate; property tests; a supply-chain gate | `pydantic-evals`, `hypothesis`, `pip-audit` |
 
 ## Phases & projects
 
-The eleven modules run in three phases; each ends in a **project** that integrates its modules (a phase
-is the substantial, standalone unit — a single module is a few hours). Each project carries the
-"AI authors → you review → you own it" habit into committed, tested code.
+The nine modules run in three phases; each phase advances `sift` into a genuinely more capable tool.
 
-- **Phase 1 · Parse & report** (01–03) — **Project:** a log-analysis script with a clean toolchain
-  that parses a real log with regex, reshapes it through structured data, and emits a readable
-  JSON/CSV plus a `rich` console report — with tests on the parsing.
-- **Phase 2 · Talk to the network & the world** (04–07) — **Project:** an IOC enrichment CLI (with
-  `typer`/`argparse`) that queries threat-intel APIs, plus a small network or scraping tool — error
-  handling, rate limits, and responsible use built in.
-- **Phase 3 · Tooling, MCP & shipping** (08–11) — **Project:** the track capstone — wrap a security
-  tool (VirusTotal/MISP) and expose it to an LLM as an MCP server, then package it with `pytest`/`ruff`
-  and a README, and build an eval harness that measures the tool's quality and gates regressions in CI
-  — delivering the tool, its tests, and a write-up of what AI wrote vs. what you changed.
+- **Phase 1 · Foundation & correctness** (01–03) — the tool becomes a real, typed, linted project that
+  validates untrusted input and scales past toy data.
+- **Phase 2 · Concurrency, integration, scale** (04–06) — it enriches concurrently and safely, drives
+  external tools without injection, and serves the same core as a CLI and an HTTP API.
+- **Phase 3 · Trust, AI-native, measure** (07–09) — it becomes callable by an LLM (MCP), gets attacked
+  and hardened, and is finally *measured*: eval-gated, property-tested, supply-chain-audited.
+
+## The through-line — *parse, don't trust*
+
+One discipline, three edges: `pydantic` validates untrusted **input** (M2), `instructor` validates
+untrusted **LLM output** (M7), `pydantic-evals` **measures** the whole system (M9). No other security
+curriculum teaches this Pydantic-native spine end to end — it's the track's identity. (Teach the
+*pattern* as provider-agnostic; the Pydantic ecosystem is the concrete OSS instance, not the only way.)
 
 ## Prerequisites
-Complete Track 00 — Foundations (module 10 — Scripting & Automation).
+Foundations — Module 10 (Scripting & Automation) is the floor. This track starts *above* it.
 
 ## Capstone
-Build a small but genuinely useful security tool — for example, an IOC enrichment CLI or an
-MCP server that exposes a tool to an LLM — with tests and a README. **Deliverable:** the
-tool, its tests, and a short write-up of what you had AI write and what you changed.
+The evolved `sift`: **typed, validated, async, served (CLI + API + MCP), property-tested, eval-gated,
+supply-chain-audited, and red-teamed against itself.** The kind of repo that ends an interview, not one
+that starts a tutorial. **Deliverable:** the tool, its tests and eval harness, and a write-up of what AI
+wrote vs. what you changed and why. (Honor system: the committed tool is the proof.)
 
 The starter scaffold and acceptance checks live in
 [`plaintext-labs/python-for-security/capstone/`](https://github.com/plaintext-security/plaintext-labs/tree/main/python-for-security/capstone).
 
 ### Capstone rubric
 
-It must be a **genuinely useful tool you own** — tested, documented, reviewed line by line, and
-**fed real data, not synthetic stand-ins** (a free threat feed like abuse.ch URLhaus/Feodo, a
-public log/PCAP corpus, or a real CVE record). **Proficient is the bar to ship.**
+**Proficient is the bar to ship.** It must be a genuinely useful tool you own — typed, tested, reviewed
+line by line, and fed **real data** (a free threat feed like abuse.ch URLhaus/Feodo, a public log corpus,
+or real CVE records).
 
 | Dimension | Developing | Proficient | Exemplary |
 |---|---|---|---|
-| **Usefulness** | A toy that re-implements a one-liner | Solves a real security task (enrichment, parsing, an MCP tool) you'd actually reach for | Fills a real gap; handles a workflow start to finish |
-| **Code quality** | Monolithic script; no error handling | Structured, handles malformed input, passes `ruff`; has a `--help` | Idiomatic, typed, packaged installable; clean separation of concerns |
-| **Tests** | None, or they only test the happy path | `pytest` covering core logic *and* edge/malformed input | Meaningful coverage incl. failure modes; tests run in CI |
-| **Robustness** | Crashes on bad input or API errors | Fails gracefully; rate-limits/retries where it talks to APIs | Handles secrets safely (env, not hardcoded); no injection of unvalidated input |
-| **Real data** | Toy/synthetic inputs the tool invents | **Required:** consumes a real feed or dataset (e.g. abuse.ch URLhaus/Feodo, a public log/PCAP corpus, a real CVE/NVD record), with provenance noted | Wires the tool to a live feed with a cached offline fallback so it runs with no network |
-| **Ownership of AI code** | Pasted AI output unread | Write-up names what AI generated and what you changed and why | Demonstrates a caught bug/risk in the generated code that you fixed and explained |
+| **Usefulness** | A toy that re-implements a one-liner | Solves a real triage/enrichment task you'd reach for | Fills a real gap; handles a workflow end to end |
+| **Typed boundaries** | Untyped; trusts input | `pydantic` models validate input *and* LLM output; `pyright` clean | Exhaustive typed boundaries; invalid states unrepresentable |
+| **Concurrency** | Sync loop, or a race | Async enrichment with bounded concurrency + backoff | Handles rate limits, retries, and partial failure gracefully |
+| **Tests & eval** | None, or happy-path only | `pytest` + a `pydantic-evals` scorecard with a CI regression gate | Property tests (`hypothesis`) fuzz the validator; gate blocks regressions |
+| **Safety** | `shell=True`; secrets hardcoded | No shell injection; secrets via `pydantic-settings`/env; supply chain `pip-audit`ed | Red-teamed against itself; residual-risk note |
+| **Ownership of AI code** | Pasted AI output unread | Write-up names what AI generated vs. what you changed and why | Demonstrates a caught bug/risk in generated code you fixed and explained |
 
 ## AI & automation
-This is the track where "AI authors → you review → you own it" becomes a daily habit. A
-model will write the whole script; your job is to read it — check the regex, handle the
-malformed input, confirm it does nothing unintended — then test it and own it. The
-competency isn't typing the code; it's directing and reviewing it.
+This is the track where **"AI authors → you review → you own it"** becomes a daily habit — and gets
+sharp teeth. The workflow is **spec-driven development**: you write the spec for each `sift` increment,
+the copilot implements it, and you review the implementation *against the spec*. Each module targets a
+*copilot failure-class*: unvalidated input, concurrency races, subtly-wrong types, `shell=True`
+injection, resource leaks, dependency risk, prompt injection. The competency isn't typing the code the
+copilot already writes; it's specifying it precisely, directing it, and catching it where it reliably
+fails.
+
+Spec-driven development is taught as a **provider-agnostic pattern** (spec → implement → verify against
+the spec → eval). The concrete instance is [openspec](https://github.com/Fission-AI/OpenSpec); GitHub's
+[spec-kit](https://github.com/github/spec-kit) is the mainstream Python-native alternative — use either,
+the discipline is the point.
 
 ## Standards & further reading
-- Python standard library and PEP 8
-- OWASP Secure Coding practices
-- The Model Context Protocol specification (modelcontextprotocol.io)
+- [pydantic v2 docs](https://docs.pydantic.dev/latest/) — the validation backbone
+- [uv docs](https://docs.astral.sh/uv/) and [ruff docs](https://docs.astral.sh/ruff/) — the modern toolchain
+- [The Model Context Protocol specification](https://modelcontextprotocol.io) — for the MCP module
+- OWASP Secure Coding Practices; Python `subprocess` security notes
