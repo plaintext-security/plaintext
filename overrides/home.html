@@ -63,6 +63,10 @@
   .px-desc { color:var(--muted); max-width:520px; line-height:1.7; margin-bottom:2.5rem; }
 
   .px-tracks { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); }
+  /* 13 cards in a 3-col grid leave two trailing cells; paint them page-color so
+     the border-color grid background doesn't show through as a solid block.
+     (2 / -1 assumes one card in the last row — revisit if a 14th track lands.) */
+  .px-tracks::after { content:''; grid-column:2 / -1; background:var(--md-default-bg-color); }
   .px-track { background:var(--md-default-bg-color); padding:1.75rem; transition:background .2s; display:block; color:inherit !important; }
   .px-track:hover { background:var(--surface); }
   .px-track .n { font-family:var(--md-code-font); font-size:.65rem; color:var(--muted); letter-spacing:.1em; margin-bottom:.9rem; }
