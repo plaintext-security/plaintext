@@ -57,8 +57,14 @@ via GitHub Discussions. See [COMMUNITY.md](COMMUNITY.md) for the server layout a
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions welcome — fixes,
-new modules, translations, lab improvements.
+All contributions welcome — fixes, new modules, translations, lab improvements — and you don't
+need permission to start:
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — how to contribute, the contribution ladder, and the
+  module/lab templates
+- **[ROADMAP.md](ROADMAP.md)** — what's wanted right now; pick something and claim it
+- **[GOVERNANCE.md](GOVERNANCE.md)** — how decisions get made and how responsibility is earned
+  (pseudonymous contributors fully welcome)
 
 ## License
 

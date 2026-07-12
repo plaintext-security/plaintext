@@ -152,9 +152,10 @@ it's a stub. Bridge prose without a validated lab is half a module.
 
 **A track is done only when every one of its modules is done by the above — labs included.** We
 interleave: bridge prose and validated labs ship together per track; a track with great prose and
-untested labs does not count as complete. (As of the first rollout, prose for foundations/offensive/
-defensive shipped ahead of their labs — those three tracks owe a lab-validation backfill before they
-count as done.)
+untested labs does not count as complete. (The first rollout shipped foundations/offensive/defensive
+prose ahead of their labs; that backfill has since landed — every module in those tracks now has a
+`plaintext-labs` environment, nearly all carrying the `.ci-demo` CI-validated marker. Remaining
+prose↔lab mismatches are tracked in `TODO.md`.)
 
 **`lab.md` — the project**
 - **Setup** (Docker-first) and **Scenario** (with the authorization note where it attacks a target).

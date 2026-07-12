@@ -17,6 +17,27 @@ Thanks for helping make security education free and open.
 New modules can also be proposed first via the **New Module** issue template
 (`.github/ISSUE_TEMPLATE/new-module.md`) — it captures everything a module needs.
 
+## Where to start — the contribution ladder
+
+You don't need permission to start, and you don't need to start big. Contributions ladder up
+naturally — each rung builds the context for the next, and each is genuinely useful on its own
+(how the rungs map to project roles is in [`GOVERNANCE.md`](GOVERNANCE.md); what's wanted right
+now is in [`ROADMAP.md`](ROADMAP.md)):
+
+1. **Fix a papercut** — a typo, a broken link, a stale resource. One-file PRs are welcome and
+   get merged fast. This is the fastest way to learn the PR flow here.
+2. **Refresh a Learn path** — verify a module's links still resolve to the specific resources
+   they claim and sharpen the why-lines. Teaches you the content rules on a real module.
+3. **Harden a lab** — run a lab from [`plaintext-labs`](https://github.com/plaintext-security/plaintext-labs)
+   on your machine and file or fix whatever doesn't work first try. Teaches you the lab anatomy.
+4. **Author a module** — propose it via the issue template, agree scope in the issue, then write
+   it to the templates below, *with* its validated lab. Landing one makes you that module's
+   owner — its first-call reviewer.
+5. **Mentor and review** — help learners in the [Discord](COMMUNITY.md) help forums and review
+   others' PRs. Sustained help is how maintainers get found.
+
+Pseudonymous contribution is fully welcome — you're judged by the work, not the name on it.
+
 ## Preview locally
 
 The site is built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
