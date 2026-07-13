@@ -75,10 +75,13 @@ run in production needs logs you can query, not prose you have to grep. It's als
 
 **The spine dataset**
 
-- [abuse.ch URLhaus — full dataset / API](https://urlhaus.abuse.ch/api/) (~10 min) — the real
-  malicious-URL feed `sift` triages; the full CSV dump regenerates every 5 minutes. Note it's abuse.ch
-  **Fair Use** terms (free, but the full dump now needs a registered Auth-Key), not a public-domain
-  license — respect that when you redistribute.
+- [Loghub (logpai) — real system-log corpora](https://github.com/logpai/loghub) (~10 min) — the
+  **redistributable** spine: 24 real log datasets (Thunderbird alone is ~30 GB), big enough that
+  streaming and `duckdb`/`polars` genuinely earn their place. Licensed **CC BY 4.0** via its
+  [Zenodo record](https://zenodo.org/records/8196385) — free to bundle and reuse with attribution.
+- [abuse.ch URLhaus](https://urlhaus.abuse.ch/api/) (optional — a security-alert flavor) — a live
+  malicious-URL feed you can pull *at lab time*; its Fair-Use terms **prohibit redistribution** and
+  require an Auth-Key, so point `sift` at it live, never bundle it.
 
 ## Key concepts
 - **Stream, don't slurp** — a generator keeps memory flat on feeds of any size; `json.load()` doesn't.
@@ -90,7 +93,7 @@ run in production needs logs you can query, not prose you have to grep. It's als
 ## AI acceleration
 Have the copilot write the feed processor, then check it against the two things it reliably gets wrong at
 scale: does it *stream* (a generator) or *slurp* (`json.load()` / `read().splitlines()`)? And does it log
-*structured events* or `print()`? Point it at the real URLhaus dump, not a 10-row sample, and the
+*structured events* or `print()`? Point it at a real corpus (a Loghub dataset, or a live URLhaus pull), not a 10-row sample, and the
 in-memory approach will announce itself by eating your RAM. The fix — streaming + a columnar query + a
 `structlog` config — is the reviewed increment you commit.
 
