@@ -118,14 +118,12 @@ enforcement as **assessed-not-demonstrated**, with an optional Windows-VM step t
   — what CLM actually blocks (arbitrary .NET types, `Add-Type`, COM) and what it still allows; read enough
   to know why it breaks most cradles but is not a silver bullet. It's a *language* restriction, enforced on Windows.
 - [Red Canary — "Detecting malicious PowerShell" (threat-detection guidance)](https://redcanary.com/threat-detection-report/techniques/powershell/) (~15 min)
-  <!-- VALIDATE: confirm URL resolves to the current Threat Detection Report PowerShell technique page; else cite Red Canary Threat Detection Report by title/year -->
   — a defender-vendor writeup of how PowerShell abuse looks in real telemetry and which signals hold up;
   a good cross-source check on the ATT&CK detection guidance from a team that hunts it daily.
 
 **A real malicious-PowerShell writeup (see the technique in the wild)**
 
-- [The DFIR Report — an intrusion analysis featuring an encoded/obfuscated PowerShell stager](https://thedfirreport.com/) (~20 min)
-  <!-- VALIDATE: pick one specific DFIR Report case study whose stager is an encoded/IEX-cradle PowerShell loader (e.g. an Emotet or Cobalt Strike beacon delivery) and link that exact post; confirm the URL before ship -->
+- [The DFIR Report — "Emotet Strikes Again: LNK File Leads to Domain Wide Ransomware" (Nov 2022)](https://thedfirreport.com/2022/11/28/emotet-strikes-again-lnk-file-leads-to-domain-wide-ransomware/) (~20 min)
   — read one full case where the initial or staging payload is an encoded PowerShell command, and trace it
   to the 4104/4688 telemetry the responders used. This is the real-world shape your benign detonation mimics.
 

@@ -87,7 +87,7 @@ authoring (marked **⟨VALIDATE⟩** where the exact deep link is still to be co
   it, refactor behind green). Adopt a spec-driven workflow. **Adds:** `Vigil` v0 — the module skeleton
   wrapping `Get-VigilEvent`. **Failure-class:** scripts-not-modules, no lint/test gate. **Deliverable:**
   the migrated module + `ADR-001-toolchain.md`. **Anchor:** PowerShell scripting guidelines + a real
-  PSGallery unsigned-code lesson ⟨VALIDATE the specific incident⟩.
+  PSGallery unsigned-code lesson (Aqua Nautilus, "PowerHell", Aug 2023).
 - **02 · Typed Objects & the Pipeline Done Right** — **Type 9 Tool-Build.** Advanced functions with
   `[CmdletBinding()]`, parameter validation attributes, and `[OutputType]`; emit `[PSCustomObject]`/a
   `class`, never formatted strings. **Adds:** `ConvertTo-VigilEvent` — normalizes raw records into typed
@@ -110,7 +110,7 @@ authoring (marked **⟨VALIDATE⟩** where the exact deep link is still to be co
   binaries safely with argument arrays (never `Invoke-Expression` or string-built command lines); parse
   their output robustly. **Adds:** `Invoke-VigilTool` — a safe external-process wrapper. **Failure-class:**
   `Invoke-Expression` / string-built commands (injection). **Anchor:** ATT&CK **T1059.001** + a documented
-  IEX download-cradle abuse ⟨VALIDATE the specific writeup⟩. *Carries the authorization note.*
+  IEX download-cradle abuse (Atomic Red Team T1059.001). *Carries the authorization note.*
 - **06 · Secrets, Remoting & Least Privilege** — **Type 7 Build-&-Operate.** `SecretManagement`-backed
   config (no plaintext credentials), PowerShell Remoting, and a **JEA / constrained** endpoint that
   exposes only `Vigil`'s read-only hunt verbs. **Adds:** `Vigil` config + `Invoke-VigilRemote` +
@@ -129,8 +129,8 @@ authoring (marked **⟨VALIDATE⟩** where the exact deep link is still to be co
   capture the telemetry, then build the detection and the hardening (script-block logging, Constrained
   Language Mode, AMSI) that catches it. **Adds:** `New-VigilDetection` for the technique + hardening
   notes. **Failure-class:** — (offense→detect). **Anchor:** ATT&CK **T1059.001** / **T1027** + a real
-  malicious-PowerShell sample writeup ⟨VALIDATE⟩. *Carries the authorization note; intentionally-vulnerable
-  target only.*
+  malicious-PowerShell sample writeup (The DFIR Report, "Emotet Strikes Again", Nov 2022). *Carries the
+  authorization note; intentionally-vulnerable target only.*
 - **09 · Test, Measure & Supply-Chain Gate** — **Type 13 Eval Harness (+ 14 Review).** `Pester` coverage,
   a **detection eval scorecard** on a held-out labelled corpus with a CI regression gate, and a
   `PSResourceGet`/signing supply-chain gate. **Adds:** `Vigil`'s test + eval harness + the gate.

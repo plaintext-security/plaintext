@@ -94,29 +94,29 @@ engineering.)
 
 - [Model Context Protocol — "Architecture overview"](https://modelcontextprotocol.io/docs/learn/architecture) (~20 min)
   — the host/client/server model, and why tools are *server*-advertised, not baked into the model. Read this
-  before you touch code; it frames the whole trust boundary. <!-- VALIDATE: confirm this deep path resolves; else link modelcontextprotocol.io/docs and name the Architecture section -->
+  before you touch code; it frames the whole trust boundary.
 - [MCP specification — "Server Features → Tools"](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) (~25 min)
   — the exact shape of `tools/list` and `tools/call`, the `inputSchema`, and — read this part carefully — the
   spec's own **security note that tool inputs are untrusted and servers must validate them**. This is the
-  primary source for the module's whole thesis. <!-- VALIDATE: confirm the 2025-06-18 spec revision path + the tools page; pin whatever the current revision is -->
+  primary source for the module's whole thesis.
 - [MCP — "Build an MCP server" quickstart](https://modelcontextprotocol.io/quickstart/server) (~25 min)
   — skim the stdio JSON-RPC flow (`initialize`, `tools/list`, `tools/call`) in any reference SDK so the
-  PowerShell handler you write feels familiar; you're re-implementing this minimal loop. <!-- VALIDATE: confirm quickstart path -->
+  PowerShell handler you write feels familiar; you're re-implementing this minimal loop.
 
 **Wiring an LLM to it (so you know what you're defending)**
 
-- [Anthropic — "MCP connector"](https://docs.claude.com/en/docs/agents-and-tools/mcp-connector) (~15 min)
+- [Anthropic — "MCP connector"](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector) (~15 min)
   — how the Claude API reaches an MCP server from a `messages.create` call (`mcp_servers` + an `mcp_toolset`,
   beta `mcp-client-2025-11-20`). Read it to understand the real caller — a model, through a client, choosing
   your tool and filling its arguments — so the "arguments are untrusted" framing is concrete. Use a current
-  model id such as `claude-opus-4-8` if you try it. <!-- VALIDATE: confirm MCP connector doc path + current beta header -->
+  model id such as `claude-opus-4-8` if you try it.
 
 **The discipline (why validation, not schemas, is the control)**
 
 - [OWASP — "LLM01:2025 Prompt Injection"](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) (~15 min)
   — the canonical statement of *why* model output is untrusted: an attacker upstream can steer what the model
   asks your tool to do. Read the "indirect prompt injection" part — that's the exact path from a poisoned
-  event `Message` to a hostile tool argument. <!-- VALIDATE: confirm OWASP GenAI LLM01 2025 URL -->
+  event `Message` to a hostile tool argument.
 - [PowerShell docs — "about_Functions_Advanced_Parameters" (validation attributes)](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters) (~15 min)
   — re-read the `ValidateSet`/`ValidatePattern`/`ValidateScript` section with new eyes: these are your
   MCP-argument guards. The same attributes that validated event fields in Module 02 validate model output here.

@@ -99,8 +99,7 @@ copilot won't default to this; you will.
   — read the `-FilterHashtable`, `-FilterXPath`, and `-Path` sections and the accepted hash-table keys
   (`LogName`, `Id`, `ProviderName`, `StartTime`, `Level`, `Data`). This is the primary source for the
   whole module; skim the rest.
-- ["Get-WinEvent, XPath and the Art of Query" — the Microsoft Scripting Blog XPath primer](https://devblogs.microsoft.com/scripting/use-filterxml-to-filter-powershell-get-winevent-results/) (~20 min)
-  <!-- VALIDATE: confirm this exact devblogs URL resolves; else cite Scripting Guy "Get-WinEvent FilterXPath/FilterHashtable" post by title -->
+- [Microsoft Learn — "Creating Get-WinEvent queries with FilterHashtable"](https://learn.microsoft.com/en-us/powershell/scripting/samples/creating-get-winevent-queries-with-filterhashtable) (~20 min)
   — how the same query expresses as a hash table vs. XPath vs. `-FilterXml`, and why the service-side
   query beats the pipeline filter. Read for the mental model, not to memorize XPath.
 

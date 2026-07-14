@@ -119,7 +119,6 @@ thing; you write the check that catches it and let it run every time.
   — the linter rule and its one-paragraph rationale: `Invoke-Expression` can run arbitrary code, so avoid
   it. Short, and it's the rule your gate will lean on alongside the AST check.
 - [PowerShell AST — `Parser`/`Ast.FindAll` (SDK reference)](https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.parser) (~20 min)
-  <!-- VALIDATE: confirm the SDK reference URL resolves; else cite by type name System.Management.Automation.Language.Parser -->
   — read `ParseFile`/`ParseInput` and the `Ast.FindAll` predicate pattern; this is how you scan for
   `Invoke-Expression` as a real command node instead of grepping text.
 

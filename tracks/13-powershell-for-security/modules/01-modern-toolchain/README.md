@@ -100,8 +100,7 @@ spec beat into every module that follows.
 
 **The anchor (why a reviewed, signed module matters)**
 
-- [Aqua Nautilus — "PowerHell: Active Flaws in PowerShell Gallery" (Aug 2023)](https://www.aquasec.com/blog/powerhell-active-flaws-in-powershell-gallery-let-attackers-perform-supply-chain-attacks/) (~10 min)
-  <!-- VALIDATE: confirm URL resolves; else cite by title + JFrog/Aqua author -->
+- [Aqua Nautilus — "PowerHell: Active Flaws in PowerShell Gallery Expose Users to Attacks" (Aug 2023)](https://www.aquasec.com/blog/powerhell-active-flaws-in-powershell-gallery-expose-users-to-attacks/) (~10 min)
   — the primary write-up on the Gallery's lax naming policy and lack of mandatory signing; read what an
   attacker can actually publish, and why *you* reviewing and gating the module is the control.
 

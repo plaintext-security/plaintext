@@ -123,8 +123,7 @@ full chain trust as assessed-not-demonstrated. Same loop, one host-specific tool
 - [Google — "Classification: Precision and Recall" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/precision-and-recall) (~20 min)
   — the clearest short explanation of precision vs. recall and the tradeoff between them. A detection *is* a
   binary classifier; this is the vocabulary your scorecard speaks.
-- [MITRE Engenuity — " Score, don't guess" on detection efficacy](https://mad.mitre-engenuity.org/) (~15 min)
-  <!-- VALIDATE: confirm a current, specific MITRE resource on detection scoring; else cite Palantir ADS framework -->
+- [Palantir — "Alerting and Detection Strategy (ADS) Framework"](https://github.com/palantir/alerting-detection-strategy-framework) (~15 min)
   — how the field thinks about measuring a detection rather than asserting it works; grounds the "held-out
   corpus + metric" discipline in real detection engineering, not just ML theory.
 

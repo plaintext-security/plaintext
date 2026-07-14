@@ -108,7 +108,6 @@ function you can't actually test.
 **Retry, backoff, and rate limits (the operate half)**
 
 - [MDN — "429 Too Many Requests" and the `Retry-After` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429) (~10 min)
-  <!-- VALIDATE: confirm the /Reference/ path; MDN reorganized status-code URLs -->
   — what a rate-limited API actually returns and why exponential backoff (not instant retry) is the
   correct response. Short, but it's the *why* behind the backoff loop.
 - ["AWS Architecture Blog — Exponential Backoff And Jitter"](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) (~15 min)
@@ -121,7 +120,6 @@ function you can't actually test.
   — the free feed this lab uses: botnet C2 servers for Dridex, Emotet, TrickBot, QakBot, and BazarLoader.
   Read what the blocklist contains and how the CSV is structured (`first_seen_utc,dst_ip,dst_port,c2_status,last_online,malware`).
 - [Cloudbrothers — "Automated response to C2 traffic on your devices"](https://cloudbrothers.info/en/automated-response-c2-traffic-devices/) (~15 min)
-  <!-- VALIDATE: confirm URL resolves; else cite by title + author -->
   — a real-world walkthrough of consuming the Feodo Tracker blocklist to act on C2 traffic; grounds *why*
   you enrich indicators against this feed at all, beyond the mechanics.
 

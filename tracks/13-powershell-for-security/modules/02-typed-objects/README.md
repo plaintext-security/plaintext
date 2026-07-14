@@ -113,7 +113,6 @@ Module 04's enrichment, and Module 09's eval all bind to — so this module make
 **The judgment (objects vs strings, in practice)**
 
 - [PowerShell Explained (Kevin Marquette) — "Everything you wanted to know about PSCustomObject"](https://powershellexplained.com/2016-10-28-powershell-everything-you-wanted-to-know-about-pscustomobject/) (~20 min)
-  <!-- VALIDATE: confirm URL/slug resolves; else cite by title + author -->
   — the definitive practitioner walkthrough of building objects the right way (ordered hashtables, adding
   members, why `[pscustomobject]` beats `New-Object PSObject`). This is the idiom the copilot skips.
 
