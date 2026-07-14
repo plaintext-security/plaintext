@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Attacking AI Systems
 
 *Companion to [Module 10 — Attacking AI Systems](README.md) · CC BY 4.0 — print it, pin it, share it.*

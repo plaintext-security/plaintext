@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — A SoC Copilot (MCP + RAG)
 
 *Companion to [Module 06 — A SoC Copilot (MCP + RAG)](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Device Trust & Posture (WireGuard / Tailscale / headscale)
 
 *Companion to [Module 03 — Device Trust & Posture](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — VPC reachability, Security Groups & NACLs
 
 *Companion to [Module 04 — Cloud Network Security](README.md) · CC BY 4.0 — print it, pin it, share it.*

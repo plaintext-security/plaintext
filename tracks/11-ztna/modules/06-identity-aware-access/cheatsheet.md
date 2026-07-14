@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Identity-Aware Access (Pomerium)
 
 *Companion to [Module 06 — Identity-Aware Access](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Log & Cloud Forensics
 
 *Companion to [Module 10 — Log & Cloud Forensics](README.md) · CC BY 4.0 — print it, pin it, share it.*

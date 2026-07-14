@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — IaC Security Scanning (Checkov / tfsec)
 
 *Companion to [Module 03 — IaC Security Scanning](README.md) · CC BY 4.0 — print it, pin it, share it.*

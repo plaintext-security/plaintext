@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Container Escape & Runtime
 
 *Companion to [Module 11 — Container Escape & Runtime](README.md) · CC BY 4.0 — print it, pin it, share it.*

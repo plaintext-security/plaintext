@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Windows Hardening to CIS
 
 *Companion to [Module 02 — Windows Hardening to CIS](README.md) · CC BY 4.0 — print it, pin it, share it.*

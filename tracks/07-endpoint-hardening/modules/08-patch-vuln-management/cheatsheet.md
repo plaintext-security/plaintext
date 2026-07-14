@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Patch & Vulnerability Management
 
 *Companion to [Module 08 — Patch & Vulnerability Management](README.md) · CC BY 4.0 — print it, pin it, share it.*

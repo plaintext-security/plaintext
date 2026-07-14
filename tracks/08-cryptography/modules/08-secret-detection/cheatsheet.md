@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Secret detection with gitleaks, trufflehog & pre-commit
 
 *Companion to [Module 08 — Secret Detection & Leakage](README.md) · CC BY 4.0 — print it, pin it, share it.*

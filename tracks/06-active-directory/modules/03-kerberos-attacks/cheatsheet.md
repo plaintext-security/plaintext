@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Kerberos Attacks
 
 *Companion to [Module 03 — Kerberos Attacks](README.md) · CC BY 4.0 — print it, pin it, share it.*

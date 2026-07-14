@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Identity as the Control Plane (OIDC / Keycloak / JWT)
 
 *Companion to [Module 02 — Identity as the Control Plane](README.md) · CC BY 4.0 — print it, pin it, share it.*

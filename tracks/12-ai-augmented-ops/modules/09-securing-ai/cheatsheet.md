@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Securing the AI You Run
 
 *Companion to [Module 09 — Securing the AI You Run](README.md) · CC BY 4.0 — print it, pin it, share it.*

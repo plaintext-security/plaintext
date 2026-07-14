@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Red-Team Your Own MCP Server
 
 *Companion to [Module 08 — Red-Team Your Own MCP Server](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Container & Image Security
 
 *Companion to [Module 10 — Container & Image Security](README.md) · CC BY 4.0 — print it, pin it, share it.*

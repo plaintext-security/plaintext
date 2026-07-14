@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Driving Tools Safely with subprocess
 
 *Companion to [Module 05 — Driving Tools Safely](README.md) · CC BY 4.0 — print it, pin it, share it.*

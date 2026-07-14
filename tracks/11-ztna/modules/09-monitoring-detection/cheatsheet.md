@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Monitoring & Detection in Zero Trust (Sigma / metrics)
 
 *Companion to [Module 09 — Monitoring & Detection in Zero Trust](README.md) · CC BY 4.0 — print it, pin it, share it.*

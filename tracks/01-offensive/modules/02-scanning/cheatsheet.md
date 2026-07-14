@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Scanning & Enumeration with nmap
 
 *Companion to [Module 02 — Scanning & Enumeration](README.md) · CC BY 4.0 — print it, pin it, share it.*

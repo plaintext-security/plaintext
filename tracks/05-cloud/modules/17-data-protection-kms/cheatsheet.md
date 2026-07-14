@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Data Protection & KMS
 
 *Companion to [Module 17 — Data Protection & KMS](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Networking & Packet Capture
 
 *Companion to [Module 06 — Networking Fundamentals](README.md) · CC BY 4.0 — print it, pin it, share it.*

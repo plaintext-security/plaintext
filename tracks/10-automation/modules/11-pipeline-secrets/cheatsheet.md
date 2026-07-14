@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Pipeline Secrets & OIDC Federation
 
 *Companion to [Module 11 — Secrets Handling in Pipelines (OIDC)](README.md) · CC BY 4.0 — print it, pin it, share it.*

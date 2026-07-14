@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Data & Encoding
 
 *Companion to [Module 08 — Data & Encoding](README.md) · CC BY 4.0 — print it, pin it, share it.*

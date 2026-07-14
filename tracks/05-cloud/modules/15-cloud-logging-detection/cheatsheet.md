@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Cloud Logging & Detection
 
 *Companion to [Module 15 — Cloud Logging & Detection](README.md) · CC BY 4.0 — print it, pin it, share it.*

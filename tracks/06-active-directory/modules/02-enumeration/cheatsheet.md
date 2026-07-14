@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — AD Enumeration
 
 *Companion to [Module 02 — Enumeration](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+
+<!-- Cheat-sheet layout: full-bleed, multi-column reference card. A page opts in
+     with front matter:
+         template: cheatsheet.html
+         hide: [navigation, toc]
+     (hide removes the sidebars natively; the .px-cheatsheet wrapper is the CSS
+     hook that widens the grid and flows h2 sections into columns — see the
+     "Cheat-sheet layout" block in tracks/stylesheets/extra.css.) -->
+
+{% block content %}
+<div class="px-cheatsheet">
+  {{ super() }}
+</div>
+{% endblock %}

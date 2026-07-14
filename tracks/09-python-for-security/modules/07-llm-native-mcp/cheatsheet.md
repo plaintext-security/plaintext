@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — LLM-Native Python & MCP
 
 *Companion to [Module 07 — LLM-Native Python & MCP](README.md) · CC BY 4.0 — print it, pin it, share it.*

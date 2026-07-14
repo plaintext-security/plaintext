@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Running Local Models
 
 *Companion to [Module 02 — Running Local Models](README.md) · CC BY 4.0 — print it, pin it, share it.*

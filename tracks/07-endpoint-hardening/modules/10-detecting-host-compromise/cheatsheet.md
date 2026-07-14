@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Detecting Host Compromise
 
 *Companion to [Module 10 — Detecting Host Compromise](README.md) · CC BY 4.0 — print it, pin it, share it.*

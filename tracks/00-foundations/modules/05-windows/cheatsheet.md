@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Windows for Security (PowerShell)
 
 *Companion to [Module 05 — Windows for Security](README.md) · CC BY 4.0 — print it, pin it, share it.*

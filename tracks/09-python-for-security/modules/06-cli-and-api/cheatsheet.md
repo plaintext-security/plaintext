@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Two Surfaces, One Core (typer + FastAPI)
 
 *Companion to [Module 06 — Two Surfaces, One Core](README.md) · CC BY 4.0 — print it, pin it, share it.*

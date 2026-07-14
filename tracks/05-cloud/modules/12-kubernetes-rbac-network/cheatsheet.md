@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Kubernetes RBAC & Network Policy
 
 *Companion to [Module 12 — Kubernetes: RBAC & Network Policy](README.md) · CC BY 4.0 — print it, pin it, share it.*

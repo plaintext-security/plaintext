@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Retrieval-Augmented Generation
 
 *Companion to [Module 04 — Retrieval-Augmented Generation](README.md) · CC BY 4.0 — print it, pin it, share it.*

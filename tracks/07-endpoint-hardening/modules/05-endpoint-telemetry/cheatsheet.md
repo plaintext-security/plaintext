@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Endpoint Telemetry with osquery
 
 *Companion to [Module 05 — Endpoint Telemetry & EDR](README.md) · CC BY 4.0 — print it, pin it, share it.*

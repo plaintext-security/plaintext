@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Async & Structured Concurrency
 
 *Companion to [Module 04 — Async & Structured Concurrency](README.md) · CC BY 4.0 — print it, pin it, share it.*

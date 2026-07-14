@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Detection-as-Code (Sigma)
 
 *Companion to [Module 08 — Detection-as-Code](README.md) · CC BY 4.0 — print it, pin it, share it.*

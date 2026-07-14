@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Triage & Live Response
 
 *Companion to [Module 08 — Triage & Live Response](README.md) · CC BY 4.0 — print it, pin it, share it.*

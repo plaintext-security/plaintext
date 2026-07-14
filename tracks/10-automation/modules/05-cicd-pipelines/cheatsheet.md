@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — CI/CD Pipelines & Gates (GitHub Actions)
 
 *Companion to [Module 05 — CI/CD Pipelines & Gates](README.md) · CC BY 4.0 — print it, pin it, share it.*

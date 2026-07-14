@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — TLS auditing with testssl.sh & openssl
 
 *Companion to [Module 05 — TLS Deep Dive](README.md) · CC BY 4.0 — print it, pin it, share it.*

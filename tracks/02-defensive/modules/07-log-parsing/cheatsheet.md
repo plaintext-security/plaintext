@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Log Parsing & Normalisation
 
 *Companion to [Module 07 — Log Parsing & Normalisation](README.md) · CC BY 4.0 — print it, pin it, share it.*

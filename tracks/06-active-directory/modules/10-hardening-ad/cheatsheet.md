@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Hardening AD as Code
 
 *Companion to [Module 10 — Hardening AD as Code](README.md) · CC BY 4.0 — print it, pin it, share it.*

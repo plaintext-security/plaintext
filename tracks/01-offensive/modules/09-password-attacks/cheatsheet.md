@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Password & Credential Attacks
 
 *Companion to [Module 09 — Password & Credential Attacks](README.md) · CC BY 4.0 — print it, pin it, share it.*

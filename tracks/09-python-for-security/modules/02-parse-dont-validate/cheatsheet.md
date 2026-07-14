@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Parse, Don't Validate (pydantic v2)
 
 *Companion to [Module 02 — Parse, Don't Validate](README.md) · CC BY 4.0 — print it, pin it, share it.*

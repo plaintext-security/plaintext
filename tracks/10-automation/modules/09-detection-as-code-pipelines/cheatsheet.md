@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Detection-as-Code Pipelines (Sigma + pytest)
 
 *Companion to [Module 09 — Detection-as-Code Pipelines](README.md) · CC BY 4.0 — print it, pin it, share it.*

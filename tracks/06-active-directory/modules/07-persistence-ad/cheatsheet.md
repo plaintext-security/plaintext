@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Persistence in AD
 
 *Companion to [Module 07 — Persistence in AD](README.md) · CC BY 4.0 — print it, pin it, share it.*

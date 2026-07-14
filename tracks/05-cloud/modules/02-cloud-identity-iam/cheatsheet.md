@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — AWS IAM & policy simulation
 
 *Companion to [Module 02 — Cloud Identity & IAM](README.md) · CC BY 4.0 — print it, pin it, share it.*

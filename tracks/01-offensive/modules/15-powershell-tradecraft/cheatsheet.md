@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — PowerShell Offensive Tradecraft
 
 *Companion to [Module 15 — PowerShell Offensive Tradecraft](README.md) · CC BY 4.0 — print it, pin it, share it.*

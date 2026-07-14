@@ -88,3 +88,84 @@
   text-decoration: underline;
   padding: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   Cheat-sheet layout (overrides/cheatsheet.html). Pages opting in via
+   `template: cheatsheet.html` + `hide: [navigation, toc]` render as a
+   full-bleed, multi-column reference card: the h1 + companion lines span the
+   page, and the h2 sections flow into columns sized so most code lines fit
+   unwrapped. Prints as the one-pager the "print it, pin it" tagline promises. */
+
+/* Lift the 61rem grid cap only when a cheat-sheet page is on screen. */
+body:has(.px-cheatsheet) .md-grid {
+  max-width: 110rem;
+}
+
+.px-cheatsheet {
+  column-width: 30rem;
+  column-gap: 2.4rem;
+  column-rule: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* The title and its companion/reviewed lines read as a page-wide header band. */
+.px-cheatsheet h1,
+.px-cheatsheet h1 + p,
+.px-cheatsheet h1 + p + p {
+  column-span: all;
+}
+
+.px-cheatsheet h1 {
+  margin-bottom: 0.4em;
+}
+
+.px-cheatsheet h1 + p,
+.px-cheatsheet h1 + p + p {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.7rem;
+  margin: 0.2em 0;
+}
+
+/* Each h2 opens a "card": hairline top rule + terminal prompt marker. */
+.px-cheatsheet h2 {
+  font-size: 0.85rem;
+  margin: 1.4em 0 0.6em;
+  padding-top: 0.7em;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  break-after: avoid;
+}
+
+.px-cheatsheet h2::before {
+  content: "$ ";
+  color: var(--px-accent);
+  font-family: var(--md-code-font-family);
+  font-size: 0.75em;
+}
+
+/* Never split a snippet, table, or admonition across columns. */
+.px-cheatsheet .highlight,
+.px-cheatsheet pre,
+.px-cheatsheet table,
+.px-cheatsheet .admonition,
+.px-cheatsheet blockquote {
+  break-inside: avoid;
+}
+
+/* Comments stay a page-wide strip below the columns. */
+.px-cheatsheet .px-comments {
+  column-span: all;
+}
+
+@media print {
+  .px-cheatsheet {
+    column-width: auto;
+    column-count: 2;
+    column-gap: 1.6rem;
+    font-size: 0.62rem;
+  }
+  .px-cheatsheet pre code {
+    font-size: 0.58rem;
+  }
+  .px-cheatsheet .px-comments {
+    display: none;
+  }
+}

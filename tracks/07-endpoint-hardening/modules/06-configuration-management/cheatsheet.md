@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Configuration Management with Ansible
 
 *Companion to [Module 06 — Configuration Management](README.md) · CC BY 4.0 — print it, pin it, share it.*

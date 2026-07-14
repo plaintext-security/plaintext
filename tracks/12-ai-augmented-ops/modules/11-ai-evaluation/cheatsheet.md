@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — AI Evaluation & Observability
 
 *Companion to [Module 11 — AI Evaluation & Observability](README.md) · CC BY 4.0 — print it, pin it, share it.*

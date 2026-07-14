@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Living-off-the-Land & Evasion
 
 *Companion to [Module 14 — Living-off-the-Land & Evasion](README.md) · CC BY 4.0 — print it, pin it, share it.*

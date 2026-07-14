@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Eval Harness, Property Tests & Supply Chain
 
 *Companion to [Module 09 — Eval Harness, Property Tests & Supply Chain](README.md) · CC BY 4.0 — print it, pin it, share it.*

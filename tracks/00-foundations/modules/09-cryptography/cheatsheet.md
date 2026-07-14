@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Cryptography with openssl
 
 *Companion to [Module 09 — Cryptography Basics](README.md) · CC BY 4.0 — print it, pin it, share it.*

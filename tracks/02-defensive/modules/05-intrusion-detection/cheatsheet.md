@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Intrusion Detection (Suricata)
 
 *Companion to [Module 05 — Intrusion Detection](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Click-ops → IaC Migration (terraform import)
 
 *Companion to [Module 11 — Click-ops → IaC Migration](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Private PKI with step-ca & step CLI
 
 *Companion to [Module 06 — PKI & Certificate Management](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Threat Hunting: Endpoint
 
 *Companion to [Module 11 — Threat Hunting: Endpoint](README.md) · CC BY 4.0 — print it, pin it, share it.*

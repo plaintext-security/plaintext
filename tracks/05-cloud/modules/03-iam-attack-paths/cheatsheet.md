@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — IAM attack paths with pmapper & cloudfox
 
 *Companion to [Module 03 — IAM Attack Paths](README.md) · CC BY 4.0 — print it, pin it, share it.*

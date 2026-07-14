@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Secrets management with Vault, SOPS & age
 
 *Companion to [Module 07 — Secrets Management](README.md) · CC BY 4.0 — print it, pin it, share it.*

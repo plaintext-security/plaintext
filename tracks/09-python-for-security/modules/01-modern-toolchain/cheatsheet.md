@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Modern Python Toolchain & Spec-Driven Skeleton
 
 *Companion to [Module 01 — Modern Toolchain & Spec-Driven Skeleton](README.md) · CC BY 4.0 — print it, pin it, share it.*

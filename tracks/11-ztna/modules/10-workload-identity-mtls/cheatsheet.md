@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Workload Identity & mTLS (SPIFFE / SPIRE)
 
 *Companion to [Module 10 — Workload Identity & mTLS (SPIFFE/SPIRE)](README.md) · CC BY 4.0 — print it, pin it, share it.*

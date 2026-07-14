@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — SOAR + AI
 
 *Companion to [Module 08 — SOAR + AI](README.md) · CC BY 4.0 — print it, pin it, share it.*

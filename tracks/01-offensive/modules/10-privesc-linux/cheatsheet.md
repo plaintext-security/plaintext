@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Linux Privilege Escalation
 
 *Companion to [Module 10 — Privilege Escalation: Linux](README.md) · CC BY 4.0 — print it, pin it, share it.*

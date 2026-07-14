@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — SASE & Cloud-Delivered Zero Trust (cloudflared / Access)
 
 *Companion to [Module 05 — SASE & Cloud-Delivered Zero Trust](README.md) · CC BY 4.0 — print it, pin it, share it.*

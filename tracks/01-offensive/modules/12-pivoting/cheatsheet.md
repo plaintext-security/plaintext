@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Pivoting & Lateral Movement
 
 *Companion to [Module 12 — Pivoting & Lateral Movement](README.md) · CC BY 4.0 — print it, pin it, share it.*

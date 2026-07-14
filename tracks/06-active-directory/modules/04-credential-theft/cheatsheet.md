@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Credential Theft & Replay
 
 *Companion to [Module 04 — Credential Theft & Replay](README.md) · CC BY 4.0 — print it, pin it, share it.*

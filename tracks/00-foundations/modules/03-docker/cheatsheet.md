@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Docker & Containers
 
 *Companion to [Module 03 — Docker & Containers](README.md) · CC BY 4.0 — print it, pin it, share it.*

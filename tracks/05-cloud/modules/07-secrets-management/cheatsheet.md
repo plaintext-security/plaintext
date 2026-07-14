@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Cloud Secrets Management
 
 *Companion to [Module 07 — Secrets Management & Detection](README.md) · CC BY 4.0 — print it, pin it, share it.*

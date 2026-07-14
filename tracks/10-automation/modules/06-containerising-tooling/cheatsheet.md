@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Containerising Tooling (Docker)
 
 *Companion to [Module 06 — Containerising Tooling](README.md) · CC BY 4.0 — print it, pin it, share it.*

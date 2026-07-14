@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Windows Artifacts
 
 *Companion to [Module 04 — Windows Artifacts](README.md) · CC BY 4.0 — print it, pin it, share it.*

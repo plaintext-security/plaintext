@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Anti-Forensics & Detecting It
 
 *Companion to [Module 11 — Anti-Forensics & Detecting It](README.md) · CC BY 4.0 — print it, pin it, share it.*

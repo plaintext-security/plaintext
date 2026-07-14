@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Posture auditing with Prowler & ScoutSuite
 
 *Companion to [Module 05 — Posture & Misconfiguration Auditing](README.md) · CC BY 4.0 — print it, pin it, share it.*

@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Policy as Code (OPA / Rego)
 
 *Companion to [Module 08 — Policy as Code](README.md) · CC BY 4.0 — print it, pin it, share it.*

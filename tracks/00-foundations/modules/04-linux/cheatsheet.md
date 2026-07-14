@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Linux for Security
 
 *Companion to [Module 04 — Linux for Security](README.md) · CC BY 4.0 — print it, pin it, share it.*

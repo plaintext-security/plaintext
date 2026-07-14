@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — Browser & Application Artifacts
 
 *Companion to [Module 05 — Browser & Application Artifacts](README.md) · CC BY 4.0 — print it, pin it, share it.*

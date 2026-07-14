@@ -1,3 +1,10 @@
+---
+template: cheatsheet.html
+hide:
+  - navigation
+  - toc
+---
+
 # Cheat sheet — KEV-Driven Defense
 
 *Companion to [Module 17 — KEV-Driven Defense](README.md) · CC BY 4.0 — print it, pin it, share it.*
