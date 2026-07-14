@@ -767,4 +767,42 @@ nav:
           - Concept: 12-ai-augmented-ops/modules/11-ai-evaluation/README.md
           - Lab: 12-ai-augmented-ops/modules/11-ai-evaluation/lab.md
           - Cheat sheet: 12-ai-augmented-ops/modules/11-ai-evaluation/cheatsheet.md
+  - PowerShell for Security:
+      - Overview: 13-powershell-for-security/README.md
+      - "01 · Modern Toolchain & Module Skeleton":
+          - Concept: 13-powershell-for-security/modules/01-modern-toolchain/README.md
+          - Lab: 13-powershell-for-security/modules/01-modern-toolchain/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/01-modern-toolchain/cheatsheet.md
+      - "02 · Typed Objects & the Pipeline":
+          - Concept: 13-powershell-for-security/modules/02-typed-objects/README.md
+          - Lab: 13-powershell-for-security/modules/02-typed-objects/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/02-typed-objects/cheatsheet.md
+      - "03 · Parsing Telemetry at Scale":
+          - Concept: 13-powershell-for-security/modules/03-telemetry-at-scale/README.md
+          - Lab: 13-powershell-for-security/modules/03-telemetry-at-scale/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/03-telemetry-at-scale/cheatsheet.md
+      - "04 · Enrichment with Runspaces & Throttling":
+          - Concept: 13-powershell-for-security/modules/04-runspaces-throttling/README.md
+          - Lab: 13-powershell-for-security/modules/04-runspaces-throttling/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/04-runspaces-throttling/cheatsheet.md
+      - "05 · Driving Tools Safely":
+          - Concept: 13-powershell-for-security/modules/05-driving-tools-safely/README.md
+          - Lab: 13-powershell-for-security/modules/05-driving-tools-safely/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/05-driving-tools-safely/cheatsheet.md
+      - "06 · Secrets, Remoting & Least Privilege":
+          - Concept: 13-powershell-for-security/modules/06-secrets-remoting-jea/README.md
+          - Lab: 13-powershell-for-security/modules/06-secrets-remoting-jea/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/06-secrets-remoting-jea/cheatsheet.md
+      - "07 · LLM-Native PowerShell & MCP":
+          - Concept: 13-powershell-for-security/modules/07-llm-native-mcp/README.md
+          - Lab: 13-powershell-for-security/modules/07-llm-native-mcp/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/07-llm-native-mcp/cheatsheet.md
+      - "08 · PowerShell as the Weapon — Detonate, Detect, Harden":
+          - Concept: 13-powershell-for-security/modules/08-detonate-detect-harden/README.md
+          - Lab: 13-powershell-for-security/modules/08-detonate-detect-harden/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/08-detonate-detect-harden/cheatsheet.md
+      - "09 · Test, Measure & Supply Chain":
+          - Concept: 13-powershell-for-security/modules/09-test-measure-supplychain/README.md
+          - Lab: 13-powershell-for-security/modules/09-test-measure-supplychain/lab.md
+          - Cheat sheet: 13-powershell-for-security/modules/09-test-measure-supplychain/cheatsheet.md
   - Glossary: glossary.md

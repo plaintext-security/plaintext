@@ -26,7 +26,8 @@ re-reading fundamentals.
 - **Then pick a specialization.** Tracks are standalone and depend only on Foundations, never on each
   other — so go where your goal points: offense ([01](01-offensive/README.md)), defense
   ([02](02-defensive/README.md)), forensics, malware, cloud, AD, hardening, crypto, Python,
-  automation, ZTNA, or AI-augmented ops. Cross-references *enrich* but never *gate*.
+  automation, ZTNA, AI-augmented ops, or [PowerShell for Security](13-powershell-for-security/README.md).
+  Cross-references *enrich* but never *gate*.
 - **Lean into the offense ↔ defense interplay.** Many labs have a matched pair (attack here, detect
   it there). Doing both sides is where the understanding compounds.
 

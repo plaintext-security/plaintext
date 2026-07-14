@@ -29,6 +29,7 @@ from the Markdown under `tracks/`.
 | 10 | [Security Automation](tracks/10-automation/) | opentofu, ansible, sigma, n8n |
 | 11 | [Zero Trust Network Access](tracks/11-ztna/) | keycloak, headscale, pomerium, OPA |
 | 12 | [AI-Augmented Security Ops](tracks/12-ai-augmented-ops/) | ollama, chromadb, fastmcp, garak |
+| 13 | [PowerShell for Security](tracks/13-powershell-for-security/) | pwsh 7, PSScriptAnalyzer, Pester, SecretManagement, JEA |
 
 ## Structure
 

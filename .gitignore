@@ -38,6 +38,14 @@ __pycache__/
 .venv/
 venv/
 
+# === PowerShell lab artifacts (Track 13) — event exports, signing certs, secret stores ===
+*.evtx
+*.pfx
+*.clixml
+PowerShell_transcript*
+localstore/
+*.secretstore
+
 # === Static-site build output (e.g. MkDocs) ===
 site/
 .cache/
