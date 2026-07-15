@@ -33,7 +33,7 @@ real capability *and* targets a bug-class the copilot reliably ships.
 | 01 | [Modern Toolchain & Spec-Driven Skeleton](modules/01-modern-toolchain/README.md) | Migration + ADR | Migrate a legacy script into a `uv` project with a CI gate; adopt a spec-driven workflow; write the toolchain ADR | `uv`, `ruff`, `pyright`, `openspec` |
 | 02 | [Parse, Don't Validate](modules/02-parse-dont-validate/README.md) | Tool-Build | Typed domain models that reject adversarial input at the boundary | `pydantic v2`, `pydantic-settings` |
 | 03 | [Data at Scale & Structured Logs](modules/03-data-at-scale/README.md) | Tool-Build | A streaming parser + columnar triage queries + JSON logs | `polars`/`duckdb`, `structlog` |
-| 04 | [Async & Structured Concurrency](modules/04-async-concurrency/README.md) | Build-&-Operate | An async enricher with bounded concurrency, backoff, rate-limit handling | `httpx` async, `asyncio` |
+| 04 | [Async & Structured Concurrency](modules/04-async-concurrency/README.md) | Build-&-Operate | An async enricher with bounded concurrency, backoff, rate-limit handling — plus a durable `huey` task-queue beat | `httpx` async, `asyncio`, `huey` |
 | 05 | [Driving Tools Safely](modules/05-driving-tools-safely/README.md) | Tool-Build + Review | Safe `subprocess` wrappers (no `shell=True`) + robust output parsers | `subprocess`, `shlex` |
 | 06 | [Two Surfaces, One Core](modules/06-cli-and-api/README.md) | Build-&-Operate | A `typer` CLI **and** a `FastAPI` service sharing the same models | `typer`, `FastAPI` |
 | 07 | [LLM-Native Python & MCP](modules/07-llm-native-mcp/README.md) | Tool-Build | An MCP server exposing `sift`; typed LLM output validated like an API response | MCP, `instructor` |

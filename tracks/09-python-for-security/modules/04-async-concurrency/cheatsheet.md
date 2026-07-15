@@ -126,6 +126,27 @@ ok  = [r for r in results if isinstance(r, Ok)]
 bad = [r for r in results if not isinstance(r, Ok)]   # triage separately
 ```
 
+## Durable background work — huey (task queue)
+
+```python
+# async = in-process & ephemeral (one batch). A task queue = out-of-process,
+# durable, retryable — survives a restart. Reach for it when work must OUTLIVE the request.
+from huey import SqliteHuey             # no broker service needed; RedisHuey for scale
+
+huey = SqliteHuey(filename="sift.db")
+
+@huey.task(retries=3, retry_delay=10)   # persisted job; auto-retries on failure
+def enrich_indicator(ioc: str) -> dict:
+    ...                                 # runs in a separate consumer process
+
+enrich_indicator("1.2.3.4")             # enqueues and returns immediately (a future)
+```
+
+```bash
+# run the worker(s) that drain the queue — separate from your app process
+huey_consumer.py sift.tasks.huey -w 4   # 4 workers; queued jobs survive an app restart
+```
+
 ## Gotchas worth remembering
 
 - **Unbounded `gather` is a thundering herd.** `await asyncio.gather(*[enrich(i) for i in iocs])`
@@ -143,5 +164,9 @@ bad = [r for r in results if not isinstance(r, Ok)]   # triage separately
   once with `async with` around the whole batch.
 - **Async is for waiting, not computing.** It overlaps I/O in *one thread*; CPU-bound work still
   serializes. Reach for it when the bottleneck is the network.
+- **Async is ephemeral; a queue is durable.** In-process `asyncio` loses in-flight work if the process
+  dies. When enrichment must survive a restart / retry later / run continuously, move it to a **task
+  queue** (`huey`) — but *not before* (a queue you don't need is just latency + a broker to babysit).
+  Long-running multi-step *workflows* graduate to durable execution (Temporal), in the Automation track.
 
 > Only send requests to systems you own or have explicit written permission to test.

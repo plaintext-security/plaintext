@@ -76,6 +76,21 @@ results because one failed. The robust shape is a bounded worker pool where each
 object* (`Ok(data)` or `Err(reason)`), so the batch always completes and you can triage what failed
 separately. `return_exceptions=True` is the minimum; a typed per-indicator result is the professional move.
 
+**In-process async is fast but *ephemeral*; durable work is a task queue.** Everything above makes one
+*batch* fast and polite — but it all lives inside a single process. If `sift` crashes mid-batch the
+in-flight enrichments simply vanish, and it can't enrich *continuously* as new alerts arrive. The moment
+the work must **survive a restart, retry itself later, or run in the background**, you've outgrown
+`asyncio` and want a **task queue**. A lightweight one — **`huey`** (`@huey.task()`, backed by SQLite or
+Redis, run by a separate *consumer* process) — turns "enrich this indicator" into a **durable job**:
+persisted to the broker, retried on failure, and picked back up after a restart. Hold the distinction,
+because it *is* the lesson: **async = in-process, ephemeral, one batch; a task queue = out-of-process,
+durable, retryable, continuous.** Reach for the queue the moment the work must outlive the request that
+created it — and *not* before, because a queue you don't need is just latency and a broker to babysit.
+*(When a durable job in turn grows into a long-running, multi-step **workflow** — enrich → wait for human
+approval → contain → ticket — that must survive restarts across *every* step, you've outgrown the queue
+too and graduate to **durable execution** (Temporal). That's workflow orchestration; it lives in the
+Automation track's SOAR, not here — keep `sift` at the task-queue layer.)*
+
 ??? note "`asyncio.gather` vs. a bounded worker pool — and why not just raise the limit"
     `gather` is fine for a *handful* of known tasks; it's the wrong tool for *N* untrusted-size fan-out
     because it has no bound and its all-or-nothing default hides partial failure. A bounded pool (semaphore
@@ -114,6 +129,10 @@ separately. `return_exceptions=True` is the minimum; a typed per-indicator resul
 - [`tenacity` — retrying library docs](https://tenacity.readthedocs.io/) (~15 min) — the standard way to
   express "retry with exponential backoff + jitter, capped" declaratively; read the `wait_exponential_jitter`
   and `retry_if_exception` recipes so you don't hand-roll the backoff loop badly.
+- [`huey` — a lightweight task queue](https://huey.readthedocs.io/) (~15 min) — `@huey.task()`, the
+  `SqliteHuey`/`RedisHuey` backends, automatic retries, and the separate *consumer* process: the
+  **durable, out-of-process** counterpart to in-process async. Read "Getting Started" and the retry/consumer
+  sections. (The next tier — durable, long-running *workflows* — is Temporal, covered in the Automation track's SOAR.)
 
 ## Key concepts
 - **I/O-bound → async wins:** enrichment is mostly *waiting on the network*; async overlaps the waits.
@@ -122,6 +141,7 @@ separately. `return_exceptions=True` is the minimum; a typed per-indicator resul
 - **Thundering herd = the copilot's `gather`:** unbounded fan-out floods the API and gets you `429`'d or banned.
 - **Backoff honors the server:** on `429`, sleep for `Retry-After`; else exponential backoff **with jitter** — never retry instantly.
 - **Design for partial failure:** every indicator returns a result object; `gather` without `return_exceptions` cancels the batch on the first raise.
+- **Ephemeral vs. durable:** in-process `asyncio` loses in-flight work on a crash; a **task queue** (`huey`) makes each enrichment a persisted, retryable background job that survives restarts. Long-running multi-step *workflows* graduate further — to durable execution (Temporal), in the Automation track.
 
 ## AI acceleration
 
@@ -143,3 +163,6 @@ unsafe version faster?
       inside a coroutine wrong even though the *duration* is right?
     - If one of 500 enrichments raises, what happens to the other 499 under `asyncio.gather` with default
       settings, and how does a per-indicator result object fix it?
+    - `sift` dies after enriching 6,000 of 10,000 indicators. With the in-process async batch, what happens
+      to the other 4,000 — and how does moving enrichment onto a `huey` task queue change the answer? When
+      would reaching for the queue instead be *premature*?
