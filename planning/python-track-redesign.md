@@ -59,7 +59,7 @@ Two things make it land, and both are things a copilot *doesn't* default to:
 1. **A modern stack the copilot under-uses.** Copilots still reach for `pip`/`venv`, `requests`,
    `argparse`, `setup.py`, `.get()` soup, sync loops. The track standardizes the learner on **`uv` ·
    `ruff` · `pydantic v2` · `httpx` async · `pyright`/`ty` · `structlog` · `polars`/`duckdb` ·
-   `hypothesis` · `pytest` · `pip-audit` · `FastAPI` · MCP · `instructor` · `pydantic-evals`** — and gates them in CI.
+   `hypothesis` · `pytest` · `pip-audit` · `FastAPI` · MCP · `instructor` · `pydantic-evals` · `huey`** — and gates them in CI.
 2. **Each module targets a copilot failure-class.** Unvalidated input, races in concurrency, subtly-wrong
    types, `shell=True` injection, resource leaks, dependency risk, prompt injection. The whole track *is*
    reviewing the copilot at a higher level — the most on-brand way to honor "you review → you own it."
@@ -89,7 +89,7 @@ before authoring (marked **⟨anchor⟩** where still to be finalized).
 
 | # | Module | Type(s) | Anchor | Owned artifact |
 |---|--------|---------|--------|----------------|
-| 4 | Async & structured concurrency | **7 Build-&-Operate** | rate-limited TI APIs / a thundering-herd outage | an async enricher with bounded concurrency, backoff, rate-limit handling — and the race the copilot introduced, caught |
+| 4 | Async & structured concurrency (+ durable background work) | **7 Build-&-Operate** | rate-limited TI APIs / a thundering-herd outage | an async enricher with bounded concurrency, backoff, rate-limit handling — and the race the copilot introduced, caught; **plus a `huey` task-queue beat** for *durable, out-of-process* enrichment — async vs. a queue (in-process/ephemeral vs. durable/retryable) and when each wins. Forward-pointer: long-running stateful workflows graduate to durable execution (**Temporal**) in the Automation track |
 | 5 | Driving real tools safely | **9 Tool-Build** + **14 Adversarial Review** beat | ⟨a real `shell=True` command-injection CVE class⟩ | safe `subprocess` wrappers (no `shell=True`) + robust parsers for nmap/VT/`pymisp` output |
 | 6 | Two surfaces, one core | **7 Build-&-Operate** | the SOC need for tooling-as-a-service | a `typer` CLI **and** a `FastAPI` service sharing the same pydantic models |
 
@@ -129,7 +129,13 @@ This arc is not a detour from the redesign — it *advances* it. It instantiates
   capstone). The shared verbs (MCP, eval, prompt-injection) appear in both — Python teaches the *craft*;
   ai-ops teaches the *operation*. Cross-reference, don't duplicate.
 - **Track 10 (Automation) dedupe.** Automation wires tools into IaC/CI/SOAR *pipelines*; Python builds
-  *the tool the pipeline runs*. Keep enrichment-*pipeline* orchestration in Automation.
+  *the tool the pipeline runs*. Keep enrichment-*pipeline* orchestration in Automation. A `huey` task queue is
+  fair game in Python (the tool's own durable background work — Module 4); but **workflow orchestration /
+  durable execution belongs to Automation.**
+  - *Adjacent idea — flagged for Track 10's next pass:* **Temporal** as durable, human-in-the-loop
+    **SOAR-as-code** — the long-running `enrich → approve → contain → ticket` response workflow that survives
+    restarts, a code-first modern upgrade to the current Shuffle/n8n visual SOAR. Not in the Python track;
+    parked here until the Automation track's pass picks it up.
 
 ## Open items / next steps (build)
 
