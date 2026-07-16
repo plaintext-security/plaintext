@@ -100,9 +100,11 @@ JSON, reconcile the two views. Indicators to enrich (`src_ip`, `dest_ip`, `dns.r
 - **Parse structured output** (`-oX`, JSON, Suricata **EVE JSON**) — don't regex human-readable text.
 - **Driving a dissector** — `suricata -r <pcap>` → `eve.json`, `tshark -T ek` → JSON: same safe
   argument-list pattern, feeding `sift`'s pydantic union. Indicators derive from real EVE fields.
-- **Two sensors, one truth** (stretch) — Zeek over the *same* pcap emits native **TSV** (`#fields` header),
-  a different schema from Suricata's JSON: Suricata *alerts* (opinionated), Zeek *records* (descriptive).
-  A source-agnostic domain model normalizes both — the real payoff of "parse, don't trust."
+- **Many sensors, one truth** (stretch) — the same incident, three schemas: Suricata **EVE JSON**
+  (opinionated alerts), Zeek native **TSV** (`#fields` header, descriptive facts), and Sysmon **EVTX**
+  (binary → XML `EventData`, the *host* side — which process opened a connection). A source-agnostic domain
+  model normalizes all three — the real payoff of "parse, don't trust," and the join from a network IOC to
+  the process behind it.
 
 ## AI acceleration
 This module has an explicit adversarial-review beat: you're handed copilot-generated tool wrappers with a
