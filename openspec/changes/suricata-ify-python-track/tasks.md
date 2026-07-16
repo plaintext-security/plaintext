@@ -45,5 +45,5 @@
 - [x] 6.1 Run `mkdocs build --strict` and fix any broken links / orphan pages introduced by the regrounding.
 - [x] 6.2 Diff-review each regrounded lab to confirm the altitude guardrail (objective-driven `Do` steps, no transcribed solutions, `sift_reference/` still peek-after) and that every attacking lab keeps its authorization note.
 - [x] 6.3 Manually run `make up && make demo` for M02 and M03 on a Suricata-capable machine; leave `.ci-demo` deferred until a Suricata runner exists.
-- [ ] 6.4 Bump the `plaintext-labs` submodule pointer in the `plaintext` repo once the labs changes land.
+- [x] 6.4 Bump the `plaintext-labs` submodule pointer in the `plaintext` repo once the labs changes land.
 - [x] 6.5 Run `openspec validate suricata-ify-python-track` and resolve any issues.
