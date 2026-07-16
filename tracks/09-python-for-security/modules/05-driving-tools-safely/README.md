@@ -48,6 +48,16 @@ that only ever receives well-formed arguments has a smaller attack surface than 
 that changes format between versions and breaks your regex. Robust parsing is what makes the wrapper
 reliable enough for the CLI and API surfaces you add in Module 06.
 
+This is exactly why `sift` drives **Suricata**: point it at a pcap and it emits **EVE JSON** (`eve.json`)
+— newline-delimited, one event per line, keyed by `event_type`. That's a real dissector's *structured*
+output: the alert's `signature`/`severity`, the flow's five-tuple, the `dns`/`http`/`tls` fields, all
+typed, all machine-readable — the payoff of the parse-don't-scrape rule you built in Module 02. You *run*
+Suricata (`suricata -r infection.pcap`) the same way you run `nmap`: a `shell=False` argument list over an
+input path you control, then feed the resulting `eve.json` through the pydantic union `sift` already
+speaks. `tshark -T ek` / `-T json` is the same move for a second dissector — drive it safely, parse its
+JSON, reconcile the two views. Indicators to enrich (`src_ip`, `dest_ip`, `dns.rrname`, `tls.sni`) come
+*from those real EVE fields*, not a hand-invented schema.
+
 ??? note "When you *think* you need `shell=True` — pipes, globs, redirection"
     Those are the usual excuses, and they're avoidable. A pipeline is two `subprocess` calls wired via
     `stdout`/`stdin` in Python (you keep control and error handling). Globbing is `pathlib.Path.glob`.
@@ -75,13 +85,21 @@ reliable enough for the CLI and API surfaces you add in Module 06.
 
 - [`python-nmap` or direct `nmap -oX` parsing](https://nmap.org/book/output-formats-xml-output.html)
   (~15 min) — parse structured XML output, not scraped text.
+- [Suricata docs — EVE JSON output](https://docs.suricata.io/en/latest/output/eve/eve-json-output.html)
+  (~15 min) — how `suricata -r <pcap>` produces `eve.json`, and the `event_type` keying you'll parse;
+  read the `alert`/`flow`/`fileinfo` shapes, skim the rest — this is the structured output you drive for.
+- [Wireshark `tshark` man page — `-T ek` / `-T json`](https://www.wireshark.org/docs/man-pages/tshark.html)
+  (~10 min) — the second dissector: drive `tshark` over a pcap for machine-readable JSON you can reconcile
+  against Suricata's view. Scan the `-T` output-format options and the `-r`/`-e` flags.
 
 ## Key concepts
 - **`shell=True` + untrusted input = command injection** — the copilot's default, and a real CVE class.
 - **`shell=False` with an argument list** passes args straight to `execve` — no shell to inject into.
 - **`shlex.quote`** for the rare must-build-a-string case; the list form is still better.
 - **Validate/allowlist args before shelling out** — reuse Module 02's boundary discipline.
-- **Parse structured output** (`-oX`, JSON) — don't regex human-readable text.
+- **Parse structured output** (`-oX`, JSON, Suricata **EVE JSON**) — don't regex human-readable text.
+- **Driving a dissector** — `suricata -r <pcap>` → `eve.json`, `tshark -T ek` → JSON: same safe
+  argument-list pattern, feeding `sift`'s pydantic union. Indicators derive from real EVE fields.
 
 ## AI acceleration
 This module has an explicit adversarial-review beat: you're handed copilot-generated tool wrappers with a

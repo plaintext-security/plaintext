@@ -19,15 +19,15 @@ the same `pydantic` boundary from Module 02.
 
 ```python
 from mcp.server.fastmcp import FastMCP
-from pydantic import BaseModel
+from pydantic import IPvAnyAddress
 
 mcp = FastMCP("sift")
 
 @mcp.tool()
-def enrich(indicator: str) -> dict:
-    """Enrich one indicator (IPv4/domain/sha256). `indicator` must match that shape."""
-    ind = Indicator.model_validate({"value": indicator})   # validate INSIDE the tool — LLM args are untrusted
-    return do_enrich(ind).model_dump()
+def enrich(ip: str) -> dict:
+    """Enrich one indicator — a src_ip/dest_ip pulled off a validated EVE alert."""
+    addr = IPvAnyAddress(ip)   # validate INSIDE the tool — LLM args are untrusted, exactly like an EVE field
+    return do_enrich(addr).model_dump()
 
 if __name__ == "__main__":
     mcp.run()          # stdio transport by default

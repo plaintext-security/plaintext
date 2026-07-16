@@ -17,11 +17,11 @@ hide:
 from pydantic_evals import Case, Dataset
 from pydantic_evals.evaluators import Evaluator, EvaluatorContext
 
-# One labelled example: input alert -> expected ground-truth label.
+# One labelled example: a real Suricata `alert` event -> expected TP/FP ground-truth label.
 # The corpus is HELD OUT — nothing in your tuning/threshold path reads it.
 dataset = Dataset(cases=[
-    Case(name="alert-001", inputs=alert, expected_output="malicious"),
-    Case(name="alert-002", inputs=alert2, expected_output="benign"),
+    Case(name="alert-001", inputs=alert, expected_output="malicious"),   # true positive
+    Case(name="alert-002", inputs=alert2, expected_output="benign"),     # false positive
 ])
 
 class LabelMatch(Evaluator):                       # a scorer: 1.0 hit, 0.0 miss
@@ -65,24 +65,28 @@ def test_triage_meets_baseline():
 - Prove it works: plant a regression (loosen a rule / swap a worse prompt) → watch red → revert → green.
 - The gate is the deliverable, not the score. A scorecard nobody asserts on is a vanity dashboard.
 
-## Property tests with `hypothesis` (fuzz the M2 validator)
+## Property tests with `hypothesis` (fuzz the M2 EVE validator)
 
 ```python
 from hypothesis import given, example, strategies as st
 from pydantic import ValidationError
 
-@given(st.dictionaries(st.text(), st.one_of(st.text(), st.integers(), st.none())))
-@example({})                        # pin a past regression as a permanent case
-@example({"severity": -1})          # a bug hypothesis once shrank to
-def test_validator_never_half_parses(payload):
+# EVE-shaped payloads: an event_type plus arbitrary envelope/nested fields.
+@given(st.fixed_dictionaries(
+    {"event_type": st.text()},
+    optional={"timestamp": st.text(), "src_ip": st.text(), "alert": st.dictionaries(st.text(), st.integers())},
+))
+@example({"event_type": "stats"})              # unmodelled type -> no union member -> quarantine
+@example({"event_type": "alert", "alert": {"severity": 5}})  # out of Suricata's 1..3 range
+def test_eve_validator_never_half_parses(payload):
     try:
-        alert = Alert.model_validate(payload)     # M2 pydantic validator
+        event = AlertEvent.model_validate(payload)  # M2 boundary (or TypeAdapter(EveEvent) once the union grows)
     except ValidationError:
-        return                                    # rejecting malformed input is correct
-    assert isinstance(alert, Alert)               # else: a fully-formed Alert, never a half-object
+        return                                       # rejecting malformed EVE is correct -> quarantine
+    assert isinstance(event, AlertEvent)             # else: a fully-formed event, never a half-object
 ```
 
-- State a **property** ("either a well-formed `Alert` or a `ValidationError` — never a half-parse, never some *other* exception"), then let `hypothesis` generate hundreds of adversarial inputs and **shrink** any failure to the minimal case.
+- State a **property** ("either a well-formed event or a `ValidationError` — never a half-parse, never some *other* exception"), then let `hypothesis` generate hundreds of adversarial EVE-shaped inputs and **shrink** any failure to the minimal case.
 - Keep the shrunk failing input as an `@example` regression once you fix the validator.
 - Avoid `assume(...)` that swallows the interesting inputs — that quietly disables the fuzz.
 

@@ -12,9 +12,10 @@
     for both is to write the logic **twice** — once behind `typer`, once behind `FastAPI` — and now you
     have two triage engines that drift apart. The right shape is **one core, two surfaces**: the pydantic
     models and the enrich/triage functions you built in M2–M5 *are* the core, and `typer` and `FastAPI`
-    are thin adapters that call into it. The same `Alert`/`Indicator` models validate a CLI argument and
-    an HTTP request body. This is the payoff of the whole *parse, don't trust* spine: FastAPI validates
-    every request against your models for free, because they already exist. This module closes Phase 2.
+    are thin adapters that call into it. The same `AlertEvent` EVE model validates a CLI-read `eve.json`
+    line and an HTTP request body. This is the payoff of the whole *parse, don't trust* spine: FastAPI
+    validates every request against your models for free, because they already exist — a truncated or
+    off-range EVE line becomes a clean `422`, not a crash. This module closes Phase 2.
 
 ## Why this matters
 
@@ -36,17 +37,17 @@ line that the logic lives in **one** place and both surfaces are dumb adapters o
 
 Expose `sift`'s existing validated core through **two thin adapters** — a `typer` CLI and a `FastAPI`
 service — that share the *same* pydantic models and core functions with **zero duplicated business
-logic**; make FastAPI validate request bodies against the `Alert`/`Indicator` models you already own; and
-prove both surfaces produce identical results from the same input.
+logic**; make FastAPI validate request bodies against the `AlertEvent` EVE model you already own (a bad
+EVE line → HTTP `422`); and prove both surfaces produce identical results from the same EVE input.
 
 ## The core idea
 
 **The core already exists — surfaces are adapters, not owners.** By the end of M5, `sift` has a typed
-core: pydantic `Alert`/`Indicator` models (M2), a streaming triage layer (M3), an async enricher (M4),
-and safe tool wrappers (M5), all reachable as plain Python functions like `enrich(alert) -> Alert` and
-`triage(alert) -> Verdict`. A surface's *only* jobs are to (1) get input from somewhere — argv, or an
-HTTP body — into your models, (2) call a core function, and (3) render the result back out — to a
-terminal, or as JSON. The moment a surface contains an `if severity > ...` scoring decision, you've
+core: the pydantic EVE `AlertEvent` model (M2), a streaming triage layer (M3), an async enricher (M4),
+and safe tool wrappers (M5), all reachable as plain Python functions like `enrich(event) -> AlertEvent`
+and `triage(event) -> TriageResult`. A surface's *only* jobs are to (1) get input from somewhere — an
+`eve.json` line on argv, or an HTTP body — into your models, (2) call a core function, and (3) render the
+result back out — to a terminal, or as JSON. The moment a surface contains an `if severity > ...` scoring decision, you've
 leaked business logic out of the core, and the two surfaces have started to drift. The discipline: a
 `typer` command or a `FastAPI` endpoint should be a handful of lines that import and delegate.
 
@@ -58,47 +59,47 @@ your types*, the "one core, two surfaces" pattern stops being extra work — you
 and each adapter is a decorator plus a delegate call.
 
 **FastAPI's pydantic-native validation is the whole spine paying off.** This is why we spent M2 building
-models that reject adversarial input. When you type a FastAPI endpoint's body as `alert: Alert`, FastAPI
-validates every incoming request against that model *before your code runs* — malformed JSON, wrong
-types, and missing fields become a clean `422` with a precise error, not a crash deep in your enricher.
-The untrusted-input boundary you built for the CLI is now defending your HTTP surface too, for free,
-because it's the *same model*. Parse-don't-trust was never about one edge; it was about owning the type
-that every edge validates against.
+models that reject adversarial input. When you type a FastAPI endpoint's body as `event: AlertEvent`,
+FastAPI validates every incoming request against that EVE model *before your code runs* — a truncated
+`eve.json` line, an out-of-range `alert.severity`, or a missing pinned field becomes a clean `422` with a
+precise error, not a crash deep in your enricher. The untrusted-input boundary you built for the CLI is
+now defending your HTTP surface too, for free, because it's the *same model*. Parse-don't-trust was never
+about one edge; it was about owning the type that every edge validates against.
 
 ```python
 # core.py — the shared core. Already exists from M2–M5. No CLI, no HTTP. Just types + logic.
-from .models import Alert, Verdict        # pydantic models from M2
+from .models import AlertEvent, TriageResult   # EVE model (M2) + triage output
 
-def triage(alert: Alert) -> Verdict:      # the one implementation of the logic
+def triage(event: AlertEvent) -> TriageResult:  # the one implementation of the logic
     ...
 ```
 
 ```python
-# cli.py — typer adapter. Thin: parse argv into the model, delegate, render.
-import typer, json
+# cli.py — typer adapter. Thin: parse a real EVE line into the model, delegate, render.
+import typer
 from .core import triage
-from .models import Alert
+from .models import AlertEvent
 
 app = typer.Typer()
 
 @app.command()
-def run(alert_file: typer.FileText) -> None:
-    alert = Alert.model_validate_json(alert_file.read())   # same model validates CLI input
-    verdict = triage(alert)                                 # same core function
-    typer.echo(verdict.model_dump_json(indent=2))
+def run(eve_file: typer.FileText) -> None:
+    event = AlertEvent.model_validate_json(eve_file.readline())  # same model validates one eve.json record
+    result = triage(event)                                        # same core function
+    typer.echo(result.model_dump_json(indent=2))
 ```
 
 ```python
-# api.py — FastAPI adapter. Thin: FastAPI validates the body into the model, delegate, return.
+# api.py — FastAPI adapter. Thin: FastAPI validates the EVE body into the model, delegate, return.
 from fastapi import FastAPI
 from .core import triage
-from .models import Alert, Verdict
+from .models import AlertEvent, TriageResult
 
 api = FastAPI()
 
 @api.post("/triage")
-def triage_endpoint(alert: Alert) -> Verdict:  # FastAPI validates the request body against Alert -> 422 on bad input
-    return triage(alert)                        # same core function; identical result to the CLI
+def triage_endpoint(event: AlertEvent) -> TriageResult:  # FastAPI validates the EVE body against AlertEvent -> 422 on a bad line
+    return triage(event)                                  # same core function; identical result to the CLI
 ```
 
 Two files, one `import triage`. The scoring logic appears **zero** times in either adapter.
@@ -139,7 +140,7 @@ Two files, one `import triage`. The scoring logic appears **zero** times in eith
 - **One core, two surfaces** — the pydantic models + core functions are the tool; CLI and API are adapters.
 - **A surface is thin** — get input into a model, call a core function, render the result out. No business logic.
 - **`typer` and `FastAPI` share a shape** — both derive their interface from your type annotations.
-- **FastAPI validates request bodies against your pydantic models** — malformed input becomes a `422`, not a crash.
+- **FastAPI validates request bodies against your `AlertEvent` EVE model** — a bad EVE line becomes a `422`, not a crash.
 - **Zero duplicated logic** is the acceptance bar — the scoring/triage code appears exactly once in the repo.
 
 ## AI acceleration

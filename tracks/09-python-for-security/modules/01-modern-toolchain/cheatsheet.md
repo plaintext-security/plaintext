@@ -102,7 +102,7 @@ jobs:
       - run: uv run ruff check           # lint
       - run: uv run ruff format --check  # format drift
       - run: uv run pyright              # types
-      - run: uv run python alert_parse.py sample.json  # behavior unchanged
+      - run: uv run python alert_parse.py eve.json  # behavior unchanged
 ```
 
 ## Spec-driven workflow (openspec)

@@ -133,6 +133,23 @@ r = subprocess.run(["vt", "domain", domain, "--format=json"],
 data = json.loads(r.stdout)
 ```
 
+```python
+# Drive a DISSECTOR: suricata -r <pcap> emits eve.json — newline-delimited JSON,
+# one event per line, keyed by event_type. The pcap path is untrusted input too:
+# list args, shell=False. Parse the structured EVE, don't scrape stdout.
+from pathlib import Path
+subprocess.run(["suricata", "-r", pcap_path, "-l", str(outdir)],   # -l = output dir
+               capture_output=True, text=True, check=True, timeout=300)
+for line in (outdir / "eve.json").read_text().splitlines():
+    event = json.loads(line)
+    if event["event_type"] == "alert":              # feed each line to sift's pydantic union
+        print(event["alert"]["signature"], event["alert"]["severity"])
+
+# Same move, second dissector: tshark -T ek → one JSON object per packet.
+subprocess.run(["tshark", "-r", pcap_path, "-T", "ek"],
+               capture_output=True, text=True, check=True, timeout=300)
+```
+
 ## Gotchas worth remembering
 
 - **`shell=True` + untrusted input = command injection.** The single most damaging one-character

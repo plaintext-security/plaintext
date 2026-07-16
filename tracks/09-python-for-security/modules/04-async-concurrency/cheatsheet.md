@@ -80,7 +80,8 @@ async def enrich(client, ioc):
         return r.json()
 
 async with httpx.AsyncClient() as client:
-    tasks = [enrich(client, i) for i in indicators]
+    # `iocs` = the unique src_ip / dest_ip pulled off your validated AlertEvents
+    tasks = [enrich(client, i) for i in iocs]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 ```
 

@@ -10,10 +10,12 @@
     By Module 08 `sift` makes **non-deterministic judgments**: triage scores, LLM verdicts, a hardened
     MCP tool. A green test suite tells you the code *runs*; it does not tell you the tool is *any good*, and
     it never catches the slow drift when you swap a prompt or a model. This module closes the loop with
-    **eval-as-code**: a **held-out labelled corpus** you never tune against, a metric chosen on purpose
+    **eval-as-code**: a **held-out labelled corpus** of real Suricata `alert` events with ground-truth
+    true-positive/false-positive labels that you never tune against, a metric chosen on purpose
     (precision/recall for triage), a scorecard, and a **CI regression gate** — built with `pydantic-evals`.
-    Then you fuzz the M2 validator with `hypothesis` (it must reject *all* malformed input, not just your
-    examples), and finally close the supply-chain loop M1 opened: `pip-audit` + a hash-locked lockfile as a
+    Then you fuzz the M2 EVE boundary (the `AlertEvent`/union validator) with `hypothesis` (it must reject
+    *all* malformed EVE, not just your examples), and finally close the supply-chain loop M1 opened:
+    `pip-audit` + a hash-locked lockfile as a
     CI gate. The anchor is the oldest lesson in the track: **you can't trust what you can't measure.**
 
 ## Why this matters
@@ -34,9 +36,10 @@ posture this module is built to end.
 
 ## Objective
 
-Build an eval harness for `sift` with `pydantic-evals`: a held-out labelled corpus (kept out of tuning), a
-purpose-chosen metric, a scorecard, and a CI gate that fails on a planted regression. Add `hypothesis`
-property tests that fuzz the M2 pydantic validator so it rejects *all* malformed input. And harden the
+Build an eval harness for `sift` with `pydantic-evals`: a held-out labelled corpus of real Suricata
+`alert` events (true-positive/false-positive ground truth, kept out of tuning), a purpose-chosen metric, a
+scorecard, and a CI gate that fails on a planted regression. Add `hypothesis` property tests that fuzz the
+M2 EVE validator (the `AlertEvent`/union boundary) so it rejects *all* malformed EVE. And harden the
 supply chain: `pip-audit` plus a hash-locked lockfile, both gated in CI. Prove each gate fails on a
 deliberate defect and passes when fixed.
 
@@ -44,7 +47,8 @@ deliberate defect and passes when fixed.
 
 **Eval-as-code, and the corpus is held out — twice over.** An eval is a test whose subject is *judgment*
 rather than *return value*: you give the system inputs, you have the *expected* label, and you score the
-gap. The discipline that makes it honest is the **held-out set** — a labelled corpus you never used to
+gap. The discipline that makes it honest is the **held-out set** — here, real Suricata `alert` events hand-
+labelled true-positive or false-positive, a corpus you never used to
 tune prompts, thresholds, or rules. Tune on your eval set and you've built a mirror: it will always say
 you're doing great, because you optimized against the exact thing measuring you. Keep it sealed and it
 becomes an instrument. State this explicitly in your repo: *this corpus is held out; tuning against it
@@ -65,13 +69,15 @@ a change drops below them. Now swapping a prompt, a model, or a scoring rule can
 tool — the gate catches the drift the day it's introduced, not the week after an incident. You'll prove
 the gate works by planting a regression and watching CI go red.
 
-**Property tests fuzz the boundary the examples missed.** Your M2 validator has example-based tests: a few
-known-bad payloads it must reject. But you wrote those examples, so they encode *your* imagination of
-malformed input — the adversary's job is to find the input you didn't imagine. `hypothesis` inverts this:
-you state a **property** ("the validator either returns a well-formed `Alert` or raises `ValidationError`
-— it never returns a half-parsed object, and never crashes on some other exception") and it *generates*
-hundreds of adversarial inputs trying to break it, then **shrinks** any failure to the minimal reproducing
-case. This is the same *parse, don't trust* discipline from M2 and M7, now turned on the parser itself.
+**Property tests fuzz the boundary the examples missed.** Your M2 EVE validator has example-based tests: a
+few known-bad `eve.json` lines it must reject (the truncated line, `severity: 5`, the unhandled
+`event_type`). But you wrote those examples, so they encode *your* imagination of malformed input — the
+adversary's job is to find the input you didn't imagine. `hypothesis` inverts this: you state a
+**property** ("the `AlertEvent`/union validator either returns a well-formed event *or* raises
+`ValidationError` — it never returns a half-parsed object, and never crashes on some other exception") and
+it *generates* hundreds of adversarial EVE-shaped inputs trying to break it, then **shrinks** any failure
+to the minimal reproducing case. This is the same *parse, don't trust* discipline from M2 and M7, now
+turned on the parser itself.
 
 **Supply-chain gating is measurement too — of your dependency graph.** `pip-audit` cross-checks your
 locked graph against the PyPI Advisory Database and fails on a known-vulnerable version; the hash-locked
@@ -124,10 +130,10 @@ build red for the same reason a triage regression does.
 
 ## Key concepts
 - **Eval-as-code:** inputs + expected labels + a scorer → a number you can assert on in CI (`pydantic-evals`: `Case`/`Dataset`/evaluator).
-- **Held-out corpus:** never tune against your eval set — doubly enforced; say so in the repo, or the score is a mirror.
+- **Held-out corpus:** real Suricata `alert` events labelled TP/FP — never tune against your eval set; say so in the repo, or the score is a mirror.
 - **Metric on purpose:** precision vs recall by the *cost of being wrong*; accuracy lies on imbalanced alert data.
 - **Regression gate:** assert thresholds in CI so a prompt/model/rule change can't silently degrade `sift` — proven by a planted regression.
-- **Property tests:** `hypothesis` *generates* adversarial input and *shrinks* failures — fuzzes the M2 validator beyond your examples.
+- **Property tests:** `hypothesis` *generates* adversarial EVE-shaped input and *shrinks* failures — fuzzes the M2 `AlertEvent`/union validator beyond your examples.
 - **Supply-chain gate:** `pip-audit` + hash-locked lockfile fail the build on a vulnerable or drifted dependency graph — the M1 loop, enforced.
 
 ## AI acceleration

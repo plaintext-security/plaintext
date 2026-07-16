@@ -31,12 +31,15 @@ agent.
 
 ## The core idea
 
-**An MCP server is an API whose caller is an LLM — so validate every argument.** Exposing `sift.enrich`
-as an MCP tool (with `FastMCP`, `@mcp.tool()`) is a few lines: the type hints and docstring become the
-schema the model sees. But the model can be manipulated into calling it with `"1.1.1.1; drop table"` or a
-path-traversal string, so the tool validates its arguments with Module 02's `pydantic` models before
-doing anything. Prefer **read-only** tools; if a tool changes state, gate it behind explicit human
-confirmation rather than letting the model trigger it.
+**An MCP server is an API whose caller is an LLM — so validate every argument.** Exposing `sift`'s
+enrich/triage as MCP tools (with `FastMCP`, `@mcp.tool()`) is a few lines: the type hints and docstring
+become the schema the model sees. The tools operate over the **real indicators `sift` already derives from
+validated `AlertEvent`s** — a `src_ip`/`dest_ip` or a `signature` — not some invented indicator blob. But
+the model can be manipulated into calling `enrich` with `"1.1.1.1; drop table"` or a path-traversal string,
+so the tool re-validates its arguments with Module 02's canonical EVE `pydantic` models (an
+`IPvAnyAddress`, an `AlertEvent`) before doing anything — the LLM's argument is untrusted input exactly
+like a raw `eve.json` line. Prefer **read-only** tools; if a tool changes state, gate it behind explicit
+human confirmation rather than letting the model trigger it.
 
 **`instructor` makes the LLM's output a typed object, not a hope.** When `sift` asks a model to classify
 an alert, you don't want a paragraph you regex — you want a validated `Verdict(severity=..., is_tp=...)`.

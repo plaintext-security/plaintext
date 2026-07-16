@@ -1,15 +1,16 @@
 # Module 04 — Async & Structured Concurrency
 
-*Type 7 · Build-&-Operate — enrich N indicators against a threat-intel API concurrently without becoming a thundering herd: bound the concurrency, back off on `429`, and survive partial failure. The toil eliminated is the sync loop that takes an hour; the disaster averted is getting your API key banned. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
+*Type 7 · Build-&-Operate — enrich the IPs pulled from your validated `AlertEvent`s against a threat-intel API concurrently without becoming a thundering herd: bound the concurrency, back off on `429`, and survive partial failure. The toil eliminated is the sync loop that takes an hour; the disaster averted is getting your API key banned. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
 *Last reviewed: 2026-07*
 
 **Python for Security** — *the copilot writes the enrichment loop in seconds; your edge is the bound it forgot to put on it.*
 
 !!! abstract "In 60 seconds"
-    `sift` now parses a large feed and asks the obvious next question: *is this indicator known-bad?*
-    Answering means calling a threat-intel API once per indicator. Do it in a sync loop and 10,000
-    indicators take an hour of mostly *waiting* — enrichment is I/O-bound, so it's the perfect case for
+    `sift` now parses a large `eve.json` into validated `AlertEvent`s (Module 02) and asks the obvious
+    next question: *are the IPs in these alerts known-bad?* Answering means pulling the `src_ip` /
+    `dest_ip` off each alert and calling a threat-intel API once per unique IP. Do it in a sync loop and
+    10,000 IPs take an hour of mostly *waiting* — enrichment is I/O-bound, so it's the perfect case for
     **async concurrency**. But the copilot's fix — `asyncio.gather` over all 10,000 at once — is worse
     than the loop: it's a **thundering herd** that opens thousands of connections, floods the API, and
     gets you rate-limited or key-banned in seconds. This module teaches the middle path: **bounded**
@@ -38,7 +39,8 @@ indicators* from one that *operates against a real API at scale*.
 
 ## Objective
 
-Add an async enricher to `sift` that queries a threat-intel API for every indicator with **bounded**
+Add an async enricher to `sift` that queries a threat-intel API for every IP pulled off your validated
+`AlertEvent`s (the `src_ip` / `dest_ip` fields) with **bounded**
 concurrency, **honors `Retry-After` on `429`** with exponential backoff, reuses a single connection-pooled
 `httpx.AsyncClient`, and returns a result for *every* indicator — success or a recorded failure — without
 one bad call sinking the batch. Prove the bound holds and the backoff fires under a simulated rate limit.
