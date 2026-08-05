@@ -54,6 +54,15 @@ Complete Track 00 — Foundations first.
 > flaws.cloud). Never test accounts or tenants you don't own, and tear down billable
 > resources when done.
 
+> **Local AWS emulator — floci, not LocalStack.** Several labs (IAM, KMS, secrets, serverless)
+> run offline against [floci](https://github.com/floci-io/floci), a free, MIT-licensed local AWS
+> emulator, so they cost nothing and need no account. We moved to floci because LocalStack's
+> community edition sunset in March 2026 — a small real-world lesson in OSS sustainability. Because
+> the labs drive plain `aws` via `AWS_ENDPOINT_URL` (not a LocalStack-branded wrapper), you can point
+> the same lab at a real AWS account you own to see genuine IAM/KMS enforcement. A local emulator
+> fakes the *API*, not AWS's *enforcement* — where a lesson needs real enforcement or real detection
+> (posture scanning, CloudTrail/GuardDuty), the lab says so.
+
 ## Capstone
 The capstone is the Phase 3 project — it integrates all three phases. Run the full cloud-attack loop
 against a deliberately vulnerable account: **simulate** a real attack (`stratus-red-team` / Pacu),

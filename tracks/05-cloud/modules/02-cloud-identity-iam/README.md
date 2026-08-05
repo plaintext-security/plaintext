@@ -146,7 +146,7 @@ modules, so it's worth the time. Read the case above first, then go deep on the 
 
 **The evaluation rulebook (~1 hr)**
 - [AWS — IAM policy evaluation logic](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) (~30 min) — the primary source for explicit-deny > allow > implicit-deny. Read the flowchart and the "Determining whether a request is allowed or denied within an account" section; everything in this module is an application of that one diagram.
-- [AWS — `simulate-principal-policy` (CLI reference)](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html) (~15 min) — the command that *runs* that logic for you and returns `allowed`/`explicitDeny`/`implicitDeny`. This is how the lab proves a wall holds without LocalStack enforcing it.
+- [AWS — `simulate-principal-policy` (CLI reference)](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html) (~15 min) — the command that *runs* that logic for you and returns `allowed`/`explicitDeny`/`implicitDeny`. This is how the lab proves a wall holds without the local emulator enforcing it.
 - [AWS — Grant least privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege) (~15 min) — the official best-practice section; treat it as the gap analysis checklist against the findings.
 
 **The escalation that the reach hides (~1 hr)**

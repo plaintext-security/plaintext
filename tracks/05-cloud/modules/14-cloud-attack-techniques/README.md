@@ -118,7 +118,7 @@ best public reference for what each attack looks like in the logs. Read the case
 
 **The detonation tools (~1 hr)**
 - [Stratus Red Team — attack technique list](https://stratus-red-team.cloud/attack-techniques/list/) (~25 min) — browse the AWS techniques; each card gives the detonation, the exact API calls fired, **and a sample CloudTrail event**. Best public cloud-attack log reference there is.
-- [Stratus Red Team — GitHub README](https://github.com/DataDog/stratus-red-team) (~15 min, skim) — quick-start and the endpoint/`--localstack`-style workflow you'll use in the lab.
+- [Stratus Red Team — GitHub README](https://github.com/DataDog/stratus-red-team) (~15 min, skim) — quick-start and the local-endpoint workflow you'll use in the lab.
 - [Pacu — Getting Started wiki](https://github.com/RhinoSecurityLabs/pacu/wiki) (~20 min) — the `run`/`search`/`exec` model; Pacu is for *chain* reasoning (enumerate → find over-priv role → assume → re-enumerate), Stratus for *atomic* detonation.
 
 **The adversary, for real (~30 min)**

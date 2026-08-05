@@ -37,7 +37,7 @@ Module 01's reveal from a thing you *understood* into a thing you *built*.
 
 ## Objective
 
-Build envelope encryption against a real KMS (LocalStack), then author and verify a key policy that
+Build envelope encryption against a local KMS (the floci emulator), then author and verify a key policy that
 separates who *manages* the key from who *uses* it — and prove, with a checker, that an over-broad
 policy fails and your scoped one passes. Walk away able to answer the auditor's real question: *who,
 exactly, can decrypt our data?*
