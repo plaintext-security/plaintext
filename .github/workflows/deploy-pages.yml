@@ -1,0 +1,64 @@
+name: Deploy to GitHub Pages
+
+# Builds the MkDocs site and publishes it to GitHub Pages. Both plaintext and
+# the plaintext-labs submodule are public, so the default GITHUB_TOKEN can read
+# the submodule (no PAT needed) and Actions minutes are free/unlimited on public
+# repos. Cloudflare is no longer involved: GitHub Pages hosts the built site.
+#
+# One-time setup (done via the API, but for reference):
+#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deploy; don't cancel an in-progress publish (Pages best
+# practice — a half-finished deploy should complete).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (incl. public plaintext-labs submodule)
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+        with:
+          submodules: true
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs
+        run: pip install -r requirements.txt
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build site
+        run: mkdocs build --strict
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
