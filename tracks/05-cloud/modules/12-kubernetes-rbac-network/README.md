@@ -2,7 +2,7 @@
 
 *Type 4 · Audit→Build→Verify (+ Type 8 · Judgment-as-Code) — ship a cluster the way Tesla shipped it (cluster-admin SA, flat pod network), prove the cost, then author least-privilege RBAC and a default-deny NetworkPolicy and re-verify the cut. (Secondary: Judgment-as-Code — a gate that fails the over-broad binding before merge.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *Kubernetes RBAC is cloud IAM again, but for the cluster — a ServiceAccount is a principal, a Role is a policy, and a default-allow pod network is the flat LAN you'd never ship on-prem.*
 
@@ -28,6 +28,13 @@ infrastructure, going to some lengths to hide it (a private mining pool, traffic
 CPU usage to stay under the radar). This is the canonical container breach shape — **K8s misconfig →
 cloud credentials → cloud compromise** — and almost none of it was an exploit. The dashboard was simply
 open, and the pod's environment was simply readable.
+
+```mermaid
+flowchart LR
+    D["Kubernetes dashboard<br/>❌ public, no auth"] -->|issue commands| P["Pod on the cluster<br/>SA token auto-mounted"]
+    P -->|read pod env / Secret| K["AWS keys in plaintext<br/>❌ over-broad reach"]
+    K -->|valid cloud creds| C["Cryptojacking on<br/>Tesla's AWS"]
+```
 
 That chain has two legs you'll build the defense for in this module. The first leg is *who inside the
 cluster can read what* — RBAC. The second is *which pod can reach which pod* — Network Policy. Tesla lost
@@ -60,6 +67,26 @@ relabelled for the cluster:
     You already wrote this evaluation for AWS in module 02 — just relabel it for the cluster. Subject →
     Binding → Role (`verbs` × `resources` × `apiGroups`), and `cluster-admin` *is* the `Resource: "*"`.
 
+The piece that trips people is that **the binding sets the scope, not the Role.** A subject gets its
+permissions by being named in a binding; the binding's *kind* decides how far those permissions reach.
+
+```mermaid
+flowchart LR
+    S["Subject<br/>ServiceAccount · user · group"] --> B{"Binding<br/>sets the scope"}
+    B -->|RoleBinding| NS["→ one namespace"]
+    B -->|ClusterRoleBinding| ALL["→ every namespace"]
+    NS --> P["permissions =<br/>verbs × resources × apiGroups"]
+    ALL --> P
+    P -. "cluster-admin = verbs:* on *:*" .-> X["the Resource: '*' of Kubernetes"]
+```
+
+| | Namespaced | Cluster-wide |
+|---|---|---|
+| **The policy (rules)** | `Role` — verbs in one namespace | `ClusterRole` — reusable verbs, cluster-wide |
+| **The grant (attachment)** | `RoleBinding` — grants within its namespace | `ClusterRoleBinding` — grants across every namespace |
+| **Scope is set by** | the **binding**, not the Role | the binding (cluster-wide) |
+| **The gotcha** | a RoleBinding *can* reference a ClusterRole — permissions then apply only in the binding's namespace | a ClusterRoleBinding to `cluster-admin` = every Secret, every namespace (the Tesla path) |
+
 The one difference that bites is the **default**. In AWS, a new principal can do *nothing* until you
 grant it. In Kubernetes, every pod gets the `default` ServiceAccount's token **auto-mounted at
 `/var/run/secrets/...` unless you explicitly say `automountServiceAccountToken: false`** — so a
@@ -67,6 +94,18 @@ compromised process always has *a* token to the API server, whether the app uses
 to anything broad and you've handed the attacker the cluster. `cluster-admin` is the `Resource: "*"` of
 Kubernetes: it can read every Secret in every namespace — which, in the Tesla shape, is where the cloud
 keys live.
+
+```mermaid
+flowchart LR
+    subgraph FLAT["Default: flat pod network (no NetworkPolicy)"]
+        A1["pod · ns default"] -->|any port| B1["payments-api<br/>ns payments"]
+        E1["pod · ns other"] -->|any port| B1
+    end
+    subgraph SEG["After default-deny + targeted allow"]
+        A2["frontend pod<br/>app=frontend"] -->|":8080 allowed"| B2["payments-api<br/>ns payments"]
+        E2["any other pod"] -. denied .-> B2
+    end
+```
 
 The network half is the same story in a different plane. **Kubernetes ships with a flat pod network:
 with no NetworkPolicy, every pod can reach every other pod on every port, across namespaces.** That is
@@ -100,23 +139,24 @@ Benchmark, section 5 covers RBAC and policies) is the baseline audit and, run in
     constrains the pod — and it will happily write a NetworkPolicy that looks right but leaves a namespace
     uncovered. Validate the RBAC cut with `kubectl auth can-i` and the network cut with a real probe.
 
-## Learn (~3.5 hrs)
+## Go deeper (~3.5 hrs · optional)
 
-*Build-first module — read enough to write correct RBAC and NetworkPolicy, then go build. The bridge
-(it's IAM again) is above; these carry the mechanism and the breach detail.*
+*The bridge above (it's IAM again, one layer down) is enough to build the cut. These are optional depth
+and primary sources, grouped by what they carry — read enough to write correct RBAC and NetworkPolicy,
+then go build.*
 
 **The anchor (~30 min)**
-- [CyberScoop — Tesla falls victim to cryptomining scheme (RedLock's finding)](https://cyberscoop.com/tesla-cryptomining-redlock-cloud-breach/) (~15 min) — reporting on RedLock's discovery: an open Kubernetes console exposed AWS S3 credentials, which attackers used to mine cryptocurrency behind deliberate evasion. Read for the *shape* — open dashboard → cloud creds → abuse — which you'll rebuild.
-- [k8s.af — Kubernetes Failure Stories](https://k8s.af/) (~15 min, browse) — the community catalogue of real K8s post-mortems; skim for how often "open API / over-broad SA / flat network" recurs.
+- [CyberScoop — Tesla falls victim to cryptomining scheme (RedLock's finding)](https://cyberscoop.com/tesla-cryptomining-redlock-cloud-breach/) (~15 min · breach report) — reporting on RedLock's discovery: an open Kubernetes console exposed AWS S3 credentials, which attackers used to mine cryptocurrency behind deliberate evasion. Read for the *shape* — open dashboard → cloud creds → abuse — which you'll rebuild.
+- [k8s.af — Kubernetes Failure Stories](https://k8s.af/) (~15 min, browse · reference) — the community catalogue of real K8s post-mortems; skim for how often "open API / over-broad SA / flat network" recurs.
 
 **Kubernetes RBAC (~1.5 hrs)**
-- [Kubernetes docs — Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) (~45 min) — the primary reference; read "Role and ClusterRole", "RoleBinding and ClusterRoleBinding", and "ServiceAccount permissions". The default ClusterRoles table is worth memorising.
-- [NCC Group — Deep Dive into Real-World Kubernetes Threats](https://www.nccgroup.com/research-blog/deep-dive-into-real-world-kubernetes-threats/) (~30 min) — a practitioner walkthrough of the RBAC half of the chain: a compromised pod's service-account token → the API server → namespace traversal → cluster-wide takeover. The mechanics behind "over-broad SA + flat cluster = one credential path."
+- [Kubernetes docs — Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) (~45 min · primary source) — read "Role and ClusterRole", "RoleBinding and ClusterRoleBinding", and "ServiceAccount permissions". The default ClusterRoles table is worth memorising.
+- [NCC Group — Deep Dive into Real-World Kubernetes Threats](https://www.nccgroup.com/research-blog/deep-dive-into-real-world-kubernetes-threats/) (~30 min · practitioner) — a practitioner walkthrough of the RBAC half of the chain: a compromised pod's service-account token → the API server → namespace traversal → cluster-wide takeover. The mechanics behind "over-broad SA + flat cluster = one credential path."
 
 **Network Policy & kube-bench (~1 hr)**
-- [Kubernetes docs — Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) (~25 min) — read "The NetworkPolicy resource" and "Default policies" for the opt-in / default-deny model.
-- [Ahmet Alp Balkan — Network Policy Recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) (~20 min, reference) — short, working YAML for deny-all, allow-from-namespace, allow-port; keep it open during the lab.
-- [kube-bench README](https://github.com/aquasecurity/kube-bench) (~15 min) — what CIS controls it covers and how to read scored vs. unscored, FAIL vs. WARN.
+- [Kubernetes docs — Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) (~25 min · primary source) — read "The NetworkPolicy resource" and "Default policies" for the opt-in / default-deny model.
+- [Ahmet Alp Balkan — Network Policy Recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) (~20 min · reference) — short, working YAML for deny-all, allow-from-namespace, allow-port; keep it open during the lab.
+- [kube-bench README](https://github.com/aquasecurity/kube-bench) (~15 min · tool docs) — what CIS controls it covers and how to read scored vs. unscored, FAIL vs. WARN.
 
 ## Key concepts
 - RBAC *is* cloud IAM for the cluster: Subject → Binding → Role (`verbs` × `resources` × `apiGroups`); `cluster-admin` is the `Resource:"*"`

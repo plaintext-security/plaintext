@@ -2,7 +2,7 @@
 
 *Type 6 · Reconstruct (+ Type 5 · Detonate & Detect) — cloud IR is rebuilding the timeline from an immutable API log, not disk forensics; predict what the responders missed, then reconstruct the LastPass two-stage chain. (Secondary: Detonate & Detect — the track's payoff, run under pressure.) [Go to the hands-on lab →](lab.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *the attacker left in the API log; cloud IR is reconstruction from an immutable record, not disk forensics. This is the payoff — everything the track taught, run under pressure.*
 
@@ -52,6 +52,22 @@ when, in what order — **pull the IOCs**, **scope the blast radius**, and **con
 Then you'll do the part that makes it repeatable: **extend a triage script** so the reconstruction is
 automated — the super-timeline move, sorting heterogeneous events by their one shared key, *time*. Your
 deliverable is a real IR artifact: the timeline, the IOC set, and the automation that builds them.
+
+The engagement runs a fixed lifecycle — and cloud puts a twist on it. Because you cannot revoke
+exfiltrated data or un-plant persistence you haven't found, **contain loops back to scope** until you're
+certain you've reached every foothold. That loop is the LastPass lesson drawn as a state machine: the
+first response ran straight from contain to "closed" and skipped the re-scope.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Detect: GuardDuty alert / trail anomaly
+    Detect --> Scope: reconstruct the super-timeline
+    Scope --> Contain: revoke creds, close exfil channels
+    Contain --> Scope: new IOC found — re-scope
+    Contain --> Eradicate: remove persistence (2nd keys, replication rule, role trust)
+    Eradicate --> Recover: restore logging, rotate, monitor
+    Recover --> [*]
+```
 
 ## Call it before you read on
 
@@ -115,6 +131,20 @@ report; the log records are the evidence under it. The methodology is exactly wh
 **hayabusa** do for Windows event logs (ingest, sort, tag, output a sorted timeline) — the source changes,
 the move doesn't.
 
+The investigation itself is a set of pivots on the three fields every record carries — *who* (principal),
+*where from* (source IP), and *when* (time). You confirm the trail is whole, then pivot on the attacker's
+identity and IP, then sort on time and tag by phase. Here that is, over this lab's real export:
+
+```mermaid
+flowchart LR
+    A(["Raw CloudTrail export"]) --> Q{"Is the trail intact?<br/>find StopLogging / StartLogging"}
+    Q -->|gap found| G["❌ gap 02:18–08:35<br/>~6h 17m blind = evidence"]
+    Q -->|trail trusted| P["Pivot on principal<br/>dev-alice → AssumedRole"]
+    P --> I["Pivot on source IP<br/>203.0.113.42 (off-hours)"]
+    I --> T["Sort on time,<br/>tag each by kill-chain phase"]
+    T --> N(["Defensible narrative"])
+```
+
 !!! note "The mental model"
     The log is the crime scene. Cloud IR is reconstruction from an immutable API record, not disk
     forensics — so the first question is always "is the trail intact?" (a `StopLogging` gap is itself
@@ -135,7 +165,7 @@ flowchart LR
     M --> T
 ```
 
-??? note "Go deeper: why two planes beat one"
+??? note "Background: why two planes beat one"
     Control plane (CloudTrail) tells you *what API was called by whom*; data plane (flow logs) tells you
     *how many bytes left, to where*. Either alone is a lead. An `AssumeRole` + mass `GetObject` in
     CloudTrail that lines up with a hundreds-of-megabyte outbound flow to an external IP is a *defensible
@@ -147,6 +177,21 @@ corroboration from flow logs** — are the two planes every cloud incident lives
 `GetObject` in CloudTrail that lines up with a hundreds-of-megabyte outbound flow to an external IP is a
 **defensible exfiltration finding.** Either alone is a lead; together they're a verdict.
 
+Once the narrative is defensible, containment is an *ordered* set of actions, not a scramble — and the
+order matters, because restoring logging before you've revoked the attacker's credentials just gives them
+a clean audit trail of your response. Here is the sequence, grounded in this incident's own IOCs:
+
+| Order | Contain action | Against this incident |
+|---|---|---|
+| 1 | **Revoke credentials** | Disable *both* keys — the original `AKIAIOSFODNN7EXAMPLE` **and** the planted `AKIAI7SFODNN7EXAMPLE`; kill the `AssumedRole` session |
+| 2 | **Close exfil channels** | Delete the `PutBucketReplication` rule pointing to external account `999999999999` |
+| 3 | **Isolate / block** | Block source IP `203.0.113.42`; scope the role's trust so it can't be re-assumed |
+| 4 | **Snapshot / preserve** | Export the trail and snapshot affected resources *before* remediation overwrites state — evidence first |
+| 5 | **Restore logging, then scope** | Re-enable the stopped `main-trail`; only now is it safe, and now you re-scope for anything missed |
+
+The LastPass failure lives in the gap between rows 1 and 5: the first response revoked and moved on
+without the re-scope that row 5 forces — so the planted second foothold survived.
+
 !!! tip "AI caveat"
     A model is a useful first-pass tagger — map a sequence of API calls to ATT&CK-for-Cloud techniques,
     flag order anomalies. But IR judgment lives exactly where models are weak: *temporal reasoning and
@@ -154,20 +199,22 @@ corroboration from flow logs** — are the two planes every cloud incident lives
     persistence mechanism, and it can't tell an attacker covering tracks from a benign trail rotation.
     Draft the tags with it; own the sequencing, the gap analysis, and the verdict.
 
-## Learn (~3.5 hrs)
+## Go deeper (~3.5 hrs · optional)
 
-*The track's last module before the capstone — curate a bit more, because IR pulls together identity
-(02/03), logging (15), and attacker TTPs (14) all at once.*
+*The reconstruction discipline is yours to own — the spine and the diagrams above teach it, and you can
+do the lab from them alone. These links go to the primary post-mortem and the tooling; they are the
+depth, not the path. It's the track's last module before the capstone, so it curates a bit more, because
+IR pulls together identity (02/03), logging (15), and attacker TTPs (14) at once.*
 
-**The case — read the primary post-mortem (~45 min)**
+**The case — read the primary post-mortem (~45 min) — the case-study seam**
 - [LastPass — "Notice of Recent Security Incident" + the December update](https://blog.lastpass.com/posts/2022/12/notice-of-recent-security-incident) (~30 min) — the breached company's own disclosure of the two-incident chain. Read it as an IR artifact: notice how the *first* incident's stolen data is named as the *second* incident's recon. This is your anchor; the first-party RCA is the most credible "what failed" source there is.
 - [UpGuard — The LastPass Data Breach: timeline and key lessons](https://www.upguard.com/blog/lastpass-vulnerability-and-future-of-password-security) (~15 min, skim) — the engineer's home machine, the Plex keylogger, the four key-holders, the backup decryption keys. The hop-by-hop the verdict rests on.
 
-**Cloud IR frameworks (~1 hr)**
+**Cloud IR frameworks (~1 hr)** *(`[depth]` — the lifecycle diagram above already frames the engagement; read for the authoritative AWS statement of it)*
 - [AWS Security Incident Response Guide](https://docs.aws.amazon.com/security-ir/latest/userguide/welcome.html) (~40 min) — read **"Detection and Analysis"** and the forensics workflow; skip the org sections. The primary AWS source for how a cloud IR engagement is structured.
 - [CloudTrail — `userIdentity` element reference](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-user-identity.html) (~20 min) — the most forensically rich field in a record. Learn the difference between `IAMUser`, `AssumedRole`, `Root`, and `AWSService` and what each implies — the `IAMUser`→`AssumedRole` transition *is* the privilege-escalation hop in the lab.
 
-**Timeline reconstruction (~1.5 hrs)**
+**Timeline reconstruction (~1.5 hrs)** *(`[depth]` — the super-timeline move is taught above; these show it applied at scale to real cases)*
 - [Hayabusa — GitHub README](https://github.com/Yamato-Security/hayabusa) (~30 min) — the canonical sort-tag-output timeline tool. It targets Windows event logs, but read it for the **methodology** (ingest → Sigma-tag → sorted timeline) — that's exactly what you port to CloudTrail in the lab. Don't get lost in the Windows specifics.
 - [The DFIR Report — pick one recent cloud/AWS intrusion writeup](https://thedfirreport.com/) (~1 hr) — browse for an AWS-related case; the attack chains are real, the timelines are explicit, and you'll see the super-timeline discipline applied to a genuine incident. Read it asking "what's their join key, and where's their gap?"
 

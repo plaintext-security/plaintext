@@ -2,7 +2,7 @@
 
 *Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — model the account as a graph and predict which ordinary permissions chain to admin. (Secondary: Audit→Build→Verify — find the minimum cut-set, implement it, and re-run the graph to prove the edge is gone.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *privilege escalation in the cloud isn't a vulnerability; it's a path through a graph that legitimate permissions drew for you.*
 
@@ -31,6 +31,17 @@ launch action (`ec2:RunInstances`, `lambda:CreateFunction`) lets you hand an adm
 resource you control and *become* it. `iam:AttachUserPolicy` lets you attach `AdministratorAccess` to
 yourself. Each is one line in a policy. None is a CVE. Every one is admin.
 
+```mermaid
+flowchart LR
+    P(["low-priv principal<br/>no admin, no iam:* — looks safe"])
+    Adm["is_admin node<br/>iam:* s3:* *:*"]
+    P -->|"iam:CreatePolicyVersion — write Allow *:* into own policy"| Adm
+    P -->|"iam:AttachUserPolicy — attach AdministratorAccess"| Adm
+    P -->|"iam:PassRole + ec2:RunInstances / lambda:CreateFunction — donate an admin role to compute you control"| Adm
+    P -->|"sts:AssumeRole — hop into a more-powerful role"| Adm
+    R["s3:GetObject / cloudwatch:GetMetricData"] -. reach only — grants no new power, draws NO edge .-> P
+```
+
 The catalogue's real lesson isn't the list — it's that these paths are **invisible to policy review.**
 A human reading flat policy documents one at a time cannot see that user A can assume role B, which can
 pass role C to a Lambda, which has `iam:*`. No single step looks alarming; the *composition* is total
@@ -48,6 +59,15 @@ low-privilege user to admin, find the **minimum cut-set** — the smallest set o
 disconnects *every* path to admin — then **implement the cut and re-run the graph to prove the edge is
 gone.** That last beat is what separates an assessment from a report: in IAM, "fixed" means the path no
 longer exists in the graph, not that someone wrote a recommendation.
+
+```mermaid
+flowchart LR
+    E["Enumerate<br/>cloudfox: principals, policies, role-trusts"] --> M["Map<br/>pmapper: build the directed graph"]
+    M --> F{"Reachable<br/>is_admin node?"}
+    F -->|path found| C["Cut<br/>minimum cut-set — scope iam:PassRole Resource"]
+    F -->|no path| Clean["Clean — proven, not promised"]
+    C -->|implement, then re-run| M
+```
 
 ## Call it before you read on
 
@@ -123,7 +143,7 @@ not to cut more than disconnects the graph. And — the beat that makes the verd
 at naming the cut. You apply it and **re-run the analysis**: a fixed account is one where the path finder
 reports *no paths to admin*, proven, not promised.
 
-??? note "Go deeper: why 'cut-set,' not 'cut'"
+??? note "Background: why 'cut-set,' not 'cut'"
     Severing one edge breaks one path. If a second path reaches admin through different edges, the
     account is still compromised — so the deliverable is the *minimum cut-set*: the smallest set of edges
     whose removal disconnects *all* source-to-admin paths. The graph tells you which edge is cheapest
@@ -137,22 +157,29 @@ reports *no paths to admin*, proven, not promised.
     execution, ECS task roles). Treat its path list — and every claimed *absence* of a path — as a
     hypothesis, and validate against the `pmapper`/`cloudfox` graph. You own the graph.
 
-## Learn (~4 hrs)
+## Go deeper (~4.5 hrs · optional)
 
-*Richer than a foundations module: the graph model here is the backbone of the Phase-1 project and the
-capstone, so the time is well spent. Read Rhino's catalogue first — it's the source the tools encode.*
+*The sections above teach the graph model end-to-end — you can build the account graph and find the
+cut-set from them alone. These links go to the **primary research** (Rhino's catalogue is what the tools
+encode) and deepen the case study; they are not the path you must click through to understand the module.
+Read Rhino's catalogue first. Optional depth is tagged `[depth]`.*
 
 **The escalation catalogue (~1.5 hrs)**
 - [Rhino Security Labs — AWS IAM Privilege Escalation — 21 Methods](https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/) (~1 hr) — the primary research this whole module rests on. Read the PassRole, CreatePolicyVersion, AttachUserPolicy, and AssumeRole sections closely (those are the edges in the lab graph); skim the rest as a reference for *what a privesc edge looks like.*
 - [MITRE ATT&CK T1548 — Abuse Elevation Control Mechanism: Cloud](https://attack.mitre.org/techniques/T1548/) and [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) (~30 min) — the technique IDs your finding cites; map each lab hop to one.
+
+**The over-broad role in the wild — the case-study seam (~30 min)**
+*The escalation primitives above are the abstract edge; Capital One is that edge detonated in production. In the [Cloud Fundamentals](../01-cloud-fundamentals/README.md) breach, the exfil hop was a server role scoped to read **every** bucket — one over-broad `Resource: "*"` grant, exactly the edge `pmapper` draws and you cut here.*
+- [DOJ indictment — United States v. Thompson (Capital One)](https://www.justice.gov/usao-wdwa/press-release/file/1188626/download) (~15 min) — the primary source for the over-permissioned role hop; read it as *what a single `Resource: "*"` grant costs when a foothold reaches it.*
+- [Krebs on Security — the Capital One breach, explained](https://krebsonsecurity.com/2019/08/what-we-can-learn-from-the-capital-one-hack/) (~15 min) — the clearest public walk-through of the SSRF→IAM chain; corroborates the indictment with a second source.
 
 **The graph model and the tools (~1.5 hrs)**
 - [tecRacer — Map out your IAM with PMapper](https://www.tecracer.com/blog/2021/08/map-out-your-iam-with-pmapper.html) (~30 min) — a walkthrough of *why* modeling IAM as a directed graph is the right abstraction: it works a concrete multi-hop chain (a developer edits a Lambda, borrows its existing role, mints an admin policy) that flat, policy-by-policy review would never surface.
 - [pmapper — README (NCC Group)](https://github.com/nccgroup/PMapper) (~40 min) — read "how it works," then `pmapper graph create`, `pmapper analysis`, and `pmapper query`. This is the tool that turns the model above into a query.
 - [BishopFox — cloudfox README (`permissions`, `role-trusts`)](https://github.com/BishopFox/cloudfox) (~20 min) — the enumeration accelerator you'll use to corroborate the graph against the live policies.
 
-**The scenario range (~1 hr)**
-- [CloudGoat — README and the `iam_privesc_by_*` scenarios (Rhino Security Labs)](https://github.com/RhinoSecurityLabs/cloudgoat) (~1 hr) — the same author's attack range; read one `iam_privesc_by_rollback` or `iam_privesc_by_key_rotation` scenario writeup so you've seen a privesc path run end-to-end in a *real* account, where IAM is actually enforced. The stretch re-runs the lab there.
+**The scenario range (~1 hr)** *(`[depth]` — the lab and its stretch already run this; read to see a privesc path enforced in a real account)*
+- [CloudGoat — README and the `iam_privesc_by_*` scenarios (Rhino Security Labs)](https://github.com/RhinoSecurityLabs/cloudgoat) (~1 hr) — the same author's attack range; read one `iam_privesc_by_rollback` or `iam_privesc_by_key_rotation` scenario writeup so you've seen a privesc path run end-to-end in a *real* account, where IAM is actually enforced. The stretch re-runs the lab there. `[depth]`
 
 ## Key concepts
 - The account is a **directed graph**: principals are nodes, an edge means "A can become B," privesc is reachability to an `is_admin` node

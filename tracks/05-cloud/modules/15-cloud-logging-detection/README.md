@@ -2,7 +2,7 @@
 
 *Type 5 · Detonate & Detect (+ Type 13 · Eval Harness) — take module 14's telemetry, predict which actions the default log captured, and write a Sigma rule for the one worth detecting. (Secondary: Eval Harness — tune against benign noise until it fires on the attack and not the noise, with an explicit false-positive analysis.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *detection is not a logging problem; it's an attention problem. The log was always there.*
 
@@ -63,7 +63,20 @@ Don't scroll. Commit to these — being wrong is the teaching event, and you'll 
 
 ## What fires, revealed
 
-Hold your answers against these.
+Hold your answers against these. One picture carries the whole module — every API call lands in
+CloudTrail, but the two planes it splits into decide what a detector can *ever* see, and whether the
+rule that reads them survives to week two:
+
+```mermaid
+flowchart LR
+    API["every AWS API call"] --> CT["CloudTrail records it"]
+    CT --> MGMT["Management events<br/>AssumeRole · CreateUser · AttachUserPolicy<br/>on by default, free"]
+    CT -.-> DATA["Data events<br/>s3:GetObject · dynamodb:GetItem<br/>❌ off by default, costly, high-volume"]
+    MGMT --> DET["detector / Sigma rule"]
+    DATA -.T1530 bulk exfil — dark by default.-> DET
+    DET -->|precise: tuned on benign| ALERT["an alert a tired analyst still reads"]
+    DET -->|noisy: fires on every CreateUser| MUTE["❌ muted by week two = no coverage"]
+```
 
 **Q1 — the data plane is dark by default.** CloudTrail splits into two planes, and the split is the
 single most important gotcha in cloud detection. **Management events** — `AssumeRole`, `CreateUser`,
@@ -108,6 +121,50 @@ strength is one-click coverage of common patterns, their weakness is opacity and
 Cloud matrix. The practitioner posture is not "native or open" — it's **native as the baseline, Sigma
 for the gap, and every rule tuned against benign traffic before it's trusted.**
 
+The reason Sigma is the gap-filler and not a one-off script is that one rule, written once, compiles to
+every backend you might run — that's what makes a *judgment* into version-controlled detection-as-code:
+
+```mermaid
+flowchart LR
+    Y["Sigma rule (YAML)<br/>logsource · detection · condition · falsepositives"] --> C["sigma convert<br/>(sigma-cli)"]
+    C -->|-t splunk| S["Splunk SPL"]
+    C -->|-t elastic| E["Elastic / ES-QL"]
+    C -->|-t loki| L["Grafana Loki"]
+    S --> Q["one rule → many SIEMs<br/>reviewed in a PR, tuned in git"]
+    E --> Q
+    L --> Q
+```
+
+And the "native as baseline, Sigma for the gap" posture is a decision you re-run per technique — never
+a one-or-the-other choice — and *both* paths still terminate in the same non-negotiable step:
+
+```mermaid
+flowchart TB
+    T["an ATT&CK Cloud technique"] --> N{"covered by a native<br/>detector finding type?"}
+    N -->|yes, common pattern| B["GuardDuty / Defender / SCC<br/>baseline — one-click, enriched"]
+    N -->|"no / lags the matrix"| G["gap"]
+    G --> SIG["write a Sigma rule<br/>over the same CloudTrail logs"]
+    B --> TUNE["tune against YOUR benign baseline"]
+    SIG --> TUNE
+    TUNE --> TRUST["a rule a tired analyst trusts at 3am"]
+```
+
+The two aren't competitors so much as different points on the same curve — read the contrast as *when
+each earns its place*, not which one wins:
+
+| | Native detector (GuardDuty / Defender / SCC) | Sigma over CloudTrail |
+|---|---|---|
+| **Setup** | One click; fully managed | You author → convert → deploy |
+| **Coverage** | Common patterns, pre-built | Anything you can express — fills the gap |
+| **Transparency** | Opaque scoring you can't read | Readable YAML you own and review |
+| **Freshness** | Vendor-paced; lags ATT&CK Cloud | You ship the day a technique lands |
+| **Tune to *your* baseline** | Limited knobs | Full — precision is yours to set |
+| **Enrichment (geo / ASN / threat-intel)** | Built in | You add it |
+| **Data-plane exfil (T1530)** | Blind if S3 data events were off | Blind if S3 data events were off |
+
+The last row is the point: the loudest attacker action is a blind spot for *both* unless someone turned
+S3 data events on — no tool choice rescues a log that was never written.
+
 !!! tip "AI caveat"
     A model drafts a passable Sigma rule in seconds — it knows the syntax and the common field
     names. That's the cheap 80%. The owned 20% it *can't* do: it doesn't know *your* benign
@@ -118,9 +175,13 @@ for the gap, and every rule tuned against benign traffic before it's trusted.**
 In the lab you'll do exactly this against the module-14 telemetry: confirm the data-plane blind spot,
 write and tune one Sigma rule, and reproduce the finding in a native detector's model.
 
-## Learn (~3.5 hrs)
+## Go deeper (~3.5 hrs · optional)
 
-*Richer than a foundations module — detection engineering is a craft. Read the case first, then the mechanism.*
+*The sections above teach the two-plane model, the false-positive economics, and Sigma structure
+end-to-end — you can predict the blind spot and write the tuned rule from them alone. These links go to
+the **primary sources** (the CloudTrail plane split is AWS's own doc; the rules are SigmaHQ's real
+collection) and deepen the case; they are not the path you must click through to understand the module.
+Read the CloudTrail management-vs-data-events doc first. Optional depth is tagged `[depth]`.*
 
 **The logging surface and its blind spot (~1 hr)**
 - [AWS — CloudTrail concepts: management vs. data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html) (~30 min) — the primary source. Read "Management events vs. data events"; this is *why* T1530 is dark by default. The cost/volume model is the reason, not an accident.
@@ -133,6 +194,11 @@ write and tune one Sigma rule, and reproduce the finding in a native detector's 
 **Sigma — detection-as-code for the gap (~1.5 hrs)**
 - [Sigma — rule structure & detection logic](https://sigmahq.io/docs/basics/rules.html) (~30 min) — read the Detection section and `condition`/temporal correlation. This is the format your judgment ships in.
 - [SigmaHQ — CloudTrail rule collection](https://github.com/SigmaHQ/sigma/tree/master/rules/cloud/aws) (~1 hr) — read 8–10 real rules. For each, mentally run it against a CloudTrail event: what must match to fire, and what benign thing might *also* match? Study how the good rules document `falsepositives`.
+
+**The log was there, nobody watched — the case-study seam (~20 min)** *(`[depth]` — the case above already makes the point; read to see it in the primary sources)*
+*This module's whole thesis is a track callback: in [Cloud Fundamentals](../01-cloud-fundamentals/README.md#the-case), Capital One's role listed **every** bucket and the calls sat in CloudTrail the entire time — an outsider, not a detection, reported it. The gap you close here is exactly the "logged but not detected" hop from that verdict memo.*
+- [DOJ indictment — United States v. Thompson (Capital One)](https://www.justice.gov/usao-wdwa/press-release/file/1188626/download) (~10 min) — the primary source; read it as *the API activity was recorded and signed, and still no one was watching the stream.* The detective control, not the log, was the missing piece.
+- [LastPass — Notice of recent security incident (2022)](https://blog.lastpass.com/posts/2022/12/notice-of-recent-security-incident) (~10 min) — the second bookend: keys stolen from an engineer reached S3 and DynamoDB over logged APIs, and the data-plane exfil was the hard part to scope — the exact T1530 blind spot this module trains you to name first.
 
 ## Key concepts
 - Management events (default, free) vs. data events (off by default, costly) — and that T1530/S3 exfil is invisible without data events on

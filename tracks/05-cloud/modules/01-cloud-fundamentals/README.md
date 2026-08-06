@@ -2,7 +2,7 @@
 
 *Type 1 · Concept Autopsy (+ Type 3 · Blast-Radius) — walk the Capital One chain hop by hop and render a verdict on who owned each failed control, provider or customer. (Secondary: Blast-Radius — trace how one SSRF reached every bucket.) [Go to the hands-on lab →](lab.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *every cloud breach ends in one question: provider's fault or yours? Learn to answer it by answering a real one.*
 
@@ -36,6 +36,14 @@ went like this:
    needed.
 4. The data was **encrypted at rest**. They walked out with it anyway.
 5. The activity was in **CloudTrail the whole time.** Nobody was watching; an outsider reported it.
+
+```mermaid
+flowchart LR
+    W["misconfigured WAF<br/>❌ customer config"] -->|SSRF| M["instance metadata<br/>(IMDSv1 allowed)"]
+    M -->|role creds| R["over-broad IAM role<br/>❌ s3:List* every bucket"]
+    R --> X["~100M records read<br/>(encrypted at rest — read anyway)"]
+    X -.in CloudTrail, unwatched.-> D["❌ no detection"]
+```
 
 This was not an AWS breach. AWS ran exactly as designed at every step. So here is the question this
 entire module — and your whole career in cloud security — turns on:
@@ -78,6 +86,16 @@ transparently. The over-permissioned role *was* authorized. So the failed contro
 all — it was **who was allowed to use the key and the bucket**, which is identity, which is the
 customer's. **The mental model to keep: encryption protects data from people without keys; it is
 silent against people you gave keys to.** The customer owned that, and it was wide open.
+
+```mermaid
+flowchart TB
+    subgraph SVC["one AWS service — e.g. IMDS · S3 · CloudTrail"]
+        MECH["the mechanism<br/>AWS builds &amp; runs it"]
+        CFG["its configuration<br/>you set it"]
+    end
+    MECH --> P["provider owns<br/>(durability, the metadata endpoint, log recording)"]
+    CFG --> C["customer owns<br/>(enforce IMDSv2, scope the role, alert on the log)"]
+```
 
 !!! note "The mental model"
     The shared-responsibility line doesn't run *between* services — it runs *through* them. AWS owns the
@@ -124,10 +142,11 @@ Two of those hops — the over-broad role reading every bucket (Q1's real cause)
 "encryption didn't help" twist — you'll reproduce in a local account and verdict yourself. The point
 isn't to re-exploit Capital One; it's to make the *judgment* muscle memory.
 
-## Learn (~2 hrs)
+## Go deeper (~2 hrs · optional)
 
-*Deliberately short. This is a foundations module: the spine above is yours to own, not to outsource to
-a tour of five sites. Read these to go deeper on the mechanism, not to learn the model.*
+*Deliberately short. This is a foundations module — the spine above is yours to own, and you can render
+the verdict from it alone. These links go deeper on the mechanism and the primary sources; they are
+not the path to learning the model.*
 
 - [AWS Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/) (~30 min) — the primary source. Read it *after* the case above and notice how few "secure" boxes are actually AWS's.
 - [Krebs on Security — the Capital One breach, explained](https://krebsonsecurity.com/2019/08/what-we-can-learn-from-the-capital-one-hack/) (~20 min) — the clearest public walk-through of the chain; corroborates the brief above with a second source.

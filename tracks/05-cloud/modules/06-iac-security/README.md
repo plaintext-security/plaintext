@@ -2,7 +2,7 @@
 
 *Type 8 · Judgment-as-Code / Gate (+ Type 4 · Audit→Build→Verify) — scan Terraform in the diff, then encode your verdict as a CI gate that blocks the merge on the bad pattern and passes on the fix. (Secondary: Audit→Build→Verify — find the misconfig, author the corrected HCL.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *the misconfig that becomes a breach ships first as a line of Terraform. Catch it in the diff, then make the catch permanent.*
 
@@ -19,6 +19,13 @@
     is a **CI gate** that blocks the bad merge and passes the fix, so it can't regress.
 
 ## Where the breaches actually start
+
+```mermaid
+flowchart LR
+    T["a line of Terraform<br/>unencrypted bucket · 0.0.0.0/0 SG · * IAM"]
+    T -->|no gate| A["terraform apply"] --> L["live for months"] --> D["module 05 audit<br/>finds it in prod"]
+    T -->|shift left| S["scan the diff<br/>checkov / tfsec / trivy"] --> B["merge blocked ❌<br/>before any resource exists"]
+```
 
 You spent module 01 ruling on Capital One and module 05 finding live misconfigurations in a running
 account. Here is the uncomfortable through-line: **the unencrypted bucket, the `0.0.0.0/0` security
@@ -37,7 +44,16 @@ find in production takes milliseconds to flag in a pull request, and costs nothi
 But the scan is not the lesson. **The lesson is what you do with the verdict.** A finding you fix by hand
 regresses the next time someone copies the module. The whole point of this track — render judgment, then
 make it un-recurrable — lands hardest here, because IaC is the one place where your verdict can become a
-*mechanical gate that blocks the merge*. That gate is the deliverable.
+*mechanical gate that blocks the merge*. That gate is the deliverable — this is its shape:
+
+```mermaid
+flowchart LR
+    PR(["Pull request<br/>(Terraform diff)"]) --> P["terraform plan<br/>resource graph"]
+    P --> SC["checkov / tfsec / trivy<br/>match known-bad patterns"]
+    SC --> G{"HIGH / CRITICAL<br/>finding?"}
+    G -->|none, or suppressed<br/>with rationale| M["✅ merge → apply"]
+    G -->|yes| X["❌ block the merge<br/>(non-zero exit)"]
+```
 
 ## The mental model: a scanner is a fast junior reviewer with no context
 
@@ -54,6 +70,13 @@ see. It cannot read intent, business context, or the blast radius two resources 
     understands none of your intentions. It catches the *pattern* instantly across ten thousand files;
     it can't tell the intended open port from the catastrophic one. That gap — pattern vs. decision —
     is exactly where you add the value it can't.
+
+```mermaid
+flowchart TB
+    F["Scanner finding"] --> Q{"pattern, or decision?"}
+    Q -->|"known-bad pattern<br/>encrypted=false · 0.0.0.0/0 · *"| FIX["FIX — throughput, not judgment<br/>(the junior is right)"]
+    Q -->|"context-dependent<br/>intended open port · secret in a var · IAM that composes"| DEC["DECIDE — your value<br/>(fix, or suppress with a rationale)"]
+```
 
 So the scanner splits the world cleanly into two halves, and your job is different in each:
 
@@ -78,7 +101,7 @@ mute button.** Getting that distinction right is the judgment skill this module 
     a check across the whole codebase, or silencing with no reason, is how the junior gets ignored and the
     real exposure ships anyway.
 
-??? note "Go deeper: IaC has a supply chain too"
+??? note "Background: IaC has a supply chain too"
     A vulnerability in a *Terraform provider or shared module* poisons every config that uses it.
     [CVE-2025-13357](https://nvd.nist.gov/vuln/detail/CVE-2025-13357) (CVSS 9.8) — the HashiCorp Vault
     provider defaulted `deny_null_bind` to `false`, silently allowing anonymous-bind auth bypass for every
@@ -108,9 +131,19 @@ flags the `iam:PassRole` wildcard as a pattern without understanding it *compose
 02's lesson). If your "miss" list is shorter than your "fail" list, you've just felt why the gate needs a
 human verdict wrapped around it.
 
-## Learn (~4 hrs)
+## Go deeper (~4 hrs · optional)
 
-*Build-first and tool-heavy: read enough to triage findings and write a real gate, then go to the lab.*
+*Build-first and tool-heavy — the mental model above is the spine, and you can triage findings and write
+the gate from it alone. These links go deeper on the scanners' rule libraries and the CI wiring, and are
+the **primary sources** the finding matrix cites; they are not the path to understanding the module.*
+
+The three scanners overlap but are not interchangeable — this is the coverage you're triaging across:
+
+| Scanner | Scope | Strength | Role in this lab |
+|---|---|---|---|
+| **checkov** (`CKV_AWS_*`) | Terraform, CloudFormation, K8s, Helm, ARM | Largest rule library; inline `checkov:skip` suppression; first-class GitHub Action + SARIF | the gate's engine |
+| **tfsec** | Terraform-only | Very readable output; Terraform-native depth (now folding into Trivy) | cross-check coverage |
+| **trivy config** | Terraform, CFN, K8s, Helm, Dockerfile | One scanner that *also* covers the images from module 10 | breadth from one tool |
 
 **The scanners and their rule libraries (~1.5 hrs)**
 - [Checkov — docs: "What is Checkov" + "Run Checkov"](https://www.checkov.io/1.Welcome/What%20is%20Checkov.html) (~30 min) — the overview, the `CKV_AWS_*` check-ID format, and output modes. The built-in library in [`checkov/checkov/terraform/checks/resource/aws/`](https://github.com/bridgecrewio/checkov/tree/main/checkov/terraform/checks/resource/aws) is the fastest way to see *exactly what field a check tests* — read two of them (e.g. the S3 encryption and the security-group checks) so a finding stops being a black box.
@@ -123,7 +156,7 @@ human verdict wrapped around it.
 - [Checkov — suppressing and skipping checks (inline `checkov:skip`)](https://www.checkov.io/2.Basics/Suppressing%20and%20Skipping%20Policies.html) (~20 min) — the *correct* way to record a true false-positive, with a rationale. This is the judgment move, documented.
 - [Writing a custom Checkov check (Python / YAML)](https://www.checkov.io/3.Custom%20Policies/Python%20Custom%20Policies.html) (~20 min) — skim, for the stretch: when no built-in rule encodes *your* org's verdict, you write the rule.
 
-**Why the patterns matter (~1 hr)**
+**Why the patterns matter (~1 hr)** *(`[depth]` — the mental model above already frames *why* a blocked merge stops an attack; these are the standards your findings cite verbatim)*
 - [CIS AWS Foundations Benchmark](https://www.cisecurity.org/benchmark/amazon_web_services) (~30 min, skim) — the controls each `CKV_AWS_*` maps to (2.1.1 S3 encryption, 5.2/5.3 SG ingress). The gate enforces these; cite them in findings.
 - [MITRE ATT&CK — T1562 Impair Defenses](https://attack.mitre.org/techniques/T1562/) (~15 min) — many IaC misconfigs (logging off, SG wide open) enable this family; the framing for *why* a blocked merge prevents an attack, not just a lint warning.
 

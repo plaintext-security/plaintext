@@ -2,7 +2,7 @@
 
 *Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — audit a VPC for what's actually reachable from the internet, then author a default-deny baseline as code and re-verify it holds. (Secondary: Blast-Radius — trace the transitive paths a foothold walks.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a Security Group is the host firewall you already know, applied per-interface and composable — and your attack surface is the union of every rule, not any one of them.*
 
@@ -69,7 +69,25 @@ you'll grade yourself in the lab.
 
 ## The reachability model, revealed
 
-Hold your answers against these.
+Hold your answers against these. Here's the account you'll audit — a three-tier app where the public
+ALB is *meant* to face the world, but two rules quietly hand the internet a `:22` and a `:5432` it
+should never have (and the app/db sit in private subnets with no public IP, so whether those rules are
+*live* is a routing question the graph, not the rule list, answers):
+
+```mermaid
+graph TB
+    Net(["Internet · 0.0.0.0/0"])
+    subgraph VPC["VPC 10.0.0.0/16 — financial-prod"]
+        ALB["ALB · alb-sg<br/>:443 / :80 from world ✅ intended"]
+        App["app instance · app-sg<br/>private subnet, no public IP"]
+        DB[("database · db-sg<br/>private subnet, no public IP")]
+    end
+    Net -->|":443 ✅ intended"| ALB
+    Net -. ":22 from world ❌ finding" .-> App
+    Net -. ":5432 from world ❌ critical" .-> DB
+    ALB -->|":8080 (from alb-sg) ✅"| App
+    App -->|":5432 (from app-sg) ✅"| DB
+```
 
 **Q1 — reachability is transitive, and the audit that counts rules misses it.** The database has no
 public address and its own group only trusts `app-sg`. A per-rule scan calls it clean. But `app-sg`
@@ -97,6 +115,31 @@ following group-references like edges. People reliably under-count this, and the
     composable. So reachability is a graph: don't read down the rules, follow group-references as edges
     and ask "what can the internet touch, and what can *that* touch?"
 
+*Stateful* is the word that trips people from the on-prem world. A Security Group evaluates the inbound
+packet against its allow-only ingress rules; if a rule matches, the **return traffic is allowed
+automatically** — you never write an egress rule for the reply. Anything with no matching ingress rule
+is dropped: default-deny inbound, by design.
+
+```mermaid
+flowchart TB
+    P(["inbound packet<br/>to an ENI"]) --> M{"matches an<br/>ingress rule?"}
+    M -->|yes| A["ALLOW in"]
+    M -->|no| D["DROP — default-deny inbound"]
+    A --> R["reply auto-allowed<br/>(stateful — no egress rule needed)"]
+```
+
+That statefulness is exactly what separates a Security Group from the *other* VPC firewall — the
+Network ACL — which people conflate with it:
+
+| | Security Group | Network ACL |
+|---|---|---|
+| Attaches to | the **ENI** (an instance) | the **subnet** border |
+| State | **stateful** — reply auto-allowed | **stateless** — must allow both directions explicitly |
+| Rules | allow-only; can reference other groups | allow **and** deny; evaluated in rule-number order |
+| Ingress default | deny | (depends on the ACL's rules) |
+| Egress default | **allow all** — the gotcha below | evaluated like ingress |
+| Mental model | the host firewall, composable by group-reference | the subnet border ACL |
+
 !!! warning "The gotcha"
     "Ingress is locked down, so we're secure" misses two things. Reach is transitive — a private DB that
     only trusts `app-sg` is internet-reachable the moment `app-sg` is. And VPC **egress is open by
@@ -112,6 +155,19 @@ IP on 443. A real baseline scopes *egress* too — VPC Endpoints so S3/DynamoDB 
 AWS network, PrivateLink for third parties, restrictive egress rules for the rest — and treats "what
 must this workload legitimately reach" as the question, in both directions.
 
+And where the rules define what *may* flow, **VPC Flow Logs** record what *did*. Each record is a
+5-tuple plus a byte count and an `ACCEPT`/`REJECT` verdict — which is how the two attacks in the lab
+show up after the fact: a scan is a burst of `REJECT`s from one source across many ports; an exfil is a
+fat `ACCEPT`ed flow to an external IP on 443.
+
+```mermaid
+flowchart LR
+    ENI["ENI traffic<br/>(accepted + rejected)"] --> FL["VPC Flow Log record<br/>5-tuple · bytes · ACCEPT/REJECT"]
+    FL --> AN{"analyze"}
+    AN -->|"many REJECT · one src → many ports"| Scan["port scan"]
+    AN -->|"fat ACCEPT · internal → external :443"| Exfil["exfil candidate"]
+```
+
 **Q3 — the attack surface is the union of every rule, and it lives in the composition.** No single
 group in the lab is catastrophic on its own — that's exactly why per-group review passes them. The
 exposure is the *union*: `app-sg`'s open `:22` plus `db-sg`'s trust of `app-sg` is the chain; the
@@ -123,7 +179,7 @@ explicitly allows it, so least privilege means *only the rules the architecture 
 `ec2:AuthorizeSecurityGroupIngress` can re-punch the hole — so the baseline only stays true if a guardrail
 re-checks it. That guardrail is this module's deliverable.
 
-??? note "Go deeper: the attack surface is a union, and it lives in the composition"
+??? note "Background: the attack surface is a union, and it lives in the composition"
     No single group in the lab is catastrophic alone — which is exactly why per-group review passes all
     of them. The exposure is the *union*: `app-sg`'s open `:22` plus `db-sg`'s trust of `app-sg` is the
     chain; the public ALB plus a missing egress rule is the exfil path. The fix isn't "delete the worst
@@ -136,25 +192,27 @@ re-checks it. That guardrail is this module's deliverable.
     `app-sg`) and can't know whether a route table or private subnet makes a path live. Confirm each path
     against `cloudmapper`'s graph; you own the baseline.
 
-## Learn (~4 hrs)
+## Go deeper (~4 hrs · optional)
 
-*Richer than a foundations module: cloud networking re-defines words you already know, and the
-reachability model carries into Kubernetes (Module 12). Read the case first, then the mechanism.*
+*The sections above are the spine — the reachability model is yours to own and you can do the lab from
+it alone. These links go deeper on the mechanism and work from the primary sources; they are not the
+path to learning the model. (Richer than a foundations module: cloud networking re-defines words you
+already know, and this model carries into Kubernetes in Module 12. Read the case first, then the mechanism.)*
 
 **VPC and the firewall that isn't (~1.5 hrs)**
-- [AWS — How Amazon VPC works](https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html) (~40 min) — the authoritative tour of subnets, route tables, Internet/NAT gateways, Security Groups and NACLs. Read it for the vocabulary the lab assumes; note which objects are control-plane (API-managed) versus data-plane.
+- [AWS — How Amazon VPC works](https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html) `[depth]` — the authoritative tour of subnets, route tables, Internet/NAT gateways, Security Groups and NACLs. Read the "VPC components" and "Subnet routing" sections for the vocabulary the lab assumes; note which objects are control-plane (API-managed) versus data-plane.
 - [AWS — Security Groups vs Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Security.html) (~20 min) — the stateful-SG vs. stateless-NACL distinction and the default-permit-egress fact. This is the "host firewall, per-ENI, composable" mental model in primary-source form.
 - [AWS — control traffic with VPC Endpoints / PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) (~20 min, skim) — why keeping AWS-service and third-party traffic off the public internet is the egress baseline, not a nicety.
 
-**The exposure wave, from the source (~1 hr)**
-- [Shodan — Elastic data exposure grows to 3.2 PB](https://blog.shodan.io/elastic-data-exposure-grows-to-3-2-pb/) (~20 min, orient) — Shodan's own 2018→2020 measurement of internet-exposed Elasticsearch/MongoDB/HDFS instances; the 2017–19 wave never fully ended.
+**The exposure wave, from the source (~1 hr) — the case-study seam**
+- [Shodan — Elastic data exposure grows to 3.2 PB](https://blog.shodan.io/elastic-data-exposure-grows-to-3-2-pb/) (~20 min, orient) — Shodan's own 2018→2020 measurement of internet-exposed Elasticsearch/MongoDB/HDFS instances; the 2017–19 `0.0.0.0/0`-exposure wave never fully ended.
 - [Krebs on Security — the MongoDB ransom wave](https://krebsonsecurity.com/2017/01/extortionists-wipe-thousands-of-databases-victims-who-pay-up-get-stiffed/) (~20 min) — contemporaneous reporting on the `0.0.0.0/0`-exposed-DB ransom attacks; corroborate the scale.
-- [US Senate report — Capital One](https://www.hsgac.senate.gov/wp-content/uploads/imo/media/doc/Capital%20One%20Report.pdf) (~20 min, skim the network/WAF section) — re-read the chain with the network-containment lens: which walls were the network's job?
+- [US Senate report — Capital One](https://www.hsgac.senate.gov/wp-content/uploads/imo/media/doc/Capital%20One%20Report.pdf) `[depth]` — skim the network/WAF section and re-read the chain with the network-containment lens: which walls were the network's job?
 
 **Mapping reachability (~1.5 hrs)**
 - [cloudmapper — README](https://github.com/duo-labs/cloudmapper) (~30 min) — Duo Labs' topology mapper. Read the `collect → prepare → audit → webserver` workflow; `audit` is what surfaces the `0.0.0.0/0` findings, the graph is what communicates them.
-- [AWS — VPC Flow Logs (record format)](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html) (~30 min) — read the "Flow log records" section; the 5-tuple + ACCEPT/REJECT is how reachability is *observed* after the fact (scans = REJECT storms, exfil = a fat 443 flow to an external IP). You'll parse these in the lab.
-- [Checkov — AWS Security Group policies](https://www.checkov.io/5.Policy%20Index/terraform.html) (~20 min, skim) — find the built-in rules that fail `0.0.0.0/0` on sensitive ports (e.g. CKV_AWS_24/25 for 22/3389); this is the guardrail you'll own.
+- [AWS — VPC Flow Logs (record format)](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html) `[depth]` — read the "Flow log records" section only; the 5-tuple + ACCEPT/REJECT is how reachability is *observed* after the fact (scans = REJECT storms, exfil = a fat 443 flow to an external IP). You'll parse these in the lab.
+- [Checkov — AWS Security Group policies](https://www.checkov.io/5.Policy%20Index/terraform.html) `[depth]` — skim to find the built-in rules that fail `0.0.0.0/0` on sensitive ports (e.g. CKV_AWS_24/25 for 22/3389); this is the guardrail you'll own.
 
 ## Key concepts
 - A Security Group **is** the stateful host firewall you know — but per-ENI and composable, so reachability is a graph (follow group-references as edges), not a per-rule table

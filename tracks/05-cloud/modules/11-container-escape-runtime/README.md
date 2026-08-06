@@ -2,7 +2,7 @@
 
 *Type 5 · Detonate & Detect (+ Type 1 · Concept Autopsy) — reproduce the real CVE-2019-5736 runc escape from inside a container, then write the runtime detection that catches the next one. (Secondary: Concept Autopsy — prove the wall is the shared kernel by going through it.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a container is a process in a jail, not a VM. Prove the wall is the kernel by going through it — then write the detection that catches the next one.*
 
@@ -30,12 +30,43 @@ attacker (controlling the container's filesystem) can race a `/proc/self/exe` sy
 host's own `runc` binary is opened for writing from inside the container, and replaced with attacker
 code. The next container operation runs that code — on the host, as root.
 
+```mermaid
+flowchart LR
+    A["attacker controls<br/>container filesystem"] -->|"replace entrypoint with a<br/>/proc/self/exe symlink"| B["operator execs in<br/>(runc reaches into the container)"]
+    B -->|"race the open()"| C["host runc opened<br/>for writing ❌"]
+    C -->|"overwrite the binary"| D["malicious runc<br/>now on the host"]
+    D -->|"next container start / exec"| X["code exec on host<br/>as root 💥"]
+```
+
 It rated **CVSS 8.6**, landed on the CISA KEV-class watchlist of "patch this now" runtime bugs, and
 forced an emergency coordinated release across every container platform at once. It is the canonical
 container escape, and — crucially for you — it is **reproducible**: Vulhub ships a pinned vulnerable
 runc environment for it, so you exploit the *real* CVE, not a hand-rolled stand-in.
 
+!!! note "The case study — teach the mechanism, cite the record"
+    This module anchors on one real vulnerability, **[CVE-2019-5736](https://nvd.nist.gov/vuln/detail/CVE-2019-5736)**
+    (the [discoverers' disclosure](https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html)).
+    We don't rehearse the exploit code — we teach the *mechanism* (a host binary the runtime reaches into,
+    turned around via a `/proc/self/exe` race) so you can recognize the whole **class**. The NVD record and
+    the disclosure carry the primary detail; the diagram above is the shape you must be able to redraw.
+
 ## The mental model: the wall is the kernel
+
+```mermaid
+flowchart TB
+    subgraph HOST["one Linux host — one kernel, no hypervisor"]
+        subgraph COSTUME["container = an ordinary host process in a costume"]
+            NS["namespaces<br/>(private PID / net / mount view)"]
+            CG["cgroups<br/>(resource caps)"]
+            CAP["capabilities<br/>(trimmed powers)"]
+        end
+        K["shared kernel — every syscall runs here"]
+    end
+    NS --> K
+    CG --> K
+    CAP --> K
+    COSTUME -.the costume is not a wall.-> K
+```
 
 Here is the one idea that makes every container escape legible. **A container is not a small VM. It is
 an ordinary host process wearing a costume** — Linux namespaces give it a private view (its own PID 1,
@@ -73,6 +104,14 @@ seccomp/AppArmor, non-root UID — the image-hardening of module 10 and the admi
 
 ## The gap that runtime detection fills
 
+```mermaid
+flowchart LR
+    S["kernel syscall stream<br/>(Falco eBPF probe)"] --> F{"Falco rule set<br/>evaluate every event"}
+    F -->|"write to host binary / /etc/passwd"| A1["CRITICAL alert<br/>(sharp, low-noise)"]
+    F -->|"mount(2) inside a container"| A2["CRITICAL alert<br/>(noisy — the one you tune)"]
+    F -->|"benign workload"| N["no alert"]
+```
+
 Static scanning (module 10) reads the image; admission control (module 13) reads the spec. Neither sees
 *behavior*. CVE-2019-5736 is invisible to both — the image is clean, the spec is legal; the attack is a
 sequence of **syscalls** at runtime. **Falco** closes that gap: it instruments the kernel's syscall
@@ -99,19 +138,23 @@ the difference between a noisy demo and something a SOC would actually keep enab
     *your* environment — that depends on what your containers actually do. Validate every variant against
     real Falco output from `make demo` before you keep it.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
+
+*The sections above are the spine — they teach the shared-kernel model, the CVE mechanism, and the
+detection gap, and you can do the lab from them alone. These links go deeper and work from the **primary
+sources**; they aren't the path to understanding the module.*
 
 **Container isolation internals (~45 min)**
 - [Julia Evans — "How containers work" (blog post)](https://jvns.ca/blog/2020/04/27/new-zine-how-containers-work/) (~15 min) — the clearest short read on namespaces + cgroups composing into "a process in a jail." Internalize this before the lab; the whole module rests on it.
-- [Linux `capabilities(7)` man page](https://man7.org/linux/man-pages/man7/capabilities.7.html) (~15 min, skim) — skim the list and read `CAP_SYS_ADMIN`. This is the vocabulary behind what `--privileged` actually grants.
+- [Linux `capabilities(7)` man page](https://man7.org/linux/man-pages/man7/capabilities.7.html) (~15 min, skim) `[depth]` — skim the list and read `CAP_SYS_ADMIN`. This is the vocabulary behind what `--privileged` actually grants.
 
-**The CVE itself (~1 hr)**
-- [The original disclosure — "CVE-2019-5736: Escape from Docker and Kubernetes containers to root on host" (Adam Iwaniuk / Dragon Sector)](https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html) (~30 min) — the discoverers' own writeup, with the `/proc/self/exe` mechanism. Primary source; read it slowly.
+**The CVE itself (~1 hr) — the case-study seam**
+- [The original disclosure — "CVE-2019-5736: Escape from Docker and Kubernetes containers to root on host" (Adam Iwaniuk / Dragon Sector)](https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html) (~30 min) — the discoverers' own writeup, with the `/proc/self/exe` mechanism the diagram above abstracts. Primary source; read it slowly.
 - [NVD — CVE-2019-5736](https://nvd.nist.gov/vuln/detail/CVE-2019-5736) (~10 min) — the record and CVSS 8.6 vector; note the affected runc versions you'll pin in the lab.
 - [MITRE ATT&CK T1611 — Escape to Host](https://attack.mitre.org/techniques/T1611/) (~15 min) — the technique your detection maps to; read the detection guidance and note T1610 (Deploy Container).
 
 **Falco runtime detection (~1 hr)**
-- [Falco docs — Rules](https://falco.org/docs/rules/) (~30 min) — the rule language: read **Conditions**, **Output**, **Macros**, and **Exceptions**. This is exactly the vocabulary you tune with.
+- [Falco docs — Rules](https://falco.org/docs/rules/) (~30 min) `[depth]` — the rule language: read **Conditions**, **Output**, **Macros**, and **Exceptions**. This is exactly the vocabulary you tune with.
 - [Falco docs — Event sources / how Falco works](https://falco.org/docs/concepts/event-sources/) (~15 min) — how it taps syscalls via eBPF; builds the mental model before you watch it fire.
 
 ## Key concepts

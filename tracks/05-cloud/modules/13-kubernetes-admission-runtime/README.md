@@ -2,7 +2,7 @@
 
 *Type 8 · Judgment-as-Code / Gate (+ Type 5 · Detonate & Detect) — write Kyverno admission policies that deny non-compliant pods at the door and prove they block the bad spec while admitting the good one. (Secondary: Detonate & Detect — a Falco rule for what slips past at runtime.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a worm that spread through doors nobody guarded; admission control is the guard you write once and it holds for every pod after.*
 
@@ -27,10 +27,17 @@ the first known cryptojacking *worm* to spread through containers. It needed no 
 zero-day. It found **Docker Engine daemons exposed to the internet with no authentication**, used the
 open API to **pull a malicious image from Docker Hub and run it**, and from each newly infected host
 repeated the move against the next. It mined Monero on the side. Unit 42 watched it reach roughly
-**2,000 unsecured hosts in about an hour.** The same shape — an unauthenticated container/orchestration
-endpoint that will happily *admit and run whatever it's handed* — is what a year earlier let attackers
-deploy cryptominers through Tesla's open Kubernetes dashboard, and it is the open door this module
-closes.
+**2,000 unsecured hosts in about an hour.**
+
+The same shape — an unauthenticated container/orchestration endpoint that will happily *admit and run
+whatever it's handed* — is what a year earlier let attackers cryptojack **Tesla's own Kubernetes cluster**
+([RedLock, 2018](https://www.cnbc.com/2018/02/21/hackers-hijack-teslas-cloud-system-to-mine-cryptocurrency-redlock.html)). Tesla's Kubernetes
+*dashboard* was exposed to the internet **with no password**; the intruders opened it, read the cloud
+credentials it surfaced, and — this is the operative move — simply **scheduled a crypto-mining pod into
+the cluster**. Nothing at the door refused that pod spec, and nothing watched the pod once it started
+mining. Those are the exact two controls this module builds: a **bouncer** that would have denied the
+miner's manifest at admission, and a **camera** that would have caught it mining at runtime. It is the
+open door this module closes.
 
 There was nothing clever in Graboid. The entire breach is that **a container ran that should never have
 been allowed to start.** Nobody decided to run it; nothing stopped it from running. So this module turns
@@ -93,20 +100,31 @@ straight to `Enforce` on a live cluster is how a CronJob can't start at 2 AM.
     Admission is cheap prevention that runs once against the manifest; runtime detection is the
     backstop for everything the manifest never reveals. Neither replaces the other.
 
+*Admission — the bouncer reads the spec before the pod exists:*
+
 ```mermaid
 flowchart LR
-    K(["kubectl apply<br/>pod spec"]) --> API["API server"]
-    API --> Adm{"Kyverno admission<br/>(the bouncer)"}
-    Adm -- "bad spec: deny" --> Rej(["rejected"])
-    Adm -- "compliant: admit" --> Run["pod runs on node"]
-    Run -- "syscalls" --> Falco{"Falco<br/>(the camera)"}
-    Falco -- "exec into pod, proc from /tmp" --> Alert(["runtime alert"])
+    K(["kubectl apply<br/>pod spec"]) --> API["kube-apiserver<br/>CREATE / UPDATE"]
+    API --> WH{"Kyverno<br/>ValidatingWebhook"}
+    WH -->|"matches a deny · action = Enforce"| Rej(["rejected at the door<br/>pod never starts"])
+    WH -->|"matches a deny · action = Audit"| Log(["PolicyReport violation<br/>pod still runs"])
+    WH -->|"compliant spec"| Run["pod scheduled + runs on node"]
 ```
 
 !!! warning "The gotcha"
     "Obviously dangerous" and "actually blocked" are two different states — prevention only exists if
     someone *encoded* the verdict. And the most common bad spec isn't `privileged`; it's the silent
     default of nothing set at all, which runs your workload as root (UID 0).
+
+*Runtime — the camera watches behavior after the pod is in:*
+
+```mermaid
+flowchart LR
+    P["admitted pod<br/>(passed every policy)"] -->|"exec, read /etc/shadow,<br/>proc from /tmp"| SC["syscall on the node"]
+    SC --> F{"Falco DaemonSet<br/>rule condition match?"}
+    F -->|"condition true"| A(["alert JSON<br/>+ %k8s.pod.name, priority"])
+    F -->|"benign"| Q["no alert"]
+```
 
 **Runtime detection is the camera inside.** The bouncer reads the *spec*; it cannot see what an admitted
 container *does*. A pod that passed every policy can still be `exec`'d into, can still spawn a shell from
@@ -118,6 +136,15 @@ Admission tells you what *could* run; it cannot tell you that the one thing that
 now, reading `/etc/shadow`. You write the policy to make the door narrow, and the Falco rule to watch
 the gap the door can't close.
 
+| | Admission control (Kyverno) | Runtime detection (Falco) |
+|---|---|---|
+| **Posture** | **Preventive** — stops it before it runs | **Detective** — sees it once it runs |
+| **Inspects** | the pod *spec*, before any container starts | *behavior* (syscalls) while the pod is alive |
+| **When** | once, at `CREATE` / `UPDATE` | continuously, for the pod's whole life |
+| **Verdict** | admit / deny (or `Audit`-log) | alert / stay quiet |
+| **Blind to** | what an admitted pod *does*; images already running | it can only *see*, never stop |
+| **The Graboid/Tesla lesson** | refuse the pod that should never start | catch the miner that slipped past, mining anyway |
+
 !!! tip "AI caveat"
     A model is a fine first-draft author of a Kyverno `ClusterPolicy` and good at matching a spec to the
     "never admit" patterns. The danger: it can't tell you whether the policy is in `Audit` or `Enforce`
@@ -125,10 +152,11 @@ the gap the door can't close.
     so the policy *admits the bad pod while looking correct*. A policy that doesn't block is worse than
     none — prove every one by applying the bad pod and watching it get rejected for the right field.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
 
-*Build-first module: the spine is the lab, so Learn is the reference you reach for *while* writing
-policy, not a lecture to read first. Skim, then write — return when a `deny` condition won't behave.*
+*Build-first module: the spine above and the lab are what you own — these links are optional depth and
+primary sources, the reference you reach for *while* writing policy, not a lecture to read first. Skim,
+then write — return when a `deny` condition won't behave.*
 
 **Admission control — the mechanism (~45 min)**
 - [Kubernetes docs — Admission Controllers Reference](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) (~20 min) — read the intro and "Why do I need admission controllers?"; this is the webhook chain Kyverno plugs into, stated by the source.

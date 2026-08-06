@@ -2,7 +2,7 @@
 
 *Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — predict a Lambda's blast radius (the function or its execution role?), then prove the role's reach and the event-payload abuse. (Secondary: Audit→Build→Verify — least-privilege the role, close the injection, redeploy, and prove the path is gone.) [Go to the hands-on lab →](lab.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *serverless deletes the server you patch and keeps the identity you must scope; the execution role is the whole security surface.*
 
@@ -37,6 +37,14 @@ So before you read on, this module turns on the question that separates people w
 shifts risk to IAM" from people who can size the damage:
 
 > **What is a Lambda function's blast radius — the function, or its execution role?**
+
+!!! quote "The seam this module reproduces"
+    Denonia had a foothold and the role's power — but the report stops at the miner. The lab picks up
+    exactly where the [Cado writeup](https://www.cadosecurity.com/blog/cado-discovers-denonia-the-first-malware-specifically-targeting-lambda)
+    leaves off: a foothold in an over-broad execution role is one `iam:CreateUser` from a **standing
+    admin that outlives the function** (a serverless exec-role privesc), and you reach that foothold two
+    ways — stolen creds like Denonia, *or* [OWASP Serverless #1 event-data injection](https://owasp.org/www-project-serverless-top-10/)
+    straight through the event body. Same ending, two front doors. You'll walk both.
 
 ## Your job
 
@@ -76,6 +84,15 @@ read every bucket; `sts:AssumeRole` on `*` lets them pivot. **A tiny function wi
 a huge blast radius** — the size of the function tells you nothing; the size of the role tells you
 everything. People reliably under-weight this because they look at the 40 lines and not at the policy.
 
+```mermaid
+flowchart LR
+    E["event trigger<br/>(API Gateway)"] --> F["notifier Lambda<br/>~40 lines of code"]
+    F -->|creds fetched transparently| R["execution role<br/>notifier-role"]
+    R -->|s3:* on *| S["read every bucket<br/>(sensitive-records)"]
+    R -->|iam:* on *| I["mint admin user<br/>(iam:CreateUser + attach)"]
+    R -->|sts:AssumeRole on *| P["pivot to other roles"]
+```
+
 !!! note "The mental model"
     Stop reading the function's code and read its **role**. Code is ephemeral; identity is standing — so
     the policy attached to the function, not its line count, *is* the blast radius.
@@ -98,13 +115,21 @@ function holds an over-broad role, it becomes a **confused deputy**: the attacke
 function take actions *with the function's privileges* that the attacker could never take directly. The
 event boundary and the role are two halves of the same surface — that's why you fix both in the lab.
 
+```mermaid
+flowchart LR
+    G["authenticated gateway<br/>(tells you WHO, not WHAT)"] -->|JSON event body| C["command field<br/>❌ untrusted data"]
+    C -->|shell=True subprocess| X["runs AS the function<br/>❌ event-data injection (OWASP #1)"]
+    X -->|with the execution role| D["confused deputy<br/>❌ acts with the role's power"]
+    D --> A["account compromise<br/>(admin minted · buckets read)"]
+```
+
 !!! warning "The gotcha"
     "Authenticated source" and "trusted data" are different walls. The gateway tells you *who* sent the
     event; it says nothing about what's *in* it. A handler that pipes an event field into `subprocess`,
     SQL, or `eval` is injectable no matter how locked-down the caller is — and with an over-broad role it
     becomes a confused deputy acting with privileges the attacker never had.
 
-??? note "Go deeper: why ephemerality helps the attacker, not you"
+??? note "Background: why ephemerality helps the attacker, not you"
     Denonia's authors leaned into short runtimes and disposable environments precisely because they make
     the *compromise* hard to investigate — no host malware to find later. But the *consequences* (an admin
     user minted, a role assumed, data exfiltrated) outlive the container. Ephemerality shrinks the
@@ -115,16 +140,29 @@ role and the event boundary.** There's no host to harden, so the entire job is (
 minimum the function actually needs, and (2) treat every event field as hostile input. The lab makes you
 do both, then encodes the role half as a check that can't silently regress.
 
+The scope of the role *is* the blast radius — so the fix is a line-by-line narrowing, not a rewrite:
+
+| Statement | Over-broad (`NotifierPolicy`, as shipped) | Least-privilege (the cut you author) | What the scope decides |
+|---|---|---|---|
+| S3 | `s3:*` on `*` | `s3` — *nothing*; the job never touches S3 | every bucket, incl. `sensitive-records` → nothing |
+| IAM | `iam:*` on `*` | `iam` — *nothing* | `iam:CreateUser` + attach admin → denied |
+| STS | `sts:AssumeRole` on `*` | `sts` — *nothing* | pivot to any role → denied |
+| Data path | (none of the real job is expressed) | `dynamodb:PutItem` on the one table, `sns:Publish` on the one topic | the legitimate work, and *only* that |
+| Logs | `logs:*` on `arn:aws:logs:*:*:*` | `logs:CreateLogStream`/`PutLogEvents` on the function's own log group | keep the function runnable |
+
 !!! tip "AI caveat"
     A model is great at narrating the path from "code execution" to "account compromise" off a role's
     JSON policy. What it can't do: confirm the path is *actually* reachable — an SCP or permission
     boundary may cap the policy text (validate with `simulate-principal-policy`) — or write the
     **minimum** role that still does the real job. That least-privilege cut is the judgment you own.
 
-## Learn (~3.5 hrs)
+## Go deeper (~3.5 hrs · optional)
 
-*A specialist module — it curates more than a foundations one. You already own the IAM evaluation model
-from modules 02–03; here you apply it to the serverless shape. Read the case first.*
+*The reveal above is the spine — you can size the blast radius from it alone. These links are optional
+depth and the primary sources: the serverless attack surface, the standing power of the execution role,
+and the deploy/exploit tooling. A specialist module curates more than a foundations one, but you already
+own the IAM evaluation model from modules 02–03; here you apply it to the serverless shape. Read the case
+first.*
 
 **The serverless attack surface (~1.5 hrs)**
 - [OWASP Serverless Top 10](https://owasp.org/www-project-serverless-top-10/) (~40 min) — the canonical reference. Read all ten; #1 Event-Data Injection and the over-privileged-function items are the spine of this lab. Note how many map to "the role" or "the event," the two surfaces from the reveal.

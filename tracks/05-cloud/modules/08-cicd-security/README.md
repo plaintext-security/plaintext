@@ -2,7 +2,7 @@
 
 *Type 4 · Audit→Build→Verify (+ Type 3 · Blast-Radius) — predict where in commit→signed-artifact the attacker injects, scan the pipeline (gitleaks, trivy, SBOM), then author the hardened pipeline where the prediction lands. (Secondary: Blast-Radius — trace the SUNBURST build-system injection.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *the build pipeline is the highest-trust path you own — and SolarWinds proved it's the least-watched one.*
 
@@ -39,6 +39,14 @@ ever review:
 
 > **In the path from a developer's commit to a signed, deployed artifact, where does the attacker inject —
 > and which step would have caught them?**
+
+??? note "A second data point: Codecov (2021) — same shape, different link in the chain"
+    SUNBURST wasn't a one-off. In April 2021, [Codecov disclosed](https://about.codecov.io/security-update/)
+    that an attacker had altered its **Bash Uploader** — the CI helper thousands of projects piped
+    straight into their builds — so that every pipeline running it quietly exfiltrated environment
+    variables, including CI secrets, for months. Once more the *source repo* was clean: the compromise
+    lived in the **build/CI supply chain the victims trusted implicitly.** Same lesson as SolarWinds,
+    one link over — the highest-trust, least-watched path is the one that runs *your* build.
 
 ## Your job
 
@@ -128,6 +136,46 @@ to an immutable digest (so a re-pointed tag can't quietly change what runs) and 
 instead of long-lived secrets (so a compromised build can't exfiltrate a standing credential), is the
 hardened pipeline — and it's exactly the shape of T23's Actions-hardening work in this repo.
 
+The hardened pipeline turns each stage into a **gate** — and adds the one gate SolarWinds lacked, the
+provenance verify that a valid signature alone sails past:
+
+```mermaid
+flowchart LR
+    Dev([dev commits]) --> Sec{"gitleaks<br/>secret scan"}
+    Sec -->|secret found| B1[/"❌ blocked"/]
+    Sec -->|clean| Build["build image"]
+    Build --> Scan{"trivy<br/>image + SBOM"}
+    Scan -->|CRITICAL/HIGH CVE| B2[/"❌ blocked"/]
+    Scan -->|clean| Sign["sign + attest<br/>(build provenance)"]
+    Sign --> Ver{"verify provenance<br/>this commit? this builder?"}
+    Ver -->|no / forged attestation| B3[/"❌ blocked — SUNBURST dies here"/]
+    Ver -->|attestation matches| Deploy([deploy])
+```
+
+What makes the last gate work is the **trust flow** behind the attestation: provenance binds the
+artifact to the *reviewed source* and the *hardened builder*, so the consumer can demand both before
+trusting the bytes — signature answers *who signed*, attestation answers *what was built, from where, by whom*.
+
+```mermaid
+flowchart LR
+    Src["source commit<br/>(reviewed)"] -->|digest recorded| Prov["provenance attestation<br/>signed by builder"]
+    Builder["trusted builder<br/>(hardened, isolated)"] -->|identity recorded| Prov
+    Prov --> Art["artifact"]
+    Art --> Consumer{"consumer verifies:<br/>this commit + this builder?"}
+    Consumer -->|yes| Trust["✅ deploy"]
+    Consumer -->|no| Reject["❌ reject<br/>(a valid signature alone ≠ trust)"]
+```
+
+The find-half you run in the lab — gitleaks, trivy, the SBOM — are three *input* scans. They are
+necessary, but note what each is blind to: **none attests the build process itself.** That gap is the
+whole point.
+
+| Scan | Tool (in the lab) | Inspects | Catches | Blind to |
+|---|---|---|---|---|
+| **Secret scan** | gitleaks | source + git history | committed keys, tokens, private keys | build-time injection; a secret never committed |
+| **SCA / dependency** | trivy + SBOM | declared deps, lockfiles | known-CVE library versions | a backdoor in first-party code; *how* it was built |
+| **Image scan** | trivy image | built container layers | OS/package CVEs in the image | the build's provenance — *who/what/whence* |
+
 !!! tip "AI caveat"
     A model pattern-matches injection points, excessive `permissions`, and unpinned `uses:` well and
     drafts a hardened rewrite fast — but it gets this module's two lessons wrong. It treats a green
@@ -135,10 +183,12 @@ hardened pipeline — and it's exactly the shape of T23's Actions-hardening work
     as the gate), and it misses **multi-job data-flow injection** where a tainted early step feeds a later
     privileged one. Confirm the hardened workflow actually *fails the SolarWinds-shaped build*.
 
-## Learn (~4 hrs)
+## Go deeper (~4 hrs · optional)
 
-*Richer than a foundations module: the pipeline is the integration point for everything you've built, so
-it curates the supply-chain spine in depth. Read the case above first.*
+*The case, the model, and the fix above are the module — you can predict the injection point and name
+the gate from them alone. These links are optional depth: the breach's primary sources and the
+provenance/pinning/OIDC mechanisms behind the hardened pipeline. Richer than a foundations module,
+because the pipeline is where everything you've built integrates — but still not the path, just the deep water.*
 
 **The breach, from primary sources (~1 hr)**
 - [Mandiant/FireEye — "Highly Evasive Attacker Leverages SolarWinds Supply Chain" (SUNBURST writeup)](https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor/) (~30 min) — the discovering researcher's technical anatomy of the backdoor and the build-time injection. Read for *where* and *how* it went in.

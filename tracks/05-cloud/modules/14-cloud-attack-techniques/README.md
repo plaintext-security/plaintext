@@ -2,7 +2,7 @@
 
 *Type 5 · Detonate & Detect (+ Type 3 · Blast-Radius) — run LastPass's three identity-first moves (login, pull, stage-out) as signed API calls and predict which screams in CloudTrail and which is nearly silent. (Secondary: Blast-Radius — pure attack, no fix half; the telemetry hands off to module 15.) [Go to the hands-on lab →](lab.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a cloud attack is not an exploit; it's a login. The adversary uses your services exactly as designed — your only edge is the trail those API calls leave.*
 
@@ -42,6 +42,17 @@ behaviour was eventually caught by **GuardDuty alerts** on anomalous IAM role us
 runs at scale and that [CISA documented in AA23-320A](https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a):
 no malware, no scripts — just the victim's own tools, used as designed.
 
+The whole chain, mapped to ATT&CK-for-Cloud tactics — note that only the first hop touched a real
+vulnerability (the Plex CVE on a *home* machine); everything after the login is authorized API traffic:
+
+```mermaid
+flowchart LR
+    H["Engineer home PC<br/>Plex CVE-2020-5741 keylogger<br/>❌ unpatched, off corp network"] --> V["Corp vault opened<br/>backup decryption keys lifted"]
+    V --> IA["Initial Access<br/>T1078.004 Valid Cloud Accounts<br/>(login + AssumeRole)"]
+    IA --> COL["Collection<br/>T1530 Data from Cloud Storage<br/>(GetObject × every object)"]
+    COL --> EXF["Exfiltration<br/>T1537 Transfer to Cloud Account<br/>(PutBucketReplication → external)"]
+```
+
 So the question this module turns on is not "how do I break in." You already have the credentials. It's:
 
 > **You're going to run the three moves LastPass's attacker ran — log in with valid creds, pull the data,
@@ -58,10 +69,41 @@ telemetry is not the end of the story — it is the literal *input* to module 15
 module 16 (reconstruct the incident). You are manufacturing the attack so the defender across the hall
 has something real to catch.
 
+The loop you run — and hand forward — is *detonate → capture → map → detect*: every detonation must exit
+as a detection spec, and the detection's job is to fire on the loud techniques and *reveal the blind spot*
+on the silent one.
+
+```mermaid
+flowchart LR
+    D["Detonate<br/>Stratus / Pacu → floci"] --> C["Capture<br/>CloudTrail-shaped events"]
+    C --> M["Map<br/>ATT&amp;CK ID + distinguishing fields"]
+    M --> H["Hand off → module 15<br/>write the detection"]
+    H -.rule fires, or reveals the log was never collected.-> D
+```
+
 ## The loudness question — think before the lab
 
 Don't skip this. Rank the three techniques by how loud each is in CloudTrail *before* you detonate
 them — being wrong is the teaching event, and the lab will grade your ranking.
+
+The whole ranking collapses onto one line — *which plane the call lives on*:
+
+```mermaid
+flowchart TB
+    subgraph LOUD["management plane — CloudTrail records by default"]
+        A["T1078.004 · AssumeRole<br/>✔ loud, always recorded"]
+        E["T1537 · PutBucketReplication<br/>✔ loud — destination account ID in the event"]
+    end
+    subgraph SILENT["data plane — the blind spot"]
+        G["T1530 · GetObject × N<br/>❌ silent unless S3 data events are ON"]
+    end
+```
+
+| Technique (ATT&CK ID) | Triggering `eventName` | Plane | Detection tell |
+|---|---|---|---|
+| **T1078.004** Valid Cloud Accounts | `AssumeRole` | management (loud) | `userIdentity.type: IAMUser` assuming a role from an unexpected `sourceIPAddress` |
+| **T1530** Data from Cloud Storage | `GetObject` | **data (silent by default)** | *combination*: assumed-role identity · high rate · `python-boto3` UA · object breadth |
+| **T1537** Transfer to Cloud Account | `PutBucketReplication` / `PutObject` | management (loud) | destination `Account` ID that isn't the target account's |
 
 > **The mental model:** every technique here is a `signed API call`, and a *management-plane* call (one
 > that changes the account — `AssumeRole`, `PutBucketReplication`) is recorded by CloudTrail **by
@@ -105,23 +147,25 @@ spread. Capturing that combination cleanly is the whole job of this module.
     B from the same identity in a window). Validate every claimed field against the *actual* captured
     event — a hallucinated field becomes a module-15 detection that never fires.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
 
-*Richer than a foundations module — this is the purple-team craft, and the tool docs are genuinely the
-best public reference for what each attack looks like in the logs. Read the case first.*
+*The case and the sections above are the spine — you can detonate the chain and map it from them alone.
+These links go deeper and work from the **primary sources** (the ATT&CK cards, the tool docs that carry
+the real log samples); they are not the path to understanding the module. Read the case first.*
 
 **ATT&CK for Cloud — the technique cards (~1 hr)**
 - [ATT&CK Cloud Matrix](https://attack.mitre.org/matrices/enterprise/cloud/) (~20 min) — orient on Initial Access, Credential Access, Collection, Exfiltration. The *Procedure Examples* column is where you see the real API calls.
-- [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) (~15 min) — read the **Detection** section: it names the exact log sources. This is LastPass's entry move.
-- [T1530 — Data from Cloud Storage](https://attack.mitre.org/techniques/T1530/) (~10 min) — note *why* this is hard to see: the control-plane-vs-data-plane logging gap is called out here.
-- [T1537 — Transfer Data to Cloud Account](https://attack.mitre.org/techniques/T1537/) (~10 min) — the exfil-to-external-account move; the destination account is the tell.
+- [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) `[depth]` — read the **Detection** section: it names the exact log sources. This is LastPass's entry move.
+- [T1530 — Data from Cloud Storage](https://attack.mitre.org/techniques/T1530/) `[depth]` — note *why* this is hard to see: the control-plane-vs-data-plane logging gap is called out here.
+- [T1537 — Transfer Data to Cloud Account](https://attack.mitre.org/techniques/T1537/) `[depth]` — the exfil-to-external-account move; the destination account is the tell.
 
 **The detonation tools (~1 hr)**
 - [Stratus Red Team — attack technique list](https://stratus-red-team.cloud/attack-techniques/list/) (~25 min) — browse the AWS techniques; each card gives the detonation, the exact API calls fired, **and a sample CloudTrail event**. Best public cloud-attack log reference there is.
 - [Stratus Red Team — GitHub README](https://github.com/DataDog/stratus-red-team) (~15 min, skim) — quick-start and the local-endpoint workflow you'll use in the lab.
-- [Pacu — Getting Started wiki](https://github.com/RhinoSecurityLabs/pacu/wiki) (~20 min) — the `run`/`search`/`exec` model; Pacu is for *chain* reasoning (enumerate → find over-priv role → assume → re-enumerate), Stratus for *atomic* detonation.
+- [Pacu — Getting Started wiki](https://github.com/RhinoSecurityLabs/pacu/wiki) `[depth]` — the `run`/`search`/`exec` model; Pacu is for *chain* reasoning (enumerate → find over-priv role → assume → re-enumerate), Stratus for *atomic* detonation.
 
-**The adversary, for real (~30 min)**
+**The adversary, for real (~30 min) — the case-study seam**
+- [LastPass — security incident update & recommended actions (Mar 2023 post-mortem)](https://blog.lastpass.com/posts/security-incident-update-recommended-actions) (~15 min) — the documented cloud post-mortem this module reconstructs: the DevOps-engineer vault theft, the assumed roles, the S3/DynamoDB backups. Read it against the attack-chain diagram above.
 - [Permiso — LUCR-3: Scattered Spider Getting SaaS-y in the Cloud](https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud) (~20 min) — the definitive identity-first cloud-TTP writeup; read how they use *your* tools, not malware.
 - [CISA AA23-320A — Scattered Spider](https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a) (~10 min, skim) — the federal advisory; corroborates the vishing → valid-accounts → cloud-data pattern.
 

@@ -2,7 +2,7 @@
 
 *Type 1 · Concept Autopsy (+ Type 4 · Audit→Build→Verify) — a working image tells you nothing about what's dormant in its layers; scan with trivy/grype and render a verdict on what's hidden. (Secondary: Audit→Build→Verify — triage CVEs by fixability, not count, and harden the image.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a container image is a tarball of someone else's decisions; "it works" and "it's clean" are orthogonal.*
 
@@ -39,6 +39,16 @@ image leaked a key *out*; the `docker123321` images smuggled malware *in*. Both 
 failure, and both turned on a single fact: **a container image is opaque, and "it runs" tells you
 nothing about what else is dormant in its layers.** So this module turns on one question:
 
+```mermaid
+flowchart LR
+    subgraph IN["malware IN — docker123321 (2017–18)"]
+        P1["pull docker123321/cron<br/>(1M+ pulls)"] -->|it runs fine| W1["working cron<br/>❌ + hidden XMRig miner + reverse shell"]
+    end
+    subgraph OUT["secret OUT — Codecov (2021)"]
+        L["credential left<br/>in a public image layer"] -->|read from the layer| X["altered Bash Uploader →<br/>❌ exfil downstream CI secrets"]
+    end
+```
+
 > **This image runs your app perfectly in testing. What ELSE is in it?**
 
 ## Your job
@@ -68,7 +78,20 @@ answers — being wrong is the point.
 
 ## The verdict, revealed
 
-Hold your answers against these.
+Hold your answers against these. A scan turns an opaque image into two parallel verdicts — the
+**CVE axis** (extract the SBOM, match it against feeds, triage by fixability) and the **hygiene axis**
+(`trivy config` / `docker history`, which sees the miner, the secret, the root user a CVE feed never lists):
+
+```mermaid
+flowchart LR
+    IMG["image layers<br/>base + pkgs + your app"] --> SBOM["SBOM<br/>every package + version"]
+    SBOM -->|match vs NVD · GHSA · distro feeds| CVE["CVE findings<br/>trivy image · grype"]
+    CVE --> T{"triage by<br/>fixability"}
+    T -->|fixable HIGH/CRIT| RB["rebuild now"]
+    T -->|no patch yet| TR["track, don't gate"]
+    IMG -.docker history · trivy config.-> CFG["❌ hygiene + secrets<br/>root · latest · secret in ENV"]
+    CFG -->|a CVE scan never sees these| RB
+```
 
 **Q1 — you inherit everyone above you in the `FROM` chain.** An image tagged `python:3.8-slim` is a
 frozen snapshot of a Debian root filesystem plus a Python install plus *their* transitive packages —
@@ -81,6 +104,14 @@ version — and matching it against CVE feeds (NVD, GitHub Advisory, distro advi
 ("I wrote clean code, so my image is clean") is exactly backwards: the supply-chain risk lives in the
 base and package layers you *didn't* write, and a typical slim base will surface **dozens** of CVEs on
 a fresh scan. You're not auditing your code; you're auditing **someone else's decisions, inherited.**
+
+```mermaid
+flowchart TB
+    B["FROM python:3.8-slim<br/>(someone else's base)"] --> D["Debian rootfs + glibc · libssl · curl…<br/>❌ their CVEs, inherited"]
+    D --> P["+ pip packages you named"]
+    P --> A["your app layer<br/>(the only code you wrote)"]
+    A --> IMG["shipped image = the whole stack<br/>you ship every CVE above you, digest-pinned or not"]
+```
 
 !!! note "The mental model"
     An image is a stack of inherited decisions, not your code. You don't audit what you wrote — you audit
@@ -113,7 +144,18 @@ scan walks right past.
     nothing about an embedded miner, a planted reverse shell, a secret in a layer, or a container running
     as root with a debug port open. Counting CVEs while ignoring hygiene and provenance is the trap.
 
-??? note "Go deeper: fixability is the verdict, not the count"
+Two scanners, two axes — and they don't cover the same ground. Reconcile them; don't trust one:
+
+| What it catches | `trivy` | `grype` |
+|---|---|---|
+| **OS packages** (glibc, libssl, curl from the base distro) | ✅ distro feeds | ✅ |
+| **App / language deps** (pip, npm, gem in your layers) | ✅ | ✅ |
+| **Config + hygiene** (root `USER`, `latest`, secret in `ENV`, debug port) | ✅ `trivy config` | ❌ CVE-only |
+| **CVE DB sources** | NVD · GHSA · distro · own | NVD · GHSA · Anchore feed |
+
+*One scanner is one opinion: the CVE DBs source differently, so counts disagree at the edges — and only `trivy config` crosses onto the hygiene axis at all.*
+
+??? note "Nuance: fixability is the verdict, not the count"
     A Critical with no patch yet is something you *track*, not fix — gating the pipeline on it just blocks
     every build for no action. A High with a fixed version in the distro repo means **rebuild now**. So the
     right gate is severity-*and*-fixable (`--exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed`), and
@@ -132,9 +174,11 @@ orthogonal axes; the rebuild is how you move on the second one without losing th
     tell you whether the vulnerable path is *reachable* in your app, and it won't flag a planted miner or a
     secret-in-a-layer no CVE feed lists. Its ranking is a hypothesis; you own the reachability call.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
 
-*Curate the scanner mechanism; the trust argument above is the spine. Read the case first.*
+*The verdict above is the spine — you can render it from the case and the two diagrams alone. These
+links go deeper on the scanner mechanism and the primary sources; they are optional depth, not the path
+to the model. Read the case first.*
 
 **The supply-chain anchor in the practitioner's words (~30 min)**
 - [Kromtech — Cryptojacking invades the cloud (the `docker123321` campaign)](https://kromtech.com/blog/security-center/cryptojacking-invades-cloud-how-modern-containerization-trend-is-exploited-by-attackers) (~15 min) — the discovering researcher's writeup; read for *how a working image hides a miner + reverse shell* and the pull counts.

@@ -2,7 +2,7 @@
 
 *Type 3 · Blast-Radius Trace (+ Type 4 · Audit→Build→Verify) — predict one leaked key's reach, then prove it with `simulate-principal-policy`. (Secondary: Audit→Build→Verify — author the least-privilege policy that closes the path and re-simulate.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *in the cloud the perimeter is identity; one leaked key is a question of how much of the business it can touch.*
 
@@ -36,6 +36,13 @@ So before you read on, this module turns on a single question:
 
 > **One leaked key. How much of the business can it actually touch — and how much of that is reversible?**
 
+!!! note "Same root as module 01 — the track's spine"
+    [Capital One](../01-cloud-fundamentals/README.md#the-case) died on an **over-broad role** that could
+    read every bucket; Code Spaces died on an **over-broad credential** that could reach the whole account
+    *and* its backups. One misconfiguration — an identity scoped far past its job — anchors the whole
+    track. Module 01 rendered the *verdict* on that reach; this module makes **predicting and cutting**
+    it a repeatable, provable skill.
+
 ## Your job
 
 By the end of this module you'll **predict a principal's blast radius, then prove it** — enumerate a
@@ -61,7 +68,18 @@ yourself in the lab.
 
 ## The blast radius, revealed
 
-Hold your answers against these.
+Hold your answers against these. The reach of one key is a *graph* — the principal, the policy attached
+to it, and the transitive closure of everything that policy can touch, including the roles it can pass
+into more power:
+
+```mermaid
+graph LR
+    A["dev-alice<br/>(leaked key)"] --> P["DevPolicy<br/>s3:* · iam:PassRole · ec2:RunInstances on *"]
+    P --> B1["every S3 bucket<br/>read + delete"]
+    P --> BK["backups<br/>same account, same reach"]
+    P --> B2["any role<br/>via iam:PassRole"]
+    B2 --> AD(["EC2AdminRole<br/>= account admin"])
+```
 
 **Q1 — the reach is almost always wider than the label.** "Dev" is a name on a policy, not a boundary.
 The grant that matters is `Action` × `Resource`, and the moment either is `*` the label stops meaning
@@ -108,6 +126,18 @@ intersection of its reach and your inability to recover from it.** Encryption, r
 are all silent against a principal you *authorized* to destroy them. The fix isn't "more backups" — it's
 that no single principal should be able to reach both the system and its recovery path.
 
+The rulebook every IAM wall obeys is a single evaluation, run across every policy that touches the
+request — identity policy, resource policy, SCP, permission boundary, session:
+
+```mermaid
+flowchart TB
+    REQ(["Request<br/>principal · action · resource"]) --> D{"Explicit Deny anywhere?<br/>identity · resource · SCP · boundary · session"}
+    D -->|yes| DENY["Denied<br/>(deny beats every allow)"]
+    D -->|no| AL{"A matching Allow?"}
+    AL -->|yes| ALLOW["Allowed"]
+    AL -->|no| IMP["Denied<br/>(implicit / default deny)"]
+```
+
 **Q3 — explicit deny wins, always.** This is the rulebook every wall in IAM obeys, and it's worth
 memorizing because every guardrail you write depends on it. AWS evaluates a request as **default-deny**:
 with no matching `Allow`, the answer is no (*implicit deny*). A matching `Allow` flips it to yes. But a
@@ -119,14 +149,28 @@ broad allow, an explicit deny is the wall that holds regardless. In the lab, "th
 exactly this evaluation returns `implicitDeny`/`explicitDeny` for the dangerous action and `allowed`
 for the legitimate one.
 
-The federation footnote: the same evaluation governs *who can assume a role* via its **trust policy.**
+The federation footnote: the same evaluation governs *who can assume a role* via its **trust policy** —
+a role hand-out is itself a policy check, one layer up from the request above:
+
+```mermaid
+sequenceDiagram
+    participant P as Principal / IdP
+    participant STS as AWS STS
+    participant TP as Role trust policy
+    P->>STS: sts:AssumeRole / AssumeRoleWithWebIdentity
+    STS->>TP: does the trust policy permit this principal?
+    Note over TP: "root" trusts every identity in the account;<br/>OIDC with no sub trusts every workflow
+    TP-->>STS: permitted
+    STS-->>P: temporary credentials of the role
+```
+
 A trust policy with `"Principal": {"AWS": "...:root"}` trusts **every** identity in the account, not one;
 an OIDC trust with no `sub` condition trusts **every** workflow from the provider. When that trust is
 forged or over-broad, the wall never even gets consulted — which is exactly how **Golden SAML** worked in
 SolarWinds (a stolen token-signing key let attackers mint SAML assertions for *any* user, federating
 straight past authentication). Same model — who can act, evaluated against policy — one layer up.
 
-??? note "Go deeper: irreversibility is its own dimension of blast radius"
+??? note "Background: irreversibility is its own dimension of blast radius"
     Reach is only half the story. Code Spaces could survive having data *read*; it could not survive
     having data *deleted with its backups in the same blast radius*. When access is identity, blast
     radius is the intersection of a principal's reach and your inability to recover from what it does —
@@ -139,21 +183,23 @@ straight past authentication). Same model — who can act, evaluated against pol
     the grant. Treat every hit as a hypothesis and confirm it with `simulate-principal-policy`, which runs
     AWS's real logic. The minimum cut is yours.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
 
-*Richer than a foundations module: IAM evaluation is the load-bearing mechanism for the next three
-modules, so it's worth the time. Read the case above first, then go deep on the mechanism.*
+*The reveal above is the spine — it teaches the model, and you can predict, prove, and cut the blast
+radius in the lab from it alone. These links go deeper on the mechanism and work from the primary
+sources; IAM evaluation is the load-bearing mechanism for the next three modules, so the depth earns its
+time here.*
 
-**The evaluation rulebook (~1 hr)**
+**The evaluation rulebook (~1 hr)** *(`[depth]` — the reveal already teaches the order; read for AWS's authoritative statement of it)*
 - [AWS — IAM policy evaluation logic](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) (~30 min) — the primary source for explicit-deny > allow > implicit-deny. Read the flowchart and the "Determining whether a request is allowed or denied within an account" section; everything in this module is an application of that one diagram.
 - [AWS — `simulate-principal-policy` (CLI reference)](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html) (~15 min) — the command that *runs* that logic for you and returns `allowed`/`explicitDeny`/`implicitDeny`. This is how the lab proves a wall holds without the local emulator enforcing it.
 - [AWS — Grant least privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege) (~15 min) — the official best-practice section; treat it as the gap analysis checklist against the findings.
 
-**The escalation that the reach hides (~1 hr)**
+**The escalation that the reach hides (~1 hr)** *(`[depth]` — primary research; read the two composes in detail, skim the rest as module-03 reference)*
 - [Rhino Security Labs — AWS IAM Privilege Escalation Methods](https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/) (~40 min) — primary research cataloguing 21 real escalation paths. Read `iam:PassRole`+`RunInstances` and `CreateAccessKey` in detail; the rest is reference for module 03.
 - [BishopFox — cloudfox README (AWS section)](https://github.com/BishopFox/cloudfox) (~20 min) — the enumeration accelerator; skim `permissions`, `role-trusts`, `iam-simulator` so the lab's commands are familiar.
 
-**The federation footnote (~30 min)**
+**The federation footnote (~30 min)** *(`[depth]` — optional context on the trust-wall bypass; the reveal states the mechanism)*
 - [CISA — Emergency Directive 21-01 (SolarWinds / SUNBURST)](https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise-closed) (~15 min, skim) — the federal response; orient on the trust-compromise angle.
 - [CISA — guidance on detecting forged SAML tokens (Golden SAML)](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-008a) (~15 min) — why a stolen signing key defeats the trust wall entirely.
 

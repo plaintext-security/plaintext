@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate (+ Type 4 · Audit→Build→Verify) — build the architecture that makes a leaked credential expire on its own: Vault-backed, dynamic, leased, fetched at runtime, auto-rotated. (Secondary: Audit→Build→Verify — find the hardcoded key in git history first.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *a secret in code is a secret you can never rotate fast enough; the fix isn't hiding it better, it's making it short-lived and fetched.*
 
@@ -30,6 +30,12 @@ the part that turned a breach into a *case* is what came next: Uber paid the att
 its bug-bounty program to stay quiet and did not disclose the breach for **about a year**, which is why
 the [Department of Justice prosecuted the company's chief security officer](https://www.justice.gov/usao-ndca/pr/former-chief-security-officer-uber-convicted-federal-charges-covering-data-breach) — a
 landmark conviction of a security executive for the cover-up, not the breach.
+
+Uber's repo was at least *private*. The far more common version of this incident is a key committed
+straight to a **public** repository, where automated scrapers find AWS keys within minutes of the push
+and turn them into crypto-mining bills or open buckets — the scale is not exotic:
+[GitGuardian counted ~28.6 million new secrets leaked to public GitHub commits in 2025 alone](https://www.gitguardian.com/state-of-secrets-sprawl-report-2026).
+Private or public, the root failure is identical, and so is the fix.
 
 Strip away the cover-up drama and you're left with the most ordinary breach there is: **a long-lived
 credential written into code.** No exploit, no zero-day — a key that should never have existed in a
@@ -78,10 +84,33 @@ credential is *revoke and rotate*, never *delete the commit*. `trufflehog` also 
 provider's API to check whether the found key is still live. The tool finds; you triage — real or
 placeholder, live or dead, who owns it.
 
+```mermaid
+flowchart LR
+    C1["Commit 1<br/>AKIA… hardcoded in config.py"] --> C2["Commit 2<br/>'removed' — gone from HEAD"]
+    C2 --> HIST["git history<br/>❌ key still lives in commit 1"]
+    HIST --> TH["trufflehog git<br/>scans ALL history, not just HEAD"]
+    TH --> FIND["Finding<br/>detector=AWS · commit SHA · config.py"]
+    FIND --> VER{"verify against<br/>the provider API?"}
+    VER -->|live| URGENT["revoke + rotate NOW"]
+    VER -->|dead / placeholder| TRIAGE["log &amp; close"]
+```
+
 !!! note "The mental model"
     A static secret **fails open**, a leased one **fails closed**. The whole architecture is one
     inversion: stop trying to *hide a permanent secret* and instead make the secret *temporary by
     construction*, so a leaked copy is worthless within minutes whether or not anyone noticed.
+
+```mermaid
+flowchart TB
+    subgraph HARD["Hardcoded / static — fails OPEN"]
+        H1["secret lives in code or env"] --> H2["valid until a human<br/>notices &amp; rotates"]
+        H2 --> H3["❌ leak → data gone<br/>before you can rotate"]
+    end
+    subgraph BROKER["Broker-fetched, leased — fails CLOSED"]
+        B1["app authenticates to the broker"] --> B2["cred minted per request,<br/>short lease (~5 min)"]
+        B2 --> B3["✓ leak → expires on its own<br/>in minutes, unnoticed or not"]
+    end
+```
 
 **2 — Store it properly: encrypted at rest, gated by least privilege.** A secrets manager (Vault, or the
 cloud-native AWS Secrets Manager / SSM Parameter Store) centralises secrets, encrypts them at rest, and
@@ -104,6 +133,16 @@ leaked copy is dead in minutes — it fails *closed*. AWS's native parallel is t
 EC2/Lambda/ECS execution role *is* the credential, minted and rotated by STS with no static key at all.
 Same principle, two implementations: **eliminate the long-lived static credential.**
 
+```mermaid
+flowchart LR
+    ISS["Issue<br/>Vault mints a per-request<br/>Postgres user (5-min lease)"] --> FETCH["Fetch at runtime<br/>app authenticates,<br/>holds nothing"]
+    FETCH --> USE["Use<br/>query with the<br/>ephemeral credential"]
+    USE --> TTL{"lease TTL<br/>elapsed?"}
+    TTL -->|renew| USE
+    TTL -->|expire / revoke| REV["Revoke<br/>Vault drops the DB user —<br/>a leaked copy is now dead"]
+    REV -.next request.-> ISS
+```
+
 **4 — Fetch at runtime, and rotate what's left automatically.** The app must hold *no* secret — not even
 in an environment variable baked in at deploy (that's just a slower hardcode). It authenticates to the
 broker at startup and *fetches* the leased credential, which expires behind it. The one long-lived secret
@@ -112,7 +151,7 @@ database/rotate-root` changes the Postgres admin password and keeps it to itself
 knows it*. "No human knows the credential" is a strictly stronger property than "the credential is
 encrypted" — you can't leak what you don't possess.
 
-??? note "Go deeper: an env var baked in at deploy is a slower hardcode"
+??? note "Background: an env var baked in at deploy is a slower hardcode"
     Fetching at runtime is non-negotiable: a secret injected as an environment variable at deploy time
     still lives in the process, the deploy config, and often the image layer — it's a hardcode with extra
     steps. The app must hold *no* secret; it authenticates to the broker at startup and fetches the leased
@@ -124,10 +163,12 @@ encrypted" — you can't leak what you don't possess.
     For triage, it conflates rotation procedures: rotating an AWS IAM key, a GitHub PAT, and a Postgres
     password are three different procedures. The model drafts; you prove the wall holds.
 
-## Learn (~3.5 hrs)
+## Go deeper (~3.5 hrs · optional)
 
-*A specialist operate module — it curates more than a foundations module, because the leased-credential
-mechanism is the load-bearing skill and the docs explain it better than a paraphrase would.*
+*The spine above is yours to own — the four moves are the module. These links are the depth: the
+leased-credential mechanism is the load-bearing skill, and HashiCorp's own docs explain it better than a
+paraphrase would, so this section curates more than a foundations module. Pull a link when a step in the
+lab doesn't click, not before.*
 
 **Find the leak (~1 hr)**
 - [trufflehog README — truffleSecurity/trufflehog](https://github.com/trufflesecurity/trufflehog) (~30 min) — read the scan modes (`git`, `filesystem`, `github`) and especially **verification** (it calls the provider API to check a found key is live). This is the find half end to end.

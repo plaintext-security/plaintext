@@ -2,7 +2,7 @@
 
 *Type 4 · Audit→Build→Verify — run a posture scanner over a live account, then do the real work: triage 400 findings to the one that matters, remediate it, and re-scan to verify. (Secondary: Concept Autopsy — why the scanner-trivial 2017 S3 leaks shipped anyway.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *the same one-line misconfiguration leaked half the Fortune 500 in a single year. A scanner finds it in seconds; the job is deciding which of 400 findings is that one.*
 
@@ -61,10 +61,40 @@ numbered benchmarks for AWS/GCP/Azure where each control has a rationale, the ex
 tests it, and the fix. ScoutSuite does the same collection from a different angle and renders it as a
 walkable HTML report. Running it is one command. **The output is the start of the work, not the end.**
 
+```mermaid
+flowchart LR
+    A["Cloud account<br/>(every resource)"] --> S["Posture scanner<br/>prowler / ScoutSuite"]
+    S --> F["Findings<br/>(hundreds · PASS/FAIL + severity)"]
+    F --> B["CIS Benchmark<br/>(control ID · rationale · fix)"]
+    B --> T{"Triage<br/>severity × exploitability × blast radius"}
+    T -->|the one that matters| R["Remediate → re-scan FAIL→PASS → guardrail"]
+    T -.the 380 that don't.-> N["Backlog / documented suppression"]
+```
+
+The benchmark is the scanner's rulebook, and it is organised into control families — the same four
+the lab's seeded account is shaped around:
+
+| CIS control family | What it checks | Lab finding (2017-shaped) | ATT&CK |
+|---|---|---|---|
+| **Identity & Access (1.x)** | root MFA, key rotation, least privilege | `svc-legacy` stale key; root no MFA | T1078 |
+| **Storage / S3 (2.x)** | public-access blocks, bucket ACLs, encryption | `inherited-public-data` public ACL | T1530 |
+| **Logging (3.x)** | CloudTrail enabled *and* logging | `trail` exists but logging off | — |
+| **Networking (5.x)** | no `0.0.0.0/0` to sensitive ports | `wide-open` SG on 22/3389 | T1021 |
+
 !!! note "The mental model"
     `prowler` is to your AWS config what `eslint` is to a codebase — it finds rule violations in
     seconds. The tool supplies findings; **you** supply which resource holds what, who can reach it,
     and what its blast radius crosses. That asset context is the part no scanner can run.
+
+```mermaid
+flowchart TB
+    F(["A FAIL finding"]) --> Q1{"What asset does it touch?<br/>(context the tool lacks)"}
+    Q1 -->|regulated data · internet-reachable| H["Top of queue"]
+    Q1 -->|sandbox / dead resource| L{"Real risk once<br/>you know the asset?"}
+    L -->|no| S["Suppress<br/>(conscious · written rationale)"]
+    L -->|yes| M["Backlog by blast radius"]
+    H --> V["Apply fix → re-scan FAIL→PASS → freeze as guardrail"]
+```
 
 Here is the trap, and it is the whole module. A linter that emits 400 warnings is *worse* than useless
 if you treat every line equally — you drown the one that matters (public bucket holding INSCOM's
@@ -95,22 +125,26 @@ The mature end-state of posture management isn't a quarterly PDF; it's the same 
     data or which "stale" key still serves a live service. Let it do the synthesis (group and draft);
     own the priority order against real asset criticality, and never let it shortcut you to a clean report by suppressing a rule.
 
-## Learn (~4 hrs)
+## Go deeper (~4 hrs · optional)
 
-*The triage skill is yours to own (the spine above); these go deep on the tooling and the rulebook.*
+*The triage skill is yours to own — the spine above teaches it and you can do the lab from it alone.
+These links go deeper on the tooling and the rulebook, and to the primary sources; they are not the
+path to learning the module.*
 
-**The CIS rulebook and the posture model (~1 hr)**
+**The 2017 S3 wave, from the discovering researcher (~25 min) — the case-study seam**
+- UpGuard — the [Verizon](https://www.upguard.com/breaches/verizon-cloud-leak) and [Accenture](https://www.upguard.com/breaches/cloud-leak-accenture) S3 exposure writeups — Chris Vickery's own accounts of the wave. Read both and notice the pattern is *identical* every time: a public bucket, terabytes downloadable to anyone with the URL. Your evidence for why the lab's `inherited-public-data` bucket is the whole ballgame.
+
+**The CIS rulebook and the posture model (~1 hr)** *(`[depth]` — the diagram and table above already teach the shape; read for the authoritative source)*
 - [CIS Amazon Web Services Foundations Benchmark](https://www.cisecurity.org/benchmark/amazon_web_services) (~30 min, skim) — the scored standard `prowler` implements. Read the structure: control families (Identity, Logging, Networking, Monitoring), Level 1 vs. Level 2, scored vs. not-scored. You're learning the *shape* of the rulebook so a finding ID means something.
-- UpGuard — the [Verizon](https://www.upguard.com/breaches/verizon-cloud-leak) and [Accenture](https://www.upguard.com/breaches/cloud-leak-accenture) S3 exposure writeups (~25 min) — the discovering researcher's own accounts of the 2017 wave. Read both and notice the pattern is *identical* every time: a public bucket, terabytes downloadable to anyone with the URL.
 
-**Prowler — the linter (~1.5 hrs)**
+**Prowler — the linter (~1.5 hrs)** *(`[depth]`)*
 - [Prowler docs — getting started](https://docs.prowler.com/) (~40 min) — install, authenticate, run a scan, and crucially the **filtering** (by severity, by compliance framework, by check). Read "Quick Start" and "Output formats"; filtering is how you turn 400 findings into a triage queue.
 - [prowler-cloud/prowler — the check library](https://github.com/prowler-cloud/prowler) (~30 min, browse) — open `prowler/providers/aws/services/s3/` and read an actual check's code. This is the fastest way to learn what *good* config looks like and what a check truly tests (so you can judge a false positive).
 
-**ScoutSuite — the second opinion (~45 min)**
+**ScoutSuite — the second opinion (~45 min)** *(`[depth]`)*
 - [nccgroup/ScoutSuite](https://github.com/nccgroup/ScoutSuite) (~30 min) — NCC Group's multi-cloud auditor. Read the README's auth model and run it once for the HTML report; note where it agrees with prowler and where it surfaces something prowler didn't (two linters, different blind spots).
 
-**Triage and ATT&CK mapping (~30 min)**
+**Triage and ATT&CK mapping (~30 min)** *(`[depth]`)*
 - [MITRE ATT&CK for Cloud — IaaS matrix](https://attack.mitre.org/matrices/enterprise/cloud/iaas/) (~20 min, orient) — filter to Initial Access / Collection and map a finding to the technique it *enables*: a public bucket → **T1530** (Data from Cloud Storage). Severity is the tool's guess; the technique is the blast radius.
 
 ## Key concepts

@@ -9,6 +9,23 @@ the cloud the infrastructure *is* code. AWS/GCP/Azure plus containers and Kubern
 - Audit posture and infrastructure-as-code for misconfigurations, gated in CI.
 - Secure containers and Kubernetes, and detect and respond to cloud attacks using both open tools and native cloud services (GuardDuty, Defender for Cloud, GCP SCC).
 
+## The shape of the track
+
+**At a glance —** three phases run as a dependency chain: first you secure identity, posture, the
+pipeline and your data; then you harden containers and Kubernetes; then you attack, detect, and respond
+to a cloud intrusion. Dashed edges show where the later attack/detect phase **exercises** what the
+earlier phases built.
+
+```mermaid
+flowchart LR
+    P1["Phase 1 · Identity, posture &amp; the pipeline<br/>01–08 + 17 · IAM · posture · IaC · secrets · KMS"]
+    P2["Phase 2 · Containers &amp; Kubernetes<br/>09–13 · images · escape · RBAC · admission"]
+    P3["Phase 3 · Attack, detect &amp; respond<br/>14–16 · simulate · detect · investigate"]
+    P1 --> P2 --> P3
+    P1 -.the guardrails you build.-> P3
+    P2 -.the workloads you harden.-> P3
+```
+
 ## Modules
 
 | # | Module | What you'll learn | OSS / free tools |
@@ -33,10 +50,10 @@ the cloud the infrastructure *is* code. AWS/GCP/Azure plus containers and Kubern
 
 ## Phases & projects
 
-The sixteen modules run in three phases; each ends in a **project** that integrates its modules (a
+The seventeen modules run in three phases; each ends in a **project** that integrates its modules (a
 phase is the substantial, standalone unit — a single module is a few hours).
 
-- **Phase 1 · Identity, posture & the pipeline** (01–08) — **Project:** audit a deliberately
+- **Phase 1 · Identity, posture & the pipeline** (01–08, plus 17 · data protection & KMS) — **Project:** audit a deliberately
   vulnerable account (CloudGoat/flaws.cloud) with `prowler`/`pmapper` to map an IAM privilege-escalation
   path, then close it as Terraform gated by `checkov`/`trivy` in CI, with secrets pulled out of code and
   into a broker.

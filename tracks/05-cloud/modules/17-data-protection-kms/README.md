@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate (+ Type 3 · Blast-Radius) — build envelope encryption and a scoped key policy, then prove who can actually use the key. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **Cloud & Container Security** — *"encrypted at rest" is a checkbox; "who can use the key" is the control. Build the second one.*
 
@@ -43,6 +43,19 @@ policy fails and your scoped one passes. Walk away able to answer the auditor's 
 exactly, can decrypt our data?*
 
 ## The core idea
+
+```mermaid
+sequenceDiagram
+    participant App as App / client
+    participant KMS as KMS (CMK — never sees your data)
+    participant Store as Storage (S3 / EBS / backup)
+    App->>KMS: GenerateDataKey (key-id, AES_256)
+    KMS-->>App: Plaintext data key + CiphertextBlob (KMS-wrapped)
+    App->>App: encrypt file locally with the plaintext key
+    App->>App: shred the plaintext data key
+    App->>Store: store ciphertext + wrapped data key together
+    Note over App,Store: To read later, send the wrapped key to kms:Decrypt to unwrap it —<br/>revoke kms:Decrypt and every object + every backup is unreadable at once.
+```
 
 **Envelope encryption: KMS wraps a key, never your data.** A KMS key (a CMK) never touches your files.
 You ask KMS for a *data key* and it hands back two things: the key in **plaintext** (you encrypt your
@@ -88,7 +101,7 @@ flowchart LR
     D3 --> Key
 ```
 
-??? note "Go deeper: default encryption and rotation are baseline, not the control"
+??? note "Background: default encryption and rotation are baseline, not the control"
     Turn on default encryption for S3/EBS/snapshots so nothing lands unencrypted by accident — it's free
     and you should — but it defends only against the stolen-disk threat. Rotation is the same shape:
     enabling it re-wraps *future* data keys under new material but does **not** re-encrypt data already at
@@ -111,12 +124,36 @@ backup). The fix is two principals: a `KeyAdmin` with the administrative actions
 `AppRole` with usage and no administration — and decrypt granted to *no* wildcard principal. That split,
 not the cipher, is what you build and verify in the lab.
 
+```mermaid
+flowchart TB
+    KA["KeyAdmin role<br/>manage: Disable · Rotate · ScheduleKeyDeletion<br/>❌ cannot Decrypt"] --> Key[("KMS key")]
+    AR["AppRole<br/>use: Encrypt · Decrypt · GenerateDataKey<br/>❌ cannot administer"] --> Key
+    W["wildcard principal (*)<br/>❌ never granted Decrypt"] -.blocked.-> Key
+```
+
+| Principal | May **manage** the key | May **use** (Encrypt/Decrypt) the key |
+|---|---|---|
+| `KeyAdmin` | ✅ Disable, Rotate, ScheduleKeyDeletion | ❌ no |
+| `AppRole` | ❌ no administration | ✅ Encrypt / Decrypt / GenerateDataKey |
+| any `*` wildcard | ❌ | ❌ decrypt granted to none |
+
+Collapse those into one `kms:*` principal and a single stolen credential reads every record **and**
+destroys the key — the disaster the split exists to prevent.
+
 **Default encryption is table stakes, not the control.** Turn on default encryption for S3, EBS, and
 snapshots so nothing lands unencrypted by accident — it's free and you should — but treat it as the
 *baseline that prevents the silly mistake*, not as protection. It defends against the stolen-disk
 threat and nothing else. Rotation is the same shape: enabling rotation re-wraps *future* data keys
 under new key material but does **not** re-encrypt data already at rest, so it limits exposure window,
 it doesn't undo a leak. The control that decides a breach remains: who can use the key.
+
+| | Server-side (SSE-KMS) | Client-side (envelope, the lab) |
+|---|---|---|
+| Where data is encrypted | AWS encrypts it as it lands | *you* encrypt it before it leaves the app |
+| What KMS/AWS sees | AWS handles the data key for you | KMS only ever wraps the data key, never the data |
+| Set with | `default-bucket-encryption` (one checkbox) | `GenerateDataKey` → encrypt locally → store wrapped key |
+| Defends against | stolen disk / raw storage | stolen disk **and** an over-broad storage-layer principal |
+| The real control | **who can use the key** (key policy) | **who can use the key** (key policy) — same in both |
 
 !!! tip "AI caveat"
     A model is good at the obvious collapse — flagging a principal that can both `Decrypt` and
@@ -125,22 +162,23 @@ it doesn't undo a leak. The control that decides a breach remains: who can use t
     it doesn't know your org's intended roles — *should* this principal manage the key or use it? Treat
     every flag as a hypothesis; confirm against who-should-do-what, then prove the fix with the checker.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
 
-*Build-first: read enough to author the key policy and the envelope flow well, then do it. Go to the
-primary AWS docs for the mechanism, and pair them with the Capital One sources so the "encrypted ≠
-protected" point stays concrete.*
+*The core idea above is the spine — it teaches the two-door model and the envelope flow, and you can
+build the lab from it alone. These links go to the **primary AWS docs** for the mechanism and pair them
+with the Capital One sources so the "encrypted ≠ protected" point stays concrete; they are optional
+depth, not the path to understanding the module.*
 
-**The two-door model — read this first (~1 hr)**
+**The two-door model — the primary source (~1 hr)**
 - [AWS — Key policies in AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html) (~25 min) — the primary source. Read why a key policy is *required* on every key and why it, not IAM, is the root of authority for KMS. This is the door Module 02's IAM reasoning doesn't cover.
 - [AWS — Using key policies + IAM (default key policy)](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html) (~20 min) — the exact rule: an IAM grant only reaches a key if the key policy delegates to IAM. Read the "Allows access to the AWS account and enables IAM policies" section — it's the precise mechanism behind "two doors."
 - [AWS — Grants in AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html) (~15 min, skim) — the temporary third door; read the operations list and the "for what" so you can tell a grant from a policy entry.
 
-**Envelope encryption — the mechanism you build (~45 min)**
+**Envelope encryption — the mechanism you build (~45 min)** *(`[depth]` — the core idea already teaches this; read for the exact API contract)*
 - [AWS — How envelope encryption works](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#enveloping) (~20 min) — the primary description of the data-key dance (plaintext key for local use, wrapped key for storage); read it before running `make demo` so the script confirms what you read.
 - [AWS — `generate-data-key` (CLI reference)](https://docs.aws.amazon.com/cli/latest/reference/kms/generate-data-key.html) (~15 min) — the one call the whole envelope flow turns on; note the two return fields, `Plaintext` and `CiphertextBlob`.
 
-**The "encrypted didn't matter" anchor (~30 min)**
+**The "encrypted didn't matter" anchor (~30 min) — the case-study seam**
 - [Krebs on Security — what we can learn from the Capital One hack](https://krebsonsecurity.com/2019/08/what-we-can-learn-from-the-capital-one-hack/) (~20 min) — re-read with this module's lens: the data was encrypted; the over-broad authorized role is why that didn't help. The clearest public walk-through, and it corroborates the DOJ/Senate primaries cited above.
 - [AWS — default encryption for S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/default-bucket-encryption.html) (~10 min, skim) — the baseline-not-control setting; read what it does and, crucially, what it does *not* defend against.
 
