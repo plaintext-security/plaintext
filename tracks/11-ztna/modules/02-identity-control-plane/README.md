@@ -89,12 +89,14 @@ the auth server per request — and decides access from the claims alone. That i
 plane" made concrete: the token is the pass, the signature is the tamper-evident seal, the application
 is the enforcer, and *no valid signature means no access.*
 
-!!! note "Auth-code+PKCE is the real flow; the lab uses the direct grant"
+!!! note "Auth-code+PKCE is the real flow; the password grant is the scriptable shortcut"
     The diagram above is the browser flow every production app should use (`code_challenge`/`code_verifier`
-    stops a stolen authorization code from being redeemed). The lab drives Keycloak with the
-    **Resource Owner Password Grant** instead — one `curl`, no browser redirect — purely so the token
-    exchange is scriptable and you can see the raw JWT. The token you get back, and everything you learn
-    validating it, is identical. Never use the password grant in production; use auth-code+PKCE.
+    stops a stolen authorization code from being redeemed). The lab *starts* with the **Resource Owner
+    Password Grant** — one `curl`, no browser redirect — purely so the token exchange is scriptable and
+    you can see the raw JWT. It then **walks the full Authorization Code flow in the browser** (Step 3):
+    the password goes only to Keycloak, and the app redeems a one-time `code` with its `client_secret`.
+    The token you get back, and everything you learn validating it, is identical — what changes is that
+    the app never sees the password. Never use the password grant in production; use auth-code+PKCE.
 
 ### Validation is a chain of gates, not a base64 decode
 
@@ -227,7 +229,7 @@ click through to understand the module. Optional depth is tagged `[depth]`.*
 - [U.S. Cyber Safety Review Board — Review of the Summer 2023 Microsoft Exchange Online Intrusion (2024)](https://www.cisa.gov/resources-tools/resources/CSRB-Review-Summer-2023-MEO-Intrusion) — the report that called the Storm-0558 intrusion "preventable"; read the findings on the signing-key failure. `[depth]`
 
 **OIDC and JWTs — the primary specs (~1.5 hrs)** *(`[depth]` — the flow above already teaches these; read for source vocabulary)*
-- [The OAuth 2.0 Authorization Framework (RFC 6749)](https://datatracker.ietf.org/doc/html/rfc6749) — read sections 1–2 (roles) and 4.3 (Resource Owner Password Credentials grant, which the lab drives). The RFC is ground truth when vendor docs disagree.
+- [The OAuth 2.0 Authorization Framework (RFC 6749)](https://datatracker.ietf.org/doc/html/rfc6749) — read sections 1–2 (roles), 4.1 (Authorization Code grant — the browser flow the lab walks in Step 3), and 4.3 (Resource Owner Password Credentials grant — the scriptable shortcut the lab starts with). The RFC is ground truth when vendor docs disagree.
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) — read sections 1–3 (overview and authentication flows). OIDC is the identity layer on OAuth 2.0; the authentication-vs-authorization distinction is foundational.
 - [jwt.io](https://www.jwt.io/) — paste any JWT to decode and inspect claims. Run a real lab token through it while you work.
 

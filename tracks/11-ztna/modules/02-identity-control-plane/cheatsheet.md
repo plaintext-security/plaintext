@@ -29,12 +29,25 @@ Key endpoints for a realm: `.../protocol/openid-connect/token` (mint),
 ## Get a token (OIDC / OAuth2 grants)
 
 ```bash
-# Resource Owner Password grant (the lab's flow — direct, no browser redirect)
+# Resource Owner Password grant (the lab's scriptable shortcut — direct, no browser redirect)
+# Hands the APP the user's password — fine for a lab, OAuth 2.1-deprecated for real use.
 curl -s -X POST http://localhost:8080/realms/myrealm/protocol/openid-connect/token \
   -d grant_type=password \
   -d client_id=myclient \
   -d username=alice -d password=s3cret \
   -d scope=openid | jq
+
+# Authorization Code grant (what a real app uses — password goes ONLY to the IdP)
+# 1. Send the browser to the authorize endpoint; the user logs in AT Keycloak:
+#      .../protocol/openid-connect/auth?response_type=code&client_id=myclient\
+#        &redirect_uri=http://localhost:3000/callback&scope=openid&state=xyz
+# 2. Keycloak redirects back to redirect_uri with ?code=... (single-use, ~60s).
+# 3. Exchange the code (+ client_secret) on the back channel — the browser never sees this:
+curl -s -X POST .../token \
+  -d grant_type=authorization_code \
+  -d client_id=myclient -d client_secret=$SECRET \
+  -d redirect_uri=http://localhost:3000/callback \
+  -d code=$CODE | jq
 
 # Client Credentials grant (service-to-service, no user)
 curl -s -X POST .../token \
@@ -101,5 +114,9 @@ failure mode in script form.
   live. Defend the number (why 300s, not 3600?).
 - **Scope each token to a single `aud`.** A token minted for app A must not be replayable against app B.
   Claim inflation (40 group memberships in every token) is VPN access re-packaged as JSON.
+- **The password grant hands the *app* the user's password; Authorization Code doesn't.** ROPC is a fine
+  scriptable shortcut and OAuth 2.1-deprecated for real use. In the redirect flow the password reaches
+  only the IdP, and the app gets a one-time `code` it redeems with its `client_secret` — the secret
+  proves the *app*, not the user.
 - **`start-dev` is not production.** It uses HTTP, ephemeral storage, and dev defaults — fine for the
   lab, never for anything real.
