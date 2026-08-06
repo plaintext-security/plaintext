@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — stand a validated `sift` core behind two surfaces (a `typer` CLI an analyst runs and a `FastAPI` service a pipeline calls) so the same typed logic ships once and is consumed two ways, without duplicating a line. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot writes the code in seconds; your edge is the project it writes into and the spec it writes against.*
 
@@ -42,6 +42,22 @@ EVE line → HTTP `422`); and prove both surfaces produce identical results from
 
 ## The core idea
 
+`sift` is **one core reached two ways**: the validated pydantic models and core functions you built in
+M2–M5 are the tool, and `typer` and `FastAPI` are thin adapters that import and delegate — the scoring
+logic lives in exactly one place, so the analyst's CLI and the pipeline's API can never drift apart.
+
+```mermaid
+flowchart TB
+    CLI["typer CLI<br/>analyst runs sift triage"] -->|import + delegate| CORE
+    API["FastAPI service<br/>pipeline calls POST /triage"] -->|import + delegate| CORE
+    subgraph CORE["sift core — one implementation, built M2–M5"]
+        M["pydantic models<br/>AlertEvent · TriageResult"]
+        F["core functions<br/>triage() · enrich()"]
+        M --- F
+    end
+    CORE -.the scoring logic appears here<br/>and nowhere else.-> CORE
+```
+
 **The core already exists — surfaces are adapters, not owners.** By the end of M5, `sift` has a typed
 core: the pydantic EVE `AlertEvent` model (M2), a streaming triage layer (M3), an async enricher (M4),
 and safe tool wrappers (M5), all reachable as plain Python functions like `enrich(event) -> AlertEvent`
@@ -56,7 +72,26 @@ type-annotated function into a CLI: parameter types become argument parsers and 
 turns a type-annotated function into an HTTP endpoint: a pydantic parameter becomes a request-body schema
 with automatic validation and OpenAPI docs. Once you see that both frameworks *derive the interface from
 your types*, the "one core, two surfaces" pattern stops being extra work — you write the typed core once,
-and each adapter is a decorator plus a delegate call.
+and each adapter is a decorator plus a delegate call. Both surfaces walk the *same* path — get input
+into the model, call one core function, render the result out — they only differ at the two ends:
+
+```mermaid
+flowchart LR
+    IN1["eve.json line<br/>CLI · on argv"] --> V
+    IN2["HTTP body<br/>API · POST /triage"] --> V
+    V["validate into<br/>AlertEvent (the M2 model)"] --> C["triage(event)<br/>one core function"]
+    C --> R1["JSON to stdout<br/>CLI render"]
+    C --> R2["200 + TriageResult<br/>API response"]
+```
+
+| | `typer` CLI | `FastAPI` service |
+|---|---|---|
+| **Consumer** | analyst at a terminal | pipeline / SOAR playbook, over HTTP |
+| **Input** | an `eve.json` line on argv | a JSON request body |
+| **Validation** | `AlertEvent.model_validate_json(...)` | FastAPI validates the body → clean `422` |
+| **Interface derived from** | a typed function → args + `--help` | a typed function → request schema + OpenAPI |
+| **Output** | JSON to stdout | JSON HTTP response (`TriageResult`) |
+| **Business logic** | none — imports the core | none — imports the core |
 
 **FastAPI's pydantic-native validation is the whole spine paying off.** This is why we spent M2 building
 models that reject adversarial input. When you type a FastAPI endpoint's body as `event: AlertEvent`,
@@ -65,6 +100,18 @@ FastAPI validates every incoming request against that EVE model *before your cod
 precise error, not a crash deep in your enricher. The untrusted-input boundary you built for the CLI is
 now defending your HTTP surface too, for free, because it's the *same model*. Parse-don't-trust was never
 about one edge; it was about owning the type that every edge validates against.
+
+```mermaid
+flowchart LR
+    REQ(["POST /triage<br/>request body — untrusted"]) --> G{"validate against<br/>AlertEvent · the M2 model"}
+    G -->|valid EVE record| OK["triage() runs<br/>→ 200 + TriageResult"]
+    G -->|truncated / severity ∉ 1..3 / wrong event_type| ERR["422 Unprocessable<br/>before your code runs ✓"]
+```
+
+!!! note "The through-line — parse-don't-trust at a second edge"
+    The M2 discipline was *own the type that validates untrusted input*. An HTTP request body is untrusted
+    input too — so typing a FastAPI endpoint's body as `event: AlertEvent` reuses the **exact same model**
+    to guard the API edge that guarded the CLI edge. You wrote the boundary once; both surfaces inherit it.
 
 ```python
 # core.py — the shared core. Already exists from M2–M5. No CLI, no HTTP. Just types + logic.
@@ -110,7 +157,11 @@ Two files, one `import triage`. The scoring logic appears **zero** times in eith
     commands are sync, so the CLI wraps the same coroutine in `asyncio.run(...)`. Crucially, the
     enrichment logic itself still lives once in the core — each surface only chooses how it *invokes* it.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
+
+*The core idea above teaches the one-core-two-surfaces move and the parse-don't-trust-at-a-second-edge
+payoff, and you can do the lab from it. These links go deeper on each framework and the "thin adapter over
+a stable core" argument — pull them when a step doesn't click, not as required reading.*
 
 **Typer — the CLI surface**
 

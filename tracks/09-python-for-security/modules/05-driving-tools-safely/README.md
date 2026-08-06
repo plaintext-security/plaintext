@@ -2,7 +2,7 @@
 
 *Type 9 · Tool-Build — wrap external tools (nmap, VirusTotal, MISP) from `sift` without opening a command-injection hole, and parse their output robustly. (Secondary: Type 14 · Adversarial Review — catch the copilot's `shell=True`.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot's favourite way to run a tool — `shell=True` — is also the fastest way to hand an attacker your shell.*
 
@@ -24,10 +24,19 @@ because the input *isn't yours* — the hostname, URL, or hash you're about to s
 attacker may have shaped. A single `subprocess.run(f"whois {domain}", shell=True)` where `domain` is
 `evil.com; rm -rf ~` is remote code execution in your SOC tooling.
 
-This bug is everywhere in the wild — Python libraries and apps have shipped real, CVE-tracked
-command-injection holes from exactly this pattern. And it's *especially* an AI-review problem: copilots
-generate `shell=True` constantly because it's the shortest way to make a command work in a demo. Catching
-it is a core competency of "you review → you own it."
+```mermaid
+flowchart LR
+    IN["indicator from an alert<br/>evil.com; rm -rf ~"] --> Q{"how sift runs the tool"}
+    Q -->|"shell=True — f-string → /bin/sh ❌"| SH["/bin/sh interprets<br/>; | $() backticks"] --> RCE["injected command runs<br/>RCE in your SOC"]
+    Q -->|"shell=False — argument list ✓"| EX["execve gets one literal arg"] --> INERT["treated as data:<br/>a malformed hostname, rejected"]
+```
+
+This is **CWE-78, OS command injection** — one of the oldest, most reliable, most damaging bug classes
+there is, and it's everywhere in the wild: Python libraries and apps have shipped real, CVE-tracked
+holes from exactly this pattern (see CVE-2021-21300 below). And it's *especially* an AI-review problem:
+**the copilot's default for "run a tool" is `shell=True`**, because it's the shortest way to make a
+command work in a demo — so it regenerates this exact hole constantly. Catching it on sight is a core
+competency of "you review → you own it."
 
 ## The core idea
 
@@ -38,6 +47,14 @@ the default; the fix is often *deleting* `shell=True` and turning the f-string i
 genuinely must build a command string, `shlex.quote()` escapes it — but the list form is better because
 it removes the shell entirely.
 
+| | `shell=True` (the copilot default) | `shell=False` + argument list |
+|---|---|---|
+| How args reach the tool | one string → `/bin/sh` re-parses it | list → `execve`, no shell in between |
+| `;` `\|` `$()` backticks | interpreted as shell syntax | inert literal characters |
+| Attacker-shaped input | command injection / RCE | a malformed argument the tool rejects |
+| "But I need a pipe / glob" | reach for the shell | wire `stdout`→`stdin` in Python; `Path.glob` |
+| Review verdict | guilty until proven otherwise | the bar |
+
 **Validate before you shell out.** Defense in depth: even with `shell=False`, pass tools *validated*
 input. Reuse Module 02's discipline — an indicator that's supposed to be a domain should be validated as
 one (allowlist the character set, reject the weird) before it's handed to any external process. A tool
@@ -47,6 +64,13 @@ that only ever receives well-formed arguments has a smaller attack surface than 
 `vt`'s JSON, `pymisp`'s objects give you structured output — parse *that*, not the human-readable text
 that changes format between versions and breaks your regex. Robust parsing is what makes the wrapper
 reliable enough for the CLI and API surfaces you add in Module 06.
+
+```mermaid
+flowchart LR
+    T["driven tool<br/>suricata -r pcap → eve.json"] --> P{"typed parse<br/>pydantic union keyed on event_type"}
+    P -->|known shape| M["typed event<br/>alert · flow · dns · http · tls"]
+    P -->|unexpected line| Q["quarantine<br/>never fatal, never trusted"]
+```
 
 This is exactly why `sift` drives **Suricata**: point it at a pcap and it emits **EVE JSON** (`eve.json`)
 — newline-delimited, one event per line, keyed by `event_type`. That's a real dissector's *structured*
@@ -64,7 +88,11 @@ JSON, reconcile the two views. Indicators to enrich (`src_ip`, `dest_ip`, `dns.r
     Redirection is the `stdout=`/`stderr=` arguments. Reaching for `shell=True` to get shell *features* is
     almost always a sign the work belongs in Python, where it's both safer and more testable.
 
-## Learn (~2 hrs)
+## Go deeper (~2 hrs · optional)
+
+*The core idea above teaches the whole defense — `shell=False` + list, validate the input, parse
+structured output — and you can do the lab from it. These links go deeper on the `subprocess` security
+model and the anchor CVE; pull them when a step doesn't click, not as required reading.*
 
 **The safe subprocess pattern**
 
@@ -77,6 +105,9 @@ JSON, reconcile the two views. Indicators to enrich (`src_ip`, `dest_ip`, `dns.r
 
 - [OWASP — Command Injection](https://owasp.org/www-community/attacks/Command_Injection) (~15 min) — the
   attack class, its impact, and the defenses; ground the module in the canonical reference.
+- [CWE-78 — Improper Neutralization of Special Elements used in an OS Command](https://cwe.mitre.org/data/definitions/78.html)
+  (~10 min) — the formal weakness ID this whole module defends against; skim the "Demonstrative Examples"
+  and the mitigation that maps to the argument-list form.
 - [CVE-2021-21300 — command injection in MLflow via `subprocess(..., shell=True)` (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2021-21300)
   (~10 min) — a real advisory where an unsanitized git URI passed to `shell=True` was the hole; the fix
   replaced it with the list-form `subprocess` call — exactly this module's lesson.

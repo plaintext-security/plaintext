@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — enrich the IPs pulled from your validated `AlertEvent`s against a threat-intel API concurrently without becoming a thundering herd: bound the concurrency, back off on `429`, and survive partial failure. The toil eliminated is the sync loop that takes an hour; the disaster averted is getting your API key banned. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot writes the enrichment loop in seconds; your edge is the bound it forgot to put on it.*
 
@@ -33,9 +33,22 @@ This is also where the copilot's blind spot is widest. Ask it to "enrich these i
 and you get one of two wrong answers: a sync `for` loop that's slow but safe, or `await asyncio.gather(*[
 enrich(i) for i in indicators])` that's fast and *dangerous*. Neither has a concurrency bound, neither
 handles `429`, and `gather` will also abandon every result the moment one task raises. Async is genuinely
-harder to review than sync — the bugs are races, unbounded fan-out, and swallowed exceptions, none of
+harder to review than sync — the bugs are **races** (two coroutines mutating the shared results dict at
+once), **unbounded fan-out** (the herd), and **swallowed exceptions**, none of
 which show up as a red squiggle. Getting this right is what separates a script that *works on three test
 indicators* from one that *operates against a real API at scale*.
+
+The three shapes the same "enrich these IPs" job can take — only the third is both fast *and* safe:
+
+```mermaid
+flowchart LR
+    IPs["unique src_ip / dest_ip<br/>off the AlertEvents"] --> Sync["sync for-loop<br/>httpx.get × N"]
+    IPs --> Herd["asyncio.gather(*all)<br/>the copilot's default"]
+    IPs --> Bound["bounded pool<br/>semaphore(K) + backoff"]
+    Sync -->|serial waits| Slow["✓ safe but<br/>~1 hr wall-clock ❌"]
+    Herd -->|N sockets at once| Ban["fast but 429 /<br/>key banned ❌"]
+    Bound -->|≤ K in flight, polite| Good["fast AND polite ✓"]
+```
 
 ## Objective
 
@@ -65,11 +78,36 @@ before its request and releases it after, so at most *K* are ever active. `httpx
 the transport layer (`max_connections`, `max_keepalive_connections`), but the semaphore is what you
 *reason about*: pick *K* from the API's published rate limit, not from how fast your CPU is.
 
+```mermaid
+flowchart LR
+    A["N alerts →<br/>M unique IPs"] --> S{{"asyncio.Semaphore(K)<br/>at most K in flight"}}
+    S --> W1["enrich IP<br/>await client.get"]
+    S --> W2["enrich IP<br/>await client.get"]
+    S --> W3["enrich IP<br/>await client.get"]
+    W1 --> R["results<br/>Ok / Err per IP"]
+    W2 --> R
+    W3 --> R
+    R -.batch always completes.-> A
+```
+
 **A `429` is an instruction, not an error — obey it.** When the API returns `429 Too Many Requests`, it
 often includes a `Retry-After` header telling you *exactly* how long to wait. The respectful client reads
 that header and sleeps for it; only if it's absent do you fall back to **exponential backoff** (wait 1s,
 2s, 4s, … with a little jitter so a fleet of clients doesn't retry in lockstep). Retrying *instantly* on a
 `429` is the herd behavior that gets you banned — you must slow down *because the server told you to*.
+
+```mermaid
+flowchart LR
+    Q["await client.get(ip)"] --> C{"status?"}
+    C -->|200| OK["Ok(reputation)"]
+    C -->|429| H{"Retry-After<br/>header?"}
+    H -->|present| RA["await asyncio.sleep(Retry-After)"]
+    H -->|absent| EB["exponential backoff<br/>1s, 2s, 4s + jitter"]
+    RA --> Budget{"retries left?"}
+    EB --> Budget
+    Budget -->|yes| Q
+    Budget -->|budget spent| Err["Err(rate_limited)"]
+```
 
 **Partial failure is the normal case — design for it, don't gather for it.** At scale, some calls will
 time out, some will `429` past your retry budget, some indicators just won't resolve. `asyncio.gather`
@@ -88,6 +126,15 @@ persisted to the broker, retried on failure, and picked back up after a restart.
 because it *is* the lesson: **async = in-process, ephemeral, one batch; a task queue = out-of-process,
 durable, retryable, continuous.** Reach for the queue the moment the work must outlive the request that
 created it — and *not* before, because a queue you don't need is just latency and a broker to babysit.
+
+```mermaid
+flowchart LR
+    E["sift enqueue<br/>@huey.task(retries=3)"] --> B[("broker<br/>SqliteHuey / Redis<br/>durable")]
+    B --> W["huey_consumer<br/>separate process"]
+    W --> D["result stored<br/>survives a crash ✓"]
+    W -.task raised.-> B
+    X["consumer killed<br/>mid-batch"] -.jobs still queued.-> W
+```
 *(When a durable job in turn grows into a long-running, multi-step **workflow** — enrich → wait for human
 approval → contain → ticket — that must survive restarts across *every* step, you've outgrown the queue
 too and graduate to **durable execution** (Temporal). That's workflow orchestration; it lives in the
@@ -101,9 +148,14 @@ Automation track's SOAR, not here — keep `sift` at the task-queue layer.)*
     the limit exists on the *server*, and your job is to stay *under* it. The correct *K* comes from the
     API's documented quota (e.g. 4 req/s → a semaphore of 4 plus pacing), not from your bandwidth.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
 
-**Async Python fundamentals (do these first — the mental model, then the client)**
+*The core idea above teaches the async-is-for-waiting model, the semaphore bound, the `429`/backoff
+discipline, partial-failure results, and the async-vs-task-queue distinction — you can do the lab from it.
+These links go deeper on each primitive and the primary sources; pull them when a step doesn't click,
+not as required reading.*
+
+**Async Python fundamentals (the mental model, then the client)** *(`[depth]` — the core idea already teaches these; read for the source vocabulary)*
 
 - [Python docs — `asyncio` "Coroutines and Tasks"](https://docs.python.org/3/library/asyncio-task.html)
   (~30 min) — the primary source: `async`/`await`, `asyncio.gather`, `asyncio.as_completed`, and read the
@@ -115,13 +167,13 @@ Automation track's SOAR, not here — keep `sift` at the task-queue layer.)*
   (~40 min) — the best single explainer of *why* I/O-bound work wins from async and how the event loop
   actually schedules it; skim the CPU-bound caveat.
 
-**The async HTTP client + rate-limit reality**
+**The async HTTP client + rate-limit reality** *(`[depth]` — the bound/backoff mechanism is in the core idea; read for the API surface)*
 
 - [HTTPX docs — "Async Support"](https://www.python-httpx.org/async/) (~20 min) — how to use
   `httpx.AsyncClient` as a reused, connection-pooled client; read the `async with` client lifecycle.
 - [HTTPX docs — "Resource Limits" (`httpx.Limits`)](https://www.python-httpx.org/advanced/resource-limits/)
   (~10 min) — `max_connections` / `max_keepalive_connections` at the transport layer, the pooling
-  complement to your semaphore. <!-- VALIDATE: confirm current URL/slug for the Limits page -->
+  complement to your semaphore.
 - [MDN — HTTP `429 Too Many Requests` and the `Retry-After` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)
   (~10 min) — the spec behavior your backoff must honor; note `Retry-After` can be seconds *or* an HTTP
   date.

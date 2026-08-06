@@ -2,7 +2,7 @@
 
 *Type 9 · Tool-Build — grow `sift` from a toy that reads one alert into a tool that streams a real, large feed, queries it with a columnar engine, and emits logs a SIEM can actually parse. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot's `json.load()` and `print()` work fine on 100 rows and fall over on a real `eve.json`.*
 
@@ -14,6 +14,19 @@
     `print()` — is a memory bomb and an unparseable log at scale. You'll swap it for streaming, columnar
     queries, and structured logging, and feel the difference on a real `eve.json` — the demo replays the
     capture to hundreds of thousands of events.
+
+This module bolts one production-shaped stage onto the **same `sift`** you've been building — no
+reframe: it takes the validated-alert reader from Module 02 and teaches it to survive a *real* feed. The
+whole stage is one pipeline, and the "parse, don't trust" through-line still holds at every hop — each
+line is validated into a typed model *as it streams*:
+
+```mermaid
+flowchart LR
+    EVE["real Suricata<br/>eve.json (~175k events)"] --> STR["stream + validate<br/>generator · yield · flat memory"]
+    STR --> COL["columnar triage<br/>duckdb / polars query"]
+    COL --> LOG["structured JSON logs<br/>structlog · SIEM-ingestible"]
+    STR -.parse, don't trust.-> STR
+```
 
 ## Why this matters
 
@@ -45,11 +58,42 @@ A `duckdb` `SELECT alert.signature, count(*) FROM 'eve.json' GROUP BY alert.sign
 lines of hand-rolled counting — and runs faster on more data. (DuckDB reads the nested EVE JSON directly;
 `alert.signature` is just a struct field access.)
 
+```mermaid
+flowchart TB
+    subgraph ROW["Row-by-row (the copilot's reflex)"]
+      direction LR
+      R1["for line in eve.json"] --> R2["dict[sig] += 1<br/>Python objects, one at a time"]
+    end
+    subgraph COLM["Columnar (duckdb / polars)"]
+      direction LR
+      C1["signature column<br/>vectorized, larger-than-memory"] --> C2["GROUP BY count<br/>optimized C, one pass"]
+    end
+    ROW -.same answer, but O(rows) Python objects.-> COLM
+```
+
 **Logs are data, so structure them.** `structlog` turns `print("enriched " + ip)` into
 `log.info("triaged", signature=sig, dest_ip=str(ip), verdict="malicious")` — a JSON event with fields
 you can search, filter, and alert on. This is the observability half of "build-and-operate": a tool you
 run in production needs logs you can query, not prose you have to grep. It's also the seam Track 02
 (defensive) consumes — your structured logs are somebody's detection input.
+
+**Dissect by `event_type`, then triage the new type columnar.** EVE is a multiplexed feed — `alert`,
+`dns`, `http`, `tls`, `flow` lines share one file. The streaming validator dispatches each line on its
+`event_type` into the right member of Module 02's growing typed union (which already added `dns`); this
+module's dissector rung adds `http`. The payoff isn't just a cleaner parse — a freshly-dissected
+`HttpEvent` immediately *feeds a columnar query* (top `http.hostname`, non-200 `http.status`), which is
+exactly this module's skill. That's the dissector thread's rule: a dissector earns its keep the moment it
+answers a triage question.
+
+```mermaid
+flowchart LR
+    L["eve.json line"] --> D{"dispatch on<br/>event_type"}
+    D -->|alert| A["AlertEvent"]
+    D -->|dns| N["DnsEvent"]
+    D -->|http · this module| H["HttpEvent<br/>hostname · url · status"]
+    D -->|unknown| Q["quarantine<br/>(parse, don't trust)"]
+    H --> T["columnar triage<br/>top http.hostname · non-200 status"]
+```
 
 ??? note "polars or duckdb — which, when?"
     Reach for **`duckdb`** when the question is naturally SQL and the data lives in files (`SELECT`,
@@ -59,7 +103,12 @@ run in production needs logs you can query, not prose you have to grep. It's als
     beats a `for` loop with a `dict` counter on real data. Don't agonize — pick the one that fits the
     question and move.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
+
+*The core idea above teaches the three moves — stream-and-validate, columnar triage, structured logs —
+and you can do the lab from it. These links go deeper on each engine and pin the discipline the module
+is anchored on: **a real Suricata `eve.json` at scale** and **structured logging you'd trust in
+production.** Pull them when a step doesn't click, not as required reading.*
 
 **Streaming & memory**
 

@@ -2,7 +2,7 @@
 
 *Type 12 · Migration — take a real legacy security script and migrate it, without breaking it, into a modern `uv`/`ruff`/`pyright` project with a CI gate and a spec-driven workflow. (Secondary: Type 11 · ADR — record the toolchain and spec-workflow decision honestly.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot writes the code in seconds; your edge is the project it writes into and the spec it writes against.*
 
@@ -26,6 +26,14 @@ malicious package named `torchtriton` to PyPI that *shadowed* a real internal Py
 `pip` preferred the public index, anyone who installed PyTorch-nightly that week pulled the attacker's
 code, which exfiltrated environment variables, `/etc/passwd`, and SSH keys. A **dependency-confusion**
 attack — and a lockfile with pinned hashes is what stops it.
+
+```mermaid
+flowchart LR
+    A["attacker uploads<br/>torchtriton to PyPI"] --> B{"pip resolves<br/>the dependency"}
+    B -->|public index preferred ❌| C["malicious package installed"]
+    C --> D["exfil: env vars,<br/>/etc/passwd, SSH keys"]
+    B -.hash-locked lockfile.-> E["install fails:<br/>bytes don't match ✓"]
+```
 
 This module is first because everything else in the track is built *in this skeleton*. If your project
 can't lint, type-check, and pin its dependencies reproducibly in CI, none of the later guarantees
@@ -58,6 +66,14 @@ getting CI green around it, and only then refactoring behind the passing gate. T
 never cut over all at once, always keep a rollback — is the same one Track 06 and Track 10 use on domains
 where a big-bang cutover means an outage.
 
+```mermaid
+flowchart LR
+    L["legacy alert_parse.py<br/>(unchanged)"] --> W["wrap in a uv project"]
+    W --> G["CI gate green<br/>ruff · pyright · hash-locked lockfile"]
+    G --> R["refactor one slice<br/>behind the green gate"]
+    R -.rollback = prior commit.-> G
+```
+
 **Spec-driven development is how you review the copilot instead of trusting it.** The move: write a
 **spec** for the increment you want (what it does, the typed contract, the acceptance checks) → let the
 copilot implement it → **review the implementation against the spec**, which is a far sharper lens than
@@ -66,6 +82,17 @@ is what I specified, here's the diff that implements it, here's the check that p
 code in a way that pasting never gives you. You'll adopt a concrete tool for it and carry the spec beat
 into every module that follows.
 
+The thing you're seeding is **`sift`** — the alert-triage tool this whole track grows. Module 01 lands
+`sift` v0 (the migrated skeleton); every later module adds one stage of this pipeline:
+
+```mermaid
+flowchart LR
+    EVE["real Suricata<br/>eve.json"] --> V["validate<br/>pydantic · M2"]
+    V --> EN["enrich<br/>async · M4"]
+    EN --> SC["score / triage"]
+    SC --> S["serve<br/>CLI · API · MCP · M6–M7"]
+```
+
 ??? note "Why a lockfile with *hashes*, not just pinned versions"
     Pinning `torch==2.0.1` fixes the version but not the *bytes*: a compromised or re-uploaded package at
     that version still installs. A hash-locked file (`uv.lock`, or `pip`'s `--require-hashes`) records the
@@ -73,7 +100,12 @@ into every module that follows.
     which is exactly the tamper `torchtriton` relied on nobody checking. Supply-chain gating gets its own
     full treatment in Module 09; here you just establish the lockfile as non-negotiable.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
+
+*The core idea above teaches the toolchain-as-control, strangler-fig, and spec-driven moves, and you can
+do the lab from it. These links go deeper on each tool and the primary source for the anchor — pull them
+when a step doesn't click, not as required reading.*
+
 
 **The modern toolchain (do these first — they replace the copilot's defaults)**
 

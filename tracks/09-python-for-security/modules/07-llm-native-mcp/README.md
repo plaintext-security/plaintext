@@ -2,7 +2,7 @@
 
 *Type 9 · Tool-Build — expose `sift` to an LLM as an MCP server, and validate the LLM's own output with the same discipline you validate an API response. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the same "parse, don't trust" you apply to a feed applies to the model — its arguments in, and its answers out.*
 
@@ -29,6 +29,20 @@ The fix is the fix you already know — parse into a typed model at the boundary
 sides. Get this right and `sift` becomes a tool an agent can safely use and a tool that safely uses an
 agent.
 
+These two boundaries are not our invention — they are the two AI-specific entries of the **OWASP Top 10
+for LLM Applications**: *Prompt Injection* (the model can be steered into calling your tool with a hostile
+argument) on the way *in*, and *Insecure Output Handling* (trusting the model's text as if it were
+structured, safe data) on the way *out*. "Parse, don't trust" is the same discipline that closes both — the
+AI edge of the through-line you opened in Module 02 and close in Module 09:
+
+```mermaid
+flowchart LR
+    I["untrusted feed input<br/>Suricata eve.json · M02"] --> P["pydantic model<br/>validate at the boundary"]
+    O["untrusted LLM output<br/>MCP tool arg + verdict · M07"] --> P
+    Me["untrusted measurement<br/>eval metrics · M09"] --> P
+    P --> Trust["typed, validated value<br/>the rest of sift can trust"]
+```
+
 ## The core idea
 
 **An MCP server is an API whose caller is an LLM — so validate every argument.** Exposing `sift`'s
@@ -41,12 +55,35 @@ so the tool re-validates its arguments with Module 02's canonical EVE `pydantic`
 like a raw `eve.json` line. Prefer **read-only** tools; if a tool changes state, gate it behind explicit
 human confirmation rather than letting the model trigger it.
 
+```mermaid
+sequenceDiagram
+    participant H as LLM host<br/>(agent / assistant)
+    participant C as MCP client
+    participant S as sift MCP server<br/>(FastMCP)
+    participant T as enrich / triage tool
+    H->>C: "triage this alert / check 1.1.1.1"
+    C->>S: call tool(argument)
+    S->>T: validate arg — IPvAnyAddress / AlertEvent
+    Note over T: hostile or out-of-range arg<br/>→ rejected at the boundary
+    T-->>S: typed result (dict)
+    S-->>C: structured response
+    C-->>H: tool result
+```
+
 **`instructor` makes the LLM's output a typed object, not a hope.** When `sift` asks a model to classify
 an alert, you don't want a paragraph you regex — you want a validated `Verdict(severity=..., is_tp=...)`.
 `instructor` patches the client so the model's response is coerced into (and re-asked until it satisfies)
 a `pydantic` model. That's the *exact* twin of Module 02: there you validated an untrusted API response
 into an `Alert`; here you validate an untrusted *model* response into a `Verdict`. The LLM is just another
 unreliable upstream you refuse to trust raw.
+
+```mermaid
+flowchart LR
+    M["LLM reply<br/>(free text / JSON)"] --> G{"validate into<br/>Verdict (pydantic)"}
+    G -->|fits the schema ✓| V["Verdict(severity,<br/>is_true_positive, rationale)"]
+    G -->|missing field / bad enum ❌| R["reject — never<br/>json.loads() and pray"]
+    R -.instructor re-asks the model.-> M
+```
 
 **Pin the moving parts.** MCP and `instructor` are newer and still evolving. Pin their versions (Module
 01's lockfile), teach yourself the *durable pattern* (typed tool arguments; typed model output), and
@@ -59,23 +96,33 @@ treat the specific API as replaceable — the discipline outlives the library.
     verbs (MCP, prompt injection) appear in both: here you learn the craft; there you learn the operation.
     Module 08 next bridges them by attacking the very server you build here.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
 
-**MCP**
+*The core idea above teaches both moves — the typed MCP server whose caller is untrusted, and validating
+the model's output like an API response — and you can build the lab from it. These links go deeper on the
+exact MCP/`instructor` API and the primary source for the two trust boundaries; pull them when a step
+doesn't click, not as required reading.*
 
-- [Model Context Protocol — specification & concepts](https://modelcontextprotocol.io) (~30 min) — read
-  "Core concepts" (tools, resources) and the trust model; you're building a server, so focus on the tool interface.
-- [FastMCP / the Python MCP SDK — quickstart](https://github.com/modelcontextprotocol/python-sdk)
+**MCP — the server whose caller is an LLM (start here)**
+
+- **[core]** [Model Context Protocol — specification & concepts](https://modelcontextprotocol.io) (~30 min)
+  — read "Core concepts" (tools, resources) and the trust model; you're building a server, so focus on the tool interface.
+- **[core]** [FastMCP / the Python MCP SDK — quickstart](https://github.com/modelcontextprotocol/python-sdk)
   (~25 min) — the `@mcp.tool()` decorator, type-hint-as-schema, and stdio transport.
- 
 
-**Typed LLM output**
+**Typed LLM output — validate the reply, don't trust it**
 
-- [`instructor` documentation — getting started](https://python.useinstructor.com/) (~30 min) — patching
-  a client to return a `pydantic` model, and how it re-asks on validation failure.
-- [Anthropic API — tool use / structured output](https://docs.claude.com/en/docs/build-with-claude/tool-use)
+- **[core]** [`instructor` documentation — getting started](https://python.useinstructor.com/) (~30 min) —
+  patching a client to return a `pydantic` model, and how it re-asks on validation failure.
+- **[reference]** [Anthropic API — tool use / structured output](https://docs.claude.com/en/docs/build-with-claude/tool-use)
   (~20 min) — the underlying mechanism `instructor` builds on; use a current model id like
-  `claude-sonnet-5` (capable) or `claude-haiku-4-5-20251001` (cheap/fast). <!-- VALIDATE: confirm docs URL -->
+  `claude-sonnet-5` (capable) or `claude-haiku-4-5-20251001` (cheap/fast).
+
+**The anchor — the two boundaries as OWASP entries**
+
+- **[primary source]** [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) (~20 min)
+  — read *Prompt Injection* and *Insecure Output Handling*: the two AI-specific risks that are exactly the
+  argument-in and output-out boundaries this module validates.
 
 ## Key concepts
 - **An MCP server's caller (the LLM) is untrusted** — validate every tool argument with `pydantic`.

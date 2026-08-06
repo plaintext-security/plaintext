@@ -2,7 +2,7 @@
 
 *Type 9 · Tool-Build — add a typed input boundary to `sift`: pydantic v2 domain models that turn a real **Suricata EVE JSON** feed into `AlertEvent` objects (and load secrets safely), so invalid states can't reach your logic. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot will happily trust whatever the feed hands it; your edge is the boundary that refuses malformed and adversarial input before it becomes a bug.*
 
@@ -19,6 +19,15 @@
     `pydantic-settings` instead of hard-coding them. The anchor is a whole CVE class: Python libraries that
     *deserialize untrusted input into live objects* — `yaml.load()`, `pickle` — and hand an attacker code
     execution.
+
+!!! note "The anchor is a real feed"
+    The bundled `eve.json` is **genuine Suricata EVE output**, not an invented toy: real Emerging Threats
+    signatures fire against a RAT infection capture — `ET MALWARE Win32/RAT CnC Checkin` (`signature_id`
+    `2035678`), `ET POLICY PE EXE or DLL Windows file download HTTP` (`2018959`), `ET MALWARE Observed RAT
+    Related SSL/TLS Certificate` (`2036842`) — carried inside the sprawling, version-dependent EVE envelope
+    (`community_id`, `in_iface`, `app_proto`, `flow_id`, …). Everything you constrain, you constrain against
+    the shape a real sensor actually emits, and the discipline it teaches — **parse, don't trust** — is the
+    input edge of the track's through-line.
 
 ## Why this matters
 
@@ -49,6 +58,14 @@ every secret out of the code into `pydantic-settings`, loaded from the environme
 
 ## The core idea
 
+```mermaid
+flowchart LR
+    RAW["raw eve.json line<br/>(untrusted · adversarial)"] --> P{"AlertEvent.model_validate<br/>pydantic v2 boundary"}
+    P -->|shape + constraints hold ✓| T["typed AlertEvent<br/>invariants guaranteed by the type"]
+    P -->|ValidationError / JSONDecodeError ❌| Q["reject → quarantine<br/>err.errors() + offending line"]
+    T --> D["downstream: enrich · score · triage<br/>receives a type, not a dict of maybes"]
+```
+
 **"Parse, don't validate" means the type *is* the check.** Validation, the way the copilot writes it, is
 a scatter of `if`-statements: `if "alert" not in event: ...`, `if not isinstance(ts, str): ...`,
 sprinkled wherever a field is touched. The problem isn't that any one check is wrong — it's that the
@@ -68,6 +85,14 @@ parse to `datetime` — so a record that violates them can't become an `AlertEve
 is the security property: you're not hoping downstream code remembers to check; you've made the malformed
 record **unrepresentable** as a valid domain object.
 
+```mermaid
+flowchart TB
+    L["eve.json line"] --> E{"event_type<br/>discriminant"}
+    E -->|alert| A["AlertEvent — pin src_ip/dest_ip,<br/>alert.signature_id, alert.severity 1..3"]
+    E -->|"dns (dissector stretch)"| DN["DnsEvent — pin dns.rrname,<br/>dns.rrtype"]
+    E -->|"unknown: stats, http, …"| Q["no union member → quarantined<br/>(never fatal)"]
+```
+
 **Pin what you depend on; ignore the rest of the envelope — that's the real-feed judgment.** A toy schema
 can `extra="forbid"` and treat any unexpected key as an attack. Real EVE can't: a genuine `eve.json` line
 carries dozens of envelope fields (`community_id`, `in_iface`, `app_proto`, `tx_id`, `pkt_src`, …) that
@@ -77,6 +102,14 @@ craft is the opposite move — `extra="ignore"`, then **pin and constrain the fi
 *legitimately optional* (some events omit `dest_ip`; `flow_id` may be absent). Deciding that split — what
 to depend on, what to let through — is exactly the bridge the copilot skips when it either trusts every
 key or forbids them all.
+
+```mermaid
+flowchart LR
+    BAD["malformed / adversarial line"] --> POL{"reject-policy<br/>your explicit choice"}
+    POL -->|halt| H["stop the run<br/>❌ one poisoned event blinds you to 9,999"]
+    POL -->|skip + log| S["quarantine to dead-letter<br/>✓ triage-tool default"]
+    POL -->|"do nothing"| C["ValidationError crashes 3 layers up<br/>❌ not a decision"]
+```
 
 **The boundary is also where you decide what "reject" means — that's a design choice, not a default.**
 A validating parser gives you the *option* to be strict, but you still choose the policy: does a
@@ -98,33 +131,38 @@ instead of as a confusing `None` mid-request, and the key never lives in the sou
     and get your strictness from *constrained fields* instead — reserve `extra="forbid"` for a small
     sub-object whose exact shape you truly own.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
 
-**pydantic v2 — the typed boundary (do these first)**
+*The core idea above teaches the parse-don't-validate boundary, the pin-don't-forbid judgment on a real
+feed, and the reject-policy decision — you can build the lab from it. These links go deeper on the exact
+pydantic API and the primary sources for the anchor; pull them when a step doesn't click, not as required
+reading.*
 
-- [pydantic docs — "Models" and "Validators"](https://docs.pydantic.dev/latest/concepts/models/)
+**pydantic v2 — the typed boundary (start here)**
+
+- **[core]** [pydantic docs — "Models" and "Validators"](https://docs.pydantic.dev/latest/concepts/models/)
   (~40 min) — read how `BaseModel`, field types, and `model_validate` work, then the
   [`field_validator`/`model_validator`](https://docs.pydantic.dev/latest/concepts/validators/) page.
   This is the exact API you'll build the `EveBase`/`AlertDetails`/`AlertEvent` models with.
-- [pydantic docs — "Fields" and constrained types](https://docs.pydantic.dev/latest/concepts/fields/)
+- **[core]** [pydantic docs — "Fields" and constrained types](https://docs.pydantic.dev/latest/concepts/fields/)
   (~15 min) — `Field(...)` constraints, `Annotated` types, and stdlib types like `IPvAnyAddress` that
   turn a domain rule into a type instead of an `if`.
-- [pydantic docs — "Handling errors" / `ValidationError`](https://docs.pydantic.dev/latest/errors/validation_errors/)
+- **[reference]** [pydantic docs — "Handling errors" / `ValidationError`](https://docs.pydantic.dev/latest/errors/validation_errors/)
   (~15 min) — what a rejection actually contains, so your reject-policy can act on `.errors()` instead
   of a bare stack trace.
 
 **Secrets at the boundary**
 
-- [`pydantic-settings` docs — "Settings management"](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+- **[core]** [`pydantic-settings` docs — "Settings management"](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
   (~20 min) — `BaseSettings`, env-var loading, `SecretStr`, and `.env` support; why a typed settings
   object beats `os.environ.get("API_KEY")` scattered through the code.
 
 **The idea and the anchor**
 
-- [Alexis King — "Parse, don't validate"](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
+- **[context]** [Alexis King — "Parse, don't validate"](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
   (~25 min) — the essay the whole module is named after. It's Haskell-flavored, but read it for the
   thesis: push the untrusted-to-trusted conversion to the boundary and let the type carry the proof.
-- [NVD — CVE-2017-18342 (PyYAML `yaml.load()` arbitrary code execution)](https://nvd.nist.gov/vuln/detail/CVE-2017-18342)
+- **[primary source]** [NVD — CVE-2017-18342 (PyYAML `yaml.load()` arbitrary code execution)](https://nvd.nist.gov/vuln/detail/CVE-2017-18342)
   (~10 min) — the anchor CVE: how deserializing untrusted YAML into live objects becomes RCE, and why
   `yaml.safe_load` / a schema is the fix.
 

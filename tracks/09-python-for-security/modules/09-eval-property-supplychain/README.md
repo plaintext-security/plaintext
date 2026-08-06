@@ -2,7 +2,7 @@
 
 *Type 13 · Eval Harness — build a held-out eval set, a metric chosen on purpose, a scorecard, and a CI regression gate that fails the build on a planted regression. (Secondary: Type 14 · Adversarial Review — fuzz the validator and audit the dependency graph.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 **Python for Security** — *the copilot writes the code in seconds; your edge is proving it still works — measured, fuzzed, and pinned.*
 
@@ -16,7 +16,10 @@
     Then you fuzz the M2 EVE boundary (the `AlertEvent`/union validator) with `hypothesis` (it must reject
     *all* malformed EVE, not just your examples), and finally close the supply-chain loop M1 opened:
     `pip-audit` + a hash-locked lockfile as a
-    CI gate. The anchor is the oldest lesson in the track: **you can't trust what you can't measure.**
+    CI gate. This is the **final** module: it doesn't add a stage to `sift` — it *measures* the whole
+    tool and locks the measurement into CI, the third edge of *parse, don't trust* (M2 typed the input,
+    M7 hardened the tool, M9 proves the whole system stays good). The anchor is the oldest lesson in the
+    track: **you can't trust what you can't measure.**
 
 ## Why this matters
 
@@ -63,11 +66,20 @@ the misses that get someone breached) traded against **precision** (how much of 
 the false positives that drown an analyst). Write down which you're optimizing and why *before* you read
 the number, so the metric drives the tool instead of the tool flattering the metric.
 
-**A regression gate is the whole point.** A scorecard you look at once is a vanity metric. The value is in
-CI: assert `precision >= 0.80 and recall >= 0.90` (thresholds *you* justify), and the build **fails** when
-a change drops below them. Now swapping a prompt, a model, or a scoring rule can't silently degrade the
-tool — the gate catches the drift the day it's introduced, not the week after an incident. You'll prove
-the gate works by planting a regression and watching CI go red.
+**A regression gate is the whole point — eval gates, not vibes.** A scorecard you look at once is a vanity
+metric. The value is in CI: assert `precision >= 0.80 and recall >= 0.90` (thresholds *you* justify), and
+the build **fails** when a change drops below them. Now swapping a prompt, a model, or a scoring rule can't
+silently degrade the tool — the gate catches the drift the day it's introduced, not the week after an
+incident. "It felt fine" is not a merge criterion; a held-out number over a threshold is. You'll prove the
+gate works by planting a regression and watching CI go red.
+
+```mermaid
+flowchart LR
+    H["held-out corpus<br/>real Suricata alerts<br/>TP / FP labels · never tuned"] --> SC["scorer<br/>precision · recall"]
+    SC --> G{"CI regression gate<br/>recall >= 0.90"}
+    G -->|threshold held ✓| M["merge"]
+    G -->|regressed sift ✗| B["build blocked"]
+```
 
 **Property tests fuzz the boundary the examples missed.** Your M2 EVE validator has example-based tests: a
 few known-bad `eve.json` lines it must reject (the truncated line, `severity: 5`, the unhandled
@@ -79,12 +91,30 @@ it *generates* hundreds of adversarial EVE-shaped inputs trying to break it, the
 to the minimal reproducing case. This is the same *parse, don't trust* discipline from M2 and M7, now
 turned on the parser itself.
 
+```mermaid
+flowchart LR
+    H["hypothesis generates<br/>adversarial EVE-shaped input"] --> V{"AlertEvent / union<br/>validator"}
+    V -->|well-formed alert ✓| P["parse — invariant holds"]
+    V -->|rejected ✓| Q["quarantine — ValidationError"]
+    V -->|half-parse or stray exception ✗| S["shrink to minimal<br/>counterexample = the bug"]
+```
+
 **Supply-chain gating is measurement too — of your dependency graph.** `pip-audit` cross-checks your
 locked graph against the PyPI Advisory Database and fails on a known-vulnerable version; the hash-locked
 lockfile (`uv.lock` / `--require-hashes`) fails install if the *bytes* don't match what you locked — the
 exact tamper `torchtriton` relied on nobody checking. Both belong in the same CI gate as the eval: a
 change that adds a vulnerable dependency, or drifts the graph without updating the lock, should turn the
-build red for the same reason a triage regression does.
+build red for the same reason a triage regression does. This is the M1 loop closed: M1 *named*
+`torchtriton` and wrote the lockfile; M9 makes the lockfile *bite*.
+
+```mermaid
+flowchart LR
+    D["dependency graph<br/>uv.lock · pinned + hashed"] --> A{"pip-audit<br/>vs PyPI advisory DB"}
+    A -->|clean ✓| OK["install / merge"]
+    A -->|known-vuln pin ✗| F1["build blocked"]
+    D -.tampered / drifted bytes.-> Hh{"hash-locked install"}
+    Hh -->|digest mismatch ✗| F2["install refused —<br/>the torchtriton tamper, caught"]
+```
 
 ??? note "pydantic-evals is young — pin it, learn the durable pattern"
     `pydantic-evals` is newer and moving faster than the rest of the stack; expect its API (`Case`,
@@ -94,16 +124,20 @@ build red for the same reason a triage regression does.
     threshold asserted in CI. That shape is identical whether you use `pydantic-evals`, `promptfoo`,
     `deepeval`, or a hand-rolled `pytest` loop — learn the shape, treat the library as swappable.
 
-## Learn (~2–3 hrs)
+## Go deeper (~2–3 hrs · optional)
+
+*The core idea above carries the eval-as-code, metric-choice, property-testing, and supply-chain moves —
+you can run the lab from it. These links go deeper on each tool and to the primary sources; pull them when
+a step doesn't click, not as required reading.*
 
 **Eval-as-code (build the harness)**
 
 - [`pydantic-evals` documentation — concepts + your pinned version's API](https://ai.pydantic.dev/evals/)
   (~40 min) — read `Dataset`, `Case`, and evaluators against the **version you pinned**; the API moves, so
-  trust the installed docs over any tutorial. <!-- VALIDATE: confirm current pydantic-evals docs URL -->
+  trust the installed docs over any tutorial.
 - [Chip Huyen — "Evaluation-Driven Development" (from *AI Engineering*, 2024)](https://huyenchip.com/2024/07/25/genai-platform.html)
   (~25 min) — the durable *why*: held-out sets, metric choice, and eval as a gate rather than a dashboard.
-  Read it for judgment, not API. <!-- VALIDATE: confirm exact essay URL/slug on huyenchip.com -->
+  Read it for judgment, not API.
 
 **Metric choice (pick the number on purpose)**
 
@@ -118,7 +152,7 @@ build red for the same reason a triage regression does.
   why generated input finds bugs your examples can't.
 - [Hillel Wayne — "Metamorphic testing" / property-based testing intro](https://www.hillelwayne.com/post/metamorphic-testing/)
   (~15 min) — how to *find* good properties (the hard part), with a security lens. Read it for the "what
-  property?" question, which is where most people stall. <!-- VALIDATE: confirm exact post URL on hillelwayne.com -->
+  property?" question, which is where most people stall.
 
 **Supply chain (enforce the M1 lockfile)**
 
