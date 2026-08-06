@@ -2,7 +2,7 @@
 
 *Type 11 · Decision / ADR — the deliverable is a routing ADR (local model vs frontier vs human-in-the-loop) with the trade-offs made explicit and defensible. (Secondary: Misconception Reveal — model confidence ≠ accuracy.) [Go to the hands-on lab →](lab.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *not every task needs a frontier model; deciding what runs where is itself a security decision you have to defend.*
 
@@ -66,6 +66,15 @@ anchor for the whole AI-augmented track:
    "the AI said it, not us" defence. In a SOC, that means a hallucinated containment recommendation
    acted on is *your* incident, not the model's.
 
+```mermaid
+flowchart LR
+    M["model emits a<br/>confident answer"] --> D["you deployed it"]
+    D --> O["you own the output<br/>(no 'separate entity' defence)"]
+    O --> B{"blast radius if<br/>it's wrong?"}
+    B -->|recoverable| R["route to a model tier"]
+    B -->|irreversible| H["keep it human"]
+```
+
 !!! note "The mental model"
     Stop asking "which model is smarter." Ask "given that *any* model's output is a confident draft I
     am accountable for, where does this task's blast radius let me put it?" A 7B local model is a
@@ -101,6 +110,14 @@ to pay a ransom — maximal stakes, irrecoverable — stays **human**, with the 
 briefing, never making the call. The hard part isn't the routing logic; it's writing down *why*,
 and being honest about what you accept when you're wrong.
 
+**At a glance —** the three worked examples, scored on the three axes:
+
+| Task | Sensitivity | Reasoning | Recoverable? | → Route |
+|---|---|---|---|---|
+| Alert triage on internal logs | High (internal data) | Pattern-match | Yes | **Local** |
+| Scrubbed post-incident exec summary | Medium (scrubbed) | High synthesis | Yes | **Frontier** |
+| Pay-the-ransom decision | Maximal | — | **No** | **Human** (model only briefs) |
+
 !!! warning "The gotcha"
     The seductive default is frontier-for-everything — it reasons best, so why not? Because every
     such call sends data over the boundary, adds a hard dependency on a vendor API being reachable
@@ -117,7 +134,11 @@ and being honest about what you accept when you're wrong.
 This is a **Decision / ADR** module. There is no single right routing table — there's the one you
 can defend. The deliverable is that defence.
 
-## Learn (~3 hrs)
+## Go deeper (~3 hrs · optional)
+
+*The autopsy above teaches the routing model and you can write the ADR from it alone. These links are
+for **going deeper** and working from the **primary sources** — the ruling, the risk frameworks, and
+the ADR construct — not for relearning what's above.*
 
 **The anchor — read the ruling and the analysis (~30 min)**
 - [Moffatt v. Air Canada, 2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html) — the actual decision (short, plain-language). Read paragraphs 24–28 on negligent misrepresentation and the rejected "separate legal entity" argument. This is the load-bearing primary source.

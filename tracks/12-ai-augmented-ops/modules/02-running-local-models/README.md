@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — stand up a local LLM and benchmark its throughput *and* answer-quality against your own alerts and hardware; the deliverable is the running model plus its measured baseline, not a leaderboard number. (Secondary: Decision / ADR.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *a model you can't explain is a dependency you can't audit; running it yourself is where that audit starts.*
 
@@ -45,6 +45,15 @@ That's the difference between "needs a high-end workstation" and "runs on a deve
 GGUF format (used by `llama.cpp` and Ollama) is the container format that packages quantised weights
 for CPU inference.
 
+The trade is legible once you put the footprints side by side — smaller weights, less RAM, a
+measurable (not free) quality cost:
+
+| Precision | ~RAM for a 7B model | What you trade |
+|---|---|---|
+| FP16 (16-bit) | ~14 GB | Full quality; needs a workstation / GPU |
+| Q8_0 (8-bit) | ~7 GB | Near-lossless; still heavy |
+| Q4_K_M (4-bit) | ~4 GB | Small quality loss — **laptop-sized** |
+
 !!! note "The mental model"
     A model is just a big file of floating-point weights plus the code that multiplies them.
     Quantisation trades a little numerical precision for a large drop in memory footprint, and the
@@ -60,6 +69,15 @@ can hit `localhost:11434/v1/chat/completions` with a one-line URL change. This m
 security tool integration: you write the integration once against the local model, and swapping to
 a frontier model is a configuration change, not a code change — the whole rest of this track plugs
 into the service you stand up here.
+
+```mermaid
+flowchart LR
+    C["your integration code<br/>(one OpenAI-compatible client)"] --> U{"base URL"}
+    U -->|localhost:11434| O["Ollama<br/>loads GGUF weights into RAM"]
+    U -->|api.openai.com| F["frontier model<br/>billed · leaves the boundary"]
+    O --> R["same response shape"]
+    F --> R
+```
 
 **The one load-bearing judgment: measure on YOUR alerts and YOUR hardware, not a leaderboard.** A
 benchmark score from a model card tells you how some model did on someone else's task on someone
@@ -95,19 +113,44 @@ current data comes from tools (more on that in Modules 04–06).
     numbers; you supply the empirical measurements, and you own the recommendation precisely because
     the data came from your hardware on your prompts, not its training set.
 
-## Learn (~3 hrs)
+### The security seam — what you pull is code
+
+Standing the service up is also the track's first **supply-chain decision**. A model file is not
+inert data: the PyTorch/pickle serialisation format executes Python during *deserialisation*, so
+merely *loading* an untrusted model can run attacker code before it ever answers a prompt. In the
+**nullifAI** finding (ReversingLabs, Feb 2025), two models on Hugging Face hid a reverse shell in a
+deliberately *broken* pickle stream — corrupted so the payload executed *first* and the scanner that
+should have caught it (Picklescan) skipped the file as malformed. `ollama pull` from a curated
+registry is lower-risk than a random community GGUF, but the trust question is the same one you
+answer for any dependency: *do I vet the source before I load it?* Prefer safetensors/GGUF from known
+publishers, and scan before you load.
+
+```mermaid
+flowchart LR
+    P["ollama pull / download<br/>a community GGUF or pickle"] --> L["weights load into your process<br/>❌ pickle runs code on deserialise"]
+    L --> X["reverse shell executes<br/>before the load 'fails' (nullifAI)"]
+```
+
+## Go deeper (~3 hrs · optional)
+
+*The body above teaches quantisation, the serving stack, and the throughput-vs-quality judgment —
+you can run the lab from it. These links are optional depth and the primary sources: the GGUF format,
+the deployment walkthroughs, and the malicious-model writeup.*
 
 **How models run locally (~1.5 hrs)**
 - [Ollama documentation — Models overview](https://ollama.com/library) — browse the model library to understand the naming convention (`name:size-quantisation`); pay attention to the size column vs. the parameter count.
-- [GGUF and the llama.cpp ecosystem (Hugging Face blog)](https://huggingface.co/docs/hub/en/gguf) — explains the GGUF format, quantisation levels (Q4_K_M, Q8_0, etc.), and how to find models. Read the "Quantization" section carefully.
-- [llama.cpp README](https://github.com/ggml-org/llama.cpp/blob/master/README.md) — skim the benchmarking section; the `llama-bench` tool is what the lab automates.
+- [GGUF and the llama.cpp ecosystem (Hugging Face blog)](https://huggingface.co/docs/hub/en/gguf) `[depth]` — explains the GGUF format, quantisation levels (Q4_K_M, Q8_0, etc.), and how to find models. Read the "Quantization" section carefully.
+- [llama.cpp README](https://github.com/ggml-org/llama.cpp/blob/master/README.md) `[depth]` — skim the benchmarking section; the `llama-bench` tool is what the lab automates.
 
 **Practical deployment (~1 hr)**
 - [Simon Willison, "Run a model with llama.cpp"](https://simonwillison.net/2023/Mar/11/llama/) — short walkthrough that demystifies the whole stack in one read; written in 2023 but the concepts haven't changed.
 - [Ollama API reference](https://github.com/ollama/ollama/blob/main/docs/api.md) — the REST API you'll call directly; focus on `/api/generate` and `/api/chat` endpoints.
 
+**The security seam — malicious models (~20 min)**
+- [ReversingLabs, "Malicious ML models discovered on Hugging Face platform" (nullifAI, Feb 2025)](https://www.reversinglabs.com/blog/rl-identifies-malware-ml-model-hosted-on-hugging-face) — the authoritative writeup of the seam above: how a broken-pickle stream ran a reverse shell on *load* and evaded Picklescan. Read it before you `pull` anything you didn't publish.
+
 **Hardware and throughput (~30 min)**
-- [Tim Dettmers, "Which GPU for deep learning?"](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/) — the most cited practical guide; skim for the memory bandwidth discussion, which explains why VRAM dominates inference speed.
+- [Tim Dettmers, "Which GPU for deep learning?"](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/) `[depth]` — the most cited practical guide; skim for the memory bandwidth discussion, which explains why VRAM dominates inference speed.
 
 ## Key concepts
 - Quantisation: how 4-bit weights make 7B models fit on a laptop
@@ -116,6 +159,7 @@ current data comes from tools (more on that in Modules 04–06).
 - Throughput (tokens/sec) vs. quality as the practical evaluation axis — **measured on your prompts and your hardware, not a leaderboard**
 - The by-hand quality pass here is the seed of the rigorous eval harness in **Module 11**
 - Training cutoff as a hard limit for threat intel recency
+- **What you pull is code:** loading an untrusted model can execute a payload (pickle deserialisation; the *nullifAI* finding) — running a model is a supply-chain trust decision
 
 ## AI acceleration
 Use a model to help you analyse your benchmark results — paste in the throughput numbers and ask
@@ -128,3 +172,4 @@ training set.
     - Why does 4-bit quantisation let a 7B model run on a laptop, and what does it cost you?
     - You read that a model scores well on a public leaderboard. Why is that not enough to deploy it for your alert triage?
     - A local model is frozen at its training cutoff. How does the operational pattern still let it help triage a CVE disclosed last week?
+    - When you `ollama pull` a community model, what actually runs — and why does the *nullifAI* finding make "just download the GGUF" a supply-chain decision, not a config step?

@@ -10,6 +10,22 @@ attack the AI systems you just built.
 - Expose security tools to an LLM via MCP and build a working SoC copilot.
 - Attack and harden AI/MCP/RAG systems.
 
+## The shape of the track
+
+**At a glance —** three phases run as a dependency chain: first you run and ground local models, then
+you wire them into a working SoC copilot, then you secure, attack, and measure the AI you just built.
+Dashed edges show where a later phase **governs, attacks, or measures** what an earlier one produced.
+
+```mermaid
+flowchart LR
+    P1["Phase 1 · Run &amp; ground models<br/>01–04 · local models · RAG"]
+    P2["Phase 2 · Build the copilot<br/>05–08 · MCP · SoC copilot · SOAR"]
+    P3["Phase 3 · Secure, attack &amp; measure<br/>09–11 · harden · red-team · evals"]
+    P1 --> P2 --> P3
+    P1 -.routing ADR governs.-> P2
+    P2 -.copilot attacked &amp; measured.-> P3
+```
+
 ## Modules
 
 | # | Module | What you'll learn | OSS tools |

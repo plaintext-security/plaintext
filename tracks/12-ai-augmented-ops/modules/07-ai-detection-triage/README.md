@@ -2,7 +2,7 @@
 
 *Type 13 · Eval Harness — score an AI triage model against a ground-truth label set (confusion matrix, precision/recall) and gate it at a threshold; the deliverable is the labelled corpus + scorecard + a re-eval cadence. (Secondary: Build-&-Operate.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *the model doesn't replace the analyst; it handles the repetitive 80% so the analyst focuses on the 20% that matters — and you only trust it as far as you have measured it.*
 
@@ -19,6 +19,16 @@
     a cadence so a regression is caught by a number rather than by a breach.
 
 ## Why this matters
+
+```mermaid
+flowchart LR
+    A["~800 raw alerts<br/>per shift"] --> M["local model<br/>first-pass classify<br/>(severity · technique · action)"]
+    M --> Q{"severity ≥<br/>threshold?"}
+    Q -->|CRITICAL / HIGH| H["human review queue<br/>(the 20% needing judgment)"]
+    Q -->|LOW / MEDIUM| B["hold queue<br/>(batched, re-checked)"]
+    M -.parse fail.-> H
+```
+
 A modern SOC generates hundreds to thousands of alerts per shift. The majority are low-confidence,
 familiar-pattern events that a skilled analyst evaluates in seconds — but seconds times thousands
 adds up to hours of queue-draining toil before anything requiring genuine judgment gets touched.
@@ -64,6 +74,15 @@ set — the same train/dev/test wall Module 11 makes explicit.
     04, 06, and 11 all reuse. Build it here in the small and you have the shape every other AI system
     in the track plugs into.
 
+**Why local for the first pass —** the three review tiers trade cost against depth, and the routing
+(Module 01) sends the bulk pattern-match work to the cheapest tier:
+
+| Tier | Cost / latency | Data boundary | Best for | Failure cost |
+|---|---|---|---|---|
+| **Local model** (triage) | Cheap, fast, batchable | Stays on internal logs | High-volume first-pass classification of the familiar 80% | A miss is caught by the held-out recall number |
+| **Frontier model** | Billed per call, latency spikes | Every call leaves the perimeter | The hard, scrubbed, cross-domain minority | Same accountability (*Moffatt*), plus data-residency exposure |
+| **Human analyst** | Expensive, scarce, the bottleneck | Trusted | The escalated 20% and every irreversible call | The point of the whole pipeline is to spend it only where it counts |
+
 **The metric is a judgment, and accuracy is the wrong one.** In a SOC the classes are imbalanced and
 the costs are asymmetric, so a single accuracy number hides the failure that matters. A false
 negative (model classifies a CRITICAL alert as MEDIUM) has a very different cost than a false
@@ -82,13 +101,23 @@ recall/false-positive tradeoff and pick the knee deliberately instead of by feel
     complement the false-negative rate — and biasing the prompt toward *over*-classification is the
     right call, the opposite of most classification tasks.
 
+!!! danger "The overreliance trap — automation bias (OWASP LLM09)"
+    The failure isn't only the model's — it's the analyst's. Once a triage queue has been right for a
+    hundred shifts, a confidently-worded "MEDIUM — likely benign" on the one alert that actually
+    mattered gets trusted *because the pipeline is usually right*. That's **automation bias**, and it
+    is the canonical [OWASP LLM09 (Overreliance)](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+    scenario: the model's fluent under-classification de-prioritizes a real intrusion, and the human
+    who should have caught it defers to the machine. The recall-on-critical number and the
+    parse-or-flag rail exist to make that de-prioritization *visible* by a number, instead of silent
+    under a green dashboard.
+
 The output format discipline from Module 03 is non-negotiable here: the triage script parses the
 model's output, and a malformed response must be handled explicitly rather than propagated to the
 analyst queue as garbage. The right failure mode is "parsing failed → flag this alert for direct
 human review → log the raw model output for debugging." A pipeline that silently drops alerts or
 logs errors to /dev/null is more dangerous than no pipeline at all.
 
-??? note "Go deeper: why triage is batch, not real-time"
+??? note "Background: why triage is batch, not real-time"
     Throughput makes this concrete. If a shift generates 800 alerts and the model processes 5/min on
     the available hardware, the pipeline takes 160 minutes — longer than a shift. The architectural
     response is batching: run the model on the previous hour's alerts at the start of each hour, so
@@ -96,7 +125,18 @@ logs errors to /dev/null is more dangerous than no pipeline at all.
     real-time; it's background batch processing, which changes what "acceptable latency" means.
 
 **Quality control means tracking accuracy over time, not just at initial validation — this is the
-regression gate, run on a schedule.** Models don't drift (fixed weights), but alert distributions
+regression gate, run on a schedule.**
+
+```mermaid
+flowchart TB
+    R["held-out labelled set<br/>(fresh, human-labelled)"] --> S["score → confusion matrix<br/>recall on CRITICAL/HIGH"]
+    S --> G{"recall ≥ declared bar?<br/>(e.g. 0.80)"}
+    G -->|yes| P["keep the pipeline running"]
+    G -->|no| F["flag for prompt review<br/>(regression caught by a number,<br/>not by a breach)"]
+    P -.re-run monthly.-> R
+```
+
+Models don't drift (fixed weights), but alert distributions
 do: new attack techniques, new tooling, changed environment topology all produce alert patterns the
 model hasn't seen in its few-shot examples. So you re-score the held-out scorecard monthly against
 fresh human-labelled alerts and flag the model for prompt review the moment recall drops below the
@@ -112,18 +152,23 @@ scorecard instead of by an analyst missing the one alert that mattered.
     won't bias the prompt toward HIGH on uncertainty unless you tell it to. You own the failure
     semantics and the gating number.
 
-## Learn (~2 hrs)
+## Go deeper (~2 hrs · optional)
 
-**Structured output for triage (~45 min)**
+*The core idea above teaches the eval-harness shape and the recall-vs-accuracy judgment — you can
+build the lab from it alone. These links are for **going deeper** and working from the **primary
+sources**: the overreliance risk you must cite, the precise metric definitions, and the batching
+pattern. Not for relearning what's above.*
+
+**Structured output & the overreliance risk (~45 min) — the case-study seam**
 - Review Module 03 — Pattern 4 (Structured Output Alert Triage) before starting the lab.
-- [OWASP Top 10 for LLM — LLM09 (Overreliance)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the triage pipeline is the canonical overreliance scenario; read the description and mitigations before implementing automated actions on model output.
+- [OWASP Top 10 for LLM — LLM09 (Overreliance)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the triage pipeline is the canonical overreliance / automation-bias scenario; read the description and mitigations before implementing automated actions on model output. You cite this by ID in the deliverable.
 
-**Evaluation methodology (~45 min)**
-- [Google, "Classification: Accuracy, recall, precision, and related metrics" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall) — the precise definitions of precision/recall/F1 and *why accuracy misleads on imbalanced classes*; short and visual, this is the vocabulary your confusion matrix prints.
-- [Google, "Thresholding and the confusion matrix" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/thresholding) — how moving the decision threshold trades recall against false positives; this is the curve you tune in the lab.
+**Evaluation methodology (~45 min)** *(`[depth]` — the metric section above already teaches recall-vs-accuracy; read for the precise definitions)*
+- [Google, "Classification: Accuracy, recall, precision, and related metrics" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall) `[depth]` — the precise definitions of precision/recall/F1 and *why accuracy misleads on imbalanced classes*; short and visual, this is the vocabulary your confusion matrix prints.
+- [Google, "Thresholding and the confusion matrix" (ML Crash Course)](https://developers.google.com/machine-learning/crash-course/classification/thresholding) `[depth]` — how moving the decision threshold trades recall against false positives; this is the curve you tune in the lab.
 
-**Automation patterns (~30 min)**
-- [Python `concurrent.futures` documentation](https://docs.python.org/3/library/concurrent.futures.html) — `ThreadPoolExecutor` is how you batch multiple Ollama requests concurrently; read the basic example to understand the map pattern.
+**Automation patterns (~30 min)** *(`[depth]`)*
+- [Python `concurrent.futures` documentation](https://docs.python.org/3/library/concurrent.futures.html) `[depth]` — `ThreadPoolExecutor` is how you batch multiple Ollama requests concurrently; read the basic example to understand the map pattern.
 
 ## Key concepts
 - This is the per-system **Eval Harness** (Type 13) that Module 11 generalizes and that 04/06 borrow: held-out labelled set + scorecard + threshold gate.

@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — build a RAG pipeline over a SOC corpus *and* the retrieval eval that proves it works (recall@k on a labelled query set + a regression gate); the deliverable is the working pipeline and its scorecard, not a vibe. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *a confident answer over the wrong context is the silent failure; measure retrieval, not vibes.*
 
@@ -110,18 +110,55 @@ retrieval is *measured*, which is the harness you build here generalised one mod
     genuinely relevant against the source — a model labelling its own query set is contamination), and
     the **gate direction** (it must fail *closed* — an errored or missing metric fails the build).
 
-## Learn (~3 hrs)
+### The attack surface — a retrieved document *is* an instruction channel (EchoLeak, CVE-2025-32711)
+
+Everything above assumes the corpus is trusted. It usually isn't. RAG's defining move — take text the
+model didn't write and paste it into the context window — is also its defining vulnerability: **a
+retrieved chunk is untrusted input the model treats as if you said it.** If an attacker can land a
+document in the corpus (a shared mailbox, a wiki anyone can edit, a ticket the pipeline auto-ingests),
+they can plant *instructions* that ride into the prompt on the next query that happens to retrieve
+them. That is **indirect prompt injection**, and it is the same class of bug as SQL injection — data
+crossing into the instruction channel — not a content-moderation problem you can prompt your way out of.
+
+[CVE-2025-32711 — "EchoLeak"](https://nvd.nist.gov/vuln/detail/CVE-2025-32711) is the canonical case.
+A single crafted email, never opened by the victim, sat in the Microsoft 365 mailbox that Copilot's
+RAG retrieved from. When the user later asked Copilot an unrelated question, retrieval pulled the
+attacker's email into context; its embedded instructions steered the model to gather sensitive data
+and exfiltrate it through an auto-loaded image URL — a **zero-click** data leak, no user interaction.
+The system prompt that said "only answer from the provided context" was structurally unable to help:
+the poisoned text *is* the context.
+
+```mermaid
+flowchart LR
+    A["attacker plants a<br/>poisoned document<br/>(email / wiki / ticket)"] --> C[("corpus<br/>(ingested + embedded)")]
+    Q(["benign user query<br/>(unrelated)"]) --> R{"retrieval"}
+    C --> R
+    R -->|poisoned chunk in top-k| P["prompt context<br/>❌ data treated as instructions"]
+    P --> G["model follows the<br/>injected instruction"]
+    G --> X["exfil / manipulated answer<br/>(zero-click)"]
+```
+
+Module 09 attacks this pipeline in depth. The point here is narrower, and it changes what your eval is
+*for*: the retrieval scorecard is also a **poisoning regression test**. The query that should *never*
+surface the planted document is just another held-out case — and the day it does, the same gate that
+catches a chunking regression catches the injection.
+
+## Go deeper (~3 hrs · optional)
+
+*The core idea above teaches the RAG pipeline and the retrieve-not-generate failure model — you can
+build the lab from it alone. These links are for **going deeper** and working from the **primary
+sources**: the tool docs, the chunking intuition, and the eval vocabulary.*
 
 **How RAG works (~1.5 hrs)**
-- [LlamaIndex — "What is RAG?" / High-Level Concepts](https://developers.llamaindex.ai/python/framework/getting_started/concepts/) — the cleanest conceptual walkthrough of retrieval → augmentation → generation in sequence; read the "Key concepts" section before the lab.
-- [ChromaDB documentation — Getting started](https://docs.trychroma.com/docs/overview/getting-started) — the vector store you'll use; skim the collection / add / query examples so the ingest and query scripts read as familiar, not magic.
+- [LlamaIndex — "What is RAG?" / High-Level Concepts](https://developers.llamaindex.ai/python/framework/getting_started/concepts/) `[depth]` — the cleanest conceptual walkthrough of retrieval → augmentation → generation in sequence; read the "Key concepts" section before the lab.
+- [ChromaDB documentation — Getting started](https://docs.trychroma.com/docs/overview/getting-started) `[depth]` — the vector store you'll use; skim the collection / add / query examples so the ingest and query scripts read as familiar, not magic.
 
 **Chunking and retrieval quality (~1 hr)**
-- [Greg Kamradt, "5 Levels of Text Splitting" (YouTube, ~25 min)](https://www.youtube.com/watch?v=8OJC21T2SL4) — the most practical treatment of chunking; watch for the intuition on how chunk size trades retrieval precision against recall, which is exactly the dial your eval will measure.
-- [Jerry Liu, "Building Production-Ready RAG Applications" (YouTube, ~45 min)](https://www.youtube.com/watch?v=TRjq7t2Ms5I) — covers the real failure modes (retrieval miss, hallucination-on-context) with production examples; the case for evaluating retrieval rather than eyeballing answers.
+- [Greg Kamradt, "5 Levels of Text Splitting" (YouTube, ~25 min)](https://www.youtube.com/watch?v=8OJC21T2SL4) `[depth]` — the most practical treatment of chunking; watch for the intuition on how chunk size trades retrieval precision against recall, which is exactly the dial your eval will measure.
+- [Jerry Liu, "Building Production-Ready RAG Applications" (YouTube, ~45 min)](https://www.youtube.com/watch?v=TRjq7t2Ms5I) `[depth]` — covers the real failure modes (retrieval miss, hallucination-on-context) with production examples; the case for evaluating retrieval rather than eyeballing answers.
 
 **Measuring retrieval, not vibes (~30 min)**
-- [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) — the standard vocabulary for RAG eval: **context precision / context recall** (retrieval quality) and **faithfulness / groundedness** (is the answer supported by the retrieved context?). Read the metric definitions; you reimplement a minimal recall@k and groundedness in the lab so the arithmetic is legible.
+- [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) `[depth]` — the standard vocabulary for RAG eval: **context precision / context recall** (retrieval quality) and **faithfulness / groundedness** (is the answer supported by the retrieved context?). Read the metric definitions; you reimplement a minimal recall@k and groundedness in the lab so the arithmetic is legible.
 - [Module 11 — AI Evaluation & Observability](../11-ai-evaluation/README.md) — the shared held-out-set + scorecard + regression-gate harness this module's retrieval eval plugs into. Read its "The core idea" if you skipped ahead; this module is its RAG-shaped instance.
 
 ## Key concepts

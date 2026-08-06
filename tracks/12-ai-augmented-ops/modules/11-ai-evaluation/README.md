@@ -2,7 +2,7 @@
 
 *Type 13 · Eval Harness — build a held-out eval set, a scorecard, and a CI regression gate that goes red when a change silently degrades the system; the deliverable is the reusable eval harness, not a one-off accuracy number. [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *eval gates, not vibes: you cannot trust — or improve — what you do not measure.*
 
@@ -48,6 +48,33 @@ lies to you.** The five alerts you watched it classify are the same five you tun
 against; of course it gets them right. A demo is a memorised exam. The reveal of this module is that
 the move which makes an AI system trustworthy is not a better prompt or a bigger model — it is
 *measurement against data the system has never been tuned on*, reported as a number, gated in CI.
+
+```mermaid
+flowchart LR
+    C(["change<br/>(model · prompt · re-quant)"]) --> V{"how do you know<br/>it's still good?"}
+    V -.->|"vibes: it read fine"| X["ships — regression<br/>stays invisible"]
+    V -->|"eval: score on held-out"| S["scorecard<br/>(recall on malicious class)"]
+    S --> G{"≥ threshold?"}
+    G -->|pass| M["merge / ship"]
+    G -->|fail| B["block the change"]
+    M -.next change.-> C
+    B -.fix, re-score.-> C
+```
+
+**Three postures, one honest one.** The difference between *trusting* a system and *measuring* it:
+
+| Posture | What it checks | Catches a silent regression? | Failure mode |
+|---|---|---|---|
+| **Vibes-check** | "the outputs read well" on the inputs you tried | **No** — same data you tuned on | ships confident-but-wrong (the *Moffatt* failure) |
+| **Held-out eval** | a metric on data the system never saw | Only the moment you re-run it | a good number that quietly goes stale between runs |
+| **Regression gate** | that held-out metric, in CI, on every change | **Yes** — a red build blocks the merge | none, as long as it fails *closed* |
+
+That bottom-left cell is the case-study seam: it is *[Moffatt v. Air Canada](../01-hybrid-ai-pattern/README.md)*
+(module 01) one layer down — a confidently-wrong output that shipped because **nothing measured it**. A
+silent model/prompt regression is the same failure with no courtroom to catch it: a model upgrade, a
+re-quantisation, or a one-line prompt edit quietly degrades quality, the outputs still *read* fine, and
+absent a held-out eval you learn about it from an incident, not a dashboard. The eval is the control that
+makes "you own the output" actually enforceable — it fails the build *before* the bad change ships.
 
 !!! note "The mental model"
     A demo is a memorised exam: the inputs you watched it ace are the same ones you tuned against, so
@@ -95,7 +122,7 @@ near-miss cases: the benign event that looks malicious, the novel technique phra
 question whose answer sits in a poorly-chunked document. Counting items is vanity; deliberately
 sampling the failure modes is the work.
 
-??? note "Go deeper: observability — the eval that never stops"
+??? note "Observability: the eval that never stops"
     An offline eval tells you the system was good *the day you ran it*. Production is where it rots:
     the weights are fixed, but the *input distribution* drifts — new tooling, new attacker tradecraft,
     a re-org that changes what "normal" looks like — and the score you measured in March no longer
@@ -118,8 +145,8 @@ flowchart LR
     S([AI system]) --> E["score on held-out set<br/>(recall on malicious class)"]
     HO[("held-out set<br/>— never tuned on")] --> E
     E --> G{"≥ declared threshold?"}
-    G -->|yes| PASS["build green"]
-    G -->|"no (planted regression)"| FAIL["build red"]
+    G -->|yes| PASS["build green → merge"]
+    G -->|"no (planted regression)"| FAIL["build red → block the merge"]
 ```
 
 This module is the measurement layer the rest of the track was missing. **Modules 04 (RAG), 06 (SoC
@@ -136,20 +163,25 @@ demo luck.
     generate *adversarial* held-out items, then label and verify each yourself — a model labelling its
     own test set is the contamination this whole module warns against.
 
-## Learn (~2.5 hrs)
+## Go deeper (~2.5 hrs · optional)
+
+*The sections above are the spine — they teach the held-out wall, the metric, and the gate, and you can
+do the lab from them alone. These links are for **going deeper** and working from the **primary sources**,
+not for relearning what's above.*
+
+**Silent regression — why eval is non-negotiable (~45 min) — the case-study seam**
+- [OWASP Top 10 for LLM Applications — LLM09 (Overreliance / Misinformation)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the threat the eval mitigates: trusting confident-but-wrong output. Read the description and the "lack of evaluation" mitigations. This is the *Moffatt* failure (module 01) one layer down — an output that ships because nothing measured it.
+- [Chen, Zaharia & Zou — "How Is ChatGPT's Behavior Changing over Time?" (arXiv 2307.09009)](https://arxiv.org/abs/2307.09009) `[depth]` — a documented, *measured* model regression: the same prompts scored materially worse across dated model versions. The empirical proof that "a change quietly degraded quality" is real, not hypothetical — and invisible without a standing held-out eval.
+- [Princeton (Narayanan & Kapoor) — "Evaluating LLMs is a minefield"](https://www.cs.princeton.edu/~arvindn/talks/evaluating_llms_minefield/) `[depth]` — a sharp talk/writeup on how easy it is to fool yourself with a bad eval (contamination, the demo-set trap, cherry-picked examples); the cautionary half of this module.
 
 **Confusion matrix & the metrics (~45 min)**
 - [Google ML Crash Course — "Classification: Accuracy, recall, precision, and related metrics"](https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall) — the precise definitions of precision/recall/F1 and, crucially, *when accuracy misleads on imbalanced classes*; short and visual, this is the vocabulary your scorecard prints.
-- [Google ML Crash Course — "Thresholding and the confusion matrix"](https://developers.google.com/machine-learning/crash-course/classification/thresholding) — how moving the decision threshold trades recall against false positives; this is the curve you tune in step 4.
+- [Google ML Crash Course — "Thresholding and the confusion matrix"](https://developers.google.com/machine-learning/crash-course/classification/thresholding) `[depth]` — how moving the decision threshold trades recall against false positives; this is the curve you tune in the lab.
 
 **LLM / RAG evaluation (~1 hr)**
 - [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) —  the standard framing for RAG eval: context precision/recall (retrieval quality) and faithfulness/groundedness (is the answer supported by retrieved context). Read the metric definitions; you reimplement a minimal retrieval@k in the lab.
-- [promptfoo docs — "Assertions & metrics"](https://www.promptfoo.dev/docs/configuration/expected-outputs/) — a production-grade, config-driven eval/regression-gate runner for LLM outputs; read how a test case declares an expected output and how the suite is wired into CI. This is the tool you would reach for instead of hand-rolling `eval.py` in a real shop.
-- [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) — first-party guidance on building task-specific eval sets, choosing graders (exact-match vs. model-graded), and holding out test data; vendor-neutral on the principles.
-
-**Why eval is non-negotiable for AI (~30 min)**
-- [OWASP Top 10 for LLM Applications — LLM09 (Overreliance / Misinformation)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — the threat the eval mitigates: trusting confident-but-wrong output. Read the description and the "lack of evaluation" mitigations.
-- [Princeton (Narayanan & Kapoor) — "Evaluating LLMs is a minefield"](https://www.cs.princeton.edu/~arvindn/talks/evaluating_llms_minefield/) — a sharp talk/writeup on how easy it is to fool yourself with a bad eval (contamination, the demo-set trap, cherry-picked examples); the cautionary half of this module.
+- [promptfoo docs — "Assertions & metrics"](https://www.promptfoo.dev/docs/configuration/expected-outputs/) `[depth]` — a production-grade, config-driven eval/regression-gate runner for LLM outputs; read how a test case declares an expected output and how the suite is wired into CI. This is the tool you would reach for instead of hand-rolling `eval.py` in a real shop.
+- [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) `[depth]` — first-party guidance on building task-specific eval sets, choosing graders (exact-match vs. model-graded), and holding out test data; vendor-neutral on the principles.
 
 ## Key concepts
 - Held-out set vs. demo/tuning set: you tune on one and grade on the other, or every number lies.

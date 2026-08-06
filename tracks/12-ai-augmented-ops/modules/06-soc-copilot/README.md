@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — integrate RAG + MCP + a local model into an auditable SOC copilot and score it end-to-end; the deliverable is the running copilot and its answer-quality scorecard. (Secondary: Eval Harness.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *the flagship system gets a scorecard, not vibes: the most consequential thing you built is the one you've measured least.*
 
@@ -127,7 +127,50 @@ mitigation holds.
     hides the failure that matters), and the **gate** (a missing axis or crashed copilot must turn the
     build red, never silently pass).
 
-## Learn (~2.5 hrs)
+## The other failure mode — when the copilot becomes the exfil channel
+
+The scorecard measures whether the copilot is *correct*. There is a second question a SOC has to ask
+before it trusts one: can the copilot be *turned against you*? The same architecture that makes it
+useful — it reads three inputs (the analyst's question, the retrieved knowledge-base chunks, and the
+tool results) and it has both data access and an output channel — is also an **indirect
+prompt-injection** primitive. None of those three inputs is trusted. An attacker who can plant text in
+*any* of them — a poisoned runbook document that gets ingested, a malicious alert `title` the model
+reads as a tool result, a booby-trapped threat-intel note — is writing instructions the model may
+obey, even though no human ever typed them. This is the exact gap the copilot's `SYSTEM_PROMPT`
+("answer only from the evidence; cite every claim") tries to close, and exactly why a system prompt is
+a request, not a wall.
+
+```mermaid
+flowchart LR
+    A["attacker plants text<br/>(poisoned KB doc /<br/>alert title / tool note)"] --> R["copilot retrieves it<br/>as trusted evidence"]
+    R --> M["model follows the<br/>smuggled instruction<br/>(ignores the cite-only rule)"]
+    M --> X(["sensitive data leaves<br/>via a crafted link /<br/>outbound tool call"])
+```
+
+This is not hypothetical. **EchoLeak (CVE-2025-32711)** was a *zero-click* indirect-injection flaw in
+Microsoft 365 Copilot: an attacker emailed the victim a message carrying hidden instructions; when the
+user later asked Copilot an unrelated question, its retrieval pulled the malicious email into context,
+and the smuggled instructions made Copilot gather sensitive data from the user's own environment and
+exfiltrate it through a crafted reference — no click required. Microsoft rated it critical and patched
+it in June 2025. A year earlier, **PromptArmor** demonstrated the same class against **Slack AI**: a
+prompt injection posted into a public channel caused Slack AI, when another user queried it, to leak
+data (including secrets) from *private* channels by rendering an exfiltrating markdown link. Both are
+the same mechanism as the diagram: the assistant's own retrieval becomes the delivery vector.
+
+!!! danger "Why this matters here"
+    Your copilot has *more* attack surface than a chatbot, not less — it retrieves from a corpus and
+    calls tools, so it has two extra untrusted channels *and* an ability to act. Correct-on-a-scorecard
+    and safe-under-injection are different properties; this module builds and measures the first, and
+    **Module 09 attacks exactly this stack** (context poisoning, tool-result poisoning, injection via
+    alert text) — the scorecard you build here becomes the regression test proving a Module 09
+    mitigation holds without tanking another axis.
+
+## Go deeper (~2.5 hrs · optional)
+
+*The core idea above is the whole architecture — retrieve → call tools → generate, scored on three
+axes — and you can build and grade the copilot from it alone. These links are for **going deeper** and
+working from the **primary sources** (the agentic-RAG pattern, the grounding-prompt discipline, the
+eval vocabulary), not for relearning what's above.*
 
 **Putting it together (~1 hr)**
 - Review Modules [04 (RAG)](../04-rag/README.md) and [05 (MCP Servers)](../05-building-mcp-servers/README.md) — you are combining both; the retrieval eval and the tool tests you built there are the two halves you reuse here.
@@ -141,6 +184,11 @@ mitigation holds.
 - [Anthropic — "Define success criteria and build evaluations"](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) — first-party guidance on building task-specific eval sets and choosing graders (exact-match vs. model-graded), and the held-out discipline; vendor-neutral on the principles, and the right framing for a multi-axis eval where each axis needs a *different* grader.
 - [RAGAS docs — "Metrics" overview](https://docs.ragas.io/en/stable/concepts/metrics/) — the standard vocabulary for the retrieval and groundedness halves (context recall, faithfulness). You already reimplemented a minimal recall@k in Module 04; skim here for *why* an end-to-end RAG-plus-tools system needs retrieval *and* groundedness scored separately.
 
+**The injection surface — the copilot as an exfil channel (~30 min)**
+- [NVD — CVE-2025-32711 (EchoLeak)](https://nvd.nist.gov/vuln/detail/CVE-2025-32711) — the M365 Copilot zero-click indirect-injection flaw. Read the description and CVSS breakdown for the exact primitive your copilot shares: retrieved untrusted content carrying instructions the model obeys, with data exfiltrated over an output channel.
+- [PromptArmor — "Data Exfiltration from Slack AI via indirect prompt injection" (Aug 2024)](https://www.promptarmor.com/resources/data-exfiltration-from-slack-ai-via-indirect-prompt-injection) — the earlier, near-identical demonstration against Slack AI: an injection in a public channel leaks private-channel data via a rendered link. Read it for how mundane the plant is (ordinary channel text) and how the fix is architectural, not a better prompt.
+- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — read **LLM01 (Prompt Injection)** for the taxonomy separating *direct* from *indirect* injection; your copilot's three untrusted inputs are three indirect-injection surfaces. Cite it alongside LLM06/LLM09 when you write up the copilot's threat model.
+
 ## Key concepts
 - The copilot is a coordination layer: retrieve → call tools → generate, in that order; the quality lives in *selective* retrieval and routing, not the model.
 - Transparency = auditability: show the retrieved chunks and tool calls alongside the answer, or "AI authors → you review → you own it" is impossible — and so is evaluating it.
@@ -148,6 +196,7 @@ mitigation holds.
 - **Tool-selection correctness** is a classification problem — score it with Module 07's confusion matrix (per-tool precision/recall); a missed tool call costs more than a spurious one.
 - **Retrieval relevance** is Module 04's recall@k, reused verbatim over the same corpus; **groundedness** now spans both RAG context *and* tool results.
 - One held-out question set, three scores, a regression gate — plugged into Module 11. The point is *known and gated*, not *perfect*.
+- **Three untrusted inputs = three indirect-injection surfaces.** A poisoned KB chunk, a malicious alert title, or a booby-trapped tool note can smuggle instructions the model obeys — the copilot becomes an exfil channel (EchoLeak / CVE-2025-32711; Slack AI). Correct-on-a-scorecard ≠ safe-under-injection; Module 09 attacks this.
 
 ## AI acceleration
 A model writes the mechanical parts of the eval well — iterating the held-out questions, tabulating

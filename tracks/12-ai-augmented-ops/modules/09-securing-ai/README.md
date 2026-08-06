@@ -2,7 +2,7 @@
 
 *Type 15 · Red-team-the-AI — attack your own SOC copilot (prompt injection, corpus poisoning, tool abuse), mitigate, then re-attack; the deliverable is the attack log, the fixes, and a documented residual-risk note. (Secondary: Audit→Build→Verify.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *the copilot you built in module 06 is now your attack surface; the wrong intuition ("just tell it not to") is the whole lesson.*
 
@@ -36,6 +36,19 @@ in June 2025, Aim Security disclosed [**CVE-2025-32711**](https://msrc.microsoft
 (CVSS 9.3), a *zero-click* prompt-injection chain in Microsoft 365 Copilot — a single crafted email,
 never opened by the victim, steered Copilot into exfiltrating SharePoint/OneDrive/Teams data out
 through an allowed image-fetch path. Same root cause, two orders of magnitude more consequential.
+
+That whole chain — the one you reproduce in miniature against your own copilot — is a straight line
+from attacker-controlled text to data leaving through a channel the system already trusts:
+
+```mermaid
+flowchart LR
+    A["attacker-controlled text<br/>(crafted email · alert<br/>description · wiki page)"] --> ING["ingested / retrieved<br/>into the RAG corpus"]
+    ING --> CW["chunk + alert + tool result<br/>land in the context window"]
+    CW --> LLM(["copilot model"])
+    LLM -->|obeys the<br/>injected instruction| TC["MCP tool call<br/>(get_threat_intel · isolate_host)"]
+    TC --> X["data leaves via an<br/>already-allowed channel<br/>(image fetch · DNS · tool arg)"]
+    X -.->|EchoLeak<br/>CVE-2025-32711| A
+```
 
 ## Objective
 Red-team the module-06 SoC copilot across its three attack layers (prompt injection, corpus
@@ -102,6 +115,33 @@ architecture**, in three layers that match the three the copilot exposes:
   ingested documents, and validate generated output against an allowlist (a runbook that tells the
   analyst to email `recovery@attacker[.]net` should be caught before it reaches a human).
 
+Stacked, those three layers make the attack path above dead-end at every hop the prompt alone could
+not — the untrusted bytes are fenced on the way in, the model's answer is checked against the alert
+it "decided" about, unknown egress is caught before it reaches a human, and the tools refuse
+adversarial arguments server-side:
+
+```mermaid
+flowchart TB
+    U["untrusted bytes<br/>(alert · retrieved chunk · tool result)"] --> F["input control<br/>fence + strip instruction patterns"]
+    F --> LLM(["model — no privileged channel"])
+    LLM --> OV{"output validation<br/>CRITICAL text → LOW label?"}
+    OV -->|contradiction| ESC["escalate to human<br/>(does not trust the model)"]
+    OV -->|consistent| AL{"output allowlist<br/>unknown domain / email?"}
+    AL -->|hit| ESC
+    AL -->|clean| T["least-privilege tools<br/>server-side arg validation +<br/>OOB confirm for irreversible actions"]
+    T --> ACT["acted-on result"]
+```
+
+**At a glance —** each OWASP LLM risk the copilot exposes, the layer it lands on, and the control that
+answers it (the same mapping you tag each lab attack with):
+
+| OWASP LLM risk | Copilot attack surface | Architectural control | Real anchor |
+|---|---|---|---|
+| **LLM01 — Prompt Injection** | alert text / retrieved chunk enters context *as instructions* | input fencing + **output validation** (CRITICAL→LOW contradiction check) | Chevy "\$1 Tahoe"; EchoLeak |
+| Sensitive Information Disclosure | model exfiltrates in-context data via an already-allowed channel | output allowlist + least-privilege tool scopes | EchoLeak (CVE-2025-32711) |
+| Excessive Agency | an injectable model holds an action tool (`isolate_host`) | least privilege + out-of-band confirm for irreversible actions | Invariant MCP tool poisoning |
+| **LLM09 — Overreliance** | an analyst acts on a poisoned / confidently-wrong answer | corpus integrity + human-review backstop | Moffatt v. Air Canada |
+
 !!! warning "The gotcha"
     A filter that blocks `SYSTEM:` does nothing against the same instruction phrased as `### Maintenance
     directive`. Input filtering is a speed bump, not a wall — the real backstop is **output validation**
@@ -130,7 +170,24 @@ register.
     labeled LOW?), and enforce the held-out wall so the filter is never graded on the exact strings it
     was tuned to block.
 
-## Learn (~2.5 hrs)
+!!! note "The authoritative seam — three frameworks this lab is a miniature of"
+    Everything you attack and defend here is the local, consented small-scale of three authoritative
+    sources — keep them open as you work, because they are what makes the exercise transfer:
+
+    - **EchoLeak — [CVE-2025-32711](https://nvd.nist.gov/vuln/detail/CVE-2025-32711)** — the real
+      zero-click indirect-injection incident (M365 Copilot) your corpus-poisoning + tool-exfil
+      attacks rhyme with. It is the "why this matters at enterprise scale" anchor.
+    - **OWASP Top-10 for LLM Applications** — the risk *taxonomy* every mitigation in the table above
+      maps to (LLM01 Prompt Injection, LLM09 Overreliance, and the disclosure/agency risks). You cite
+      at least one ID per layer in the deliverable.
+    - **MITRE ATLAS** — the adversarial-technique registry (e.g. **AML.T0051 — LLM Prompt Injection**)
+      you tag each landed attack with, exactly as you'd map an ATT&CK technique on the defensive side.
+
+## Go deeper (~2.5 hrs · optional)
+
+*The three-layer model and the reveal above are enough to run the lab. These links are for working
+from the **primary sources** — the two anchor incidents, the injection mechanism, and the defense
+frameworks (OWASP LLM Top-10, MITRE ATLAS) — not for relearning what's already above.*
 
 **The two anchor incidents — read these first (~40 min)**
 - [Aim Security — *EchoLeak (CVE-2025-32711): the first zero-click attack on an AI agent*](https://www.catonetworks.com/blog/breaking-down-echoleak/) — the discovering researchers' writeup of the M365-Copilot chain: untrusted email → "LLM Scope Violation" → data exfil through an allowed image fetch, with no user interaction. Read it for the *mechanism* (how a system prompt was structurally unable to help), not the marketing.

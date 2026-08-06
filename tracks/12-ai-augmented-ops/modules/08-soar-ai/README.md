@@ -2,7 +2,7 @@
 
 *Type 7 · Build-&-Operate — wire an AI-assisted SOAR workflow with a human-in-the-loop gate that escalates on low confidence and never auto-acts on a model failure; the deliverable is the running workflow and its proven gate logic. (Secondary: Judgment-as-Code / Gate.) [Go to the hands-on lab →](lab.md)* &nbsp;·&nbsp; *[Cheat sheet →](cheatsheet.md)*
 
-*Last reviewed: 2026-06*
+*Last reviewed: 2026-08*
 
 **AI-Augmented Security Operations** — *SOAR handles the routing and the record; AI handles the judgment call in the middle — and the gate decides what it is allowed to do unsupervised.*
 
@@ -91,6 +91,25 @@ gated behind a human for HIGH and is never the model's unsupervised call. That i
 lesson encoded as policy: the faster and less deterministic the actor, the tighter the gate on its
 irreversible actions.
 
+The lifecycle of a HIGH alert is the gate in motion: the model *drafts* the response, the workflow
+parks it in an **awaiting-approval** state, and it stays there — it does **not** proceed on a timeout.
+Containment is reachable only through a human decision; every other exit is recoverable.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Classified: model emits {severity, confidence}
+    Classified --> Enriched: LOW / MEDIUM (recoverable)
+    Classified --> AwaitingApproval: HIGH — response drafted, not taken
+    Classified --> Escalated: CRITICAL / low-confidence / model-down
+    AwaitingApproval --> AwaitingApproval: no human decision yet — never auto-proceeds
+    AwaitingApproval --> Contained: human approves
+    AwaitingApproval --> Closed: human rejects
+    Enriched --> [*]
+    Escalated --> [*]
+    Contained --> [*]
+    Closed --> [*]
+```
+
 !!! warning "The gotcha"
     In a Python script a bad model response raises `json.JSONDecodeError` and you handle it. In n8n an
     expression error **silently takes the default branch** — and if you built it naively that default
@@ -124,21 +143,26 @@ took its expected branch.
     human gate into theatre. Let it draft the branch-logic fixture, but label the expected branches
     yourself.
 
-## Learn (~2.5 hrs)
+## Go deeper (~2.5 hrs · optional)
+
+*The autopsy and the architecture above teach the pattern — you can build the workflow and its gate
+from them alone. These links are for **going deeper** and working from the **primary sources**: the SEC
+order, the n8n node docs, and the OWASP risk that names the containment node. Optional depth is tagged
+`[depth]`.*
 
 **The anchor — automation without a gate (~30 min)**
-- [SEC Order: In the Matter of Knight Capital Americas LLC (Release No. 70694, Oct 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) — the primary source. Read sections III.A–III.C (the deployment and the 45 minutes) and the findings on inadequate controls. The phrase to carry into the lab: *no control prevented the irreversible action.*
+- [SEC Order: In the Matter of Knight Capital Americas LLC (Release No. 70694, Oct 2013)](https://www.sec.gov/litigation/admin/2013/34-70694.pdf) `[depth]` — the primary source. Read sections III.A–III.C (the deployment and the 45 minutes) and the findings on inadequate controls. The phrase to carry into the lab: *no control prevented the irreversible action.*
 
-**n8n foundations (~1 hr)**
-- [n8n — Self-hosting with Docker](https://docs.n8n.io/hosting/installation/docker/) — skim the Docker section; `make up` does this for you, but understanding the container setup helps when the workflow breaks.
-- [n8n — HTTP Request node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) — the node that calls the Ollama API from inside the workflow; understand the Request settings and how its errors surface.
-- [n8n — IF node (conditional branching)](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) — the branching logic that splits CRITICAL → auto-escalate vs. HIGH → approval-required vs. LOW/MEDIUM → enrich.
+**n8n foundations (~1 hr)** *(`[depth]` — the lab walks these; read once first to recognise each node)*
+- [n8n — Self-hosting with Docker](https://docs.n8n.io/hosting/installation/docker/) `[depth]` — skim the Docker section; `make up` does this for you, but understanding the container setup helps when the workflow breaks.
+- [n8n — HTTP Request node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/) `[depth]` — the node that calls the Ollama API from inside the workflow; understand the Request settings and how its errors surface.
+- [n8n — IF node (conditional branching)](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.if/) `[depth]` — the branching logic that splits CRITICAL → auto-escalate vs. HIGH → approval-required vs. LOW/MEDIUM → enrich.
 
 **The over-automation risk (~30 min)**
-- [OWASP Top 10 for LLM Applications — LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — the containment node *is* the excessive-agency risk; read the mitigation checklist (least-privilege actions, human-in-the-loop for high-impact operations). You'll cite it in the threshold ADR.
+- [OWASP Top 10 for LLM Applications — LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) `[depth]` — the containment node *is* the excessive-agency risk (an automated action acting on a wrong or injected classification); read the mitigation checklist (least-privilege actions, human-in-the-loop for high-impact operations). This is the authoritative framing for *why the approval gate exists*, and you'll cite it in the threshold ADR.
 
 **Error handling in workflows (~30 min)**
-- [n8n — Error handling (Error Trigger & error workflows)](https://docs.n8n.io/flow-logic/error-handling/) — how to make a node failure route somewhere explicit instead of silently dropping to a default. This is the mechanism behind "model fails → escalate."
+- [n8n — Error handling (Error Trigger & error workflows)](https://docs.n8n.io/flow-logic/error-handling/) `[depth]` — how to make a node failure route somewhere explicit instead of silently dropping to a default. This is the mechanism behind "model fails → escalate."
 
 ## Key concepts
 
