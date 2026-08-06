@@ -83,8 +83,12 @@ real access — test only against resources you own.
 ## Scope
 This track begins **where the perimeter ends**: firewall, egress, and network-boundary controls belong
 to the boundary-focused program — here the boundary *is* identity, device, workload, and data, enforced
-per request. Deliberately out of scope (assessed from config, not stood up, where noted): commercial
-MDM/EDR posture internals, commercial DLP/CASB engines, and physical network segmentation.
+per request. It covers the **data pillar where Zero Trust owns it** — classification-driven access and
+exfil detection (Module 14). **Content-inspection DLP** (egress scanning, PII fingerprinting, data
+fingerprinting) is a data-security/CASB discipline that rides *alongside* ZTNA in a SASE stack, not a
+ZTNA control, so it is deliberately out of scope — the same relationship as perimeter/egress controls.
+Also out of scope (assessed from config, not stood up, where noted): commercial MDM/EDR posture
+internals, DLP/CASB engines, and physical network segmentation.
 
 ## Prerequisites
 Complete [Track 00 — Foundations](../00-foundations/README.md); [Track 05 — Cloud](../05-cloud/README.md) helps.

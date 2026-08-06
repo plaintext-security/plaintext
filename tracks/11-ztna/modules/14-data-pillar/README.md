@@ -185,7 +185,11 @@ Centre issued a parallel advisory.
     program layers controls that require a vendor platform, a KMS, or an org-wide inventory this lab
     cannot stand up in a container. Naming them honestly — what each one would have added to Snowflake,
     and to this lab's own corpus — is the practitioner's job the same way Module 03 named posture as
-    assessed, not demonstrated.
+    assessed, not demonstrated. And the line here is a *discipline* boundary, not only a self-hosting
+    one: content-inspection DLP and CASB are **data-security functions that ride alongside ZTNA in a
+    SASE stack**, not ZTNA controls. This module covers the data pillar where Zero Trust owns the
+    decision — classification-driven access and exfil detection — and hands content inspection to that
+    neighboring discipline. That's a scope choice, not a gap.
 
 | Control | What it adds that OPA + Sigma here can't |
 |---|---|
