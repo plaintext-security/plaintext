@@ -236,6 +236,7 @@ must click through to understand the module.*
 - Vendor dependency is the price: the edge SLA is your security floor; the config surface is a new misconfig source.
 - The case: internet-facing VPN appliances (Ivanti CVE-2023-46805/-21887, Citrix CVE-2023-4966, Pulse CVE-2019-11510) are pre-auth surfaces SASE **deletes** rather than hardens.
 - Red-team-your-design: prove "no listener" by trying to find one; the deliverable includes the *failed* unauthenticated reach.
+- **Third-party / contractor access is the same pattern**: clientless, agentless, identity-gated access to one app with no network foothold is the top enterprise ZTNA buying driver — the Access policy you build *is* how you'd admit an external auditor to one system and nothing else.
 
 ## AI acceleration
 

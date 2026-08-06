@@ -1,0 +1,1 @@
+../../../../plaintext-labs/ztna/13-privileged-access/lab.md

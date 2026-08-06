@@ -256,6 +256,12 @@ click through to understand the module. Optional depth is tagged `[depth]`.*
   bounded by nothing you can revoke quickly — forge on demand until the key is rotated.
 - **Lifetime and scope are blast-radius controls:** short `exp` preserves per-request evaluation; a
   single `aud` blocks cross-app replay; minimal claims stop the JWT from becoming VPN-in-JSON.
+- **Between issuance and expiry — continuous evaluation:** with plain JWTs, short `exp` is your *only*
+  revocation lever; the token is trusted until it expires. Production identity is moving to **CAEP /
+  Shared Signals** (OpenID Continuous Access Evaluation — shipping in Okta and Microsoft Entra): the IdP
+  pushes near-real-time signals (credential revoked, device posture dropped, session risk raised) so a
+  resource can terminate a session *before* the token would have died. It is the answer to "what happens
+  in the 300 seconds after the laptop is stolen."
 
 ## AI acceleration
 

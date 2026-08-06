@@ -720,9 +720,17 @@ nav:
           - Lab: 11-ztna/modules/11-redteam-zt-deployment/lab.md
           - Cheat sheet: 11-ztna/modules/11-redteam-zt-deployment/cheatsheet.md
       - "12 · Workload Identity & mTLS":
-          - Concept: 11-ztna/modules/10-workload-identity-mtls/README.md
-          - Lab: 11-ztna/modules/10-workload-identity-mtls/lab.md
-          - Cheat sheet: 11-ztna/modules/10-workload-identity-mtls/cheatsheet.md
+          - Concept: 11-ztna/modules/12-workload-identity-mtls/README.md
+          - Lab: 11-ztna/modules/12-workload-identity-mtls/lab.md
+          - Cheat sheet: 11-ztna/modules/12-workload-identity-mtls/cheatsheet.md
+      - "13 · Privileged Access":
+          - Concept: 11-ztna/modules/13-privileged-access/README.md
+          - Lab: 11-ztna/modules/13-privileged-access/lab.md
+          - Cheat sheet: 11-ztna/modules/13-privileged-access/cheatsheet.md
+      - "14 · Data — the Last Pillar":
+          - Concept: 11-ztna/modules/14-data-pillar/README.md
+          - Lab: 11-ztna/modules/14-data-pillar/lab.md
+          - Cheat sheet: 11-ztna/modules/14-data-pillar/cheatsheet.md
   - AI-Augmented Security Ops:
       - Overview: 12-ai-augmented-ops/README.md
       - "01 · The Hybrid AI Pattern":

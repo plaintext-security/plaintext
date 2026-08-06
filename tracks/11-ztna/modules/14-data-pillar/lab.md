@@ -1,0 +1,1 @@
+../../../../plaintext-labs/ztna/14-data-pillar/lab.md

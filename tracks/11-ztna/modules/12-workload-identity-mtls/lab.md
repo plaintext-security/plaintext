@@ -1,0 +1,1 @@
+../../../../plaintext-labs/ztna/12-workload-identity-mtls/lab.md

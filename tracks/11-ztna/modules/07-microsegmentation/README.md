@@ -199,6 +199,7 @@ relearning what's above.*
 - **Default-deny silently breaks DNS** — allow port 53 to kube-system as part of the baseline or name resolution fails in ways that look like app bugs.
 - **Prove both halves and try to pivot:** allow (backend→db) succeeds, deny (frontend→db) drops, and the deny holds under an active bypass attempt.
 - Hubble / `cilium monitor` give per-flow drop verdicts with pod/namespace/label metadata — the same telemetry Module 09 detects on.
+- **Where this sits in the model:** microsegmentation is the **Networks pillar** of the CISA Zero Trust Maturity Model, and the concrete form of NIST SP 800-207's premise that the internal network is hostile — segment east-west so one compromised workload can't reach what it never needed, perimeter or no perimeter.
 
 ## AI acceleration
 
