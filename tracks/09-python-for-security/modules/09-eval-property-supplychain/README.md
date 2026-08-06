@@ -99,6 +99,30 @@ flowchart LR
     V -->|half-parse or stray exception ✗| S["shrink to minimal<br/>counterexample = the bug"]
 ```
 
+**The shape, concretely.** The eval and the property are each a few lines — see the API once so the
+mechanism doesn't live behind a link:
+
+```python
+from pydantic_evals import Case, Dataset
+from hypothesis import given, strategies as st
+
+# eval-as-code: a held-out corpus the CI gate scores sift.triage against
+dataset = Dataset(cases=[
+    Case(name="c2-beacon", inputs=alert_json, expected_output="true_positive"),
+    # ... more held-out cases
+])
+report = dataset.evaluate_sync(sift.triage)      # scorecard; the gate fails if recall < your floor
+
+# property test: the invariant that must hold over ANY generated input
+@given(st.text())                                # feed it arbitrary bytes
+def test_parse_or_raise(line: str):
+    try:
+        ev = AlertEvent.model_validate_json(line)
+    except ValueError:
+        return                                   # rejecting malformed input is correct
+    assert ev.alert.signature_id > 0             # a *returned* event is always well-formed
+```
+
 **Supply-chain gating is measurement too — of your dependency graph.** `pip-audit` cross-checks your
 locked graph against the PyPI Advisory Database and fails on a known-vulnerable version; the hash-locked
 lockfile (`uv.lock` / `--require-hashes`) fails install if the *bytes* don't match what you locked — the

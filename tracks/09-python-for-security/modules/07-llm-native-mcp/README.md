@@ -85,6 +85,24 @@ flowchart LR
     R -.instructor re-asks the model.-> M
 ```
 
+**The shape, concretely.** Both typed edges are a few lines — the API *is* the lesson here, so see it once:
+
+```python
+from fastmcp import FastMCP
+import instructor
+
+mcp = FastMCP("sift")
+
+@mcp.tool()                                  # argument-in edge: the caller is an LLM
+def enrich(ip: IPvAnyAddress) -> EnrichResult:   # typed args → validated at the boundary
+    ...                                      # your sift enrich core, unchanged
+
+# output-out edge: the model's reply is parsed into a pydantic model, never trusted raw
+client = instructor.from_openai(OpenAI())
+verdict: Verdict = client.chat.completions.create(   # raises if the reply doesn't fit Verdict
+    model=..., response_model=Verdict, messages=[...])
+```
+
 **Pin the moving parts.** MCP and `instructor` are newer and still evolving. Pin their versions (Module
 01's lockfile), teach yourself the *durable pattern* (typed tool arguments; typed model output), and
 treat the specific API as replaceable — the discipline outlives the library.
