@@ -9,7 +9,7 @@ hide:
 
 *Companion to [Module 03 — Device Trust & Posture](README.md) · CC BY 4.0 — print it, pin it, share it.*
 
-*Last reviewed: 2026-07*
+*Last reviewed: 2026-08*
 
 ## WireGuard basics
 
@@ -91,9 +91,14 @@ curl -sS --max-time 5 http://target.tailnet:443/ ; echo "exit=$?"   # non-200 / 
   `curl` from a container with no keypair.
 - **Bind app AND scope, not a bare tag everywhere.** A rule that allows a tag with no destination
   restriction is a hole; scope `dst` to the specific service and port.
-- **Posture is assessed, not demonstrated, when self-hosted.** Patch level, EDR state, and disk
-  encryption come from an MDM/EDR stack you can't run for free — the lab maps a structured policy to
-  production controls and labels it honestly. Don't claim you *proved* posture when you only *asserted* it.
+- **Posture is assessed, not demonstrated here — a scope choice, not a limit.** Reading *and* enforcing
+  posture is self-hostable free (osquery/Fleet read state; NetBird gates WireGuard access on it, revoking
+  peers that fail compliance); only a *vendor risk score* (CrowdStrike ZTA) is paywalled. The lab maps a
+  structured policy to production controls and labels it honestly — don't claim you *proved* posture when
+  you only *asserted* it.
+- **Even free posture is self-attestation.** osquery/EDR ask the OS about itself; a root-compromised host
+  can lie. Trust it as hygiene, not proof — the real root of trust is hardware (TPM/Secure Enclave), the
+  device analog of the FIDO2 key that never leaves the authenticator.
 - **Control plane ≠ data plane.** headscale distributes keys and ACLs; once keys are exchanged, traffic
   flows peer-to-peer. headscale being down doesn't kill existing tunnels, but it does stop new
   enrollments and ACL updates.

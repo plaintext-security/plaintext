@@ -20,8 +20,8 @@ known, healthy machine — so a stolen credential alone is not enough.*
     credential, MFA passed — and an *unmanaged home computer* still became the trusted launch point
     into cloud backups, because nobody asked whether the device was one to trust. You'll build device
     *identity* end-to-end with WireGuard + headscale (an unenrolled device is denied by construction),
-    enforce a default-deny ACL, and reason honestly about device *posture* — the half a self-hosted lab
-    can't fully prove.
+    enforce a default-deny ACL, and reason honestly about device *posture* — the half this lab assesses
+    rather than builds.
 
 ## Why this matters
 
@@ -93,7 +93,7 @@ The distinction is the whole module, so hold both halves apart:
 |---|---|---|
 | **Question** | Is this the device I think it is? | Is this device healthy enough to trust? |
 | **Signal** | a private key bound to the device (WireGuard pubkey, TPM/Secure Enclave) | patch level, EDR running, disk encrypted, screen-lock |
-| **Where it comes from** | the mesh itself — cryptographic, self-hosted | a managed-endpoint stack (MDM/EDR) you can't run free |
+| **Where it comes from** | the mesh itself — cryptographic, self-hosted | device-state signals — free/self-hosted via osquery/Fleet or NetBird; only a vendor *risk score* (CrowdStrike ZTA) is paywalled |
 | **This lab** | **built and proven** — unenrolled = denied by construction | **assessed from a policy file** — mapped to production controls, labelled honestly |
 | **LastPass** | attacker's box was *never* a known device | *and* it was unhealthy — unpatched, no EDR |
 
@@ -165,12 +165,22 @@ flowchart TB
     ACL -->|explicit accept| ALLOW["Allow — this resource only"]
 ```
 
-But those posture signals come from a **managed-endpoint stack (MDM, EDR)** you cannot stand up for
-free in a container. So this module is honest about the seam: you'll **build and prove device
-*identity***, and treat device *posture* as **assessed from a structured policy**
-(`device-posture-policy.json`) mapped to the controls a production deployment enforces — labelled as
-*assessed*, never as *demonstrated*. Closing that seam with a real posture signal is what production
-EDR/MDM buys you; naming the seam is the practitioner's job.
+Those posture signals are more self-hostable than they look. **Reading** device state is free —
+[osquery](https://www.osquery.io/) exposes OS build, disk-encryption, firewall, screen-lock, and
+running-process state across Windows/macOS/Linux — and **enforcing** on it is free too:
+[NetBird](https://netbird.io/), an open-source WireGuard mesh, gates access on native posture checks
+and, via its [Fleet (osquery) integration](https://docs.netbird.io/manage/access-control/endpoint-detection-and-response/fleetdm-edr),
+revokes a peer that falls out of compliance. What genuinely costs money is narrow: consuming a *vendor
+risk score* like CrowdStrike's Zero Trust Assessment — the EDR is itself the product — and turnkey
+managed-MDM at fleet scale.
+
+So this module treats device *posture* as **assessed, not demonstrated** — but as a **scope choice, not
+a limit.** headscale is a single container that teaches the control-plane / data-plane split cleanly;
+posture *enforcement* lives in a different tool (NetBird) or a heavier stack (Fleet pulls in its own
+server, database, and agents) that this lab deliberately doesn't stand up. You'll **build and prove
+device *identity***, and map a structured posture policy (`device-posture-policy.json`) to the controls
+a production deployment enforces — labelled *assessed*, never *demonstrated*. Naming that seam honestly
+— what's built, what's mapped, and what a real signal would add — is the practitioner's job.
 
 ??? note "Background: what production posture gating actually checks"
     The lab's `device-posture-policy.json` mirrors a real Cloudflare Access + CrowdStrike posture
@@ -180,6 +190,18 @@ EDR/MDM buys you; naming the seam is the practitioner's job.
     corp-managed and financial-system tags outright. Devices with **no** posture signal hit
     `default_posture: deny_all` — the Zero Trust default: deny unless verified, not trust unless a
     check happens to fail.
+
+!!! note "Can you trust the posture signal?"
+    Every software posture check is **self-attestation**: osquery (or an EDR) asks the operating system
+    about itself, and a device compromised at root/kernel level can lie to it — reporting "disk
+    encrypted, patched, EDR running" while none of it is true. So treat posture as a strong **hygiene**
+    signal — it would have flagged the LastPass engineer's unpatched home box instantly — not as *proof*
+    a device is uncompromised. The real root of trust is **hardware attestation** (TPM 2.0 / measured
+    boot, Secure Enclave), which is exactly what FIDO2 gives the *user* half below: a key the endpoint
+    can't forge. That asymmetry is the honest ceiling — this module anchors the *user* in hardware, while
+    device *posture* rests on the endpoint's word for itself unless hardware-attested. It's why Zero
+    Trust treats posture as one **weighted, continuously re-evaluated, fail-closed** signal, never a
+    trusted gate.
 
 ### The human half — FIDO2 / passkeys
 
@@ -236,7 +258,8 @@ above.*
 - [headscale documentation](https://headscale.net/stable/) (~30 min) — the control server the lab runs. Read "Getting started" and the ACL section; the rest is operational reference for later.
 
 **Device posture and ZT (~1 hr)**
-- [Cloudflare Zero Trust — Device posture checks](https://developers.cloudflare.com/cloudflare-one/reusable-components/posture-checks/) (~30 min) — how a production product queries CrowdStrike, Intune, and OS-level signals to gate application access. This is exactly what the lab's `device-posture-policy.json` stands in for, and what you cannot self-host for free. `[depth]`
+- [Cloudflare Zero Trust — Device posture checks](https://developers.cloudflare.com/cloudflare-one/reusable-components/posture-checks/) (~30 min) — how a production product queries CrowdStrike, Intune, and OS-level signals to gate application access. This is exactly what the lab's `device-posture-policy.json` stands in for — the turnkey, managed version of posture gating; the underlying checks are self-hostable free (see osquery/NetBird below). `[depth]`
+- [osquery](https://www.osquery.io/) + [Fleet](https://fleetdm.com/) and [NetBird posture checks](https://docs.netbird.io/manage/access-control/posture-checks) (~20 min) — the free, self-hostable side of the same idea: osquery reads device state, Fleet manages it across a fleet, and NetBird gates WireGuard access on it (revoking peers that fail compliance). Read these to see why "posture is assessed, not demonstrated" is a scope choice in this lab, not a hard limit.
 - [Tailscale — Access controls (ACLs)](https://tailscale.com/kb/1018/acls) (~30 min) — how to express "only devices tagged `corp-managed` can reach service X" in HuJSON. Directly applicable; read it before you extend the lab's ACL.
 
 **FIDO2 and passkeys (~1 hr)**
@@ -249,7 +272,7 @@ above.*
 - **Cryptographic device identity** — the WireGuard public key *is* the device's identity (vs. a spoofable IP/VLAN); no registered private key, no membership in the mesh.
 - **Control plane vs. data plane** — headscale distributes keys and enforces ACLs; WireGuard tunnels carry traffic peer-to-peer, no central chokepoint.
 - **Default-deny ACL is the ZT judgment** — an enrolled-can-reach-everything mesh is just a flatter VPN; the win is the tag-to-service allow-list, and the trap is the implicit default-allow.
-- **Posture is assessed, not demonstrated, when self-hosted** — patch level / EDR / disk encryption come from EDR/MDM you can't run for free; the lab maps a structured policy to production controls and labels it honestly.
+- **Posture is assessed, not demonstrated — a scope choice, not a limit** — reading *and* enforcing posture is self-hostable free (osquery/Fleet, NetBird); only a *vendor risk score* (CrowdStrike ZTA) is paywalled. The lab maps a structured policy to production controls and labels it honestly — and even free posture is self-attestation: hygiene, not proof against a rooted host (hardware attestation, TPM/Secure Enclave, is the real root of trust).
 - **FIDO2/passkeys** — user-presence + hardware-bound credential; WireGuard proves the device, FIDO2 proves the user on it (**NIST 800-207 Tenet 3**).
 
 ## AI acceleration
