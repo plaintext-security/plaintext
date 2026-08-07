@@ -100,6 +100,21 @@ A real validator MUST, in order:
 A "validator" that base64-decodes the payload and reads claims without step 4 is the Storm-0558
 failure mode in script form.
 
+```bash
+# Verify in ONE command — no Python (step, the smallstep CLI: brew install step)
+# Enforces every gate above: --alg pins the algorithm (kills alg:none + HS256 confusion),
+# --jwks fetches the public key by kid and verifies the signature, --iss/--aud/exp check the claims.
+echo "$TOKEN" | step crypto jwt verify \
+  --jwks <(curl -s http://localhost:8080/realms/myrealm/protocol/openid-connect/certs) \
+  --iss http://localhost:8080/realms/myrealm --aud myclient --alg RS256
+# exits 0 + prints the decoded JWT on success; NON-ZERO on a bad signature or failed claim.
+
+# Python equivalent (PyJWT) — algorithms PINNED by you, never read from the token:
+#   jwt.decode(token, public_key, algorithms=["RS256"], audience="myclient", issuer=ISS)
+```
+
+Handy either way, but a one-command CLI *hides* the gates behind flags — know what each flag enforces.
+
 ## Gotchas worth remembering
 
 - **Validate signature AND `aud`/`exp`/`iss` — not just decode.** Decoding a JWT is trivial and proves
